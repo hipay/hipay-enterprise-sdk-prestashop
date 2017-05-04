@@ -116,6 +116,8 @@ class Hipay_enterprise extends PaymentModule{
     $this->logs->logsHipay('##########################');
     $this->logs->logsHipay('---- START function getContent');
 
+    $this->postProcess();
+
     $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
 
     $this->context->smarty->assign(array(
@@ -123,6 +125,7 @@ class Hipay_enterprise extends PaymentModule{
             'module_dir' => $this->_path,
             'config_hipay' => $this->objectToArray($this->configHipay),
             'logs' => $this->getLogFiles(),
+            'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
     //        'url_test_hipay_direct' => Hipay_Professional::URL_TEST_HIPAY_DIRECT,
     //        'url_prod_hipay_direct' => Hipay_Professional::URL_PROD_HIPAY_DIRECT,
     //        'url_test_hipay_wallet' => Hipay_Professional::URL_TEST_HIPAY_WALLET,
@@ -136,6 +139,25 @@ class Hipay_enterprise extends PaymentModule{
     return $this->context->smarty->fetch($configuration);
   }
 
+  protected function postProcess(){
+      $ur_redirection = AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
+      $this->logs->logsHipay('---- >> function postProcess');
+
+      if (Tools::isSubmit('logfile')) {
+          $logFile = Tools::getValue('logfile');
+          $path = _PS_MODULE_DIR_ . $this->logs->getBasePath() . $logFile;
+          if (!file_exists($path)) {
+              http_response_code(404);
+              die('<h1>File not found</h1>');
+          } else {
+              header('Content-Type: text/plain');
+              $content = file_get_contents($path);
+              echo $content;
+              die();
+          }
+      }
+
+  }
   /**
      * Functions to init the configuration HiPay
      */
@@ -280,7 +302,7 @@ if (_PS_VERSION_ >= '1.7') {
   require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/hipay_enterprise-17.php');
 } elseif (_PS_VERSION_ < '1.6') {
   // Version < 1.6
-  Tools::displayError('The module HiPay Professional is not compatible with your PrestaShop');
+  Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
 require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/webservices/hipayLogs.php');

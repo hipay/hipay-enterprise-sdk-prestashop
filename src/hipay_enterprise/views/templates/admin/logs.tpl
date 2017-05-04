@@ -1,13 +1,10 @@
 {**
-* 2016 HiPay
-*
-* NOTICE OF LICENSE
 *
 *
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2016 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
+* @author Johan Protin
+* @copyright Copyright (c) 2017 - Johan Protin
+* @license Apache License Version 2.0, January 2004
+* @package Reverb
 *}
 <div class="panel">
     <div class="row">
@@ -15,23 +12,23 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-danger">Error Logs</a>
                 {foreach from=$logs['error'] item=select}
-                    <a href="{$module_dir}logs/{$select}" target="_blank" class="list-group-item ">{$select}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-info">Request new order Logs</a>
-                {foreach from=$logs['request'] item=select}
-                    <a href="{$module_dir}logs/{$select}" target="_blank" class="list-group-item ">{$select}</a>
+                <a href="#" class="list-group-item list-group-item-info">Info Logs</a>
+                {foreach from=$logs['infos'] item=select}
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-info">Callback Logs</a>
+                <a href="#" class="list-group-item list-group-item-info">Cron Logs</a>
                 {foreach from=$logs['callback'] item=select}
-                    <a href="{$module_dir}logs/{$select}" target="_blank" class="list-group-item ">{$select}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -39,17 +36,17 @@
     <div class="row">
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-warning">Refund Logs</a>
-                {foreach from=$logs['refund'] item=select}
-                    <a href="{$module_dir}logs/{$select}" target="_blank" class="list-group-item ">{$select}</a>
+                <a href="#" class="list-group-item list-group-item-warning">Categories Logs</a>
+                {foreach from=$logs['request'] item=select}
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-info">General Logs</a>
-                {foreach from=$logs['infos'] item=select}
-                    <a href="{$module_dir}logs/{$select}" target="_blank" class="list-group-item ">{$select}</a>
+                <a href="#" class="list-group-item list-group-item-warning">Listings Logs</a>
+                {foreach from=$logs['refund'] item=select}
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>

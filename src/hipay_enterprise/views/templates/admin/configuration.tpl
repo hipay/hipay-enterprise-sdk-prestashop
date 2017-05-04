@@ -33,19 +33,19 @@
         <span class="icon icon-money"></span> {l s='Payment methods' mod='hipay_professional'}</a>
       </li>
       <li role="presentation"><a href="#fraud" aria-controls="fraud" role="tab" data-toggle="tab">
-        <span class="icon icon-money"></span> {l s='Fraud' mod='hipay_professional'}</a>
+        <span class="icon icon-exclamation"></span> {l s='Fraud' mod='hipay_professional'}</a>
       </li>
       <li role="presentation"><a href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
-        <span class="icon icon-money"></span> {l s='Category Mapping' mod='hipay_professional'}</a>
+        <span class="icon icon-copy"></span> {l s='Category Mapping' mod='hipay_professional'}</a>
       </li>
       <li role="presentation"><a href="#carrier-mapping" aria-controls="carrier-mapping" role="tab" data-toggle="tab">
-        <span class="icon icon-money"></span> {l s='Carrier Mapping' mod='hipay_professional'}</a>
+        <span class="icon icon-copy"></span> {l s='Carrier Mapping' mod='hipay_professional'}</a>
       </li>
       <li role="presentation"><a href="#faq" aria-controls="faq" role="tab" data-toggle="tab">
-        <span class="icon icon-money"></span> {l s='FAQ' mod='hipay_professional'}</a>
+        <span class="icon icon-question"></span> {l s='FAQ' mod='hipay_professional'}</a>
       </li>
       <li role="presentation"><a href="#logs" aria-controls="logs" role="tab" data-toggle="tab">
-        <span class="icon icon-money"></span> {l s='Logs' mod='hipay_professional'}</a>
+        <span class="icon icon-file-text"></span> {l s='Logs' mod='hipay_professional'}</a>
       </li>
 </ul>
 
