@@ -50,13 +50,14 @@
         <!-- PRODUCTION FORM START -->
         <div class="col-md-6 trait">
             <h4>{l s='Production configuration' mod='hipay_professional'}</h4>
+            
         </div>
         <!-- PRODUCTION FORM END -->
         <!-- SANDBOX FORM START -->
         <div class="col-md-6 ">
             <h4>{l s='Sandbox configuration' mod='hipay_professional'}</h4>
         </div>
-        <!-- PRODUCTION FORM END -->
+        <!-- SANDBOX FORM END -->
       </div>
     </form>
     </div>

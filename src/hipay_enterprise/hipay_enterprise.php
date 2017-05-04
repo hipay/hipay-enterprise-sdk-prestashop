@@ -305,4 +305,4 @@ if (_PS_VERSION_ >= '1.7') {
   Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/webservices/hipayLogs.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayLogs.php');
