@@ -14,6 +14,9 @@ if (!defined('_PS_VERSION_')) {
 
 class Hipay_enterprise extends PaymentModule{
 
+  public $limited_countries = array();
+  public $configHipay;
+
   public function __construct(){
     $this->name = 'hipay_enterprise';
     $this->tab = 'payments_gateways';
@@ -30,6 +33,9 @@ class Hipay_enterprise extends PaymentModule{
     $this->displayName = $this->l('HiPay Enterprise');
     $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
 
+    // init log object
+    $this->logs = new HipayLogs($this);
+
     // Compliancy
     $this->limited_countries = array(
       'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
@@ -41,6 +47,9 @@ class Hipay_enterprise extends PaymentModule{
 
     parent::__construct();
 
+    if (!Configuration::get('HIPAY_CONFIG')) {
+      $this->warning = $this->l('Please, do not forget to configure your module');
+    }
     $this->configHipay = $this->getConfigHiPay();
 
   }
@@ -104,18 +113,25 @@ class Hipay_enterprise extends PaymentModule{
   */
   public function getContent(){
 
+    $this->logs->logsHipay('##########################');
+    $this->logs->logsHipay('---- START function getContent');
+
     $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
 
     $this->context->smarty->assign(array(
       //      'alerts' => $this->context->smarty->fetch($alerts),
             'module_dir' => $this->_path,
             'config_hipay' => $this->objectToArray($this->configHipay),
+            'logs' => $this->getLogFiles(),
     //        'url_test_hipay_direct' => Hipay_Professional::URL_TEST_HIPAY_DIRECT,
     //        'url_prod_hipay_direct' => Hipay_Professional::URL_PROD_HIPAY_DIRECT,
     //        'url_test_hipay_wallet' => Hipay_Professional::URL_TEST_HIPAY_WALLET,
     //        'url_prod_hipay_wallet' => Hipay_Professional::URL_PROD_HIPAY_WALLET,
     //        'ajax_url' => $this->context->link->getAdminLink('AdminHiPayConfig'),
         ));
+
+    $this->logs->logsHipay('---- END function getContent');
+    $this->logs->logsHipay('##########################');
 
     return $this->context->smarty->fetch($configuration);
   }
@@ -142,7 +158,7 @@ class Hipay_enterprise extends PaymentModule{
 
     public function insertConfigHiPay()
     {
-      //  $this->logs->logsHipay('---- >> function insertConfigHiPay');
+        $this->logs->logsHipay('---- >> function insertConfigHiPay');
         // init objet config for HiPay
         $objHipay = new StdClass();
 
@@ -180,7 +196,7 @@ class Hipay_enterprise extends PaymentModule{
 
     public function setAllConfigHiPay($objHipay = null)
     {
-      //  $this->logs->logsHipay('---- >> function setAllConfigHiPay');
+        $this->logs->logsHipay('---- >> function setAllConfigHiPay');
         // use this function if you have a few variables to update
         if ($objHipay != null) {
             $for_json_hipay = $objHipay;
@@ -199,6 +215,48 @@ class Hipay_enterprise extends PaymentModule{
     }
 
     /**
+     * Get the appropriate logs
+     * @return string
+     */
+    protected function getLogFiles()
+    {
+        // scan log dir
+        $dir = _PS_MODULE_DIR_ . $this->logs->getBasePath();
+        $files = scandir($dir, 1);
+        // init array files
+        $error_files = [];
+        $info_files = [];
+        $callback_files = [];
+        $request_files = [];
+        $refund_files = [];
+        // dispatch files
+        foreach ($files as $file) {
+            if (preg_match("/error/i", $file) && count($error_files) < 10) {
+                $error_files[] = $file;
+            }
+            if (preg_match("/callback/i", $file) && count($callback_files) < 10) {
+                $callback_files[] = $file;
+            }
+            if (preg_match("/infos/i", $file) && count($info_files) < 10) {
+                $info_files[] = $file;
+            }
+            if (preg_match("/request/i", $file) && count($request_files) < 10) {
+                $request_files[] = $file;
+            }
+            if (preg_match("/refund/i", $file) && count($refund_files) < 10) {
+                $refund_files[] = $file;
+            }
+        }
+        return [
+            'error' => $error_files,
+            'infos' => $info_files,
+            'callback' => $callback_files,
+            'request' => $request_files,
+            'refund' => $refund_files
+        ];
+    }
+
+    /**
      * various functions
      */
     public function objectToArray($data)
@@ -214,6 +272,7 @@ class Hipay_enterprise extends PaymentModule{
         }
         return $data;
     }
+
 }
 
 if (_PS_VERSION_ >= '1.7') {
@@ -223,3 +282,5 @@ if (_PS_VERSION_ >= '1.7') {
   // Version < 1.6
   Tools::displayError('The module HiPay Professional is not compatible with your PrestaShop');
 }
+
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/webservices/hipayLogs.php');
