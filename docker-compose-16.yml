@@ -1,0 +1,15 @@
+prestashop16:
+  container_name: hipay-enterprise-shop-ps16
+  dockerfile: ./conf/docker/Dockerfile16
+  build: .
+  ports:
+    - "8086:80"
+  links:
+    - smtp
+    - mysql
+  env_file:
+    - ./conf/env_file/env
+    - ./conf/env_file/env16
+  volumes:
+    - ./web16:/var/www/html
+    - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
