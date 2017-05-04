@@ -13,7 +13,7 @@
   <div class="panel">
     <!-- MARKETING START -->
     {* include file marketing.tpl *}
-    {include file='./marketing.tpl'}
+    {include file='./panelHeader/marketing.tpl'}
     <!-- MARKETING END -->
   </div>
   <!-- ALERTS START -->
@@ -53,27 +53,27 @@
   <div role="tabpanel"
   class="tab-pane  {if ((isset($active_tab) == false) || ($active_tab == 'account_form'))} active{/if}"
   id="account_form">
-  {include file='./account.tpl'}
+  {include file='./tabs/account.tpl'}
 </div>
 <div role="tabpanel"
 class="tab-pane  {if ((isset($active_tab) == true) && ($active_tab == 'payment_form'))} active{/if}"
 id="payment_form">
-{include file='./payment-methods.tpl'}
+{include file='./tabs/payment-methods.tpl'}
 </div>
 <div role="tabpanel" class="tab-pane" id="fraud">
-  {include file='./fraud.tpl'}
+  {include file='./tabs/fraud.tpl'}
 </div>
 <div role="tabpanel" class="tab-pane" id="category-mapping">
-  {include file='./category-mapping.tpl'}
+  {include file='./tabs/category-mapping.tpl'}
 </div>
 <div role="tabpanel" class="tab-pane" id="carrier-mapping">
-  {include file='./category-mapping.tpl'}
+  {include file='./tabs/category-mapping.tpl'}
 </div>
 <div role="tabpanel" class="tab-pane" id="faq">
-  {include file='./faq.tpl'}
+  {include file='./tabs/faq.tpl'}
 </div>
 <div role="tabpanel" class="tab-pane" id="logs">
-  {include file='./logs.tpl'}
+  {include file='./tabs/logs.tpl'}
 </div>
 </div>
 </div>
