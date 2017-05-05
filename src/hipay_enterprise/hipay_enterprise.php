@@ -16,6 +16,7 @@ class Hipay_enterprise extends PaymentModule{
 
   public $limited_countries = array();
   public $configHipay;
+  public $_errors = array();
 
   public function __construct(){
     $this->name = 'hipay_enterprise';
@@ -127,6 +128,7 @@ class Hipay_enterprise extends PaymentModule{
             'config_hipay' => $this->configHipay,
             'logs' => $this->getLogFiles(),
             'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+            'form_errors' => $this->_errors,
         ));
 
     $this->logs->logsHipay('---- END function getContent');
