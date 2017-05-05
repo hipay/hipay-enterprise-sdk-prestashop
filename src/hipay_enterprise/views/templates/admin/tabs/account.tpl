@@ -140,6 +140,33 @@
             	</div>
             </div>
 
+            <div class="form-group">
+            	<label class="control-label col-lg-4">
+            			{l s='Api MO/TO username' mod='hipay_professional'}
+            	</label>
+            	<div class="col-lg-6">
+            		<input class="form-control" type="text" name="api_moto_username_production" value="{$config_hipay.account.production.api_moto_username_production}">
+            	</div>
+            </div>
+
+            <div class="form-group">
+            	<label class="control-label col-lg-4">
+            			{l s='Api MO/TO password' mod='hipay_professional'}
+            	</label>
+            	<div class="col-lg-6">
+            		<input class="form-control" type="text" name="api_moto_password_production" value="{$config_hipay.account.production.api_moto_password_production}">
+            	</div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-lg-4">
+                  {l s='MO/TO Secret passphrase' mod='hipay_professional'}
+              </label>
+              <div class="col-lg-6">
+                <input class="form-control" type="text" name="api_moto_secret_passphrase_production" value="{$config_hipay.account.production.api_moto_secret_passphrase_production}">
+              </div>
+            </div>
+
         </div>
         <!-- PRODUCTION FORM END -->
         <!-- SANDBOX FORM START -->
@@ -189,6 +216,33 @@
             	<div class="col-lg-6">
             		<input class="form-control" type="text" name="api_secret_passphrase_sandbox" value="{$config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
             	</div>
+            </div>
+
+            <div class="form-group">
+            	<label class="control-label col-lg-4">
+            			{l s='Api MO/TO username' mod='hipay_professional'}
+            	</label>
+            	<div class="col-lg-6">
+            		<input class="form-control" type="text" name="api_moto_username_sandbox" value="{$config_hipay.account.sandbox.api_moto_username_sandbox}">
+            	</div>
+            </div>
+
+            <div class="form-group">
+            	<label class="control-label col-lg-4">
+            			{l s='Api MO/TO password' mod='hipay_professional'}
+            	</label>
+            	<div class="col-lg-6">
+            		<input class="form-control" type="text" name="api_moto_password_sandbox" value="{$config_hipay.account.sandbox.api_moto_password_sandbox}">
+            	</div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-lg-4">
+                  {l s='MO/TO Secret passphrase' mod='hipay_professional'}
+              </label>
+              <div class="col-lg-6">
+                <input class="form-control" type="text" name="api_moto_secret_passphrase_sandbox" value="{$config_hipay.account.sandbox.api_moto_secret_passphrase_sandbox}">
+              </div>
             </div>
 
         </div>

@@ -136,7 +136,7 @@ class Hipay_enterprise extends PaymentModule{
   }
 
   /**
-  * Process HTTP request send by module conifguration page 
+  * Process HTTP request send by module conifguration page
   */
   protected function postProcess(){
       $ur_redirection = AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
@@ -254,14 +254,20 @@ class Hipay_enterprise extends PaymentModule{
               "api_password_sandbox" => "",
               "api_tokenjs_username_sandbox" => "",
               "api_tokenjs_password_publickey_sandbox" => "",
-              "api_secret_passphrase_sandbox" => ""
+              "api_secret_passphrase_sandbox" => "",
+              "api_moto_username_sandbox" => "",
+              "api_moto_password_sandbox" => "",
+              "api_moto_secret_passphrase_sandbox" => ""
             ),
             "production" => array(
               "api_username_production" => "",
               "api_password_production" => "",
               "api_tokenjs_username_production" => "",
               "api_tokenjs_password_publickey_production" => "",
-              "api_secret_passphrase_production" => ""
+              "api_secret_passphrase_production" => "",
+              "api_moto_username_production" => "",
+              "api_moto_password_production" => "",
+              "api_moto_secret_passphrase_production" => ""
             )
           )
         );
