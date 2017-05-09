@@ -18,7 +18,7 @@ if [ ! -f /var/www/html/console/console.php ];then
 
    # Installation  HiPay's module
     echo "\n Installation HiPay's module \n";
-    php console.php module:install hipay_enterprise
+  #  php console.php module:install hipay_enterprise
 
    #===================================#
     #            ADD CRON
