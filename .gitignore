@@ -1,3 +1,4 @@
 data/
 web16/
 web17/
+src/hipay_enterprise/logs/*.txt
