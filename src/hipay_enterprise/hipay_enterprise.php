@@ -17,6 +17,8 @@ class Hipay_enterprise extends PaymentModule{
   public $limited_countries = array();
   public $configHipay;
   public $_errors = array();
+  public $min_amount = 1;
+
 
   public function __construct(){
     $this->name = 'hipay_enterprise';
@@ -79,8 +81,52 @@ class Hipay_enterprise extends PaymentModule{
   }
 
   public function installHipay(){
-    return $this->installAdminTab();
+
+    $return = $this->installAdminTab();
+    if(_PS_VERSION_ >= '1.7'){
+      $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
+      $return = $return && $return17;
+    }else if(_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6'){
+      $return16 = $this->registerHook('payment');
+      $return = $return && $return16;
+    }else
+
+    return $return;
   }
+
+  public function hookPayment($params){
+    $this->smarty->assign(array(
+                'domain' => Tools::getShopDomainSSL(true),
+                'module_dir' => $this->_path,
+                'payment_button' => $this->_path . 'views/img/amexa200.png' ,
+                'min_amount' => $this->min_amount,
+                'configHipay' => $this->configHipay,
+                'lang' => Tools::strtolower($this->context->language->iso_code),
+            ));
+    $this->smarty->assign('hipay_prod', !(bool)$this->configHipay["account"]["global"]["sandbox_mode"]);
+
+    return $this->display(dirname(__FILE__), 'views/templates/hook/payment.tpl');
+  }
+
+  /*
+    * VERSION PS 1.7
+    *
+    */
+    public function hookPaymentOptions($params)
+    {
+        $hipay17 = new HipayEnterpriseNew();
+        return $hipay17->hipayPaymentOptions($params);
+    }
+
+    /*
+      * VERSION PS 1.7
+      *
+      */
+      public function hookHeader($params)
+      {
+          $hipay17 = new HipayEnterpriseNew();
+          return $hipay17->hookDisplayHeader($params);
+      }
 
   public function installAdminTab(){
     $class_names = [
@@ -271,6 +317,19 @@ class Hipay_enterprise extends PaymentModule{
               "api_moto_password_production" => "",
               "api_moto_secret_passphrase_production" => ""
             )
+          ),
+          "payment" => array(
+            "global" => array(
+              "operating_mode" => "hosted_page",
+              "iframe_hosted_page_template" => "basic-js",
+              "display_card_selector" => 0,
+              "css_url" => "",
+              "activate_3d_secure" => 1,
+              "capture_mode" => "manual",
+              "card_token" => 1
+            ),
+            "credit_card" => array(),
+            "local_payment" => array()
           )
         );
 
