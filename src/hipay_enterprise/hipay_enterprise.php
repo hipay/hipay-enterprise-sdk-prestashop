@@ -17,6 +17,8 @@ class Hipay_enterprise extends PaymentModule{
   public $limited_countries = array();
   public $configHipay;
   public $_errors = array();
+  public $min_amount = 1;
+
 
   public function __construct(){
     $this->name = 'hipay_enterprise';
@@ -79,8 +81,69 @@ class Hipay_enterprise extends PaymentModule{
   }
 
   public function installHipay(){
-    return $this->installAdminTab();
+
+    $return = $this->installAdminTab();
+    if(_PS_VERSION_ >= '1.7'){
+      $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
+      $return = $return && $return17;
+    }else if(_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6'){
+      $return16 = $this->registerHook('payment');
+      $return = $return && $return16;
+    }else
+
+    return $return;
   }
+
+  public function hookPayment($params){
+  //  var_dump($params);
+
+    $address = new Address(intval($params['cart']->id_address_delivery));
+    $country = new Country(intval($address->id_country));
+    $currency = new Currency(intval($params['cart']->id_currency));
+
+    $this->smarty->assign(array(
+                'domain' => Tools::getShopDomainSSL(true),
+                'module_dir' => $this->_path,
+                'payment_button' => $this->_path . 'views/img/amexa200.png' ,
+                'min_amount' => $this->min_amount,
+                'configHipay' => $this->configHipay,
+                'activated_credit_card' => $this->getActivatedCreditCardByCountryAndCurrency($country, $currency),
+                'lang' => Tools::strtolower($this->context->language->iso_code),
+            ));
+    $this->smarty->assign('hipay_prod', !(bool)$this->configHipay["account"]["global"]["sandbox_mode"]);
+
+    return $this->display(dirname(__FILE__), 'views/templates/hook/payment.tpl');
+  }
+
+  protected function getActivatedCreditCardByCountryAndCurrency($country, $currency){
+    $activatedCreditCard = array();
+    foreach($this->configHipay["payment"]["credit_card"] as $name => $settings){
+      if($settings["activated"] && (empty($settings["countries"]) || in_array( $country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array( $currency->iso_code, $settings["currencies"]) ) ){
+        $activatedCreditCard[$name] = $settings;
+      }
+    }
+    return $activatedCreditCard;
+  }
+
+  /*
+    * VERSION PS 1.7
+    *
+    */
+    public function hookPaymentOptions($params)
+    {
+        $hipay17 = new HipayEnterpriseNew();
+        return $hipay17->hipayPaymentOptions($params);
+    }
+
+    /*
+      * VERSION PS 1.7
+      *
+      */
+      public function hookHeader($params)
+      {
+          $hipay17 = new HipayEnterpriseNew();
+          return $hipay17->hookDisplayHeader($params);
+      }
 
   public function installAdminTab(){
     $class_names = [
@@ -241,6 +304,8 @@ class Hipay_enterprise extends PaymentModule{
     {
         $this->logs->logsHipay('---- >> function insertConfigHiPay');
 
+        //TODO mock config for front test. credit_card and payment indexes must be injected through json
+
         $configFields = array(
           "account" => array(
             "global" => array(
@@ -270,6 +335,37 @@ class Hipay_enterprise extends PaymentModule{
               "api_moto_username_production" => "",
               "api_moto_password_production" => "",
               "api_moto_secret_passphrase_production" => ""
+            )
+          ),
+          "payment" => array(
+            "global" => array(
+              "operating_mode" => "api",
+              "iframe_hosted_page_template" => "basic-js",
+              "display_card_selector" => 0,
+              "css_url" => "",
+              "activate_3d_secure" => 1,
+              "capture_mode" => "manual",
+              "card_token" => 1
+            ),
+            "credit_card" => array(
+              "mastercard" => array(
+                "activated" => 1,
+                "currencies" => array("EUR"),
+                "countries" => array("EN")
+              ),
+              "visa" => array(
+                "activated" => 1,
+                "currencies" => array("USD", "EUR"),
+                "countries" => array("EN", "FR")
+              ),
+            ),
+            "local_payment" => array(
+              "sisal" => array(
+                "activated" => 1,
+                "currencies" => array(),
+                "countries" => array(),
+                'logo' => 'sisal.png'
+              ),
             )
           )
         );
