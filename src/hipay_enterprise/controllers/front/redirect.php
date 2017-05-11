@@ -19,8 +19,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     $context = Context::getContext();
     $cart = $context->cart;
 
-
-
     $context->smarty->assign(array(
       'nbProducts' => $cart->nbProducts(),
       'cust_currency' => $cart->id_currency,
@@ -28,7 +26,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
       'total' => $cart->getOrderTotal(true, Cart::BOTH),
       'this_path' => $this->module->getPathUri(),
       'this_path_bw' => $this->module->getPathUri(),
-      'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/'
+      'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
+      'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name .'/views/templates/hook'
     ));
 
     switch($this->module->configHipay["payment"]["global"]["operating_mode"]){
@@ -57,7 +56,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     public function setMedia(){
       parent::setMedia();
       $this->addJS(array( _MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js'));
+      $this->addJS(array( _MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
       $this->addCSS(array( _MODULE_DIR_ . 'hipay_enterprise/views/css/card-js.min.css'));
     }
+
 
   }

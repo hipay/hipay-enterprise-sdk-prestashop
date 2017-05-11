@@ -24,6 +24,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
   public function hookDisplayHeader($params){
     $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
     $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
+    $this->context->controller->addJS(array( _MODULE_DIR_ . $this->name .'/views/js/devicefingerprint.js'));
   }
 
   public function hipayExternalPaymentOption($params){
@@ -43,9 +44,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
       $this->context->smarty->assign(array(
         'module_dir' => $this->_path,
         'config_hipay' => $this->configHipay,
+        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name .'/views/templates/hook'
       ));
 
-      $paymentForm = $this->fetch('module:hipay_enterprise/views/templates/hook/paymentForm17.tpl');
+      $paymentForm = $this->fetch('module:'.$this->name .'/views/templates/hook/paymentForm17.tpl');
       $newOption = new PaymentOption();
       $newOption->setCallToActionText("pay by card")
       ->setForm($paymentForm)

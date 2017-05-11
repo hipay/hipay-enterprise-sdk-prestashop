@@ -339,7 +339,7 @@ class Hipay_enterprise extends PaymentModule{
           ),
           "payment" => array(
             "global" => array(
-              "operating_mode" => "hosted_page",
+              "operating_mode" => "api",
               "iframe_hosted_page_template" => "basic-js",
               "display_card_selector" => 0,
               "css_url" => "",
