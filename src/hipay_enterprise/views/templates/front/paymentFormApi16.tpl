@@ -28,24 +28,33 @@
 
 
 <form enctype="application/x-www-form-urlencoded" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
-  <div class="control-group">
-    <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
-    <div class="controls" style="float: left; font-size: 13px; font-weight: bold;">
-      #{$cart_id}<span id="cartIdMessage"></span>
-      <input type="hidden" class="input-medium" name="cartId" id="cartId" value="{$cart_id}">
+  <div class="order_carrier_content box">
+    <div class="control-group">
+      <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
+      <div class="controls" style="float: left; font-size: 13px; font-weight: bold;">
+        #{$cart_id}<span id="cartIdMessage"></span>
+        <input type="hidden" class="input-medium" name="cartId" id="cartId" value="{$cart_id}">
+      </div>
+      <div style="clear: both;"></div>
     </div>
-    <div style="clear: both;"></div>
-  </div>
-  <br />
-  <div class="control-group">
-    <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_tpp'}:&nbsp;</label>
-    <div class="controls" style="float: left; font-weight:bold; color:#072959;font-size:15px;">
-      {$amount} {$currency->iso_code}
+    <br />
+    <div class="control-group">
+      <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_tpp'}:&nbsp;</label>
+      <div class="controls" style="float: left; font-weight:bold; color:#072959;font-size:15px;">
+        {$amount} {$currency->iso_code}
+      </div>
+      <div style="clear: both;"></div>
     </div>
-    <div style="clear: both;"></div>
+    <br />
+    {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
   </div>
-  <br />
-  {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
+  <p class="cart_navigation clearfix">
+			<button type="submit" name="processCarrier" class="button btn btn-default standard-checkout button-medium" style="">
+					<span>
+								{l s='Pay' mod='hipay_tpp'}
+					</span>
+			</button>
+	</p>
 </form>
 
 {/if}
