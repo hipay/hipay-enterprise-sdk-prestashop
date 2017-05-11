@@ -17,9 +17,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
       return;
     }
 
-    $payment_options = [
-      $this->hipayExternalPaymentOption(),
-    ];
+    $payment_options = $this->hipayExternalPaymentOption($params);
     return $payment_options;
   }
 
@@ -28,23 +26,35 @@ class HipayEnterpriseNew extends Hipay_enterprise
     $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
   }
 
-  public function hipayExternalPaymentOption(){
+  public function hipayExternalPaymentOption($params){
+
+    $address = new Address(intval($params['cart']->id_address_delivery));
+    $country = new Country(intval($address->id_country));
+    $currency = new Currency(intval($params['cart']->id_currency));
+
+    $activatedCreditCard = $this->getActivatedCreditCardByCountryAndCurrency($country, $currency);
+
+    $paymentOptions = array();
+
     $lang = Tools::strtolower($this->context->language->iso_code);
 
-    $this->context->smarty->assign(array(
-      'module_dir' => $this->_path,
-      'config_hipay' => $this->configHipay,
-    ));
+    if(!empty($activatedCreditCard)){
 
+      $this->context->smarty->assign(array(
+        'module_dir' => $this->_path,
+        'config_hipay' => $this->configHipay,
+      ));
 
+      $paymentForm = $this->fetch('module:hipay_enterprise/views/templates/hook/paymentForm17.tpl');
+      $newOption = new PaymentOption();
+      $newOption->setCallToActionText("pay by card")
+      ->setForm($paymentForm)
+      ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+      ;
 
-    $paymentForm = $this->fetch('module:hipay_enterprise/views/templates/hook/paymentForm17.tpl');
-    $newOption = new PaymentOption();
-    $newOption->setCallToActionText("pay by card")
-    ->setForm($paymentForm)
-    ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
-    ;
+      $paymentOptions[] = $newOption;
 
-    return $newOption;
+    }
+    return $paymentOptions;
   }
 }
