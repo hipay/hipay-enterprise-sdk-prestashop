@@ -10,4 +10,5 @@
 *
 *}
 <div class="panel">
+    {$global_payment_methods_form}
 </div>

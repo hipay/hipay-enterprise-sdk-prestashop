@@ -179,6 +179,7 @@ class Hipay_enterprise extends PaymentModule {
             'config_hipay' => $this->configHipay,
             'logs' => $this->getLogFiles(),
             'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+            'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
             'form_errors' => $this->_errors,
         ));
 
@@ -472,6 +473,7 @@ class Hipay_enterprise extends PaymentModule {
         }
         return $activatedCreditCard;
     }
+
 }
 
 if (_PS_VERSION_ >= '1.7') {

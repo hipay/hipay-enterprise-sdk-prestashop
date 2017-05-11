@@ -54,7 +54,147 @@ class HipayForm extends HipayFormInput {
     }
 
     public function getGlobalPaymentMethodsForm() {
+
+        $form = array();
+
+        $this->helper->tpl_vars['fields_value'] = $this->getGlobalPaymentMethodsFormValues();
+
+        $form['form']['input'][] = $this->generateInputSelect(
+                "operating_mode", 
+                $this->module->l('Operating mode', 'HipayForm'),
+                array(
+                    "options" => array(
+                    "query" => array(
+                        array(
+                            "operating_mode_id" => "api",
+                            "name" => $this->module->l("Api", 'HipayForm')
+                        ),
+                        array(
+                            "operating_mode_id" => "hosted_page",
+                            "name" => $this->module->l("Hosted page", 'HipayForm')
+                        ),
+                        array(
+                            "operating_mode_id" => "iframe",
+                            "name" => $this->module->l("Iframe", 'HipayForm')
+                        )
+                    ),
+                    "id" => "operating_mode_id",
+                    "name" => "name"
+                    )
+                )
+        );
+
+        $form['form']['input'][] = $this->generateInputSelect(
+                "iframe_hosted_page_template", 
+                $this->module->l('Iframe/hosted page template', 'HipayForm'),
+                array(
+                    'hint' => $this->module->l('Basic hosted page or iFrame template.', 'HipayForm'),
+                    "options" => array(
+                        "query" => array(
+                            array(
+                                "iframe_hosted_page_template_id" => "basic-js",
+                                "name" => "basic-js"
+                            ),
+                            array(
+                                "iframe_hosted_page_template_id" => "basic",
+                                "name" => "basic"
+                            ),
+                        ),
+                        "id" => "iframe_hosted_page_template_id",
+                        "name" => "name"
+                    )
+                )
+        );
         
+        $form['form']['input'][] = $this->generateInputSelect(
+                "display_card_selector", 
+                $this->module->l('Display card selector', 'HipayForm'),
+                array(
+                    'hint' => $this->module->l('Display card selector on iFrame or hosted page.', 'HipayForm'),
+                    "options" => array(
+                        "query" => array(
+                            array(
+                                "display_card_selector_id" => 0,
+                                "name" => $this->module->l('Show card selector', 'HipayForm')
+                            ),
+                            array(
+                                "display_card_selector_id" => 1,
+                                "name" => $this->module->l('Do not show card selector', 'HipayForm')
+                            ),
+                        ),
+                        "id" => "display_card_selector_id",
+                        "name" => "name"
+                    )
+                )
+        );
+        
+        $form['form']['input'][] = $this->generateInputText(
+                "css_url", 
+                $this->module->l('CSS url', 'HipayForm'),
+                array(
+                    'hint' => $this->module->l('URL to your CSS (style sheet) to customize your hosted page or iFrame (Important: the HTTPS protocol is required)', 'HipayForm'),
+                )
+        );
+        
+        $form['form']['input'][] = $this->generateSwitchButton(
+                "activate_3d_secure",
+                $this->module->l('Activate 3-D secure', 'HipayForm')
+        );
+        
+        $form['form']['input'][] = $this->generateInputSelect(
+                "capture_mode", 
+                $this->module->l('Switch to capture in', 'HipayForm'),
+                array(
+                    "options" => array(
+                        "query" => array(
+                            array(
+                                "capture_mode_id" => "manual",
+                                "name" => $this->module->l('Manual mode', 'HipayForm')
+                            ),
+                            array(
+                                "capture_mode_id" => "automatic",
+                                "name" => $this->module->l('Automatic mode', 'HipayForm')
+                            ),
+                        ),
+                        "id" => "capture_mode_id",
+                        "name" => "name"
+                    )
+                )
+        );
+        
+        $form['form']['input'][] = $this->generateSwitchButton(
+                "card_token",
+                $this->module->l('Allow memorization of card tokens', 'HipayForm'),
+                array(
+                    'hint' => $this->module->l('Allow users to save their card and use saved cards.', 'HipayForm'),
+                )
+        );
+        
+        $form['form']['buttons'][] = $this->generateSubmitButton(
+            $this->module->l('Save', 'HipayForm'),
+            array(
+                'name' => 'submitGlobalPaymentMethods',
+                'icon' => 'process-icon-save',
+            )
+        );
+        
+        
+        return $this->helper->generateForm(array($form));
+    }
+
+    public function getGlobalPaymentMethodsFormValues() {
+
+        $values = array(
+            "operating_mode" => "",
+            "iframe_hosted_page_template" => "",
+            "display_card_selector" => "",
+            "css_url" => "",
+            "activate_3d_secure" => 0,
+            "capture_mode" => "",
+            "card_token" => 0
+        );
+        
+        return $values;
     }
 
 }
