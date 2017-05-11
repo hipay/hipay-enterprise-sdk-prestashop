@@ -1,26 +1,25 @@
 <?php
+
 /**
- * 2016 HiPay
+ * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
  * @author    HiPay <support.wallet@hipay.com>
- * @copyright 2016 HiPay
+ * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__) . '/hipayFormInput.php');
 
-class HipayForm extends HipayFormInput{
+class HipayForm extends HipayFormInput {
 
     protected $context = false;
     protected $helper = false;
     protected $module = false;
-
     public $name = false;
     public $configHipay;
 
-    public function __construct($module_instance){
+    public function __construct($module_instance) {
         // Requirements
         $this->context = Context::getContext();
         $this->module = $module_instance;
@@ -33,10 +32,10 @@ class HipayForm extends HipayFormInput{
 
         $this->helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false);
         $this->helper->currentIndex .= '&' . http_build_query(array(
-                'configure' => $this->module->name,
-                'tab_module' => 'payments_gateways',
-                'module_name' => $this->module->name,
-            ));
+                    'configure' => $this->module->name,
+                    'tab_module' => 'payments_gateways',
+                    'module_name' => $this->module->name,
+        ));
 
         $this->helper->module = $this;
         $this->helper->show_toolbar = false;
@@ -50,8 +49,12 @@ class HipayForm extends HipayFormInput{
         return $this->helper;
     }
 
-    public function generateForm($form)
-    {
+    public function generateForm($form) {
         return $this->helper->generateForm($form);
     }
+
+    public function getGlobalPaymentMethodsForm() {
+        
+    }
+
 }

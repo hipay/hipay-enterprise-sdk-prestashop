@@ -1,18 +1,18 @@
 {**
-* 2016 HiPay
+* 2017 HiPay
 *
 * NOTICE OF LICENSE
 *
 *
 * @author    HiPay <support.wallet@hipay.com>
-* @copyright 2016 HiPay
+* @copyright 2017 HiPay
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
 <div class="panel">
     <dl id="faq_q_a">
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq1" aria-expanded="true" aria-controls="faq1"><i
-                    class="icon icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_professional'}
         </dt>
         <dd id="faq1" class="panel-collapse collapse">
             <p>
@@ -24,7 +24,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq2" aria-expanded="true" aria-controls="faq2"><i
-                    class="icon icon-question-circle"></i> {l s='Which payment solutions are available with HiPay Professional?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='Which payment solutions are available with HiPay Professional?' mod='hipay_professional'}
         </dt>
         <dd id="faq2" class="panel-collapse collapse">
             <p>
@@ -35,7 +35,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq3" aria-expanded="true" aria-controls="faq3"><i
-                    class="icon icon-question-circle"></i> {l s='Which currencies can I accept with HiPay Professional?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='Which currencies can I accept with HiPay Professional?' mod='hipay_professional'}
         </dt>
         <dd id="faq3" class="panel-collapse collapse">
             <p>
@@ -45,7 +45,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq4" aria-expanded="true" aria-controls="faq4"><i
-                    class="icon icon-question-circle"></i> {l s='I want to have HiPay Professional currencies available in my shop, how can I do?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='I want to have HiPay Professional currencies available in my shop, how can I do?' mod='hipay_professional'}
         </dt>
         <dd id="faq4" class="panel-collapse collapse">
             {l s='If you want to offer new currencies on your shop, please follow these steps:' mod='hipay_professional'}
@@ -57,7 +57,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq5" aria-expanded="true" aria-controls="faq5"><i
-                    class="icon icon-question-circle"></i> {l s='How much does it cost?' mod='hipay_professional'}</dt>
+                class="icon icon-question-circle"></i> {l s='How much does it cost?' mod='hipay_professional'}</dt>
         <dd id="faq5" class="panel-collapse collapse">
             <p>
                 {l s='Some fees might apply on some operations (withdrawal, transfer, etc), please [1]click here for more info[/1].' tags=['<a href="#" target="_blank">'] mod='hipay_professional'}
@@ -65,7 +65,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq6" aria-expanded="true" aria-controls="faq6"><i
-                    class="icon icon-question-circle"></i> {l s='Why do I have some sub-accounts?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='Why do I have some sub-accounts?' mod='hipay_professional'}
         </dt>
         <dd id="faq6" class="panel-collapse collapse">
             <p>
@@ -76,7 +76,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq7" aria-expanded="true" aria-controls="faq7"><i
-                    class="icon icon-question-circle"></i> {l s='How can I transfer my account balance to my own bank account?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='How can I transfer my account balance to my own bank account?' mod='hipay_professional'}
         </dt>
         <dd id="faq7" class="panel-collapse collapse">
             <p>
@@ -89,7 +89,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq8" aria-expanded="true" aria-controls="faq8"><i
-                    class="icon icon-question-circle"></i> {l s='What is “identification” and why my account should be “identified”?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='What is “identification” and why my account should be “identified”?' mod='hipay_professional'}
         </dt>
         <dd id="faq8" class="panel-collapse collapse">
             <p>
@@ -105,7 +105,7 @@
         </dd>
 
         <dt data-toggle="collapse" data-parent="#faq_q_a" href="#faq9" aria-expanded="true" aria-controls="faq9"><i
-                    class="icon icon-question-circle"></i> {l s='I want more info, where should I look?' mod='hipay_professional'}
+                class="icon icon-question-circle"></i> {l s='I want more info, where should I look?' mod='hipay_professional'}
         </dt>
         <dd id="faq9" class="panel-collapse collapse">
             <p>
