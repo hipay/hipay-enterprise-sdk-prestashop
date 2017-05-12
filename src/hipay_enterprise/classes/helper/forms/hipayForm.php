@@ -25,7 +25,7 @@ class HipayForm extends HipayFormInput {
         $this->module = $module_instance;
         $this->name = $module_instance->name;
         // init config hipay
-        $this->configHipay = $module_instance->configHipay;
+        $this->configHipay = $module_instance->hipayConfigTool->getConfigHipay();
 
         // Form
         $this->helper = new HelperForm();

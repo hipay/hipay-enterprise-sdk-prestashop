@@ -14,12 +14,11 @@ class HipayLogs {
     public $enable = true;
     private $basePath;
 
-    public function __construct($module_instance) {
+    public function __construct($module_instance, $enableConf = true) {
         $this->context = Context::getContext();
         $this->module = $module_instance;
         // init config hipay
-        $this->configHipay = $module_instance->configHipay;
-        $this->enable = (isset($this->configHipay->mode_debug) ? $this->configHipay->mode_debug : true);
+        $this->enable = (isset($enableConf) ? $enableConf : true);
         $this->basePath = '/hipay_enterprise/logs/';
     }
 
