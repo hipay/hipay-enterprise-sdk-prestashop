@@ -137,7 +137,8 @@ class HipayConfig {
             ),
             "fraud" => array()
         );
-        $configFields["payment"]["credit_card"] = $this->insertCreditCardsConfig();
+        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
+        $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 
 
         return $this->setAllConfigHiPay($configFields);
@@ -172,32 +173,32 @@ class HipayConfig {
     }
 
     /**
-     * init credit card config
+     * init local config
      * @return array
      */
-    private function insertCreditCardsConfig() {
+    private function insertPaymentsConfig($folderName) {
         $creditCard = array();
 
-        $files = scandir($this->jsonFilesPath);
+        $files = scandir($this->jsonFilesPath . $folderName);
 
         foreach ($files as $file) {
-            $creditCard = array_merge($creditCard, $this->addCreditCardConfig($file));
+            $creditCard = array_merge($creditCard, $this->addPaymentConfig($file,$folderName));
         }
 
         return $creditCard;
     }
 
     /**
-     * add specific credit card config from JSON file
+     * add specific payment config from JSON file
      * @param type $file
      * @return type
      */
-    private function addCreditCardConfig($file) {
+    private function addPaymentConfig($file, $folderName) {
 
         $creditCard = array();
 
         if (preg_match('/(.*)\.json/', $file) == 1) {
-            $json = Tools::jsonDecode(file_get_contents($this->jsonFilesPath . $file), true);
+            $json = Tools::jsonDecode(file_get_contents($this->jsonFilesPath . $folderName . $file), true);
             $creditCard[$json["name"]] = $json["config"];
         }
 

@@ -1,0 +1,9 @@
+{
+    "name": "sisal",
+    "config": {
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["EN"],
+        "logo" : "sisal.png"
+    }
+}
