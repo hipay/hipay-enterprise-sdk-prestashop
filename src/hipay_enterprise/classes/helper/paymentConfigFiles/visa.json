@@ -1,0 +1,8 @@
+{
+    "name": "visa",
+    "config": {
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["EN"]
+    }
+}

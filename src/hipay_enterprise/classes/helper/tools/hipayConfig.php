@@ -18,7 +18,7 @@ class HipayConfig {
     public function __construct($module_instance) {
         $this->context = Context::getContext();
         $this->module = $module_instance;
-        $this->jsonFilesPath = "";
+        $this->jsonFilesPath = _PS_ROOT_DIR_ . _MODULE_DIR_ . $this->module->name . "/classes/helper/paymentConfigFiles/";
     }
 
     /**
@@ -125,18 +125,7 @@ class HipayConfig {
                     "capture_mode" => "manual",
                     "card_token" => 1
                 ),
-                "credit_card" => array(
-                    "mastercard" => array(
-                        "activated" => 1,
-                        "currencies" => array("EUR"),
-                        "countries" => array("EN")
-                    ),
-                    "visa" => array(
-                        "activated" => 1,
-                        "currencies" => array("USD", "EUR"),
-                        "countries" => array("EN", "FR")
-                    ),
-                ),
+                "credit_card" => array(),
                 "local_payment" => array(
                     "sisal" => array(
                         "activated" => 1,
@@ -148,6 +137,8 @@ class HipayConfig {
             ),
             "fraud" => array()
         );
+        $configFields["payment"]["credit_card"] = $this->insertCreditCardsConfig();
+
 
         return $this->setAllConfigHiPay($configFields);
     }
@@ -178,6 +169,39 @@ class HipayConfig {
         } else {
             throw new Exception($this->l('Update failed, try again.'));
         }
+    }
+
+    /**
+     * init credit card config
+     * @return array
+     */
+    private function insertCreditCardsConfig() {
+        $creditCard = array();
+
+        $files = scandir($this->jsonFilesPath);
+
+        foreach ($files as $file) {
+            $creditCard = array_merge($creditCard, $this->addCreditCardConfig($file));
+        }
+
+        return $creditCard;
+    }
+
+    /**
+     * add specific credit card config from JSON file
+     * @param type $file
+     * @return type
+     */
+    private function addCreditCardConfig($file) {
+
+        $creditCard = array();
+
+        if (preg_match('/(.*)\.json/', $file) == 1) {
+            $json = Tools::jsonDecode(file_get_contents($this->jsonFilesPath . $file), true);
+            $creditCard[$json["name"]] = $json["config"];
+        }
+
+        return $creditCard;
     }
 
 }
