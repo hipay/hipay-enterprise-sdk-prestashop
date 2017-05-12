@@ -111,7 +111,8 @@ class Hipay_enterprise extends PaymentModule {
             'payment_button' => $this->_path . 'views/img/amexa200.png',
             'min_amount' => $this->min_amount,
             'configHipay' => $this->hipayConfigTool->getConfigHipay(),
-            'activated_credit_card' => $this->getActivatedCreditCardByCountryAndCurrency($country, $currency),
+            'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency),
+            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency),
             'lang' => Tools::strtolower($this->context->language->iso_code),
         ));
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]);
@@ -219,6 +220,10 @@ class Hipay_enterprise extends PaymentModule {
             $this->saveAccountInformations();
 
             $this->context->smarty->assign('active_tab', 'account_form');
+        } else if (Tools::isSubmit('submitGlobalPaymentMethods')) {
+            $this->logs->logsHipay('---- >> submitGlobalPaymentMethods');
+            $this->saveGlobalPaymentInformations();
+            $this->context->smarty->assign('active_tab', 'payment_form');
         }
     }
 
@@ -231,28 +236,63 @@ class Hipay_enterprise extends PaymentModule {
         $this->logs->logsHipay('---- >> function saveAccountInformations');
 
         try {
-            // saving all array "account" in $this->configHipay
-            $accountConfig = array("global" => array(), "sandbox" => array(), "production" => array());
+            // saving all array "account" in $configHipay
+            $accountConfig["account"] = array("global" => array(), "sandbox" => array(), "production" => array());
 
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
             foreach ($this->hipayConfigTool->getConfigHipay()["account"]["global"] as $key => $value) {
                 $fieldValue = Tools::getValue($key);
-                $accountConfig["global"][$key] = $fieldValue;
+                $accountConfig["account"]["global"][$key] = $fieldValue;
             }
 
             foreach ($this->hipayConfigTool->getConfigHipay()["account"]["sandbox"] as $key => $value) {
                 $fieldValue = Tools::getValue($key);
-                $accountConfig["sandbox"][$key] = $fieldValue;
+                $accountConfig["account"]["sandbox"][$key] = $fieldValue;
             }
 
             foreach ($this->hipayConfigTool->getConfigHipay()["account"]["production"] as $key => $value) {
                 $fieldValue = Tools::getValue($key);
-                $accountConfig["production"][$key] = $fieldValue;
+                $accountConfig["account"]["production"][$key] = $fieldValue;
             }
 
             //save configuration
-            $this->hipayConfigTool->setConfigHiPay('account', $accountConfig);
+            $this->hipayConfigTool->setConfigHiPay($accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Save Global payment informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveGlobalPaymentInformations() {
+        $this->logs->logsHipay('---- >> function saveGlobalPaymentInformations');
+
+        try {
+            // saving all array "payemnt" "global" in $configHipay
+            $accountConfig["payment"] = array("global" => array());
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+
+            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $this->logs->logsHipay($key." => ".$fieldValue);
+                $accountConfig["payment"]["global"][$key] = $fieldValue;
+            }
+
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay($accountConfig);
 
             $this->_successes[] = $this->l('Settings configuration saved successfully.');
             $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
@@ -318,19 +358,19 @@ class Hipay_enterprise extends PaymentModule {
     }
 
     /**
-     * return an array of Activated card (set in BO configuration) for the customer country and currency
+     * return an array of payment methods (set in BO configuration) for the customer country and currency
      * @param Country $country
      * @param Currency $currency
      * @return array
      */
-    protected function getActivatedCreditCardByCountryAndCurrency($country, $currency) {
-        $activatedCreditCard = array();
-        foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $name => $settings) {
+    protected function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
+        $activatedPayment = array();
+        foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
-                $activatedCreditCard[$name] = $settings;
+                $activatedPayment[$name] = $settings;
             }
         }
-        return $activatedCreditCard;
+        return $activatedPayment;
     }
 
 }

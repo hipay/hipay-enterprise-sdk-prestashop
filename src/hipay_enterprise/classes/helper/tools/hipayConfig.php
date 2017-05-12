@@ -40,7 +40,7 @@ class HipayConfig {
      * @param: mixed $value
      * @return : bool
      * */
-    public function setConfigHiPay($key, $value) {
+    public function setConfigHiPay($value) {
         $this->module->getLogs()->logsHipay('---- >> function setConfigHiPay');
         // Use this function only if you have just one variable to update
         // init multistore
@@ -51,7 +51,7 @@ class HipayConfig {
 
         $this->module->getLogs()->logsHipay(print_r($confHipay, true));
 
-        $confHipay[$key] = $value;
+        $confHipay = array_replace_recursive($confHipay,$value);
         if (Configuration::updateValue('HIPAY_CONFIG', Tools::jsonEncode($confHipay), false, $id_shop_group, $id_shop)) {
             $this->configHipay = Tools::jsonDecode(Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop), true);
             return true;

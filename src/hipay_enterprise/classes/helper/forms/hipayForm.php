@@ -185,13 +185,13 @@ class HipayForm extends HipayFormInput {
     public function getGlobalPaymentMethodsFormValues() {
 
         $values = array(
-            "operating_mode" => "",
-            "iframe_hosted_page_template" => "",
-            "display_card_selector" => "",
-            "css_url" => "",
-            "activate_3d_secure" => 0,
-            "capture_mode" => "",
-            "card_token" => 0
+            "operating_mode" => $this->configHipay["payment"]["global"]["operating_mode"],
+            "iframe_hosted_page_template" => $this->configHipay["payment"]["global"]["iframe_hosted_page_template"],
+            "display_card_selector" => $this->configHipay["payment"]["global"]["display_card_selector"],
+            "css_url" => $this->configHipay["payment"]["global"]["css_url"],
+            "activate_3d_secure" => $this->configHipay["payment"]["global"]["activate_3d_secure"],
+            "capture_mode" => $this->configHipay["payment"]["global"]["capture_mode"],
+            "card_token" => $this->configHipay["payment"]["global"]["card_token"]
         );
         
         return $values;
