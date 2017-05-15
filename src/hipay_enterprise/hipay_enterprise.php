@@ -19,6 +19,8 @@ class Hipay_enterprise extends PaymentModule {
     public $hipayConfigTool;
     public $_errors = array();
     public $min_amount = 1;
+    public $limited_currencies = array();
+    public $currencies_titles = array();
 
     public function __construct() {
         $this->name = 'hipay_enterprise';
@@ -47,6 +49,19 @@ class Hipay_enterprise extends PaymentModule {
             'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT',
             'RO', 'RU', 'SE', 'SI', 'SK', 'TR'
         );
+
+        $this->currencies_titles = array(
+            'AUD' => $this->l('Australian dollar'),
+            'CAD' => $this->l('Canadian dollar'),
+            'CHF' => $this->l('Swiss franc'),
+            'EUR' => $this->l('Euro'),
+            'GBP' => $this->l('Pound sterling'),
+            'PLN' => $this->l('Polish złoty'),
+            'SEK' => $this->l('Swedish krona'),
+            'USD' => $this->l('United States dollar'),
+        );
+
+        $this->limited_currencies = array_keys($this->currencies_titles);
 
         parent::__construct();
 
@@ -85,14 +100,20 @@ class Hipay_enterprise extends PaymentModule {
     public function installHipay() {
 
         $return = $this->installAdminTab();
+        $return = $this->registerHook('backOfficeHeader');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
             $return = $return && $return17;
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $return16 = $this->registerHook('payment');
             $return = $return && $return16;
-        } else
-            return $return;
+        }
+        return $return;
+    }
+
+    public function hookBackOfficeHeader($params) {
+        $this->logs->logsHipay('---- START function hookDisplayBackOfficeHeader');
+        $this->context->controller->addCSS(($this->_path) . 'views/css/bootstrap-duallistbox.min.css', 'all');
     }
 
     /**
@@ -187,6 +208,8 @@ class Hipay_enterprise extends PaymentModule {
             'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
             'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
             'form_errors' => $this->_errors,
+            'limitedCurrencies' => $this->limited_currencies,
+            'limitedCountries' => $this->limited_countries,
         ));
 
         $this->logs->logsHipay('---- END function getContent');
