@@ -53,6 +53,10 @@ class HipayForm extends HipayFormInput {
         return $this->helper->generateForm($form);
     }
 
+    /**
+     * global payment form
+     * @return type
+     */
     public function getGlobalPaymentMethodsForm() {
 
         $form = array();
@@ -182,6 +186,10 @@ class HipayForm extends HipayFormInput {
         return $this->helper->generateForm(array($form));
     }
 
+    /**
+     * get value for global payment methods form 
+     * @return type
+     */
     public function getGlobalPaymentMethodsFormValues() {
 
         $values = array(

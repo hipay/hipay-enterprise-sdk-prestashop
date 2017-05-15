@@ -287,7 +287,7 @@ class Hipay_enterprise extends PaymentModule {
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
                 $fieldValue = Tools::getValue($key);
-                $this->logs->logsHipay($key." => ".$fieldValue);
+                $this->logs->logsHipay($key . " => " . $fieldValue);
                 $accountConfig["payment"]["global"][$key] = $fieldValue;
             }
 
