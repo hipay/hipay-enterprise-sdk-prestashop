@@ -1,25 +1,23 @@
 <?php
+
 /**
- * 2016 HiPay
+ * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
  * @author    HiPay <support.wallet@hipay.com>
- * @copyright 2016 HiPay
+ * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+abstract class HipayFormInput {
 
-abstract class HipayFormInput
-{
-    protected function generateFormSplit()
-    {
+    protected function generateFormSplit() {
         $params = array('col' => 12, 'offset' => 0);
 
         return $this->generateInput('free', 'input_split', null, $params);
     }
 
-    protected function generateInput($type, $name, $label = false, $params = array())
-    {
+    protected function generateInput($type, $name, $label = false, $params = array()) {
         $input = array(
             'type' => $type,
             'label' => $label,
@@ -35,51 +33,43 @@ abstract class HipayFormInput
         return $input;
     }
 
-    protected function generateInputEmail($name, $title, $description)
-    {
+    protected function generateInputEmail($name, $title, $description) {
         return $this->generateInputText($name, $title, array(
-            'required' => true,
-            'hint' => $description,
-            'placeholder' => $this->module->l('email@domain.com'),
-            'class' => 'fixed-width-xxl',
+                    'required' => true,
+                    'hint' => $description,
+                    'placeholder' => $this->module->l('email@domain.com'),
+                    'class' => 'fixed-width-xxl',
         ));
     }
 
-    protected function generateInputFree($name, $label = false, $params = array())
-    {
+    protected function generateInputFree($name, $label = false, $params = array()) {
         return $this->generateInput('free', $name, $label, $params);
     }
 
-    protected function generateInputText($name, $label = false, $params = array())
-    {
+    protected function generateInputText($name, $label = false, $params = array()) {
         return $this->generateInput('text', $name, $label, $params);
     }
 
-    protected function generateInputSelect($name, $label = false, $params = array())
-    {
+    protected function generateInputSelect($name, $label = false, $params = array()) {
         return $this->generateInput('select', $name, $label, $params);
     }
 
-    protected function generateInputCheckbox($name, $label = false, $params = array())
-    {
+    protected function generateInputCheckbox($name, $label = false, $params = array()) {
         return $this->generateInput('checkbox', $name, $label, $params);
     }
 
-    protected function generateInputTextarea($name, $label = false, $params = array())
-    {
+    protected function generateInputTextarea($name, $label = false, $params = array()) {
         return $this->generateInput('textarea', $name, $label, $params);
     }
 
-    public function generateLegend($title, $icon = false)
-    {
+    public function generateLegend($title, $icon = false) {
         return array(
             'title' => $title,
             'icon' => $icon,
         );
     }
 
-    protected function generateSubmitButton($title, $params = array())
-    {
+    protected function generateSubmitButton($title, $params = array()) {
         $input = array(
             'title' => $title,
             'type' => 'submit',
@@ -95,8 +85,7 @@ abstract class HipayFormInput
         return $input;
     }
 
-    protected function generateSwitchButton($name, $title, $params = array())
-    {
+    protected function generateSwitchButton($name, $title, $params = array()) {
         $input = array(
             'type' => 'switch',
             'label' => $title,
@@ -124,4 +113,5 @@ abstract class HipayFormInput
 
         return $input;
     }
+
 }

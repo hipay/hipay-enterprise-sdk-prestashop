@@ -1,434 +1,513 @@
 <?php
+
 /**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*/
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.wallet@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ */
 if (!defined('_PS_VERSION_')) {
-  exit;
+    exit;
 }
 
-class Hipay_enterprise extends PaymentModule{
+class Hipay_enterprise extends PaymentModule {
 
-  public $limited_countries = array();
-  public $configHipay;
-  public $_errors = array();
-  public $min_amount = 1;
+    public $limited_countries = array();
+    public $hipayConfigTool;
+    public $_errors = array();
+    public $min_amount = 1;
+    public $limited_currencies = array();
+    public $currencies_titles = array();
 
+    public function __construct() {
+        $this->name = 'hipay_enterprise';
+        $this->tab = 'payments_gateways';
+        $this->version = '1.0.0';
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->currencies = true;
+        $this->currencies_mode = 'checkbox';
+        $this->author = 'HiPay';
+        $this->is_eu_compatible = 1;
 
-  public function __construct(){
-    $this->name = 'hipay_enterprise';
-    $this->tab = 'payments_gateways';
-    $this->version = '1.0.0';
-    $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
-    $this->currencies = true;
-    $this->currencies_mode = 'checkbox';
-    $this->author = 'HiPay';
-    $this->is_eu_compatible = 1;
+        $this->bootstrap = true;
+        $this->display = 'view';
 
-    $this->bootstrap = true;
-    $this->display = 'view';
+        $this->displayName = $this->l('HiPay Enterprise');
+        $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
 
-    $this->displayName = $this->l('HiPay Enterprise');
-    $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
+        // init log object
+        $this->logs = new HipayLogs($this);
 
-    // init log object
-    $this->logs = new HipayLogs($this);
+        // Compliancy
+        $this->limited_countries = array(
+            'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
+            'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HK',
+            'HR', 'HU', 'IE', 'IT', 'LI', 'LT', 'LU',
+            'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT',
+            'RO', 'RU', 'SE', 'SI', 'SK', 'TR'
+        );
 
-    // Compliancy
-    $this->limited_countries = array(
-      'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
-      'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HK',
-      'HR', 'HU', 'IE', 'IT', 'LI', 'LT', 'LU',
-      'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT',
-      'RO', 'RU', 'SE', 'SI', 'SK', 'TR'
-    );
+        $this->countries_titles = array(
+            'AT' => $this->l('Austria'),
+            'BE' => $this->l('Belgium'),
+            'CH' => $this->l('Switzerland'),
+            'CY' => $this->l('Cyprus'),
+            'CZ' => $this->l('Czech Republic'),
+            'DE' => $this->l('Germany'),
+            'DK' => $this->l('Denmark'),
+            'EE' => $this->l('Estonia'),
+            'ES' => $this->l('Spain'),
+            'FI' => $this->l('Finland'),
+            'FR' => $this->l('France'),
+            'GB' => $this->l('United Kingdom'),
+            'GR' => $this->l('Greece'),
+            'HK' => $this->l('Hong Kong'),
+            'HR' => $this->l('Croatia'),
+            'HU' => $this->l('Hungary'),
+            'IE' => $this->l('Ireland'),
+            'IT' => $this->l('Italy'),
+            'LI' => $this->l('Liechtenstein'),
+            'LT' => $this->l('Lithuania'),
+            'LU' => $this->l('Luxembourg'),
+            'LV' => $this->l('Latvia'),
+            'MC' => $this->l('Monaco'),
+            'MT' => $this->l('Malta'),
+            'NL' => $this->l('Netherlands'),
+            'NO' => $this->l('Norway'),
+            'PL' => $this->l('Poland'),
+            'PT' => $this->l('Portugal'),
+            'RO' => $this->l('Romania'),
+            'RU' => $this->l('Russia'),
+            'SE' => $this->l('Sweden'),
+            'SI' => $this->l('Slovenia'),
+            'SK' => $this->l('Slovakia'),
+            'TR' => $this->l('Turkey')
+        );
 
-    parent::__construct();
+        $this->currencies_titles = array(
+            'AUD' => $this->l('Australian dollar'),
+            'CAD' => $this->l('Canadian dollar'),
+            'CHF' => $this->l('Swiss franc'),
+            'EUR' => $this->l('Euro'),
+            'GBP' => $this->l('Pound sterling'),
+            'PLN' => $this->l('Polish złoty'),
+            'SEK' => $this->l('Swedish krona'),
+            'USD' => $this->l('United States dollar'),
+        );
 
-    if (!Configuration::get('HIPAY_CONFIG')) {
-      $this->warning = $this->l('Please, do not forget to configure your module');
+        $this->limited_currencies = array_keys($this->currencies_titles);
+
+        parent::__construct();
+
+        if (!Configuration::get('HIPAY_CONFIG')) {
+            $this->warning = $this->l('Please, do not forget to configure your module');
+        }
+
+        //configuration is handle by an helper class
+        $this->hipayConfigTool = new HipayConfig($this);
     }
 
-    $this->configHipay = $this->getConfigHiPay();
-
-  }
-
-
-  /**
-  * Functions installation HiPay module or uninstall
-  */
-  public function install(){
-    if (extension_loaded('soap') == false) {
-      $this->_errors[] = $this->l('You have to enable the SOAP extension on your server to install this module');
-      return false;
+    public function getLogs() {
+        return $this->logs;
     }
-    $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
-    if (in_array($iso_code, $this->limited_countries) == false) {
-      $this->_errors[] = $this->l('This module cannot work in your country');
-      return false;
+
+    /**
+     * Functions installation HiPay module or uninstall
+     */
+    public function install() {
+        if (extension_loaded('soap') == false) {
+            $this->_errors[] = $this->l('You have to enable the SOAP extension on your server to install this module');
+            return false;
+        }
+        $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
+        if (in_array($iso_code, $this->limited_countries) == false) {
+            $this->_errors[] = $this->l('This module cannot work in your country');
+            return false;
+        }
+        return parent::install() && $this->installHipay();
     }
-    return parent::install() && $this->installHipay();
-  }
 
-  public function uninstall()
-  {
-    return /*$this->uninstallAdminTab() &&*/ parent::uninstall() &&  $this->clearAccountData();
-  }
-
-  public function installHipay(){
-
-    $return = $this->installAdminTab();
-    if(_PS_VERSION_ >= '1.7'){
-      $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
-      $return = $return && $return17;
-    }else if(_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6'){
-      $return16 = $this->registerHook('payment');
-      $return = $return && $return16;
-    }else
-
-    return $return;
-  }
-
-  public function hookPayment($params){
-  //  var_dump($params);
-
-    $address = new Address(intval($params['cart']->id_address_delivery));
-    $country = new Country(intval($address->id_country));
-    $currency = new Currency(intval($params['cart']->id_currency));
-
-    $this->smarty->assign(array(
-                'domain' => Tools::getShopDomainSSL(true),
-                'module_dir' => $this->_path,
-                'payment_button' => $this->_path . 'views/img/amexa200.png' ,
-                'min_amount' => $this->min_amount,
-                'configHipay' => $this->configHipay,
-                'activated_credit_card' => $this->getActivatedCreditCardByCountryAndCurrency($country, $currency),
-                'lang' => Tools::strtolower($this->context->language->iso_code),
-            ));
-    $this->smarty->assign('hipay_prod', !(bool)$this->configHipay["account"]["global"]["sandbox_mode"]);
-
-    return $this->display(dirname(__FILE__), 'views/templates/hook/payment.tpl');
-  }
-
-  protected function getActivatedCreditCardByCountryAndCurrency($country, $currency){
-    $activatedCreditCard = array();
-    foreach($this->configHipay["payment"]["credit_card"] as $name => $settings){
-      if($settings["activated"] && (empty($settings["countries"]) || in_array( $country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array( $currency->iso_code, $settings["currencies"]) ) ){
-        $activatedCreditCard[$name] = $settings;
-      }
+    public function uninstall() {
+        return /* $this->uninstallAdminTab() && */ parent::uninstall() && $this->clearAccountData();
     }
-    return $activatedCreditCard;
-  }
 
-  /*
-    * VERSION PS 1.7
-    *
-    */
-    public function hookPaymentOptions($params)
-    {
+    public function installHipay() {
+
+        $return = $this->installAdminTab();
+        $return = $this->registerHook('backOfficeHeader');
+        if (_PS_VERSION_ >= '1.7') {
+            $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
+            $return = $return && $return17;
+        } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+            $return16 = $this->registerHook('payment');
+            $return = $return && $return16;
+        }
+        return $return;
+    }
+
+    public function hookBackOfficeHeader($params) {
+        $this->logs->logsHipay('---- START function hookDisplayBackOfficeHeader');
+        $this->context->controller->addCSS(($this->_path) . 'views/css/bootstrap-duallistbox.min.css', 'all');
+    }
+
+    /**
+     * Handling prestashop hook payment. Adding payment methods (PS16)
+     * @param type $params
+     * @return type
+     */
+    public function hookPayment($params) {
+        $address = new Address(intval($params['cart']->id_address_delivery));
+        $country = new Country(intval($address->id_country));
+        $currency = new Currency(intval($params['cart']->id_currency));
+
+        $this->smarty->assign(array(
+            'domain' => Tools::getShopDomainSSL(true),
+            'module_dir' => $this->_path,
+            'payment_button' => $this->_path . 'views/img/amexa200.png',
+            'min_amount' => $this->min_amount,
+            'configHipay' => $this->hipayConfigTool->getConfigHipay(),
+            'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency),
+            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency),
+            'lang' => Tools::strtolower($this->context->language->iso_code),
+        ));
+        $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]);
+
+        return $this->display(dirname(__FILE__), 'views/templates/hook/payment.tpl');
+    }
+
+    /**
+     * Handling prestashop payment hook. Adding payment methods (PS17)
+     * @param type $params
+     * @return type
+     */
+    public function hookPaymentOptions($params) {
         $hipay17 = new HipayEnterpriseNew();
         return $hipay17->hipayPaymentOptions($params);
     }
 
-    /*
-      * VERSION PS 1.7
-      *
-      */
-      public function hookHeader($params)
-      {
-          $hipay17 = new HipayEnterpriseNew();
-          return $hipay17->hookDisplayHeader($params);
-      }
-
-  public function installAdminTab(){
-    $class_names = [
-      'AdminHiPayCapture',
-      'AdminHiPayRefund',
-      'AdminHiPayConfig',
-    ];
-    return $this->createTabAdmin($class_names);
-  }
-
-  protected function createTabAdmin($class_names){
-    foreach ($class_names as $class_name) {
-      $tab = new Tab();
-      $tab->active = 1;
-      $tab->module = $this->name;
-      $tab->class_name = $class_name;
-      $tab->id_parent = -1;
-      foreach (Language::getLanguages(true) as $lang) {
-        $tab->name[$lang['id_lang']] = $this->name;
-      }
-      if (!$tab->add()) {
-        return false;
-      }
+    /**
+     * * Handling prestashop header hook. Adding JS file (PS17)
+     * @param type $params
+     * @return type
+     */
+    public function hookHeader($params) {
+        $hipay17 = new HipayEnterpriseNew();
+        return $hipay17->hookDisplayHeader($params);
     }
-    return true;
-  }
 
+    public function installAdminTab() {
+        $class_names = [
+            'AdminHiPayCapture',
+            'AdminHiPayRefund',
+            'AdminHiPayConfig',
+        ];
+        return $this->createTabAdmin($class_names);
+    }
 
-  /**
-  * Load configuration page
-  * @return string
-  */
-  public function getContent(){
+    protected function createTabAdmin($class_names) {
+        foreach ($class_names as $class_name) {
+            $tab = new Tab();
+            $tab->active = 1;
+            $tab->module = $this->name;
+            $tab->class_name = $class_name;
+            $tab->id_parent = -1;
+            foreach (Language::getLanguages(true) as $lang) {
+                $tab->name[$lang['id_lang']] = $this->name;
+            }
+            if (!$tab->add()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    $this->logs->logsHipay('##########################');
-    $this->logs->logsHipay('---- START function getContent');
-    $formGenerator = new HipayForm($this);
+    /**
+     * Load configuration page
+     * @return string
+     */
+    public function getContent() {
 
-    $this->postProcess();
+        $this->logs->logsHipay('##########################');
+        $this->logs->logsHipay('---- START function getContent');
+        $formGenerator = new HipayForm($this);
 
-    $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
+        $this->postProcess();
 
-    $this->context->smarty->assign(array(
+        $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
+
+        $this->context->smarty->assign(array(
             'module_dir' => $this->_path,
-            'config_hipay' => $this->configHipay,
+            'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
             'logs' => $this->getLogFiles(),
             'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+            'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
+            'fraud_form' => $formGenerator->getFraudForm(),
             'form_errors' => $this->_errors,
+            'limitedCurrencies' => $this->currencies_titles,
+            'limitedCountries' => $this->countries_titles,
         ));
 
-    $this->logs->logsHipay('---- END function getContent');
-    $this->logs->logsHipay('##########################');
+        $this->logs->logsHipay('---- END function getContent');
+        $this->logs->logsHipay('##########################');
 
-    return $this->context->smarty->fetch($configuration);
-  }
-
-  /**
-  * Process HTTP request send by module conifguration page
-  */
-  protected function postProcess(){
-      $ur_redirection = AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
-      $this->logs->logsHipay('---- >> function postProcess');
-
-      if (Tools::isSubmit('logfile')) {
-          $logFile = Tools::getValue('logfile');
-          $path = _PS_MODULE_DIR_ . $this->logs->getBasePath() . $logFile;
-          if (!file_exists($path)) {
-              http_response_code(404);
-              die('<h1>File not found</h1>');
-          } else {
-              header('Content-Type: text/plain');
-              $content = file_get_contents($path);
-              echo $content;
-              die();
-          }
-      }else if (Tools::isSubmit('submitAccount')) {
-        $this->logs->logsHipay('---- >> submitAccount');
-
-        $this->saveAccountInformations();
-
-        $this->context->smarty->assign('active_tab', 'account_form');
-      }
-
-  }
-
-  /**
-  * Save Account informations send by config page form
-  *
-  * @return : bool
-  **/
-  protected function saveAccountInformations(){
-      $this->logs->logsHipay('---- >> function saveAccountInformations');
-
-      try{
-        // saving all array "account" in $this->configHipay
-        $accountConfig = array("global" => array(),"sandbox" => array(),"production" => array());
-
-        //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-        foreach($this->configHipay["account"]["global"] as $key => $value){
-            $fieldValue = Tools::getValue($key);
-            $accountConfig["global"][$key] = $fieldValue;
-        }
-
-        foreach($this->configHipay["account"]["sandbox"] as $key => $value){
-            $fieldValue = Tools::getValue($key);
-            $accountConfig["sandbox"][$key] = $fieldValue;
-        }
-
-        foreach($this->configHipay["account"]["production"] as $key => $value){
-            $fieldValue = Tools::getValue($key);
-            $accountConfig["production"][$key] = $fieldValue;
-        }
-
-        //save configuration
-        $this->setConfigHiPay('account', $accountConfig);
-
-        $this->_successes[] = $this->l('Settings configuration saved successfully.');
-        $this->logs->logsHipay(print_r($this->configHipay, true));
-        return true;
-
-      }catch(Exception $e){
-        // LOGS
-        $this->logs->errorLogsHipay($e->getMessage());
-        $this->_errors[] = $this->l($e->getMessage());
-      }
-
-      return false;
-  }
+        return $this->context->smarty->fetch($configuration);
+    }
 
     /**
-     * Functions to init the configuration HiPay
-     * @return : array
+     * Process HTTP request send by module conifguration page
      */
-    public function getConfigHiPay()
-    {
-        // init multistore
-        $id_shop = (int)$this->context->shop->id;
-        $id_shop_group = (int)Shop::getContextShopGroupID();
-        $confHipay = Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop);
+    protected function postProcess() {
+        //$ur_redirection = AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
+        $this->logs->logsHipay('---- >> function postProcess');
 
-        // if config exist but empty, init new object for configHipay
-        if (!$confHipay || empty($confHipay)) {
-            $this->insertConfigHiPay();
+        if (Tools::isSubmit('logfile')) {
+            $logFile = Tools::getValue('logfile');
+            $path = _PS_MODULE_DIR_ . $this->logs->getBasePath() . $logFile;
+            if (!file_exists($path)) {
+                http_response_code(404);
+                die('<h1>File not found</h1>');
+            } else {
+                header('Content-Type: text/plain');
+                $content = file_get_contents($path);
+                echo $content;
+                die();
+            }
+        } else if (Tools::isSubmit('submitAccount')) {
+            $this->logs->logsHipay('---- >> submitAccount');
+
+            $this->saveAccountInformations();
+
+            $this->context->smarty->assign('active_tab', 'account_form');
+        } else if (Tools::isSubmit('submitGlobalPaymentMethods')) {
+            $this->logs->logsHipay('---- >> submitGlobalPaymentMethods');
+            $this->saveGlobalPaymentInformations();
+            $this->context->smarty->assign('active_tab', 'payment_form');
+        } else if (Tools::isSubmit('creditCardSubmit')) {
+            $this->logs->logsHipay('---- >> creditCardSubmit');
+            $this->saveCreditCardInformations();
+            $this->context->smarty->assign('active_tab', 'payment_form');
+        } else if (Tools::isSubmit('localPaymentSubmit')) {
+            $this->logs->logsHipay('---- >> localPaymentSubmit');
+            $this->saveLocalPaymentInformations();
+            $this->context->smarty->assign('active_tab', 'payment_form');
+        } else if (Tools::isSubmit('fraudSubmit')) {
+            $this->logs->logsHipay('---- >> fraudSubmit');
+            $this->saveFraudInformations();
+            $this->context->smarty->assign('active_tab', 'fraud_form');
         }
-
-        // not empty in bdd and the config is stacked in JSON
-        $result = Tools::jsonDecode(Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),true);
-
-        return $result;
     }
 
     /**
-    * init module configuration
-    * @return : bool
-    */
-    public function insertConfigHiPay()
-    {
-        $this->logs->logsHipay('---- >> function insertConfigHiPay');
+     * Save Account informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveAccountInformations() {
+        $this->logs->logsHipay('---- >> function saveAccountInformations');
 
-        //TODO mock config for front test. credit_card and payment indexes must be injected through json
+        try {
+            // saving all array "account" in $configHipay
+            $accountConfig = array("global" => array(), "sandbox" => array(), "production" => array());
 
-        $configFields = array(
-          "account" => array(
-            "global" => array(
-              "sandbox_mode" => 0,
-              "host_proxy" => "",
-              "host_proxy" => "",
-              "port_proxy" => "",
-              "user_proxy" => "",
-              "password_proxy" => ""
-            ),
-            "sandbox" => array(
-              "api_username_sandbox" => "",
-              "api_password_sandbox" => "",
-              "api_tokenjs_username_sandbox" => "",
-              "api_tokenjs_password_publickey_sandbox" => "",
-              "api_secret_passphrase_sandbox" => "",
-              "api_moto_username_sandbox" => "",
-              "api_moto_password_sandbox" => "",
-              "api_moto_secret_passphrase_sandbox" => ""
-            ),
-            "production" => array(
-              "api_username_production" => "",
-              "api_password_production" => "",
-              "api_tokenjs_username_production" => "",
-              "api_tokenjs_password_publickey_production" => "",
-              "api_secret_passphrase_production" => "",
-              "api_moto_username_production" => "",
-              "api_moto_password_production" => "",
-              "api_moto_secret_passphrase_production" => ""
-            )
-          ),
-          "payment" => array(
-            "global" => array(
-              "operating_mode" => "api",
-              "iframe_hosted_page_template" => "basic-js",
-              "display_card_selector" => 0,
-              "css_url" => "",
-              "activate_3d_secure" => 1,
-              "capture_mode" => "manual",
-              "card_token" => 1
-            ),
-            "credit_card" => array(
-              "mastercard" => array(
-                "activated" => 1,
-                "currencies" => array("EUR"),
-                "countries" => array("EN")
-              ),
-              "visa" => array(
-                "activated" => 1,
-                "currencies" => array("USD", "EUR"),
-                "countries" => array("EN", "FR")
-              ),
-            ),
-            "local_payment" => array(
-              "sisal" => array(
-                "activated" => 1,
-                "currencies" => array(),
-                "countries" => array(),
-                'logo' => 'sisal.png'
-              ),
-            )
-          )
-        );
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
-        return $this->setAllConfigHiPay($configFields);
-    }
+            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["global"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $accountConfig["global"][$key] = $fieldValue;
+            }
 
-    /**
-    *  save a specific key of the module config
-    * @param: string $key
-    * @param: mixed $value
-    * @return : bool
-    **/
-    public function setConfigHiPay($key, $value)
-    {
-        $this->logs->logsHipay('---- >> function setConfigHiPay');
-        // Use this function only if you have just one variable to update
-        // init multistore
-        $id_shop = (int)$this->context->shop->id;
-        $id_shop_group = (int)Shop::getContextShopGroupID();
-        // the config is stacked in JSON
-        $this->configHipay[$key] = $value;
-        if (Configuration::updateValue('HIPAY_CONFIG', Tools::jsonEncode($this->configHipay), false, $id_shop_group, $id_shop)) {
+            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["sandbox"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $accountConfig["sandbox"][$key] = $fieldValue;
+            }
+
+            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["production"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $accountConfig["production"][$key] = $fieldValue;
+            }
+
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("account", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
             return true;
-        } else {
-            throw new Exception($this->l('Update failed, try again.'));
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
         }
+
+        return false;
     }
 
     /**
-    * Save initial module config
-    * @param : array $arrayHipay
-    *
-    * @return : bool
-    **/
-    public function setAllConfigHiPay($arrayHipay = null)
-    {
-        $this->logs->logsHipay('---- >> function setAllConfigHiPay');
-        // use this function if you have a few variables to update
-        if ($arrayHipay != null) {
-            $for_json_hipay = $arrayHipay;
-        } else {
-            $for_json_hipay = $this->configHipay;
+     * Save Global payment informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveGlobalPaymentInformations() {
+        $this->logs->logsHipay('---- >> function saveGlobalPaymentInformations');
+
+        try {
+            // saving all array "payemnt" "global" in $configHipay
+            $accountConfig = array(
+                "global" => array(),
+                // Not cool but works
+                "credit_card" => $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
+                "local_payment" => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
+            );
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+
+            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $this->logs->logsHipay($key . " => " . $fieldValue);
+                $accountConfig["global"][$key] = $fieldValue;
+            }
+
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
         }
 
-        // init multistore
-        $id_shop = (int)$this->context->shop->id;
-        $id_shop_group = (int)Shop::getContextShopGroupID();
-        // the config is stacked in JSON
-        $this->logs->logsHipay(print_r(Tools::jsonEncode($for_json_hipay),true));
-        if (Configuration::updateValue('HIPAY_CONFIG', Tools::jsonEncode($for_json_hipay), false, $id_shop_group, $id_shop)) {
+        return false;
+    }
+
+    /**
+     * save credit cards settings form
+     * @return boolean
+     */
+    public function saveCreditCardInformations() {
+        $this->logs->logsHipay('---- >> function saveCreditCardInformations');
+
+        try {
+            // saving all array "payemnt" "credit_card" in $configHipay
+            $accountConfig = array(
+                "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
+                "credit_card" => array(),
+                "local_payment" => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
+            );
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+
+            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
+                foreach ($conf as $key => $value) {
+                    if (is_bool(Tools::getValue($card . "_" . $key)) && !Tools::getValue($card . "_" . $key)) {
+                        $fieldValue = array();
+                    } else {
+                        $fieldValue = Tools::getValue($card . "_" . $key);
+                    }
+                    //         $this->logs->logsHipay($key . " => " . $fieldValue);
+                    $accountConfig["credit_card"][$card][$key] = $fieldValue;
+                }
+            }
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
             return true;
-        } else {
-            throw new Exception($this->l('Update failed, try again.'));
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
         }
+
+        return false;
+    }
+
+    /**
+     * save local payment form
+     * @return boolean
+     */
+    public function saveLocalPaymentInformations() {
+        $this->logs->logsHipay('---- >> function saveLocalPaymentInformations');
+
+        try {
+            // saving all array "payemnt" "local_payment" in $configHipay
+            $accountConfig = array(
+                "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
+                "credit_card" => $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
+                "local_payment" => array()
+            );
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+
+            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
+                foreach ($conf as $key => $value) {
+                    if ($key == "currencies" || $key == "logo") {
+                        $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
+                    } else if (is_bool(Tools::getValue($card . "_" . $key)) && !Tools::getValue($card . "_" . $key)) {
+                        $fieldValue = array();
+                    } else {
+                        $fieldValue = Tools::getValue($card . "_" . $key);
+                    }
+                    $accountConfig["local_payment"][$card][$key] = $fieldValue;
+                }
+            }
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Save fraud settings
+     * @return boolean
+     */
+    public function saveFraudInformations() {
+        $this->logs->logsHipay('---- >> function saveFraudInformations');
+
+        try {
+            // saving all array "fraud" in $configHipay
+            $accountConfig = array();
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+            foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $accountConfig[$key] = $fieldValue;
+            }
+
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("fraud", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
     }
 
     /**
      * Get the appropriate logs
      * @return string
      */
-    protected function getLogFiles()
-    {
+    protected function getLogFiles() {
         // scan log dir
         $dir = _PS_MODULE_DIR_ . $this->logs->getBasePath();
         $files = scandir($dir, 1);
@@ -466,25 +545,41 @@ class Hipay_enterprise extends PaymentModule{
     }
 
     /**
-   * Clear every single merchant account data
-   * @return boolean
-   */
-  protected function clearAccountData()
-  {
-      $this->logs->logsHipay('---- >> function clearAccountData');
-      Configuration::deleteByName('HIPAY_CONFIG');
-      return true;
-  }
+     * Clear every single merchant account data
+     * @return boolean
+     */
+    protected function clearAccountData() {
+        $this->logs->logsHipay('---- >> function clearAccountData');
+        Configuration::deleteByName('HIPAY_CONFIG');
+        return true;
+    }
+
+    /**
+     * return an array of payment methods (set in BO configuration) for the customer country and currency
+     * @param Country $country
+     * @param Currency $currency
+     * @return array
+     */
+    protected function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
+        $activatedPayment = array();
+        foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
+            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
+                $activatedPayment[$name] = $settings;
+            }
+        }
+        return $activatedPayment;
+    }
 
 }
 
 if (_PS_VERSION_ >= '1.7') {
-  // version 1.7
-  require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/hipay_enterprise-17.php');
+    // version 1.7
+    require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/hipay_enterprise-17.php');
 } elseif (_PS_VERSION_ < '1.6') {
-  // Version < 1.6
-  Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
+    // Version < 1.6
+    Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
 require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayLogs.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayConfig.php');
 require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/forms/hipayForm.php');

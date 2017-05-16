@@ -1,26 +1,24 @@
 <?php
+
 /**
- * 2016 HiPay
+ * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
  * @author    HiPay <support.wallet@hipay.com>
- * @copyright 2016 HiPay
+ * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+class HipayLogs {
 
-class HipayLogs
-{
     public $enable = true;
     private $basePath;
 
-    public function __construct($module_instance)
-    {
+    public function __construct($module_instance, $enableConf = true) {
         $this->context = Context::getContext();
         $this->module = $module_instance;
         // init config hipay
-        $this->configHipay = $module_instance->configHipay;
-        $this->enable = (isset($this->configHipay->mode_debug) ? $this->configHipay->mode_debug : true);
+        $this->enable = (isset($enableConf) ? $enableConf : true);
         $this->basePath = '/hipay_enterprise/logs/';
     }
 
@@ -29,8 +27,7 @@ class HipayLogs
      * LOG Errors
      *
      */
-    public function errorLogsHipay($msg)
-    {
+    public function errorLogsHipay($msg) {
         $this->writeLogs(0, $msg);
     }
 
@@ -39,32 +36,27 @@ class HipayLogs
      * LOG APP
      *
      */
-    public function logsHipay($msg)
-    {
+    public function logsHipay($msg) {
         $this->writeLogs(1, $msg);
     }
 
-    public function callbackLogs($msg)
-    {
+    public function callbackLogs($msg) {
         $this->writeLogs(2, $msg);
     }
 
-    public function requestLogs($msg)
-    {
+    public function requestLogs($msg) {
         $this->writeLogs(3, $msg);
     }
 
-    public function refundLogs($msg)
-    {
+    public function refundLogs($msg) {
         $this->writeLogs(4, $msg);
     }
 
-    public function getBasePath(){
-      return $this->basePath;
+    public function getBasePath() {
+        return $this->basePath;
     }
 
-    private function writeLogs($code, $msg)
-    {
+    private function writeLogs($code, $msg) {
         if ($this->enable) {
             switch ($code) {
                 case 0:
@@ -92,4 +84,5 @@ class HipayLogs
             fclose($fp);
         }
     }
+
 }
