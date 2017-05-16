@@ -10,4 +10,5 @@
 *
 *}
 <div class="panel">
+    {$fraud_form}
 </div>

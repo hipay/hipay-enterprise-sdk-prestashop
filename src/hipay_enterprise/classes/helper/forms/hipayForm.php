@@ -177,6 +177,7 @@ class HipayForm extends HipayFormInput {
      * @return type
      */
     public function getGlobalPaymentMethodsFormValues() {
+        //init fields
         $values = array(
             "operating_mode" => "",
             "iframe_hosted_page_template" => "",
@@ -187,9 +188,142 @@ class HipayForm extends HipayFormInput {
             "card_token" => ""
         );
 
+        // get field value from POST request or config (this way the displayed value is always the good one)
         foreach ($values as $key => $value) {
             if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
                 $values[$key] = $this->configHipay["payment"]["global"][$key];
+            } else {
+                $values[$key] = Tools::getValue($key);
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * fraud payment form
+     * @return type
+     */
+    public function getFraudForm() {
+        $form = array();
+
+        $this->helper->tpl_vars['fields_value'] = $this->getFraudFormValues();
+
+        $form['form']['input'][] = $this->generateInputText(
+                "payment_fraud_email_sender", $this->module->l('Payment Fraud Email Sender', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputText(
+                "send_payment_fraud_email_copy_to", $this->module->l('Send Payment Fraud Email Copy To', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputSelect(
+                "send_payment_fraud_email_copy_method", $this->module->l('Send Payment Fraud Email Copy Method', 'HipayForm'), array(
+            "options" => array(
+                "query" => array(
+                    array(
+                        "send_payment_fraud_email_copy_method_id" => "bcc",
+                        "name" => $this->module->l('Bcc', 'HipayForm')
+                    ),
+                    array(
+                        "send_payment_fraud_email_copy_method_id" => "separate_email",
+                        "name" => $this->module->l('Separate email', 'HipayForm')
+                    ),
+                ),
+                "id" => "send_payment_fraud_email_copy_method_id",
+                "name" => "name"
+            )
+                )
+        );
+
+        $form['form']['input'][] = $this->generateInputText(
+                "payment_fraud_accept_email_sender", $this->module->l('Payment Fraud Accept Email Sender', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputText(
+                "send_payment_accept_email_copy_to", $this->module->l('Send Payment Accept Email Copy To', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputSelect(
+                "send_payment_accept_email_copy_method", $this->module->l('Send Payment Accept Email Copy Method', 'HipayForm'), array(
+            "options" => array(
+                "query" => array(
+                    array(
+                        "send_payment_accept_email_copy_method_id" => "bcc",
+                        "name" => $this->module->l('Bcc', 'HipayForm')
+                    ),
+                    array(
+                        "send_payment_accept_email_copy_method_id" => "separate_email",
+                        "name" => $this->module->l('Separate email', 'HipayForm')
+                    ),
+                ),
+                "id" => "send_payment_accept_email_copy_method_id",
+                "name" => "name"
+            )
+                )
+        );
+
+
+        $form['form']['input'][] = $this->generateInputText(
+                "payment_fraud_deny_email_sender", $this->module->l('Payment Fraud Deny Email Sender', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputText(
+                "send_payment_deny_email_copy_to", $this->module->l('Send Payment Deny Email Copy To', 'HipayForm')
+        );
+
+        $form['form']['input'][] = $this->generateInputSelect(
+                "send_payment_deny_email_copy_method", $this->module->l('Send Payment Deny Email Copy Method', 'HipayForm'), array(
+            "options" => array(
+                "query" => array(
+                    array(
+                        "send_payment_deny_email_copy_method_id" => "bcc",
+                        "name" => $this->module->l('Bcc', 'HipayForm')
+                    ),
+                    array(
+                        "send_payment_deny_email_copy_method_id" => "separate_email",
+                        "name" => $this->module->l('Separate email', 'HipayForm')
+                    ),
+                ),
+                "id" => "send_payment_deny_email_copy_method_id",
+                "name" => "name"
+            )
+                )
+        );
+
+        $form['form']['buttons'][] = $this->generateSubmitButton(
+                $this->module->l('Save', 'HipayForm'), array(
+            'name' => 'fraudSubmit',
+            'icon' => 'process-icon-save',
+                )
+        );
+
+        return $this->helper->generateForm(array($form));
+    }
+
+    /**
+     * get value for fraud form 
+     * @return type
+     */
+    public function getFraudFormValues() {
+
+        // init field
+        $values = array(
+            "payment_fraud_email_sender" => "",
+            "send_payment_fraud_email_copy_to" => "",
+            "send_payment_fraud_email_copy_method" => "",
+            "payment_fraud_accept_email_sender" => "",
+            "send_payment_accept_email_copy_to" => "",
+            "send_payment_accept_email_copy_method" => "",
+            "payment_fraud_deny_email_sender" => "",
+            "send_payment_deny_email_copy_to" => "",
+            "send_payment_deny_email_copy_method" => ""
+        );
+
+        // get field value from POST request or config (this way the displayed value is always the good one)
+        foreach ($values as $key => $value) {
+            if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
+                $values[$key] = $this->configHipay["fraud"][$key];
             } else {
                 $values[$key] = Tools::getValue($key);
             }

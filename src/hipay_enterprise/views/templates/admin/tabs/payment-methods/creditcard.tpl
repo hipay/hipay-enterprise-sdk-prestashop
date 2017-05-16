@@ -1,4 +1,4 @@
-<h3><i class="icon icon-credit-card"></i> {l s='Production configuration' mod='hipay_professional'}</h3>   
+<h3><i class="icon icon-credit-card"></i> {l s='Credit card' mod='hipay_professional'}</h3>   
 
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">

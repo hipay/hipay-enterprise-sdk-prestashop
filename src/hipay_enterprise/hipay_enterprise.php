@@ -51,42 +51,42 @@ class Hipay_enterprise extends PaymentModule {
         );
 
         $this->countries_titles = array(
-            'AT'=> $this->l('Austria'), 
-            'BE'=> $this->l('Belgium'), 
-            'CH'=> $this->l('Switzerland'), 
-            'CY'=> $this->l('Cyprus'), 
-            'CZ'=> $this->l('Czech Republic'), 
-            'DE'=> $this->l('Germany'), 
-            'DK'=> $this->l('Denmark'),
-            'EE'=> $this->l('Estonia'), 
-            'ES'=> $this->l('Spain'), 
-            'FI'=> $this->l('Finland'), 
-            'FR'=> $this->l('France'), 
-            'GB'=> $this->l('United Kingdom'), 
-            'GR'=> $this->l('Greece'), 
-            'HK'=> $this->l('Hong Kong'),
-            'HR'=> $this->l('Croatia'), 
-            'HU'=> $this->l('Hungary'), 
-            'IE'=> $this->l('Ireland'), 
-            'IT'=> $this->l('Italy'), 
-            'LI'=> $this->l('Liechtenstein'), 
-            'LT'=> $this->l('Lithuania'), 
-            'LU'=> $this->l('Luxembourg'),
-            'LV'=> $this->l('Latvia'), 
-            'MC'=> $this->l('Monaco'), 
-            'MT'=> $this->l('Malta'),
-            'NL'=> $this->l('Netherlands'),
-            'NO'=> $this->l('Norway'),
-            'PL'=> $this->l('Poland'),
-            'PT'=> $this->l('Portugal'),
-            'RO'=> $this->l('Romania'),
-            'RU'=> $this->l('Russia'),
-            'SE'=> $this->l('Sweden'),
-            'SI'=> $this->l('Slovenia'),
-            'SK'=> $this->l('Slovakia'),
-            'TR'=> $this->l('Turkey')
+            'AT' => $this->l('Austria'),
+            'BE' => $this->l('Belgium'),
+            'CH' => $this->l('Switzerland'),
+            'CY' => $this->l('Cyprus'),
+            'CZ' => $this->l('Czech Republic'),
+            'DE' => $this->l('Germany'),
+            'DK' => $this->l('Denmark'),
+            'EE' => $this->l('Estonia'),
+            'ES' => $this->l('Spain'),
+            'FI' => $this->l('Finland'),
+            'FR' => $this->l('France'),
+            'GB' => $this->l('United Kingdom'),
+            'GR' => $this->l('Greece'),
+            'HK' => $this->l('Hong Kong'),
+            'HR' => $this->l('Croatia'),
+            'HU' => $this->l('Hungary'),
+            'IE' => $this->l('Ireland'),
+            'IT' => $this->l('Italy'),
+            'LI' => $this->l('Liechtenstein'),
+            'LT' => $this->l('Lithuania'),
+            'LU' => $this->l('Luxembourg'),
+            'LV' => $this->l('Latvia'),
+            'MC' => $this->l('Monaco'),
+            'MT' => $this->l('Malta'),
+            'NL' => $this->l('Netherlands'),
+            'NO' => $this->l('Norway'),
+            'PL' => $this->l('Poland'),
+            'PT' => $this->l('Portugal'),
+            'RO' => $this->l('Romania'),
+            'RU' => $this->l('Russia'),
+            'SE' => $this->l('Sweden'),
+            'SI' => $this->l('Slovenia'),
+            'SK' => $this->l('Slovakia'),
+            'TR' => $this->l('Turkey')
         );
-        
+
         $this->currencies_titles = array(
             'AUD' => $this->l('Australian dollar'),
             'CAD' => $this->l('Canadian dollar'),
@@ -244,6 +244,7 @@ class Hipay_enterprise extends PaymentModule {
             'logs' => $this->getLogFiles(),
             'module_url' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
             'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
+            'fraud_form' => $formGenerator->getFraudForm(),
             'form_errors' => $this->_errors,
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
@@ -292,6 +293,10 @@ class Hipay_enterprise extends PaymentModule {
             $this->logs->logsHipay('---- >> localPaymentSubmit');
             $this->saveLocalPaymentInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
+        } else if (Tools::isSubmit('fraudSubmit')) {
+            $this->logs->logsHipay('---- >> fraudSubmit');
+            $this->saveFraudInformations();
+            $this->context->smarty->assign('active_tab', 'fraud_form');
         }
     }
 
@@ -453,6 +458,38 @@ class Hipay_enterprise extends PaymentModule {
             }
             //save configuration
             $this->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
+
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Save fraud settings
+     * @return boolean
+     */
+    public function saveFraudInformations() {
+        $this->logs->logsHipay('---- >> function saveFraudInformations');
+
+        try {
+            // saving all array "fraud" in $configHipay
+            $accountConfig = array();
+
+            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+            foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
+                $fieldValue = Tools::getValue($key);
+                $accountConfig[$key] = $fieldValue;
+            }
+
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("fraud", $accountConfig);
 
             $this->_successes[] = $this->l('Settings configuration saved successfully.');
             $this->logs->logsHipay(print_r($this->hipayConfigTool->getConfigHipay(), true));

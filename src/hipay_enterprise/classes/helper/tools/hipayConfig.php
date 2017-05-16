@@ -138,7 +138,17 @@ class HipayConfig {
                     ),
                 )
             ),
-            "fraud" => array()
+            "fraud" => array(
+                "payment_fraud_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "send_payment_fraud_email_copy_to" => "",
+                "send_payment_fraud_email_copy_method" => "bcc",
+                "payment_fraud_accept_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "send_payment_accept_email_copy_to" => "",
+                "send_payment_accept_email_copy_method" => "bcc",
+                "payment_fraud_deny_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "send_payment_deny_email_copy_to" => "",
+                "send_payment_deny_email_copy_method" => "bcc"
+            )
         );
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");

@@ -32,7 +32,7 @@
                 href="#payment_form" aria-controls="payment_form" role="tab" data-toggle="tab">
                 <span class="icon icon-money"></span> {l s='Payment methods' mod='hipay_professional'}</a>
         </li>
-        <li role="presentation"><a href="#fraud" aria-controls="fraud" role="tab" data-toggle="tab">
+        <li role="presentation" class=" {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}"><a href="#fraud" aria-controls="fraud" role="tab" data-toggle="tab">
                 <span class="icon icon-exclamation"></span> {l s='Fraud' mod='hipay_professional'}</a>
         </li>
         <li role="presentation"><a href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
@@ -60,7 +60,7 @@
              id="payment_form">
             {include file='./tabs/payment-methods.tpl'}
         </div>
-        <div role="tabpanel" class="tab-pane" id="fraud">
+        <div role="tabpanel" class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}" id="fraud">
             {include file='./tabs/fraud.tpl'}
         </div>
         <div role="tabpanel" class="tab-pane" id="category-mapping">
