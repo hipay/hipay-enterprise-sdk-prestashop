@@ -37,7 +37,7 @@
                                 <label class="control-label col-lg-3">{l s='Currencies' mod='hipay_professional'}</label>
                                 {foreach $limitedCurrencies as $currency }
                                     <label class="control-label col-lg-1"> 
-                                        <input type="checkbox" name="{$creditCard@key}currencies[]" {if $currency|in_array:$creditCard.currencies } checked {/if} value="{$currency}" />
+                                        <input type="checkbox" name="{$creditCard@key}_currencies[]" {if $currency@key|in_array:$creditCard.currencies } checked {/if} value="{$currency@key}" />
                                         {$currency}
                                     </label>
                                 {/foreach}
@@ -46,7 +46,7 @@
 
                         <div class="row">
                             <div class="form-group">
-                                <select id="countries_{$creditCard@key}" multiple="multiple" size="10" name="countries_{$creditCard@key}[]">
+                                <select id="countries_{$creditCard@key}" multiple="multiple" size="10" name="{$creditCard@key}_countries[]">
                                     {foreach $limitedCountries as $country}
                                         <option value="{$country}" {if $country|in_array:$creditCard.countries } selected {/if} >{$country}</option>
                                     {/foreach}
@@ -59,7 +59,7 @@
                                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
                                         class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_professional'}
                                 </button>
-                                <button type="submit" class="btn btn-default btn btn-default pull-right" name="submitAccount">
+                                <button type="submit" class="btn btn-default btn btn-default pull-right" name="creditCardSubmit">
                                     <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_professional'}
                                 </button>
                             </div>

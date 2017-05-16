@@ -34,7 +34,7 @@
                         <!-- SWITCH MODE END -->
                         <div class="row">
                             <div class="form-group">
-                                <select id="countries_{$localPayment@key}" multiple="multiple" size="10" name="countries_{$localPayment@key}[]">
+                                <select id="countries_{$localPayment@key}" multiple="multiple" size="10" name="{$localPayment@key}_countries[]">
                                     {foreach $limitedCountries as $country}
                                         <option value="{$country}" {if $country|in_array:$localPayment.countries } selected {/if}  >{$country}</option>
                                     {/foreach}
@@ -47,7 +47,7 @@
                                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
                                         class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_professional'}
                                 </button>
-                                <button type="submit" class="btn btn-default btn btn-default pull-right" name="submitAccount">
+                                <button type="submit" class="btn btn-default btn btn-default pull-right" name="localPaymentSubmit">
                                     <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_professional'}
                                 </button>
                             </div>
