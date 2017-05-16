@@ -27,6 +27,16 @@ if [ ! -f /var/www/html/console/console.php ];then
     #service cron start
 fi
 
+if [ ! -f /var/www/html/comopser.json ];then
+
+    echo "\n Instal SDK PHP \n";
+    cd /var/www/html/modules/hipay_enterprise/ \
+    && composer install
+
+    #run unit tests
+    #phpunit -c 
+fi
+
 #===================================#
 #       START WEBSERVER
 #===================================#

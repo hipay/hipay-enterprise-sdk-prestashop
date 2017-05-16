@@ -23,6 +23,11 @@ class HipayEnterpriseNew extends Hipay_enterprise {
             return;
         }
 
+        if (!$this->checkCurrency($params['cart'])) {
+            return;
+        }
+
+
         $payment_options = $this->hipayExternalPaymentOption($params);
         return $payment_options;
     }
@@ -66,12 +71,26 @@ class HipayEnterpriseNew extends Hipay_enterprise {
             //TODO: translate call to action text
             $newOption->setCallToActionText("pay by card")
                     ->setForm($paymentForm)
-                    ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+                    ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
             ;
 
             $paymentOptions[] = $newOption;
         }
         return $paymentOptions;
+    }
+
+    public function checkCurrency($cart)
+    {
+        $currency_order = new Currency($cart->id_currency);
+        $currencies_module = $this->getCurrency($cart->id_currency);
+        if (is_array($currencies_module)) {
+            foreach ($currencies_module as $currency_module) {
+                if ($currency_order->id == $currency_module['id_currency']) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

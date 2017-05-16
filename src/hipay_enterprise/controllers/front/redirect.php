@@ -35,7 +35,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         ));
 
         //displaying different forms depending of the operating mode chosen in the BO configuration
-        switch ($this->module->configHipay["payment"]["global"]["operating_mode"]) {
+        switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
                 $path = 'paymentFormHostedPage16.tpl';
                 break;

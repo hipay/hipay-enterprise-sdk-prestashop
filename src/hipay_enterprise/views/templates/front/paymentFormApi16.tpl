@@ -26,7 +26,7 @@
         </p>
     {/if}
 
-    <form enctype="application/x-www-form-urlencoded" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+    <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'validation', [], true)|escape:'html'}" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             <div class="control-group">
                 <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
