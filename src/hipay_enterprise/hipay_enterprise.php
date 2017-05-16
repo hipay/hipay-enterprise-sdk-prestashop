@@ -50,6 +50,43 @@ class Hipay_enterprise extends PaymentModule {
             'RO', 'RU', 'SE', 'SI', 'SK', 'TR'
         );
 
+        $this->countries_titles = array(
+            'AT'=> $this->l('Austria'), 
+            'BE'=> $this->l('Belgium'), 
+            'CH'=> $this->l('Switzerland'), 
+            'CY'=> $this->l('Cyprus'), 
+            'CZ'=> $this->l('Czech Republic'), 
+            'DE'=> $this->l('Germany'), 
+            'DK'=> $this->l('Denmark'),
+            'EE'=> $this->l('Estonia'), 
+            'ES'=> $this->l('Spain'), 
+            'FI'=> $this->l('Finland'), 
+            'FR'=> $this->l('France'), 
+            'GB'=> $this->l('United Kingdom'), 
+            'GR'=> $this->l('Greece'), 
+            'HK'=> $this->l('Hong Kong'),
+            'HR'=> $this->l('Croatia'), 
+            'HU'=> $this->l('Hungary'), 
+            'IE'=> $this->l('Ireland'), 
+            'IT'=> $this->l('Italy'), 
+            'LI'=> $this->l('Liechtenstein'), 
+            'LT'=> $this->l('Lithuania'), 
+            'LU'=> $this->l('Luxembourg'),
+            'LV'=> $this->l('Latvia'), 
+            'MC'=> $this->l('Monaco'), 
+            'MT'=> $this->l('Malta'),
+            'NL'=> $this->l('Netherlands'),
+            'NO'=> $this->l('Norway'),
+            'PL'=> $this->l('Poland'),
+            'PT'=> $this->l('Portugal'),
+            'RO'=> $this->l('Romania'),
+            'RU'=> $this->l('Russia'),
+            'SE'=> $this->l('Sweden'),
+            'SI'=> $this->l('Slovenia'),
+            'SK'=> $this->l('Slovakia'),
+            'TR'=> $this->l('Turkey')
+        );
+        
         $this->currencies_titles = array(
             'AUD' => $this->l('Australian dollar'),
             'CAD' => $this->l('Canadian dollar'),
@@ -209,7 +246,7 @@ class Hipay_enterprise extends PaymentModule {
             'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
             'form_errors' => $this->_errors,
             'limitedCurrencies' => $this->currencies_titles,
-            'limitedCountries' => $this->limited_countries,
+            'limitedCountries' => $this->countries_titles,
         ));
 
         $this->logs->logsHipay('---- END function getContent');

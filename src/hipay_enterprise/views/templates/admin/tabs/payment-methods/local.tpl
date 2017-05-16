@@ -36,7 +36,7 @@
                             <div class="form-group">
                                 <select id="countries_{$localPayment@key}" multiple="multiple" size="10" name="{$localPayment@key}_countries[]">
                                     {foreach $limitedCountries as $country}
-                                        <option value="{$country}" {if $country|in_array:$localPayment.countries } selected {/if}  >{$country}</option>
+                                        <option value="{$country@key}" {if $country@key|in_array:$localPayment.countries } selected {/if}  >{$country}</option>
                                     {/foreach}
                                 </select>
                             </div>    
