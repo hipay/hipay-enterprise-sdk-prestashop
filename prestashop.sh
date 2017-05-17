@@ -27,7 +27,7 @@ if [ "$1" = 'init' ] && [ "$2" = '' ];then
     sudo rm -Rf data/
     sudo rm -Rf web16/
     sudo rm -Rf web17/
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml build
+    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
     sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
 fi
 
