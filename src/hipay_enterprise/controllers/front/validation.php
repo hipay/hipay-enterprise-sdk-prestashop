@@ -21,20 +21,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
 
         $context = Context::getContext();
 
-        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration("username", "password");
-        //Instantiate client provider with configuration object
-        $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
-
-        //Create your gateway client
-        $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
-
-        //Instantiate order request
-        $orderRequest = new \HiPay\Fullservice\Gateway\Request\Order\OrderRequest();
-        $orderRequest->orderid = "123456";
-        $orderRequest->operation = "Sale";
-        //etc.
-        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-        $transaction = $gatewayClient->requestNewOrder($orderRequest);
+        
     }
 
 }

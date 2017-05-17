@@ -37,7 +37,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         //displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
-                $path = 'paymentFormHostedPage16.tpl';
+                $this->handleHostedPayment();
                 break;
             case "api":
                 $context->smarty->assign(array(
@@ -69,4 +69,28 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
     }
 
+    private function handleHostedPayment() {
+
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
+                $this->module->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"], 
+                $this->module->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
+        );
+        //Instantiate client provider with configuration object
+        $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
+
+        //Create your gateway client
+        $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
+        $orderRequest = new HostedPaymentFormatter($this->module);
+        //etc.
+        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
+        $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
+
+        var_dump($transaction->getForwardUrl());
+        //Tools::redirect('index.php?controller=order&xer=2');
+      //  Tools::redirect($transaction->getForwardUrl());
+        
+    }
+
 }
+
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/Request/HostedPaymentFormatter.php');
