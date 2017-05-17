@@ -33,6 +33,10 @@ if [ ! -f /var/www/html/comopser.json ];then
     cd /var/www/html/modules/hipay_enterprise/ \
     && composer install
 
+    echo "\n Instal SDK JS \n";
+    cd lib/ \
+    && bower install hipay-fullservice-sdk-js
+
     #run unit tests
     #phpunit -c 
 fi

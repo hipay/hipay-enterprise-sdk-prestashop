@@ -40,6 +40,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
         $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
         $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/views/js/devicefingerprint.js'));
+        $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
     }
 
     /**
@@ -54,7 +55,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         $currency = new Currency(intval($params['cart']->id_currency));
 
         // get activated card for customer currency and country
-        $activatedCreditCard = $this->getActivatedCreditCardByCountryAndCurrency($country, $currency);
+        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card",$country, $currency);
 
         $paymentOptions = array();
 
@@ -62,7 +63,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
 
             $this->context->smarty->assign(array(
                 'module_dir' => $this->_path,
-                'config_hipay' => $this->configHipay,
+                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
                 'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook'
             ));
 
@@ -79,8 +80,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         return $paymentOptions;
     }
 
-    public function checkCurrency($cart)
-    {
+    public function checkCurrency($cart) {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
         if (is_array($currencies_module)) {
