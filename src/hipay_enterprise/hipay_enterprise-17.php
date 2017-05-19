@@ -9,6 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+require_once(dirname(__FILE__) . '/classes/helper/apiCaller/ApiCaller.php');
+
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 class HipayEnterpriseNew extends Hipay_enterprise {
@@ -64,9 +66,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
                 $newOption = new PaymentOption();
-//            //TODO: translate call to action text
-                $newOption = new PaymentOption();
-                $newOption->setCallToActionText("pay by card")
+                $newOption->setCallToActionText($this->l("pay by card"))
                         ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
                 ;
                 $paymentOptions[] = $newOption;
@@ -75,12 +75,16 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                 $path = 'paymentFormApi16.tpl';
                 break;
             case "iframe":
-                $path = 'paymentFormIframe16.tpl';
+                $newOption = new PaymentOption();
+                $newOption->setCallToActionText($this->l("pay by card"))
+                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+                ;
+                $paymentOptions[] = $newOption;
                 break;
             default :
                 break;
         }
-        
+
 
 //        if (!empty($activatedCreditCard)) {
 //
@@ -120,5 +124,4 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         }
         return false;
     }
-
 }

@@ -9,7 +9,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__) . '/../../classes/helper/apiCaller/ApiCaller.php');
 
 class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontController {
@@ -25,11 +24,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $context = Context::getContext();
         $cart = $context->cart;
-            
-        if($cart->id == NULL)
-             Tools::redirect('index.php?controller=order');
-            
-        
+
+        if ($cart->id == NULL)
+            Tools::redirect('index.php?controller=order');
+
+
         $context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -55,10 +54,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 $path = 'paymentFormApi16.tpl';
                 break;
             case "iframe":
-                $path = 'paymentFormIframe16.tpl';
+                $context->smarty->assign(array(
+                    'url' => $this->handleIframe()
+                ));
+                $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/17' : '16') . 'paymentFormIframe.tpl';
                 break;
             default :
-                
+
                 break;
         }
 
@@ -83,5 +85,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         Tools::redirect(ApiCaller::getHostedPaymentPage($this->module));
     }
 
-}
+    /**
+     * return iframe URL
+     * @return string
+     */
+    private function handleIframe() {
 
+        return ApiCaller::getHostedPaymentPage($this->module);
+    }
+
+}
