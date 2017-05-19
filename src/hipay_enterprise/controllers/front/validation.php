@@ -9,7 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontController {
 
@@ -91,5 +92,3 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
     }
 
 }
-
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/lib/vendor/autoload.php');

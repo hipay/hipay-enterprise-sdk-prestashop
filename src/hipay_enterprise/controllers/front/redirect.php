@@ -10,7 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/apiCaller/ApiCaller.php');
 
 class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontController {
 

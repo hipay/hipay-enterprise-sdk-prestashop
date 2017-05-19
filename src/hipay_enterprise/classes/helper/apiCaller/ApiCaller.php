@@ -9,8 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/Request/HostedPaymentFormatter.php');
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
+require_once(dirname(__FILE__) .  '/../../../lib/vendor/autoload.php');
 
 /**
  * Handle Hipay Api call 

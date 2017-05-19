@@ -26,4 +26,3 @@ class Hipay_enterpriseDeclineModuleFrontController extends ModuleFrontController
 
 }
 
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/lib/vendor/autoload.php');
