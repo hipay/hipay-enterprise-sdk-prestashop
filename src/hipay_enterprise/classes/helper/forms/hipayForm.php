@@ -112,11 +112,11 @@ class HipayForm extends HipayFormInput {
             "options" => array(
                 "query" => array(
                     array(
-                        "display_card_selector_id" => 0,
+                        "display_card_selector_id" => 1,
                         "name" => $this->module->l('Show card selector', 'HipayForm')
                     ),
                     array(
-                        "display_card_selector_id" => 1,
+                        "display_card_selector_id" => 0,
                         "name" => $this->module->l('Do not show card selector', 'HipayForm')
                     ),
                 ),

@@ -137,6 +137,7 @@ class Hipay_enterprise extends PaymentModule {
     public function installHipay() {
 
         $return = $this->installAdminTab();
+        $return = $this->updateHiPayOrderStates();
         $return = $this->registerHook('backOfficeHeader');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header");
@@ -248,6 +249,8 @@ class Hipay_enterprise extends PaymentModule {
             'form_errors' => $this->_errors,
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
+            'this_callback' => $this->context->link->getModuleLink($this->name, 'validation', array(), true),
+            'ipaddr' => $_SERVER ['REMOTE_ADDR']
         ));
 
         $this->logs->logsHipay('---- END function getContent');
@@ -560,7 +563,7 @@ class Hipay_enterprise extends PaymentModule {
      * @param Currency $currency
      * @return array
      */
-    protected function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
+    public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
         $activatedPayment = array();
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
@@ -570,16 +573,82 @@ class Hipay_enterprise extends PaymentModule {
         return $activatedPayment;
     }
 
+    /**
+     * Add order status
+     * @return boolean
+     */
+    public function updateHiPayOrderStates() {
+        $waiting_state_config = 'HIPAY_OS_PENDING';
+        $waiting_state_color = '#4169E1';
+        $waiting_state_names = [];
+
+        $setup = [
+            'delivery' => false,
+            'hidden' => false,
+            'invoice' => false,
+            'logable' => false,
+            'module_name' => $this->name,
+            'send_email' => false,
+        ];
+
+        foreach (Language::getLanguages(false) as $language) {
+            if (Tools::strtolower($language['iso_code']) == 'fr') {
+                $waiting_state_names[(int) $language['id_lang']] = 'En attente d\'autorisation';
+            } else {
+                $waiting_state_names[(int) $language['id_lang']] = 'Waiting for authorization';
+            }
+        }
+
+        $this->saveOrderState($waiting_state_config, $waiting_state_color, $waiting_state_names, $setup);
+
+        return true;
+    }
+
+    /**
+     * save new order status
+     * @param type $config
+     * @param type $color
+     * @param type $names
+     * @param type $setup
+     * @return boolean
+     */
+    protected function saveOrderState($config, $color, $names, $setup) {
+        $state_id = Configuration::get($config);
+
+        if ((bool) $state_id == true) {
+            $order_state = new OrderState($state_id);
+        } else {
+            $order_state = new OrderState();
+        }
+
+        $order_state->name = $names;
+        $order_state->color = $color;
+
+        foreach ($setup as $param => $value) {
+            $order_state->{$param} = $value;
+        }
+
+        if ((bool) $state_id == true) {
+            return $order_state->save();
+        } elseif ($order_state->add() == true) {
+            Configuration::updateValue($config, $order_state->id);
+            @copy($this->local_path . 'logo.gif', _PS_ORDER_STATE_IMG_DIR_ . (int) $order_state->id . '.gif');
+
+            return true;
+        }
+        return false;
+    }
+
 }
 
 if (_PS_VERSION_ >= '1.7') {
     // version 1.7
-    require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/hipay_enterprise-17.php');
+    require_once(dirname(__FILE__) . '/hipay_enterprise-17.php');
 } elseif (_PS_VERSION_ < '1.6') {
     // Version < 1.6
     Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayLogs.php');
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/tools/hipayConfig.php');
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/forms/hipayForm.php');
+require_once(dirname(__FILE__) . '/classes/helper/tools/hipayLogs.php');
+require_once(dirname(__FILE__) . '/classes/helper/tools/hipayConfig.php');
+require_once(dirname(__FILE__) . '/classes/helper/forms/hipayForm.php');

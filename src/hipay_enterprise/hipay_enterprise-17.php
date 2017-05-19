@@ -55,31 +55,59 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         $currency = new Currency(intval($params['cart']->id_currency));
 
         // get activated card for customer currency and country
-        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card",$country, $currency);
+        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency);
 
         $paymentOptions = array();
 
-        if (!empty($activatedCreditCard)) {
 
-            $this->context->smarty->assign(array(
-                'module_dir' => $this->_path,
-                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
-                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook'
-            ));
-
-            $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
-            $newOption = new PaymentOption();
-            //TODO: translate call to action text
-            $newOption->setCallToActionText("pay by card")
-                    ->setForm($paymentForm)
-                    ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-            ;
-
-            $paymentOptions[] = $newOption;
+        //displaying different forms depending of the operating mode chosen in the BO configuration
+        switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
+            case "hosted_page":
+                $newOption = new PaymentOption();
+//            //TODO: translate call to action text
+                $newOption = new PaymentOption();
+                $newOption->setCallToActionText("pay by card")
+                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+                ;
+                $paymentOptions[] = $newOption;
+                break;
+            case "api":
+                $path = 'paymentFormApi16.tpl';
+                break;
+            case "iframe":
+                $path = 'paymentFormIframe16.tpl';
+                break;
+            default :
+                break;
         }
+        
+
+//        if (!empty($activatedCreditCard)) {
+//
+//            $this->context->smarty->assign(array(
+//                'module_dir' => $this->_path,
+//                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
+//                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook'
+//            ));
+//
+//            $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
+//            $newOption = new PaymentOption();
+//            //TODO: translate call to action text
+//            $newOption->setCallToActionText("pay by card")
+//                    ->setForm($paymentForm)
+//                    ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
+//            ;
+//
+//            $paymentOptions[] = $newOption;
+//        }
         return $paymentOptions;
     }
 
+    /**
+     * 
+     * @param type $cart
+     * @return boolean
+     */
     public function checkCurrency($cart) {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
