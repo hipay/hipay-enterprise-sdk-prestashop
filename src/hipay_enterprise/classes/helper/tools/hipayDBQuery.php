@@ -41,7 +41,7 @@ class HipayDBQuery {
     }
 
     /**
-     * 
+     * start sql transaction
      * @param int $cartId
      */
     public function setSQLLockForCart($cartId) {
@@ -58,11 +58,21 @@ class HipayDBQuery {
     }
 
     /**
-     * 
+     * commit transaction and release sql lock
+     */
+    public function releaseSQLLock() {
+        $sql = 'commit;';
+        if (!Db::getInstance()->execute($sql)) {
+            $this->logs->logsHipay('Bad LockSQL initiated for id_cart = ' . $objCart->id);
+        }
+    }
+
+    /**
+     * return transaction from Order Id
      * @return type
      */
     public function getTransactionFromOrder($orderId) {
-        
+
         $sql = 'SELECT DISTINCT(op.transaction_id)
                 FROM `' . _DB_PREFIX_ . 'order_payment` op
                 INNER JOIN `' . _DB_PREFIX_ . 'orders` o ON o.reference = op.order_reference

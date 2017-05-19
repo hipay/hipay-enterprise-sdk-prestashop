@@ -15,6 +15,8 @@
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 text-center">
         <h4>{l s='A complete and easy to use solution' mod='hipay_professional'}</h4>
+        <p> {$this_callback} </p>
+        <p>{$ipaddr}</p>
     </div>
 </div>
 

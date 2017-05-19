@@ -58,10 +58,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $orderId = $this->module->currentOrder;
         }
 
-        $sql = 'commit;';
-        if (!Db::getInstance()->execute($sql)) {
-            HipayLogger::addLog('Bad LockSQL initiated', 'hipay for id_cart = ' . $objCart->id);
-        }
+        $db->releaseSQLLock();
         // END SQL LOCK 
         //#################################################################
 
@@ -80,7 +77,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
     }
 
     /**
-     * 
+     * empty customer cart 
      * @return boolean
      */
     public function unsetCart() {

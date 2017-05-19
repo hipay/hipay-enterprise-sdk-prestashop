@@ -249,6 +249,8 @@ class Hipay_enterprise extends PaymentModule {
             'form_errors' => $this->_errors,
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
+            'this_callback' => $this->context->link->getModuleLink($this->name, 'validation', array(), true),
+            'ipaddr' => $_SERVER ['REMOTE_ADDR']
         ));
 
         $this->logs->logsHipay('---- END function getContent');
@@ -571,6 +573,10 @@ class Hipay_enterprise extends PaymentModule {
         return $activatedPayment;
     }
 
+    /**
+     * Add order status
+     * @return boolean
+     */
     public function updateHiPayOrderStates() {
         $waiting_state_config = 'HIPAY_OS_PENDING';
         $waiting_state_color = '#4169E1';
@@ -598,6 +604,14 @@ class Hipay_enterprise extends PaymentModule {
         return true;
     }
 
+    /**
+     * save new order status
+     * @param type $config
+     * @param type $color
+     * @param type $names
+     * @param type $setup
+     * @return boolean
+     */
     protected function saveOrderState($config, $color, $names, $setup) {
         $state_id = Configuration::get($config);
 
