@@ -9,8 +9,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-interface apiFormatterInterface {
+interface ApiFormatterInterface {
 
     public function generate();
-
 }

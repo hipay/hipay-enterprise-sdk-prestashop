@@ -10,18 +10,19 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/lib/vendor/autoload.php');
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/apiFormatterAbstract.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/ApiFormatterAbstract.php');
 
-class customerBillingInfoFormatter extends apiFormatterAbstract {
+class CustomerBillingInfoFormatter extends ApiFormatterAbstract {
 
     public function __construct($module) {
         parent::__construct($module);
-
+        // fields only used for customer billing mapping
         $this->invoice = new Address((int) $this->cart->id_address_invoice);
+        $this->country = new Country((int) $this->invoice->id_country);
     }
 
     /**
-     * 
+     * return mapped customer billing informations
      * @return \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest
      */
     public function generate() {
@@ -34,8 +35,8 @@ class customerBillingInfoFormatter extends apiFormatterAbstract {
     }
 
     /**
-     * 
-     * @param type $order
+     * map prestashop billing informations to request fields (Hpayment Post)
+     * @param \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest $customerBillingInfo
      */
     protected function mapRequest(&$customerBillingInfo) {
 
@@ -56,14 +57,14 @@ class customerBillingInfoFormatter extends apiFormatterAbstract {
         $customerBillingInfo->streetaddress2 = $this->invoice->address2;
         $customerBillingInfo->city = $this->invoice->city;
         $customerBillingInfo->zipcode = $this->invoice->postcode;
-        $customerBillingInfo->country = $this->invoice->address1;
+        $customerBillingInfo->country = $this->country->iso_code;
         $customerBillingInfo->phone = $this->getPhone();
         $customerBillingInfo->state = '';
         $customerBillingInfo->recipientinfo = $this->store->name;
     }
 
     /**
-     * 
+     * return well formatted phone number
      * @return string
      */
     private function getPhone() {

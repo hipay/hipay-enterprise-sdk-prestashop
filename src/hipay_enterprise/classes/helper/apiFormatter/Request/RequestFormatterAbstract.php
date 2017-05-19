@@ -9,27 +9,15 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/apiFormatterAbstract.php');
-require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/Info/customerBillingInfoFormatter.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/ApiFormatterAbstract.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/Info/CustomerBillingInfoFormatter.php');
+require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/classes/helper/apiFormatter/Info/CustomerShippingInfoFormatter.php');
 require_once(_PS_ROOT_DIR_ . _MODULE_DIR_ . 'hipay_enterprise/lib/vendor/autoload.php');
 
-class directPostFormatter extends apiFormatterAbstract {
+abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
 
     /**
-     * 
-     * @return \HiPay\Fullservice\Gateway\Request\Order\OrderRequest
-     */
-    public function generate() {
-
-        $order = new \HiPay\Fullservice\Gateway\Request\Order\OrderRequest();
-
-        $this->mapRequest($order);
-
-        return $order;
-    }
-
-    /**
-     * 
+     * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
      * @param type $order
      */
     protected function mapRequest(&$order) {
@@ -48,18 +36,23 @@ class directPostFormatter extends apiFormatterAbstract {
         $order->shipping = $this->cart->getSummaryDetails(null, true)['total_shipping'];
         $order->tax = $this->cart->getSummaryDetails(null, true)['total_tax'];
 
+        $order->currency = $this->currency->iso_code;
         $order->accept_url = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
-        $order->decline_url = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
-        $order->pending_url = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
-        $order->exception_url = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
-        $order->cancel_url = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
+        $order->decline_url = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
+        $order->pending_url = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
+        $order->exception_url = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
+        $order->cancel_url = $this->context->link->getModuleLink($this->module->name, 'cancel', array(), true);
         $order->customerBillingInfo = $this->getCustomerBillingInfo();
-        $order->firstname = "Jean-Michel";
-        $order->lastname = "Test";
+        $order->customerShippingInfo = $this->getCustomerShippingInfo();
+        $order->firstname = $this->customer->firstname;
+        $order->lastname = $this->customer->firstname;
+        $order->cid = (int) $this->customer->id;
+        $order->ipaddr = $_SERVER ['REMOTE_ADDR'];
+        $order->language = $this->getLanguageCode($this->context->language->iso_code);
     }
 
     /**
-     * 
+     * return well formatted order descritpion
      * @param type $order
      * @return string
      */
@@ -87,11 +80,26 @@ class directPostFormatter extends apiFormatterAbstract {
         return $description;
     }
 
-    private function getCustomerBillingInfo(){
-        
-        $billingInfo = new customerBillingInfoFormatter($this->module);
-        
+    /**
+     * return mapped customer billing informations
+     * @return \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest
+     */
+    private function getCustomerBillingInfo() {
+
+        $billingInfo = new CustomerBillingInfoFormatter($this->module);
+
         return $billingInfo->generate();
     }
-    
+
+    /**
+     * return mapped customer shipping informations
+     * @return \HiPay\Fullservice\Gateway\Request\Info\CustomerShippingInfoRequest
+     */
+    private function getCustomerShippingInfo() {
+
+        $billingInfo = new CustomerShippingInfoFormatter($this->module);
+
+        return $billingInfo->generate();
+    }
+
 }
