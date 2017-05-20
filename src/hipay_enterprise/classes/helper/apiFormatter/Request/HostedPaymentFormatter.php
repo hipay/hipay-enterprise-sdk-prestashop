@@ -33,7 +33,7 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
     protected function mapRequest(&$order) {
         parent::mapRequest($order);
 
-        $order->template = $this->configHipay["payment"]["global"]["iframe_hosted_page_template"];
+        $order->template = ($this->configHipay["payment"]["global"]["operating_mode"] !== "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
         $order->css = $this->configHipay["payment"]["global"]["css_url"];
         $order->display_selector = $this->configHipay["payment"]["global"]["display_card_selector"];
         $order->payment_product_list = $this->getProductList();

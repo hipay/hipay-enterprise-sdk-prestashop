@@ -10,7 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
-require_once(dirname(__FILE__) .  '/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 /**
  * Handle Hipay Api call 
@@ -39,5 +39,4 @@ class ApiCaller {
 
         return $transaction->getForwardUrl();
     }
-
 }
