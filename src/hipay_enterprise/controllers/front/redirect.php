@@ -10,6 +10,9 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/../../classes/helper/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
+
+use HiPay\Fullservice\Enum\Transaction\TransactionState;
 
 class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontController {
 
@@ -46,12 +49,18 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 $this->handleHostedPayment();
                 break;
             case "api":
-                $context->smarty->assign(array(
-                    'status_error' => '200', // Force to ok for first call
-                    'cart_id' => $cart->id,
-                    'amount' => $cart->getOrderTotal(true, Cart::BOTH)
-                ));
-                $path = 'paymentFormApi16.tpl';
+                // if form is sent
+                if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
+                    $this->handleDirectOrder();
+                } else {
+                    $context->smarty->assign(array(
+                        'status_error' => '200', // Force to ok for first call
+                        'cart_id' => $cart->id,
+                        'amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                        'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
+                    ));
+                    $path = 'paymentFormApi16.tpl';
+                }
                 break;
             case "iframe":
                 $context->smarty->assign(array(
@@ -92,6 +101,55 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     private function handleIframe() {
 
         return ApiCaller::getHostedPaymentPage($this->module);
+    }
+
+    /**
+     * call api and redirect to success or error page 
+     */
+    private function handleDirectOrder() {
+        var_dump(Tools::getValue('card-token'));
+        var_dump(Tools::getValue('card-brand'));
+        
+        $params = array(
+            "deviceFingerprint" => Tools::getValue('ioBB'),
+            "card-token" => Tools::getValue('card-token'),
+            "card-brand" => Tools::getValue('card-brand')
+        );
+
+        $response = ApiCaller::requestDirectPost($this->module, $params);
+
+        $acceptUrl = $this->context->link->getModuleLink($this->module->name, 'validation', array(), true);
+        $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
+        $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
+        $exceptionUrl = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
+        $forwardUrl = $response->getForwardUrl();
+        
+        
+        switch ($response->getState()) {
+            case TransactionState::COMPLETED:
+                $redirectUrl = $acceptUrl;
+                break;
+            case TransactionState::PENDING:
+                $redirectUrl = $pendingUrl;
+                break;
+            case TransactionState::FORWARDING:
+                $redirectUrl = $forwardUrl;
+                break;
+            case TransactionState::DECLINED:
+                $reason = $response->getReason();
+                $this->module->getLogs()->logsHipay('There was an error request new transaction: ' . $reason['message']);
+                $redirectUrl = $failUrl;
+                break;
+            case TransactionState::ERROR:
+                $reason = $response->getReason();
+                $this->module->getLogs()->logsHipay('There was an error request new transaction: ' . $reason['message']);
+                $redirectUrl = $exceptionUrl;
+                break;
+            default:
+                $redirectUrl = $failUrl;
+        }
+
+        Tools::redirect($redirectUrl);
     }
 
 }

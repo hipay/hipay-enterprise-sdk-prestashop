@@ -9,7 +9,7 @@
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_tpp'}</h3>
     {if $status_error=='200'}
-        {*}No display of errors{*}
+        <p class="error"></p>
     {else if $status_error=='400'}
         <p class="error">{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_tpp'}</p>
     {else if $status_error=='503'}
@@ -26,7 +26,7 @@
         </p>
     {/if}
 
-    <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'validation', [], true)|escape:'html'}" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+    <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             <div class="control-group">
                 <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
@@ -56,43 +56,62 @@
         </p>
     </form>
     <script>
-        $("#pay-button").click(function () {
+        $("#pay-button").click(function (e) {
+            //set param for Api call
             var params = {
-                card_number: $('#card-number')[0].value,
-                cvc: $('#cvv')[0].value,
-                card_expiry_month: $('#expiry-month')[0].value,
-                card_expiry_year: $('#expiry-year')[0].value,
-                card_holder: $('#the-card-name-id')[0].value,
+                card_number: $('#card-number').val(),
+                cvc: $('#cvc').val(),
+                card_expiry_month: $('input[name=expiry-month]').val(),
+                card_expiry_year: $('input[name=expiry-year]').val(),
+                card_holder: $('#the-card-name-id').val(),
                 multi_use: '0'
             };
 
 
             HiPay.setTarget('stage'); // default is production/live
 
-            // These are fake credentials, put your own credentials here (HiPay Enterprise back office > Integration > Security settings and create credentials with public visibility)
-            HiPay.setCredentials('11111111.stage-secure-gateway.hipay-tpp.com', 'Test_pMAjfghBqya7TA9jqhYah56');
+            HiPay.setCredentials('{$confHipay.account.sandbox.api_tokenjs_username_sandbox}', '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}');
 
             HiPay.create(params,
                     function (result) {
-
-                    // The card has been successfully tokenized
-
+                        // The card has been successfully tokenized
                         token = result.token;
+                        brand = result.brand;
+                        pan = result.pan;
 
+                        // set tokenization response
+                        $('#card-token').val(token);
+                        $('#card-brand').val(brand);
+                        $('#card-pan').val(brand);
+
+                        // we empty the form so we don't send credit card informations to the server
+                        $('#card-number').val("");
+                        $('#cvc').val("");
+                        $('input[name=expiry-month]').val("");
+                        $('input[name=expiry-year]').val("");
+                        $('#the-card-name-id').val("");
+
+                        //submit the form
+                        $("#tokenizerForm").submit();
+
+                        return true;
                     },
                     function (errors) {
-
+                        console.log(errors);
                         // An error occurred
 
                         if (typeof errors.message != "undefined") {
-                            $("#error").text("Error: " + errors.message);
+                            $(".error").text("Error: " + errors.message);
                         } else {
-                            $("#error").text("An error occurred with the request.");
+                            $(".error").text("An error occurred with the request.");
                         }
+                        return false;
                     }
             );
 
-            return false;
+            // prevent form from being submitted 
+            e.preventDefault();
+            e.stopPropagation();
         });
     </script>
 {/if}

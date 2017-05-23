@@ -5,4 +5,7 @@
     <input id="expiry-year" class="expiry-year" name="expiry-year">
     <input id="cvc" class="cvc" name="cvc">
 </div>
+<input id="card-token" type='hidden' name='card-token' value='' />
+<input id="card-brand" type='hidden' name='card-brand' value='' />
+<input id="card-pan" type='hidden' name='card-pan' value='' />
 <input id="ioBB" type="hidden" name="ioBB">
