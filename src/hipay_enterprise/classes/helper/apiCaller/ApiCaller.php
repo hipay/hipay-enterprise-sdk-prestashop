@@ -10,6 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 /**
@@ -39,4 +40,29 @@ class ApiCaller {
 
         return $transaction->getForwardUrl();
     }
+
+    /**
+     * return transaction from Direct Post Api call
+     * @param type $moduleInstance
+     * @param type $cardToken
+     * @return type
+     */
+    public static function requestDirectPost($moduleInstance, $cardToken) {
+
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
+                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"], $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
+        );
+        //Instantiate client provider with configuration object
+        $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
+
+        //Create your gateway client
+        $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
+        //Set data to send to the API
+        $orderRequest = new DirectPostFormatter($moduleInstance, $cardToken);
+        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
+        $transaction = $gatewayClient->requestNewOrder($orderRequest->generate());
+
+        return $transaction;
+    }
+
 }

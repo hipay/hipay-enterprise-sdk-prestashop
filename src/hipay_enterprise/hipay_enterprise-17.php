@@ -61,49 +61,47 @@ class HipayEnterpriseNew extends Hipay_enterprise {
 
         $paymentOptions = array();
 
+        if (!empty($activatedCreditCard)) {
+            //displaying different forms depending of the operating mode chosen in the BO configuration
+            switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
+                case "hosted_page":
+                    $newOption = new PaymentOption();
+                    $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+                    ;
+                    $paymentOptions[] = $newOption;
+                    break;
+                case "api":
+                    $this->context->smarty->assign(array(
+                        'module_dir' => $this->_path,
+                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook',
+                        'action' => $this->context->link->getModuleLink($this->name, 'redirect', array(), true),
+                    ));
 
-        //displaying different forms depending of the operating mode chosen in the BO configuration
-        switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
-            case "hosted_page":
-                $newOption = new PaymentOption();
-                $newOption->setCallToActionText($this->l("pay by card"))
-                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
-                ;
-                $paymentOptions[] = $newOption;
-                break;
-            case "api":
-                $path = 'paymentFormApi16.tpl';
-                break;
-            case "iframe":
-                $newOption = new PaymentOption();
-                $newOption->setCallToActionText($this->l("pay by card"))
-                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
-                ;
-                $paymentOptions[] = $newOption;
-                break;
-            default :
-                break;
+                    $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
+                    $newOption = new PaymentOption();
+                    $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setModuleName($this->name)
+                            ->setForm($paymentForm)
+                    ;
+
+                    $paymentOptions[] = $newOption;
+
+                    break;
+                case "iframe":
+                    $newOption = new PaymentOption();
+                    $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
+                    ;
+                    $paymentOptions[] = $newOption;
+                    break;
+                default :
+                    break;
+            }
         }
 
 
-//        if (!empty($activatedCreditCard)) {
-//
-//            $this->context->smarty->assign(array(
-//                'module_dir' => $this->_path,
-//                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
-//                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook'
-//            ));
-//
-//            $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
-//            $newOption = new PaymentOption();
-//            //TODO: translate call to action text
-//            $newOption->setCallToActionText("pay by card")
-//                    ->setForm($paymentForm)
-//                    ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-//            ;
-//
-//            $paymentOptions[] = $newOption;
-//        }
         return $paymentOptions;
     }
 
@@ -124,4 +122,17 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         }
         return false;
     }
+
+    /**
+     * add JS to the bottom of the page
+     * @param type $params
+     */
+    public function hipayActionFrontControllerSetMedia($params) {
+
+        // Only on order page
+        if ('order' === $this->context->controller->php_self) {
+            $this->context->controller->registerJavascript('card-tokenize', 'modules/' . $this->name . '/views/js/card-tokenize.js');
+        }
+    }
+
 }
