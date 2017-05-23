@@ -140,7 +140,7 @@ class Hipay_enterprise extends PaymentModule {
         $return = $this->updateHiPayOrderStates();
         $return = $this->registerHook('backOfficeHeader');
         if (_PS_VERSION_ >= '1.7') {
-            $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header") && $this->registerHook("actionFrontControllerSetMedia");
+            $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
             $return = $return && $return17;
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $return16 = $this->registerHook('payment');
