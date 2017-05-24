@@ -1,0 +1,10 @@
+{
+    "name": "paypal",
+    "config": {
+        "displayName" : "Paypal",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "logo" : "giropay.png"
+    }
+}

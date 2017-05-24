@@ -31,7 +31,23 @@ class HipayConfig {
             $this->initConfigHiPay();
         }
 
+        $this->updateConfig();
         return $this->configHipay;
+    }
+
+    private function updateConfig() {
+        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
+        $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
+        $localkeys = array_diff(array_keys($configFields["payment"]["local_payment"]), array_keys($this->configHipay["payment"]["local_payment"]));
+        $cckeys = array_diff(array_keys($configFields["payment"]["credit_card"]), array_keys($this->configHipay["payment"]["credit_card"]));
+        
+        foreach($cckeys as $key){
+            $this->configHipay["payment"]["credit_card"][$key] = $configFields["payment"]["credit_card"][$key];
+        }
+        
+        foreach($localkeys as $key){
+            $this->configHipay["payment"]["local_payment"][$key] = $configFields["payment"]["local_payment"][$key];
+        }
     }
 
     /**
@@ -129,9 +145,7 @@ class HipayConfig {
                     "card_token" => 1
                 ),
                 "credit_card" => array(),
-                "local_payment" => array(
-                    "sisal" => array(),
-                )
+                "local_payment" => array()
             ),
             "fraud" => array(
                 "payment_fraud_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),

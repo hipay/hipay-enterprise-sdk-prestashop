@@ -1,0 +1,10 @@
+{
+    "name": "giropay",
+    "config": {
+        "displayName" : "Giropay",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "logo" : "giropay.png"
+    }
+}
