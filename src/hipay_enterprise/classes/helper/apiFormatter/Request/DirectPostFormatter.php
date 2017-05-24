@@ -10,20 +10,19 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/RequestFormatterAbstract.php');
-require_once(dirname(__FILE__) . '/../PaymentMethod/CardTokenFormatter.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 class DirectPostFormatter extends RequestFormatterAbstract {
 
     private $cardToken;
-    private $cardBrand;
+    private $paymentProduct;
     private $deviceFingerprint;
 
     public function __construct($moduleInstance, $params) {
         parent::__construct($moduleInstance);
-        $this->cardToken = $params["card-token"];
-        $this->cardBrand = $params["card-brand"];
+        $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
+        $this->paymentMethod = $params["paymentmethod"];
     }
 
     /**
@@ -45,17 +44,12 @@ class DirectPostFormatter extends RequestFormatterAbstract {
      */
     protected function mapRequest(&$order) {
         parent::mapRequest($order);
-        $order->payment_product = $this->cardBrand;
+        $order->payment_product = $this->paymentProduct;
         $order->device_fingerprint = $this->deviceFingerprint;
-        $order->paymentMethod = $this->getPaymentMethod();
+        $order->paymentMethod = $this->paymentMethod;
+       
     }
 
-    private function getPaymentMethod() {
-
-        var_dump($this->cardToken);
-        $paymentMethod = new CardTokenFormatter($this->module, $this->cardToken);
-
-        return $paymentMethod->generate();
-    }
+    
 
 }

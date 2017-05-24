@@ -10,6 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/../../classes/helper/apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontController {
 
@@ -31,28 +32,23 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         if ($cart->id == NULL)
             Tools::redirect('index.php?controller=order');
 
-        $params = array("paymentproduct" => Tools::getValue("method"), "iframe" => true);
+        $params = array("productlist" => Tools::getValue("method"), "iframe" => true);
 
         if (!$params)
             Tools::redirect('index.php?controller=order');
 
+        $products = $this->getSDKPaymentMethod();
+        
+        //verify if the payment method exist in the SDK
+        if(!in_array(Tools::getValue("method"), $products))
+            Tools::redirect('index.php?controller=order');
+        
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case "api":
-                // if form is sent
-//                if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
-//                    $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
-//                } else {
-//                    $context->smarty->assign(array(
-//                        'status_error' => '200', // Force to ok for first call
-//                        'cart_id' => $cart->id,
-//                        'amount' => $cart->getOrderTotal(true, Cart::BOTH),
-//                        'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
-//                    ));
-//                    $path = 'paymentFormApi16.tpl';
-//                }
+                    $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 break;
             case "iframe":
                 $context->smarty->assign(array(
@@ -79,4 +75,20 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
     }
 
+    /**
+     * return all code of Payment method present in the SDK
+     * @return type
+     */
+    private function getSDKPaymentMethod(){
+        $collection = HiPay\Fullservice\Data\PaymentProduct\Collection::getItems();
+        
+        $paymentName = array();
+        
+        foreach($collection as $payment){
+            $paymentName[] = $payment->getProductCode();
+        }
+        
+        return $paymentName;
+    }
+    
 }

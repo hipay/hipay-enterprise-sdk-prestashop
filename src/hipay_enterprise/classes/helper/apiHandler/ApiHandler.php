@@ -11,6 +11,7 @@
  */
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 
@@ -29,7 +30,6 @@ class Apihandler {
     public function __construct($moduleInstance, $contextInstance) {
         $this->module = $moduleInstance;
         $this->context = $contextInstance;
-        
     }
 
     /**
@@ -46,22 +46,18 @@ class Apihandler {
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
-                $this->handleDirectOrder();
+                $params ["paymentmethod"] = $this->getPaymentMethod(Tools::getValue('card-token'));
+                $this->handleDirectOrder($params);
                 break;
-            case Apihandler::IFRAME :
-                
-                $params = array(
-                    "iframe" => true,
-                    "productlist" => $this->getCreditCardProductList($deliveryCountry, $currency)
-                );
+            case Apihandler::IFRAME:
+
+                $params["iframe"] = true;
+                $params["productlist"] = $this->getCreditCardProductList($deliveryCountry, $currency);
                 return $this->handleIframe($params);
                 break;
-            case Apihandler::HOSTEDPAGE :
-
-                $params = array(
-                    "iframe" => true,
-                    "productlist" => $this->getCreditCardProductList($deliveryCountry, $currency)
-                );
+            case Apihandler::HOSTEDPAGE:
+                $params["iframe"] = true;
+                $params["productlist"] = $this->getCreditCardProductList($deliveryCountry, $currency);
 
                 $this->handleHostedPayment($params);
                 break;
@@ -69,27 +65,24 @@ class Apihandler {
                 $this->module->getLogs()->logsHipay("Unknown payment mode");
         }
     }
-    
+
+    /**
+     * handle all local payment api call
+     * @param type $mode
+     * @param type $params
+     * @return type
+     */
     public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array()) {
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
-                $this->handleDirectOrder();
+                $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME :
-                
-                $params = array(
-                    "iframe" => $params["iframe"],
-                    "productlist" => $params["paymentproduct"]
-                );
+
                 return $this->handleIframe($params);
                 break;
             case Apihandler::HOSTEDPAGE :
-
-                $params = array(
-                    "iframe" => $params["iframe"],
-                    "productlist" => $params["paymentproduct"]
-                );
 
                 $this->handleHostedPayment($params);
                 break;
@@ -116,13 +109,7 @@ class Apihandler {
     /**
      * call api and redirect to success or error page 
      */
-    private function handleDirectOrder() {
-
-        $params = array(
-            "deviceFingerprint" => Tools::getValue('ioBB'),
-            "card-token" => Tools::getValue('card-token'),
-            "card-brand" => Tools::getValue('card-brand')
-        );
+    private function handleDirectOrder($params) {
 
         $response = ApiCaller::requestDirectPost($this->module, $params);
 
@@ -168,6 +155,13 @@ class Apihandler {
         $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card", $deliveryCountry, $currency);
         $productList = join(",", array_keys($creditCard));
         return $productList;
+    }
+
+    private function getPaymentMethod($cardToken) {
+
+        $paymentMethod = new CardTokenFormatter($this->module, $cardToken);
+
+        return $paymentMethod->generate();
     }
 
 }

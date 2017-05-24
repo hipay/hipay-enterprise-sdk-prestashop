@@ -26,7 +26,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $cart = $context->cart;
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
-        
+
         if ($cart->id == NULL)
             Tools::redirect('index.php?controller=order');
 
@@ -50,7 +50,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case "api":
                 // if form is sent
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
-                    $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST);
+                    $params = array(
+                        "deviceFingerprint" => Tools::getValue('ioBB'),
+                        "productlist" => Tools::getValue('card-brand'),
+                        "cardtoken" =>Tools::getValue('card-token')
+                    );
+                    $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
                 } else {
                     $context->smarty->assign(array(
                         'status_error' => '200', // Force to ok for first call
