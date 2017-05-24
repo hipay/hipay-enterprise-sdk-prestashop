@@ -38,17 +38,30 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             Tools::redirect('index.php?controller=order');
 
         $products = $this->getSDKPaymentMethod();
-        
+
         //verify if the payment method exist in the SDK
-        if(!in_array(Tools::getValue("method"), $products))
+        if (!in_array(Tools::getValue("method"), $products))
             Tools::redirect('index.php?controller=order');
-        
+
+
+        $context->smarty->assign(array(
+            'nbProducts' => $cart->nbProducts(),
+            'cust_currency' => $cart->id_currency,
+            'currencies' => $this->module->getCurrency((int) $cart->id_currency),
+            'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'this_path' => $this->module->getPathUri(),
+            'this_path_bw' => $this->module->getPathUri(),
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
+            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates/hook'
+        ));
+
+
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case "api":
-                    $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
+                $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 break;
             case "iframe":
                 $context->smarty->assign(array(
@@ -79,16 +92,16 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
      * return all code of Payment method present in the SDK
      * @return type
      */
-    private function getSDKPaymentMethod(){
+    private function getSDKPaymentMethod() {
         $collection = HiPay\Fullservice\Data\PaymentProduct\Collection::getItems();
-        
+
         $paymentName = array();
-        
-        foreach($collection as $payment){
+
+        foreach ($collection as $payment) {
             $paymentName[] = $payment->getProductCode();
         }
-        
+
         return $paymentName;
     }
-    
+
 }

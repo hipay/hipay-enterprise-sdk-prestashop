@@ -31,7 +31,6 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
 
         $this->mapRequest($order);
         
-        var_dump($order);
         return $order;
     }
 
