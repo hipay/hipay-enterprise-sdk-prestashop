@@ -33,7 +33,7 @@ class Apihandler {
     }
 
     /**
-     * 
+     * handle credit card api call
      * @param type $mode
      * @param type $params
      */
@@ -61,6 +61,34 @@ class Apihandler {
                 $params = array(
                     "iframe" => true,
                     "productlist" => $this->getCreditCardProductList($deliveryCountry, $currency)
+                );
+
+                $this->handleHostedPayment($params);
+                break;
+            default :
+                $this->module->getLogs()->logsHipay("Unknown payment mode");
+        }
+    }
+    
+    public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array()) {
+
+        switch ($mode) {
+            case Apihandler::DIRECTPOST:
+                $this->handleDirectOrder();
+                break;
+            case Apihandler::IFRAME :
+                
+                $params = array(
+                    "iframe" => $params["iframe"],
+                    "productlist" => $params["paymentproduct"]
+                );
+                return $this->handleIframe($params);
+                break;
+            case Apihandler::HOSTEDPAGE :
+
+                $params = array(
+                    "iframe" => $params["iframe"],
+                    "productlist" => $params["paymentproduct"]
                 );
 
                 $this->handleHostedPayment($params);

@@ -61,7 +61,7 @@
 
 <script>
     {foreach $config_hipay.payment.local_payment as $localPayment}
-    var {$localPayment@key}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
+    var {$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
         showFilterInputs: false,
         moveOnSelect: false,
         nonSelectedListLabel: '{l s='Available countries' mod='hipay_professional'}',

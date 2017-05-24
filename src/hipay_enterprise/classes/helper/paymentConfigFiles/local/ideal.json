@@ -1,0 +1,10 @@
+{
+    "name": "ideal",
+    "config": {
+        "displayName" : "IDEAL",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "logo" : "ideal.png"
+    }
+}

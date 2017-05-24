@@ -100,7 +100,20 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                     break;
             }
         }
+        
+        
+        // get activated card for customer currency and country
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency);
 
+        if (!empty($activatedLocalPayment)) {
+            foreach($activatedLocalPayment as $name => $localpayment){
+                $newOption = new PaymentOption();
+                    $newOption->setCallToActionText($this->l("pay by")." ".$localpayment["displayName"])
+                            ->setAction($this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true))
+                    ;
+                    $paymentOptions[] = $newOption;
+            }
+        }
 
         return $paymentOptions;
     }

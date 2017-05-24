@@ -1,0 +1,10 @@
+{
+    "name": "sofort-uberweisung",
+    "config": {
+        "displayName" : "Sofort Überweisung",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "logo" : "sofort.png"
+    }
+}

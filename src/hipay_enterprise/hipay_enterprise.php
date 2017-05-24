@@ -573,7 +573,9 @@ class Hipay_enterprise extends PaymentModule {
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
                 $activatedPayment[$name] = $settings;
-                $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirect', array("method" => $name), true);
+                if($paymentMethodType == "local_payment") {
+                    $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
+                }
             }
         }
         return $activatedPayment;
