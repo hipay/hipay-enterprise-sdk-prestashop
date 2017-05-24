@@ -1,6 +1,7 @@
 {
     "name": "mastercard",
     "config": {
+        "displayName" : "Mastercard",
         "activated" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB","FR"]

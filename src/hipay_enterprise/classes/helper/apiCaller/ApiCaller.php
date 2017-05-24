@@ -23,7 +23,7 @@ class ApiCaller {
      * @param type $moduleInstance
      * @return type
      */
-    public static function getHostedPaymentPage($moduleInstance) {
+    public static function getHostedPaymentPage($moduleInstance, $params) {
 
         $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
                 $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"], $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
@@ -34,7 +34,7 @@ class ApiCaller {
         //Create your gateway client
         $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
         //Set data to send to the API
-        $orderRequest = new HostedPaymentFormatter($moduleInstance);
+        $orderRequest = new HostedPaymentFormatter($moduleInstance, $params);
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
 

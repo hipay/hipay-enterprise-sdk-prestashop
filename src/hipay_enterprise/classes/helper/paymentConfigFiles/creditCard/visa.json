@@ -1,6 +1,7 @@
 {
     "name": "visa",
     "config": {
+        "displayName" : "Visa",
         "activated" : 0,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"]

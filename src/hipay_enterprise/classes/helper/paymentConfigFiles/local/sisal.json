@@ -1,9 +1,10 @@
 {
     "name": "sisal",
     "config": {
-        "activated" : 0,
+        "displayName" : "Sisal",
+        "activated" : 1,
         "currencies" : ["EUR"],
-        "countries"  : ["GB"],
+        "countries"  : ["GB", "FR"],
         "logo" : "sisal.png"
     }
 }

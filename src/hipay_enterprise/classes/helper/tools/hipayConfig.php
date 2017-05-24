@@ -130,12 +130,7 @@ class HipayConfig {
                 ),
                 "credit_card" => array(),
                 "local_payment" => array(
-                    "sisal" => array(
-                        "activated" => 1,
-                        "currencies" => array(),
-                        "countries" => array(),
-                        'logo' => 'sisal.png'
-                    ),
+                    "sisal" => array(),
                 )
             ),
             "fraud" => array(
