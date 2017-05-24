@@ -18,6 +18,8 @@
         <p class="error">{l s='A forbidden action has been identified, process has been cancelled.' mod='hipay_tpp'}</p>
     {else if $status_error=='999'}
         <p class="error">{l s='Please select one of the memorized card before continuing.' mod='hipay_tpp'}</p>
+    {else if $status_error=='404'}
+        <p class="error">{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_tpp'}</p>
     {else}
         <p class="error">
             <strong>{l s='Error code' mod='hipay_tpp'} : {$status_error}</strong>

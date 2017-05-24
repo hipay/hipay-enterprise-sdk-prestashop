@@ -50,12 +50,30 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case "api":
                 // if form is sent
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
-                    $params = array(
-                        "deviceFingerprint" => Tools::getValue('ioBB'),
-                        "productlist" => Tools::getValue('card-brand'),
-                        "cardtoken" =>Tools::getValue('card-token')
-                    );
-                    $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
+
+                    $delivery = new Address((int) $cart->id_address_delivery);
+                    $deliveryCountry = new Country((int) $delivery->id_country);
+                    $currency = new Currency((int) $cart->id_currency);
+
+                    $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card", $deliveryCountry, $currency);
+                    
+                    if (in_array(strtolower(Tools::getValue('card-brand')), array_keys($creditCard))) {
+
+                        $params = array(
+                            "deviceFingerprint" => Tools::getValue('ioBB'),
+                            "productlist" => Tools::getValue('card-brand'),
+                            "cardtoken" => Tools::getValue('card-token')
+                        );
+                        $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
+                    } else {
+                        $context->smarty->assign(array(
+                            'status_error' => '404', // Force to ok for first call
+                            'cart_id' => $cart->id,
+                            'amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                            'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
+                        ));
+                        $path = 'paymentFormApi16.tpl';
+                    }
                 } else {
                     $context->smarty->assign(array(
                         'status_error' => '200', // Force to ok for first call
