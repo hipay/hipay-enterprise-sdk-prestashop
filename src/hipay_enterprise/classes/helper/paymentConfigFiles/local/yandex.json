@@ -7,6 +7,7 @@
         "countries"  : ["RU"],
         "countrySelectorReadOnly": 1,
         "currencySelectorReadOnly": 1,
+        "forceHpayment": 1,
         "logo" : "giropay.png"
     }
 }

@@ -9,6 +9,10 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
+require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+
+
 class HipayConfig {
 
     private $jsonFilesPath;
@@ -102,7 +106,8 @@ class HipayConfig {
 
     /**
      * init module configuration
-     * @return : bool
+     * @return : boolrequire_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+
      */
     private function insertConfigHiPay() {
         $this->module->getLogs()->logsHipay('---- >> function insertConfigHiPay');
@@ -142,7 +147,7 @@ class HipayConfig {
             ),
             "payment" => array(
                 "global" => array(
-                    "operating_mode" => "api",
+                    "operating_mode" => Apihandler::DIRECTPOST,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "css_url" => "",

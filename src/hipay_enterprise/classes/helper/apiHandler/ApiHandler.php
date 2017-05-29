@@ -24,8 +24,8 @@ class Apihandler {
     private $context;
 
     const IFRAME = 'iframe';
-    const HOSTEDPAGE = 'hostedpage';
-    const DIRECTPOST = 'directpost';
+    const HOSTEDPAGE = 'hosted_page';
+    const DIRECTPOST = 'api';
 
     public function __construct($moduleInstance, $contextInstance) {
         $this->module = $moduleInstance;
