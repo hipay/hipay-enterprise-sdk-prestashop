@@ -52,7 +52,7 @@ class Apihandler {
             case Apihandler::IFRAME:
 
                 $params["iframe"] = true;
-                $params["productlist"] = $this->getCreditCardProductList($deliveryCountry, $currency);
+                $params["productlist"] = $this->getCreditCardProductList($deliveryCountry, $currency, $orderTotal);
                 return $this->handleIframe($params);
                 break;
             case Apihandler::HOSTEDPAGE:

@@ -169,9 +169,10 @@ class Hipay_enterprise extends PaymentModule {
         $address = new Address(intval($params['cart']->id_address_delivery));
         $country = new Country(intval($address->id_country));
         $currency = new Currency(intval($params['cart']->id_currency));
-
-        $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
+        $orderTotal = $params['cart']->getOrderTotal();
         
+        $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
+
         $this->smarty->assign(array(
             'domain' => Tools::getShopDomainSSL(true),
             'module_dir' => $this->_path,
@@ -179,7 +180,7 @@ class Hipay_enterprise extends PaymentModule {
             'min_amount' => $this->min_amount,
             'configHipay' => $this->hipayConfigTool->getConfigHipay(),
             'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency),
-            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency),
+            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $orderTotal),
             'lang' => Tools::strtolower($this->context->language->iso_code),
         ));
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]);
@@ -583,10 +584,10 @@ class Hipay_enterprise extends PaymentModule {
      * @param Currency $currency
      * @return array
      */
-    public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
+    public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency, $orderTotal = 1) {
         $activatedPayment = array();
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
-            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
+            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) && $orderTotal >= $settings["minAmount"]) {
                 $activatedPayment[$name] = $settings;
                 if ($paymentMethodType == "local_payment") {
                     $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);

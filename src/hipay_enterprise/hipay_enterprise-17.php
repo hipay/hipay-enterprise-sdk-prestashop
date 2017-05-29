@@ -103,7 +103,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
 
 
         // get activated card for customer currency and country
-        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency);
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $params['cart']->getOrderTotal());
 
         if (!empty($activatedLocalPayment)) {
             foreach ($activatedLocalPayment as $name => $localpayment) {

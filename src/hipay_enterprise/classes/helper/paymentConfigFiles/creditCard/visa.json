@@ -4,6 +4,7 @@
         "displayName" : "Visa",
         "activated" : 0,
         "currencies" : ["EUR"],
+        "minAmount" : 0,
         "countries"  : ["GB", "FR"]
     }
 }

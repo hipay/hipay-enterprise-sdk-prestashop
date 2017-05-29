@@ -4,6 +4,7 @@
         "displayName" : "Mastercard",
         "activated" : 1,
         "currencies" : ["EUR"],
+        "minAmount" : 0,
         "countries"  : ["GB","FR"]
     }
 }
