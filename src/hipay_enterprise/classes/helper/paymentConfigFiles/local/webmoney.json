@@ -1,13 +1,13 @@
 {
-    "name": "yandex",
+    "name": "webmoney",
     "config": {
-        "displayName" : "Yandex",
+        "displayName" : "WebMoney",
         "activated" : 1,
         "currencies" : ["RUB"],
         "countries"  : ["RU"],
         "countrySelectorReadOnly": 1,
         "currencySelectorReadOnly": 1,
         "forceHpayment": 1,
-        "logo" : "yandex.png"
+        "logo" : "webmoney.png"
     }
 }
