@@ -1,7 +1,7 @@
 {
-    "name": "webmoney",
+    "name": "webmoney-transfert",
     "config": {
-        "displayName" : "WebMoney",
+        "displayName" : "WebMoney Transfer",
         "activated" : 1,
         "currencies" : ["RUB"],
         "countries"  : ["RU"],

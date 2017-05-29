@@ -1,7 +1,7 @@
 {
     "name": "yandex",
     "config": {
-        "displayName" : "Yandex",
+        "displayName" : "Yandex Money",
         "activated" : 1,
         "currencies" : ["RUB"],
         "countries"  : ["RU"],

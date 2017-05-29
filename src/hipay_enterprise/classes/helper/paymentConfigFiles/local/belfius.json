@@ -1,0 +1,13 @@
+{
+    "name": "dexia-directnet",
+    "config": {
+        "displayName" : "Belfius Direct Net",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "countrySelectorReadOnly": 0,
+        "currencySelectorReadOnly": 0,
+        "forceHpayment": 0,
+        "logo" : "dexia-directnet.png"
+    }
+}
