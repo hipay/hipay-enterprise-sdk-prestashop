@@ -1,10 +1,10 @@
 {
-    "name": "paypal",
+    "name": "ing-homepay",
     "config": {
-        "displayName" : "Paypal",
+        "displayName" : "ING Home'Pay",
         "activated" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"],
-        "logo" : "paypal.png"
+        "logo" : "ing-homepay.png"
     }
 }

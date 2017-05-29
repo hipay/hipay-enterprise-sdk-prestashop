@@ -454,7 +454,8 @@ class Hipay_enterprise extends PaymentModule {
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
                 foreach ($conf as $key => $value) {
-                    if ($key == "currencies" || $key == "logo") {
+                    //prevent specific fields from being updated
+                    if ($key == "currencies" || $key == "logo" || $key == "displayName") {
                         $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
                     } else if (is_bool(Tools::getValue($card . "_" . $key)) && !Tools::getValue($card . "_" . $key)) {
                         $fieldValue = array();
@@ -575,6 +576,7 @@ class Hipay_enterprise extends PaymentModule {
                 $activatedPayment[$name] = $settings;
                 if($paymentMethodType == "local_payment") {
                     $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
+                    $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/'. $settings["logo"];
                 }
             }
         }

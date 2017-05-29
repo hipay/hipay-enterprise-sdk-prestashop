@@ -18,7 +18,7 @@
                     <a href="#">
                         <img src="{$domain|cat:$payment_button|escape:'htmlall':'UTF-8'}"
                              alt="{l s='Pay by credit or debit card' mod='hipay_professional'} "
-                             class="pull-left" width="234px" height="57px"/>
+                             />
 
                         <span>
                             {l s='Pay by credit or debit card' mod='hipay_professional' }
@@ -32,7 +32,7 @@
                     <a href="{$link->getModuleLink('hipay_enterprise', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}"
                        title="{l s='Pay by credit or debit card' mod='hipay_professional' }">
 
-                        <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}" alt="{l s='Pay by credit or debit card' mod='hipay_professional'}" class="" width="234px" height="57px"/>
+                        <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}" alt="{l s='Pay by credit or debit card' mod='hipay_professional'}" />
                         {l s='Pay by credit or debit card' mod='hipay_professional' }
                         <span>
 
@@ -54,9 +54,7 @@
                 <div class="col-xs-12 col-md-12">
                     <p class="payment_module" id="hipay_payment_button">
                         <a href="#">
-                            <img src="{$domain|cat:$payment_button|escape:'htmlall':'UTF-8'}"
-                                 alt="{l s='Pay by credit or debit card' mod='hipay_professional'} "
-                                 class="pull-left" width="234px" height="57px"/>
+                           <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}" alt="{$local_payment.displayName}" class="" />
                             <span>
                                 {l s='Pay by credit or debit card' mod='hipay_professional' }
                                 {l s='Minimum amount required in order to pay by credit card:' mod='hipay_professional' } {convertPrice price=$min_amount}
@@ -75,7 +73,7 @@
                         <a href="{$local_payment.link}"
                            title="{l s='Pay by ' mod='hipay_professional' } {$local_payment.displayName}">
 
-                            <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}" alt="{$local_payment.displayName}" class="" width="234px" height="57px"/>
+                            <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}" alt="{$local_payment.displayName}"  />
                             {l s='Pay by' mod='hipay_professional' } {$local_payment.displayName}
                             <span>
 

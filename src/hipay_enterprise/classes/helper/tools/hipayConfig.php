@@ -36,16 +36,22 @@ class HipayConfig {
     }
 
     private function updateConfig() {
+
+        $this->module->getLogs()->logsHipay('---- >> function updateConfig << --------');
+
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
+
+        $this->module->getLogs()->logsHipay(print_r($configFields, true));
+
         $localkeys = array_diff(array_keys($configFields["payment"]["local_payment"]), array_keys($this->configHipay["payment"]["local_payment"]));
         $cckeys = array_diff(array_keys($configFields["payment"]["credit_card"]), array_keys($this->configHipay["payment"]["credit_card"]));
-        
-        foreach($cckeys as $key){
+
+        foreach ($cckeys as $key) {
             $this->configHipay["payment"]["credit_card"][$key] = $configFields["payment"]["credit_card"][$key];
         }
-        
-        foreach($localkeys as $key){
+
+        foreach ($localkeys as $key) {
             $this->configHipay["payment"]["local_payment"][$key] = $configFields["payment"]["local_payment"][$key];
         }
     }

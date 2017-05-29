@@ -1,10 +1,10 @@
 {
-    "name": "paypal",
+    "name": "oney",
     "config": {
-        "displayName" : "Paypal",
+        "displayName" : "ONEY",
         "activated" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"],
-        "logo" : "paypal.png"
+        "logo" : "oney.png"
     }
 }
