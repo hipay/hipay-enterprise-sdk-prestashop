@@ -1,0 +1,12 @@
+{
+    "name": "przelewy24",
+    "config": {
+        "displayName" : "Przelewy24",
+        "activated" : 1,
+        "currencies" : ["PLN"],
+        "countries"  : ["PL"],
+        "countrySelectorReadOnly": 1,
+        "currencySelectorReadOnly": 1,
+        "logo" : "przelewy24.png"
+    }
+}
