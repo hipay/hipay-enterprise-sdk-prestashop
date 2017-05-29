@@ -1,0 +1,12 @@
+{
+    "name": "yandex",
+    "config": {
+        "displayName" : "Yandex",
+        "activated" : 1,
+        "currencies" : ["RUB"],
+        "countries"  : ["RU"],
+        "countrySelectorReadOnly": 1,
+        "currencySelectorReadOnly": 1,
+        "logo" : "giropay.png"
+    }
+}

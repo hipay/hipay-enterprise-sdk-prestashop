@@ -5,6 +5,8 @@
         "activated" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"],
+        "countrySelectorReadOnly": 0,
+        "currencySelectorReadOnly": 0,
         "logo" : "paypal.png"
     }
 }

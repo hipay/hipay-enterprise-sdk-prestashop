@@ -100,18 +100,18 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                     break;
             }
         }
-        
-        
+
+
         // get activated card for customer currency and country
         $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency);
 
         if (!empty($activatedLocalPayment)) {
-            foreach($activatedLocalPayment as $name => $localpayment){
+            foreach ($activatedLocalPayment as $name => $localpayment) {
                 $newOption = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("pay by")." ".$localpayment["displayName"])
-                            ->setAction($this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true))
-                    ;
-                    $paymentOptions[] = $newOption;
+                $newOption->setCallToActionText($this->l("pay by") . " " . $localpayment["displayName"])
+                        ->setAction($this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true))
+                ;
+                $paymentOptions[] = $newOption;
             }
         }
 
@@ -145,7 +145,32 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
             $this->context->controller->registerJavascript('card-tokenize', 'modules/' . $this->name . '/views/js/card-tokenize.js');
+            $this->context->controller->registerJavascript('device-fingerprint', 'modules/' . $this->name . '/views/js/devicefingerprint.js');
         }
+    }
+
+    /**
+     * 
+     * @param type $params
+     * @return type
+     */
+    public function hipayPaymentReturnNew($params) {
+        // Payement return for PS 1.7
+        if ($this->active == false) {
+            return;
+        }
+        $order = $params['order'];
+        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
+            $this->smarty->assign('status', 'ok');
+        }
+        $this->smarty->assign(array(
+            'id_order' => $order->id,
+            'reference' => $order->reference,
+            'params' => $params,
+            'total_to_pay' => Tools::displayPrice($order->total_paid, null, false),
+            'shop_name' => $this->context->shop->name,
+        ));
+        return $this->fetch('module:' . $this->name . '/views/templates/hook/paymentReturn.tpl');
     }
 
 }

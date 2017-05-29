@@ -32,7 +32,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         if ($cart->id == NULL)
             Tools::redirect('index.php?controller=order');
 
-        $params = array("productlist" => Tools::getValue("method"), "iframe" => true);
+        $params = array("productlist" => Tools::getValue("method"), "iframe" => true, "deviceFingerprint" => null);
 
         if (!$params)
             Tools::redirect('index.php?controller=order');
@@ -61,6 +61,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case "api":
+                $params["deviceFingerprint"] = Tools::getValue('ioBB');
                 $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 break;
             case "iframe":

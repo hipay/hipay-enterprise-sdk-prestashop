@@ -76,6 +76,7 @@ class Apihandler {
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
+                $params ["paymentmethod"] = null;
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME :
