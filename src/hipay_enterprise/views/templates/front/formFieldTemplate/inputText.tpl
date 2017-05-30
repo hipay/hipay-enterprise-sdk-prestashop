@@ -1,3 +1,3 @@
 <label>{$field["label"]}</label>
 
-<input type="text"  name="{$name}" />
+<input required type="text"  name="{$name}" />
