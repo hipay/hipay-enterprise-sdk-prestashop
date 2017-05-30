@@ -1,0 +1,15 @@
+{
+    "name": "postfinance-card",
+    "config": {
+        "displayName" : "PostFinance Card",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["GB", "FR"],
+        "countrySelectorReadOnly": 0,
+        "currencySelectorReadOnly": 0,
+        "forceHpayment": 0,
+        "forceBasket": 0,
+        "minAmount" : 0,
+        "logo" : "postfinance-card.png"
+    }
+}

@@ -57,21 +57,21 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
 
         $mode = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"];
-        $method= Tools::getValue("method");
-        
+        $method = Tools::getValue("method");
+
         // check if hosted payment is forced
-        if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["forceHpayment"] && !in_array($mode, array(Apihandler::HOSTEDPAGE, Apihandler::IFRAME))) {
+        if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["forceHpayment"]) {
             $mode = Apihandler::HOSTEDPAGE;
         }
-        
+
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
-        
+
         switch ($mode) {
             case Apihandler::HOSTEDPAGE:
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case Apihandler::DIRECTPOST:
-                
+
                 $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 break;
             case Apihandler::IFRAME:
