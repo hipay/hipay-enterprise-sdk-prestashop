@@ -10,6 +10,7 @@
         "forceHpayment": 0,
         "forceBasket": 1,
         "minAmount" : 100,
-        "logo" : "oney.png"
+        "logo" : "oney.png",
+        "additionalFields": {}
     }
 }

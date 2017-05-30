@@ -10,6 +10,7 @@
         "forceHpayment": 0,
         "forceBasket": 0,
         "minAmount" : 0,
-        "logo" : "p24.png"
+        "logo" : "p24.png",
+        "additionalFields": {}
     }
 }

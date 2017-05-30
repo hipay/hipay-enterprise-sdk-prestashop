@@ -11,6 +11,7 @@
  */
 require_once(dirname(__FILE__) . '/../../classes/helper/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/forms/hipayForm.php');
 
 class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontController {
 
@@ -43,19 +44,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         if (!in_array(Tools::getValue("method"), $products))
             Tools::redirect('index.php?controller=order');
 
-
-        $context->smarty->assign(array(
-            'nbProducts' => $cart->nbProducts(),
-            'cust_currency' => $cart->id_currency,
-            'currencies' => $this->module->getCurrency((int) $cart->id_currency),
-            'total' => $cart->getOrderTotal(true, Cart::BOTH),
-            'this_path' => $this->module->getPathUri(),
-            'this_path_bw' => $this->module->getPathUri(),
-            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
-            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates/hook'
-        ));
-
-
         $mode = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"];
         $method = Tools::getValue("method");
 
@@ -65,14 +53,44 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         }
 
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
+        $params["method"] = $method;
+        
+        $context->smarty->assign(array(
+            'nbProducts' => $cart->nbProducts(),
+            'cust_currency' => $cart->id_currency,
+            'currencies' => $this->module->getCurrency((int) $cart->id_currency),
+            'total' => $cart->getOrderTotal(true, Cart::BOTH),
+            'this_path' => $this->module->getPathUri(),
+            'this_path_bw' => $this->module->getPathUri(),
+            'this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
+            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates',
+            'action' => $this->context->link->getModuleLink($this->module->name, 'redirectlocal', array("method" => $method), true)
+        ));
+
+
 
         switch ($mode) {
             case Apihandler::HOSTEDPAGE:
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case Apihandler::DIRECTPOST:
-
-                $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
+                if (Tools::isSubmit("localSubmit") || empty($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"])) {
+                    if (Tools::isSubmit("localSubmit")) {
+                        foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]["formFields"] as $name => $field) {
+                            $params[$name] = Tools::getValue($name);
+                        }
+                    }
+                    $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
+                } else {
+                    $context->smarty->assign(array(
+                        'status_error' => '200', // Force to ok for first call
+                        'cart_id' => $cart->id,
+                        'amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                        'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                        'methodFields' => $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]["formFields"]
+                    ));
+                    $path = 'paymentLocalForm16.tpl';
+                }
                 break;
             case Apihandler::IFRAME:
                 $context->smarty->assign(array(

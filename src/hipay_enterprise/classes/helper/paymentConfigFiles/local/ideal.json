@@ -10,6 +10,7 @@
         "forceHpayment": 0,
         "forceBasket": 0,
         "minAmount" : 0,
-        "logo" : "ideal.png"
+        "logo" : "ideal.png",
+        "additionalFields": {}
     }
 }

@@ -10,6 +10,7 @@
         "forceHpayment": 0,
         "forceBasket": 0,
         "minAmount" : 0,
-        "logo" : "dexia-directnet.png"
+        "logo" : "dexia-directnet.png",
+        "additionalFields": {}
     }
 }

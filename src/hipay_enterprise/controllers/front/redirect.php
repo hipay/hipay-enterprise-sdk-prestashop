@@ -67,7 +67,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
                     } else {
                         $context->smarty->assign(array(
-                            'status_error' => '404', // Force to ok for first call
+                            'status_error' => '404', 
                             'cart_id' => $cart->id,
                             'amount' => $cart->getOrderTotal(true, Cart::BOTH),
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay()

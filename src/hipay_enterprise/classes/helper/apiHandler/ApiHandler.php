@@ -12,6 +12,7 @@
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 
@@ -46,7 +47,7 @@ class Apihandler {
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
-                $params ["paymentmethod"] = $this->getPaymentMethod(Tools::getValue('card-token'));
+                $params ["paymentmethod"] = $this->getPaymentMethod($params['cardtoken']);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME:
@@ -76,7 +77,9 @@ class Apihandler {
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
-                $params ["paymentmethod"] = null;
+
+                $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
+                var_dump($params);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME :
@@ -145,6 +148,8 @@ class Apihandler {
                 $redirectUrl = $failUrl;
         }
 
+        var_dump($response);
+        
         Tools::redirect($redirectUrl);
     }
 
@@ -158,9 +163,19 @@ class Apihandler {
         return $productList;
     }
 
-    private function getPaymentMethod($cardToken) {
+    /**
+     * 
+     * @param type $params
+     * @param type $creditCard
+     * @return mixte
+     */
+    private function getPaymentMethod($params, $creditCard = true) {
 
-        $paymentMethod = new CardTokenFormatter($this->module, $cardToken);
+        if ($creditCard) {
+            $paymentMethod = new CardTokenFormatter($this->module, $params);
+        } else {
+            $paymentMethod = new GenericPaymentMethodFormatter($this->module, $params);
+        }
 
         return $paymentMethod->generate();
     }
