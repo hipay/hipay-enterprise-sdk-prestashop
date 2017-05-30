@@ -170,6 +170,8 @@ class HipayForm extends HipayFormInput {
         );
 
 
+        $form['form']['input'][] = $this->generateSwitchButton("electronic_signature", $this->module->l('Activate electronic signature', 'HipayForm'));
+        
         return $this->helper->generateForm(array($form));
     }
 
@@ -186,7 +188,8 @@ class HipayForm extends HipayFormInput {
             "css_url" => "",
             "activate_3d_secure" => "",
             "capture_mode" => "",
-            "card_token" => ""
+            "card_token" => "",
+            "electronic_signature" => ""
         );
 
         // get field value from POST request or config (this way the displayed value is always the good one)

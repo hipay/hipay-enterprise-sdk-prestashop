@@ -9,6 +9,7 @@
         "currencySelectorReadOnly": 1,
         "forceHpayment": 0,
         "forceBasket": 0,
+        "forceHpaymentOnElectronicSignature": 0,
         "minAmount" : 0,
         "logo" : "p24.png",
         "additionalFields": {}

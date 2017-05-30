@@ -55,8 +55,6 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract {
                 $PMRequest->{$attr} = $this->params[$attr];
             }
         }
-        
-        $PMRequest->authentication_indicator = 1;
     }
 
 }

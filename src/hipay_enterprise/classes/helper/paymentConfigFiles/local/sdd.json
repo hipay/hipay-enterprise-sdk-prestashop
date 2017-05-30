@@ -7,8 +7,9 @@
         "countries": ["GB", "FR"],
         "countrySelectorReadOnly": 0,
         "currencySelectorReadOnly": 0,
-        "forceHpayment": 1,
+        "forceHpayment": 0,
         "forceBasket": 0,
+        "forceHpaymentOnElectronicSignature": 1,
         "minAmount": 0,
         "logo": "sdd.png",
         "additionalFields": {

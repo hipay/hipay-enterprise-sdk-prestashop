@@ -153,7 +153,8 @@ class HipayConfig {
                     "css_url" => "",
                     "activate_3d_secure" => 1,
                     "capture_mode" => "manual",
-                    "card_token" => 1
+                    "card_token" => 1,
+                    "electronic_signature" => 1
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()

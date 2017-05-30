@@ -54,7 +54,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
         $params["method"] = $method;
-        
+
         $context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -74,12 +74,19 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case Apihandler::DIRECTPOST:
-                if (Tools::isSubmit("localSubmit") || empty($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"])) {
+                if (Tools::isSubmit("localSubmit") || empty($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]) || ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"] && $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"])) {
                     if (Tools::isSubmit("localSubmit")) {
                         foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]["formFields"] as $name => $field) {
                             $params[$name] = Tools::getValue($name);
                         }
                     }
+
+                    if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]) {
+                        $params["authentication_indicator"] = 1;
+                    } else {
+                        $params["authentication_indicator"] = 0;
+                    }
+
                     $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 } else {
                     $context->smarty->assign(array(
