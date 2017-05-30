@@ -1,0 +1,15 @@
+{
+    "name": "klarna",
+    "config": {
+        "displayName" : "Klarna",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["DE"],
+        "countrySelectorReadOnly": 0,
+        "currencySelectorReadOnly": 0,
+        "forceHpayment": 0,
+        "forceBasket": 1,
+        "minAmount" : 0,
+        "logo" : "klarna.png"
+    }
+}
