@@ -9,6 +9,10 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
+require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+
+
 class HipayConfig {
 
     private $jsonFilesPath;
@@ -31,7 +35,33 @@ class HipayConfig {
             $this->initConfigHiPay();
         }
 
+        $this->updateConfig();
         return $this->configHipay;
+    }
+
+    /**
+     * update config if there's a new json uploaded
+     */
+    private function updateConfig() {
+
+        $this->module->getLogs()->logsHipay('---- >> function updateConfig << --------');
+
+        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
+        $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
+
+        $this->module->getLogs()->logsHipay(print_r($configFields, true));
+
+        // we update only new payment method
+        $localkeys = array_diff(array_keys($configFields["payment"]["local_payment"]), array_keys($this->configHipay["payment"]["local_payment"]));
+        $cckeys = array_diff(array_keys($configFields["payment"]["credit_card"]), array_keys($this->configHipay["payment"]["credit_card"]));
+
+        foreach ($cckeys as $key) {
+            $this->configHipay["payment"]["credit_card"][$key] = $configFields["payment"]["credit_card"][$key];
+        }
+
+        foreach ($localkeys as $key) {
+            $this->configHipay["payment"]["local_payment"][$key] = $configFields["payment"]["local_payment"][$key];
+        }
     }
 
     /**
@@ -80,7 +110,8 @@ class HipayConfig {
 
     /**
      * init module configuration
-     * @return : bool
+     * @return : boolrequire_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+
      */
     private function insertConfigHiPay() {
         $this->module->getLogs()->logsHipay('---- >> function insertConfigHiPay');
@@ -120,23 +151,17 @@ class HipayConfig {
             ),
             "payment" => array(
                 "global" => array(
-                    "operating_mode" => "api",
+                    "operating_mode" => Apihandler::DIRECTPOST,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "css_url" => "",
                     "activate_3d_secure" => 1,
                     "capture_mode" => "manual",
-                    "card_token" => 1
+                    "card_token" => 1,
+                    "electronic_signature" => 1
                 ),
                 "credit_card" => array(),
-                "local_payment" => array(
-                    "sisal" => array(
-                        "activated" => 1,
-                        "currencies" => array(),
-                        "countries" => array(),
-                        'logo' => 'sisal.png'
-                    ),
-                )
+                "local_payment" => array()
             ),
             "fraud" => array(
                 "payment_fraud_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),

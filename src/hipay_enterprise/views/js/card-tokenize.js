@@ -1,9 +1,13 @@
+$( document ).ready(function() {
+    $(".ioBB").val($("#ioBB").val());
+});
+
 $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
-    var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='hipay_enterprise']").is(':checked');
+    var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='credit_card']").is(':checked');
 
     if (myPaymentMethodSelected) {
-        
+
         //set param for Api call
         var params = {
             card_number: $('#card-number').val(),

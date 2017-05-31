@@ -96,6 +96,7 @@ class Hipay_enterprise extends PaymentModule {
             'PLN' => $this->l('Polish złoty'),
             'SEK' => $this->l('Swedish krona'),
             'USD' => $this->l('United States dollar'),
+            'RUB' => $this->l('Russian ruble'),
         );
 
         $this->limited_currencies = array_keys($this->currencies_titles);
@@ -140,10 +141,10 @@ class Hipay_enterprise extends PaymentModule {
         $return = $this->updateHiPayOrderStates();
         $return = $this->registerHook('backOfficeHeader');
         if (_PS_VERSION_ >= '1.7') {
-            $return17 = $this->registerHook('paymentOptions') && $this->registerHook("header") && $this->registerHook("actionFrontControllerSetMedia");
+            $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
             $return = $return && $return17;
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $return16 = $this->registerHook('payment');
+            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn');
             $return = $return && $return16;
         }
         return $return;
@@ -168,6 +169,9 @@ class Hipay_enterprise extends PaymentModule {
         $address = new Address(intval($params['cart']->id_address_delivery));
         $country = new Country(intval($address->id_country));
         $currency = new Currency(intval($params['cart']->id_currency));
+        $orderTotal = $params['cart']->getOrderTotal();
+        
+        $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
 
         $this->smarty->assign(array(
             'domain' => Tools::getShopDomainSSL(true),
@@ -176,7 +180,7 @@ class Hipay_enterprise extends PaymentModule {
             'min_amount' => $this->min_amount,
             'configHipay' => $this->hipayConfigTool->getConfigHipay(),
             'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency),
-            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency),
+            'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $orderTotal),
             'lang' => Tools::strtolower($this->context->language->iso_code),
         ));
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]);
@@ -202,6 +206,17 @@ class Hipay_enterprise extends PaymentModule {
     public function hookHeader($params) {
         $hipay17 = new HipayEnterpriseNew();
         return $hipay17->hookDisplayHeader($params);
+    }
+
+    public function hookPaymentReturn($params) {
+
+        if (_PS_VERSION_ >= '1.7') {
+            $hipay17 = new HipayProfessionalNew();
+            $hipay17->hipayPaymentReturnNew($params);
+        } elseif (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+            $this->hipayPaymentReturn($params);
+            return $this->display(dirname(__FILE__), 'views/templates/hook/paymentReturn.tpl');
+        }
     }
 
     public function installAdminTab() {
@@ -454,7 +469,8 @@ class Hipay_enterprise extends PaymentModule {
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
                 foreach ($conf as $key => $value) {
-                    if ($key == "currencies" || $key == "logo") {
+                    //prevent specific fields from being updated
+                    if ($key == "currencySelectorReadOnly" || $key == "countrySelectorReadOnly" || $key == "logo" || $key == "displayName") {
                         $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
                     } else if (is_bool(Tools::getValue($card . "_" . $key)) && !Tools::getValue($card . "_" . $key)) {
                         $fieldValue = array();
@@ -568,11 +584,15 @@ class Hipay_enterprise extends PaymentModule {
      * @param Currency $currency
      * @return array
      */
-    public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency) {
+    public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency, $orderTotal = 1) {
         $activatedPayment = array();
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
-            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) )) {
+            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) && $orderTotal >= $settings["minAmount"]) {
                 $activatedPayment[$name] = $settings;
+                if ($paymentMethodType == "local_payment") {
+                    $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
+                    $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/' . $settings["logo"];
+                }
             }
         }
         return $activatedPayment;
@@ -642,6 +662,31 @@ class Hipay_enterprise extends PaymentModule {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 
+     * @param type $params
+     * @return type
+     */
+    private function hipayPaymentReturn($params) {
+        // Payment Return for PS1.6
+        if ($this->active == false) {
+            return;
+        }
+        $order = $params['objOrder'];
+        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
+            $this->smarty->assign('status', 'ok');
+        }
+        $this->smarty->assign(
+                array(
+                    'id_order' => $order->id,
+                    'reference' => $order->reference,
+                    'params' => $params,
+                    'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
+                    'shop_name' => $this->context->shop->name,
+                )
+        );
     }
 
 }

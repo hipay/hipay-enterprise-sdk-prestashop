@@ -14,6 +14,13 @@ require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 class HostedPaymentFormatter extends RequestFormatterAbstract {
 
+    
+    public function __construct($moduleInstance, $params) {
+        parent::__construct($moduleInstance);
+        $this->iframe = $params["iframe"];
+        $this->productList = $params["productlist"];
+    }
+    
     /**
      * generate request data before API call
      * @return \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest
@@ -23,6 +30,7 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
         $order = new \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest();
 
         $this->mapRequest($order);
+        
         return $order;
     }
 
@@ -36,21 +44,9 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
         $order->template = ($this->configHipay["payment"]["global"]["operating_mode"] !== "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
         $order->css = $this->configHipay["payment"]["global"]["css_url"];
         $order->display_selector = $this->configHipay["payment"]["global"]["display_card_selector"];
-        $order->payment_product_list = $this->getProductList();
+        $order->payment_product_list = $this->productList;
         $order->payment_product_category_list = '';
     }
-
-    /**
-     * return well formatted authorize payment methods 
-     * @return string
-     */
-    private function getProductList() {
-        $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card", $this->deliveryCountry, $this->currency);
-        $localPayment = $this->module->getActivatedPaymentByCountryAndCurrency("local_payment", $this->deliveryCountry, $this->currency);
-
-        $productList = array_merge(array_keys($creditCard), array_keys($localPayment));
-        $productList = join(",", $productList);
-        return $productList;
-    }
+    
 
 }

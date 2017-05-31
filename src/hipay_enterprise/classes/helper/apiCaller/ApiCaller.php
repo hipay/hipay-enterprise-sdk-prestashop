@@ -23,18 +23,12 @@ class ApiCaller {
      * @param type $moduleInstance
      * @return type
      */
-    public static function getHostedPaymentPage($moduleInstance) {
-
-        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
-                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"], $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
-        );
-        //Instantiate client provider with configuration object
-        $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
+    public static function getHostedPaymentPage($moduleInstance, $params) {
 
         //Create your gateway client
-        $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
+        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
         //Set data to send to the API
-        $orderRequest = new HostedPaymentFormatter($moduleInstance);
+        $orderRequest = new HostedPaymentFormatter($moduleInstance, $params);
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
 
@@ -47,8 +41,26 @@ class ApiCaller {
      * @param type $cardToken
      * @return type
      */
-    public static function requestDirectPost($moduleInstance, $cardToken) {
+    public static function requestDirectPost($moduleInstance, $params) {
 
+        //Create your gateway client
+        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+        //Set data to send to the API
+        $orderRequest = new DirectPostFormatter($moduleInstance, $params);
+        var_dump($orderRequest->generate());
+        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
+        $transaction = $gatewayClient->requestNewOrder($orderRequest->generate());
+
+        return $transaction;
+    }
+
+    /**
+     * create gateway client from config and client provider
+     * TODO : setting up prod or dev config
+     * @param type $moduleInstance
+     * @return \HiPay\Fullservice\Gateway\Client\GatewayClient
+     */
+    private static function createGatewayClient($moduleInstance) {
         $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
                 $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"], $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
         );
@@ -57,12 +69,8 @@ class ApiCaller {
 
         //Create your gateway client
         $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
-        //Set data to send to the API
-        $orderRequest = new DirectPostFormatter($moduleInstance, $cardToken);
-        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-        $transaction = $gatewayClient->requestNewOrder($orderRequest->generate());
 
-        return $transaction;
+        return $gatewayClient;
     }
 
 }

@@ -1,7 +1,7 @@
 {
-    "name": "sisal",
+    "name": "giropay",
     "config": {
-        "displayName" : "Sisal",
+        "displayName" : "Giropay",
         "activated" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"],
@@ -11,7 +11,7 @@
         "forceBasket": 0,
         "forceHpaymentOnElectronicSignature": 0,
         "minAmount" : 0,
-        "logo" : "sisal.png",
+        "logo" : "giropay.png",
         "additionalFields": {}
     }
 }

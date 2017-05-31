@@ -10,6 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/hipayFormInput.php');
+require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
 
 class HipayForm extends HipayFormInput {
 
@@ -68,15 +69,15 @@ class HipayForm extends HipayFormInput {
             "options" => array(
                 "query" => array(
                     array(
-                        "operating_mode_id" => "api",
+                        "operating_mode_id" => Apihandler::DIRECTPOST,
                         "name" => $this->module->l("Api", 'HipayForm')
                     ),
                     array(
-                        "operating_mode_id" => "hosted_page",
+                        "operating_mode_id" => Apihandler::HOSTEDPAGE,
                         "name" => $this->module->l("Hosted page", 'HipayForm')
                     ),
                     array(
-                        "operating_mode_id" => "iframe",
+                        "operating_mode_id" => Apihandler::IFRAME,
                         "name" => $this->module->l("Iframe", 'HipayForm')
                     )
                 ),
@@ -169,6 +170,8 @@ class HipayForm extends HipayFormInput {
         );
 
 
+        $form['form']['input'][] = $this->generateSwitchButton("electronic_signature", $this->module->l('Activate electronic signature', 'HipayForm'));
+        
         return $this->helper->generateForm(array($form));
     }
 
@@ -185,7 +188,8 @@ class HipayForm extends HipayFormInput {
             "css_url" => "",
             "activate_3d_secure" => "",
             "capture_mode" => "",
-            "card_token" => ""
+            "card_token" => "",
+            "electronic_signature" => ""
         );
 
         // get field value from POST request or config (this way the displayed value is always the good one)
