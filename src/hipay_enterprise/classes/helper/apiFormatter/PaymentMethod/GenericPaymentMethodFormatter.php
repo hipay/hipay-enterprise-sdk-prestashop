@@ -22,8 +22,8 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract {
     }
 
     /**
-     * return mapped customer card payment informations
-     * @return \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod
+     * return mapped pyament method informations
+     * @return mixed
      */
     public function generate() {
 
@@ -38,17 +38,20 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract {
     }
 
     /**
-     * 
-     * @param \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod $cardTokenRequest
+     * hydrate object define in json config
+     * @param mixed
      */
     protected function mapRequest(&$PMRequest) {
 
+        // we get all attributes 
         $attributes = get_object_vars($PMRequest);
 
         foreach ($attributes as $attr => $value) {
+            //if field has default value in json config
             if (isset($this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["defaultFieldsValue"][$attr])) {
                 $PMRequest->{$attr} = $this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["defaultFieldsValue"][$attr];
             } else if (isset($this->params[$attr])) {
+                // format gender data
                 if ($this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["formFields"][$attr]['type'] == 'gender') {
                     $this->params[$attr] = $this->getGender($this->params[$attr]);
                 }

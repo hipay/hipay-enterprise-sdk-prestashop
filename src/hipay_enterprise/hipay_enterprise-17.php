@@ -82,7 +82,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                     $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
                     $newOption = new PaymentOption();
                     $newOption->setCallToActionText($this->l("pay by card"))
-                            ->setModuleName($this->name)
+                            ->setModuleName("credit_card")
                             ->setForm($paymentForm)
                     ;
 
@@ -102,16 +102,50 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         }
 
 
-        // get activated card for customer currency and country
+        // get activated local payment for customer currency and country
         $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $params['cart']->getOrderTotal());
 
         if (!empty($activatedLocalPayment)) {
+
+            $this->context->smarty->assign(array(
+                'module_dir' => $this->_path,
+                'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
+                'methodFields' => array()
+            ));
+
+            $i = 0;
             foreach ($activatedLocalPayment as $name => $localpayment) {
                 $newOption = new PaymentOption();
+
+                $this->context->smarty->assign(array(
+                    'action' => $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true),
+                ));
+                if (!empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])) {
+                    $this->context->smarty->assign(array(
+                        'methodFields' => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
+                    ));
+                } else {
+                    $this->context->smarty->assign(array(
+                        'methodFields' => array()
+                    ));
+                }
+                $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/front/paymentLocalForm17.tpl');
+
                 $newOption->setCallToActionText($this->l("pay by") . " " . $localpayment["displayName"])
                         ->setAction($this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true))
+                        ->setModuleName($this->name)
+                        ->setForm($paymentForm)
                 ;
+
+                // if no credit card, we force ioBB input to be displayed 
+                if($i == 0 && empty($activatedCreditCard)) {
+                    $ioBB = '<input id="ioBB" type="hidden" name="ioBB">' ;
+                    $newOption->setAdditionalInformation($ioBB);
+                }
+
                 $paymentOptions[] = $newOption;
+                $i++;
             }
         }
 

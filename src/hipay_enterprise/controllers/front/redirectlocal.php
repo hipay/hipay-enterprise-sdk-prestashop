@@ -74,13 +74,16 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
                 break;
             case Apihandler::DIRECTPOST:
+                
+                // if electronic signature is on and payment force hpayment when electronic signature is on  OR form is submit OR there's no additional fields 
                 if (Tools::isSubmit("localSubmit") || empty($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]) || ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"] && $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"])) {
+                    // if form submit 
                     if (Tools::isSubmit("localSubmit")) {
                         foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]["formFields"] as $name => $field) {
                             $params[$name] = Tools::getValue($name);
                         }
                     }
-
+                    // set authentication_indicator depending if lectronic signature is on or not 
                     if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]) {
                         $params["authentication_indicator"] = 1;
                     } else {
@@ -89,6 +92,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
                     $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
                 } else {
+                    // display form
                     $context->smarty->assign(array(
                         'status_error' => '200', // Force to ok for first call
                         'cart_id' => $cart->id,

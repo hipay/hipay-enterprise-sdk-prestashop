@@ -8,4 +8,6 @@
     {/if}
 <br />
 {/foreach}
+{if !empty($methodFields)}
 <input type="hidden"  name="localSubmit" />
+{/if}

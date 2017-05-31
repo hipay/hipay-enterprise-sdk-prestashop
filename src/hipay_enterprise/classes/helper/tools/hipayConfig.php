@@ -39,6 +39,9 @@ class HipayConfig {
         return $this->configHipay;
     }
 
+    /**
+     * update config if there's a new json uploaded
+     */
     private function updateConfig() {
 
         $this->module->getLogs()->logsHipay('---- >> function updateConfig << --------');
@@ -48,6 +51,7 @@ class HipayConfig {
 
         $this->module->getLogs()->logsHipay(print_r($configFields, true));
 
+        // we update only new payment method
         $localkeys = array_diff(array_keys($configFields["payment"]["local_payment"]), array_keys($this->configHipay["payment"]["local_payment"]));
         $cckeys = array_diff(array_keys($configFields["payment"]["credit_card"]), array_keys($this->configHipay["payment"]["credit_card"]));
 
