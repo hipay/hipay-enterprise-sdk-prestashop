@@ -14,7 +14,7 @@ require_once(dirname(__FILE__) . '/hipayDBQuery.php');
 
 class HipayMapper {
 
-    const PS_CAT_LEVEL_DEPTH = 3;
+    const PS_CAT_LEVEL_DEPTH = 1;
     const HIPAY_CAT_MAPPING = 'category';
     const HIPAY_CARRIER_MAPPING = 'carrier';
 
@@ -97,6 +97,25 @@ class HipayMapper {
         return $carriers;
     }
 
+    public function getMappedHipayCatFromPSId($PSId) {
+
+        $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
+
+        $hipayCat = $this->hipayCatToAssociativeArray();
+
+        if ($hipayCatId) {
+            return $hipayCat[$hipayCatId];
+        }
+
+        return null;
+    }
+
+    public function getMappedHipayCarrierFromPSId($PSId) {
+        $hipayCarrierId = $this->db->getHipayCarrierFromPSId($PSId);
+
+        return $hipayCarrierId["hp_carrier_id"];
+    }
+
     /**
      * create mapping tables
      */
@@ -127,6 +146,12 @@ class HipayMapper {
 
                     foreach ($values as $val) {
                         $row[] = '(' . $val["pscat"] . ',' . $val["hipaycat"] . ',' . $this->context->shop->id . ')';
+
+                        $rootCat = new Category($val["pscat"]);
+                        // we mapp all childs of root category
+                        foreach ($rootCat->getAllChildren() as $childCat) {
+                            $row[] = '(' . $childCat->id . ',' . $val["hipaycat"] . ',' . $this->context->shop->id . ')';
+                        }
                     }
 
                     return $this->db->setHipayCatMapping($row);
@@ -136,10 +161,10 @@ class HipayMapper {
             case HipayMapper::HIPAY_CARRIER_MAPPING :
                 if (!empty($values)) {
                     foreach ($values as $val) {
-                        $row[] = '(' . $val["pscar"] . ',' 
+                        $row[] = '(' . $val["pscar"] . ','
                                 . $val["hipaycar"] . ','
-                                . $val["prepeta"] . ','  
-                                . $val["deliveryeta"] . ',' 
+                                . $val["prepeta"] . ','
+                                . $val["deliveryeta"] . ','
                                 . $this->context->shop->id . ')';
                     }
 
@@ -178,6 +203,16 @@ class HipayMapper {
             $hipayCarId[] = $car->getCode();
         }
         return in_array($carId, $hipayCarId);
+    }
+
+    private function hipayCatToAssociativeArray() {
+        $hipayCat = $this->getHipayCategories();
+        $hipayCatAssoc = array();
+
+        foreach ($hipayCat as $cat) {
+            $hipayCatAssoc[$cat->getCode()] = $cat->getName();
+        }
+        return $hipayCatAssoc;
     }
 
 }

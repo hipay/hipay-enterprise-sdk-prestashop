@@ -12,6 +12,7 @@
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerShippingInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../Cart/CartFormatter.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
@@ -49,6 +50,9 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $order->cid = (int) $this->customer->id;
         $order->ipaddr = $_SERVER ['REMOTE_ADDR'];
         $order->language = $this->getLanguageCode($this->context->language->iso_code);
+        $order->custom_data = null;
+        $order->source = null;
+        $order->basket = $this->getCart();
     }
 
     /**
@@ -100,6 +104,12 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $billingInfo = new CustomerShippingInfoFormatter($this->module);
 
         return $billingInfo->generate();
+    }
+
+    private function getCart() {
+        $cart = new CartFormatter($this->module);
+
+        return $cart->generate();
     }
 
 }

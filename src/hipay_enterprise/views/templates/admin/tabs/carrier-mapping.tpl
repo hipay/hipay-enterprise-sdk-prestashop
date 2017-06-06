@@ -26,10 +26,10 @@
                             {$car["name"]}
                         </td>
                         <td>
-                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])} {$mappedCarriers[$car["id_reference"]]["preparation_eta"]} {/if}" name="ps_map_prep_eta_{$car["id_reference"]}"/>
+                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])}{$mappedCarriers[$car["id_reference"]]["preparation_eta"]}{/if}" name="ps_map_prep_eta_{$car["id_reference"]}"/>
                         </td>
                         <td>
-                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])} {$mappedCarriers[$car["id_reference"]]["delivery_eta"]} {/if}" name="ps_map__delivery_eta_{$car["id_reference"]}"/>
+                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])}{$mappedCarriers[$car["id_reference"]]["delivery_eta"]}{/if}" name="ps_map__delivery_eta_{$car["id_reference"]}"/>
                         </td>
                         <td>
                             <select name="hipay_map_{$car["id_reference"]}">

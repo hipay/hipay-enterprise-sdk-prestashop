@@ -158,7 +158,7 @@ class HipayDBQuery {
 
         return Db::getInstance()->executeS($sql);
     }
-    
+
     /**
      * 
      * @param int $idShop
@@ -171,7 +171,6 @@ class HipayDBQuery {
 
         return Db::getInstance()->executeS($sql);
     }
-
 
     /**
      * insert row in HIPAY_CAT_MAPPING_TABLE
@@ -190,10 +189,25 @@ class HipayDBQuery {
      */
     public function setHipayCarrierMapping($values) {
         $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` (ps_carrier_id, hp_carrier_id, preparation_eta, delivery_eta, shop_id)
-                VALUES ' . join(",", $values). ' '
+                VALUES ' . join(",", $values) . ' '
                 . 'ON DUPLICATE KEY UPDATE ps_carrier_id=VALUES(ps_carrier_id), hp_carrier_id=VALUES(hp_carrier_id), preparation_eta=VALUES(preparation_eta), delivery_eta=VALUES(delivery_eta), shop_id=VALUES(shop_id);';
 
         return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * 
+     * @param type $PSId
+     * @return int
+     */
+    public function getHipayCatFromPSId($PSId) {
+        $sql = 'SELECT hp_cat_id
+                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '` 
+                WHERE ps_cat_id = ' . $PSId;
+
+        $result = Db::getInstance()->getRow($sql);
+
+        return $result;
     }
 
 }
