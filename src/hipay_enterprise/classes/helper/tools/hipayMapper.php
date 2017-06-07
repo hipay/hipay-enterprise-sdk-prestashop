@@ -46,7 +46,7 @@ class HipayMapper {
      * @return array
      */
     public function getHipayCarriers() {
-        return HiPay\Fullservice\Data\DeliveryMethod\Collection::getItems();
+        return HiPay\Fullservice\Data\DeliveryMethod\CollectionModeShipping::getItems();
     }
 
     /**
@@ -88,7 +88,8 @@ class HipayMapper {
             $carriers = array();
         } else {
             foreach ($carriersDB as $car) {
-                $carriers[$car["ps_carrier_id"]]["id"] = $car["hp_carrier_id"];
+                $carriers[$car["ps_carrier_id"]]["mode"] = $car["hp_carrier_mode"];
+                $carriers[$car["ps_carrier_id"]]["shipping"] = $car["hp_carrier_shipping"];
                 $carriers[$car["ps_carrier_id"]]["preparation_eta"] = $car["preparation_eta"];
                 $carriers[$car["ps_carrier_id"]]["delivery_eta"] = $car["delivery_eta"];
             }
@@ -101,19 +102,20 @@ class HipayMapper {
 
         $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
 
-        $hipayCat = $this->hipayCatToAssociativeArray();
-
         if ($hipayCatId) {
-            return $hipayCat[$hipayCatId];
+            return (int) $hipayCatId["hp_cat_id"];
         }
 
-        return null;
+        return 1;
     }
 
     public function getMappedHipayCarrierFromPSId($PSId) {
-        $hipayCarrierId = $this->db->getHipayCarrierFromPSId($PSId);
+        $hipayCarrier = $this->db->getHipayCarrierFromPSId($PSId);
+        if ($hipayCarrier) {
+            return $hipayCarrier;
+        }
 
-        return $hipayCarrierId["hp_carrier_id"];
+        return null;
     }
 
     /**
@@ -160,9 +162,11 @@ class HipayMapper {
                 break;
             case HipayMapper::HIPAY_CARRIER_MAPPING :
                 if (!empty($values)) {
+
                     foreach ($values as $val) {
                         $row[] = '(' . $val["pscar"] . ','
-                                . $val["hipaycar"] . ','
+                                . '"' . $val["hipaycarmode"] . '",'
+                                . '"' . $val["hipaycarshipping"] . '",'
                                 . $val["prepeta"] . ','
                                 . $val["deliveryeta"] . ','
                                 . $this->context->shop->id . ')';
@@ -190,29 +194,18 @@ class HipayMapper {
         return in_array($catId, $hipayCatId);
     }
 
-    /**
-     * check if id is an hipay carrier code
-     * @param int $catId
-     * @return boolean
-     */
-    public function hipayCarrierExist($carId) {
-        $hipayCar = $this->getHipayCarriers();
-        $hipayCarId = array();
-
-        foreach ($hipayCar as $car) {
-            $hipayCarId[] = $car->getCode();
-        }
-        return in_array($carId, $hipayCarId);
-    }
-
-    private function hipayCatToAssociativeArray() {
-        $hipayCat = $this->getHipayCategories();
-        $hipayCatAssoc = array();
-
-        foreach ($hipayCat as $cat) {
-            $hipayCatAssoc[$cat->getCode()] = $cat->getName();
-        }
-        return $hipayCatAssoc;
-    }
-
+//    /**
+//     * check if id is an hipay carrier code
+//     * @param int $catId
+//     * @return boolean
+//     */
+//    public function hipayCarrierExist($carId) {
+//        $hipayCar = $this->getHipayCarriers();
+//        $hipayCarId = array();
+//
+//        foreach ($hipayCar as $car) {
+//            $hipayCarId[] = $car->getCode();
+//        }
+//        return in_array($carId, $hipayCarId);
+//    }
 }

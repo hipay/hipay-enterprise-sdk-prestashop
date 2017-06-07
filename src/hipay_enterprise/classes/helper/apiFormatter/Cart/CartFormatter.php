@@ -15,11 +15,6 @@ require_once(dirname(__FILE__) . '/../../tools/hipayMapper.php');
 
 class CartFormatter extends ApiFormatterAbstract {
 
-    public function __construct($module) {
-        parent::__construct($module);
-        $this->mapper = new HipayMapper($module);
-    }
-
     /**
      * return mapped cart informations
      * @return json
@@ -30,7 +25,7 @@ class CartFormatter extends ApiFormatterAbstract {
 
         $this->mapRequest($cart);
 
-        return $customerBillingInfo->toJson();
+        return $cart->toJson();
     }
 
     /**
@@ -39,44 +34,60 @@ class CartFormatter extends ApiFormatterAbstract {
      */
     protected function mapRequest(&$cart) {
 
-        var_dump($this->cart);
-        var_dump($this->cart->getProducts());
-        var_dump($this->cart->getCartRules());
-
+        $cartSummary = $this->cart->getSummaryDetails();
+        // Good items
         foreach ($this->cart->getProducts() as $product) {
             $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
             $european_article_numbering = $product["ean13"];
-            $product_reference = $product["id_product"];
+            $product_reference = "good_".$product["id_product"];
             $type = "good";
             $name = $product["name"];
             $quantity = $product["cart_quantity"];
 
-            $unit_price = $product["price_without_reduction"];
-
+            $unit_price = Tools::ps_round($product["price_without_reduction"],2);
+            $discount = -1 * Tools::ps_round( ( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]) , 2);
+            $total_amount = Tools::ps_round($product["total_wt"],2);
+            
             $tax_rate = $product["rate"];
-            $discount = ( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]);
-
-            $total_amount = $product["price_with_reduction"] * $product["cart_quantity"];
             $discount_description = "";
             $product_description = $product["description_short"];
-
-            $category = new Category($product['id_category_default']);
-
-            var_dump($category);
-            
             $delivery_method = "";
             $delivery_company = "";
             $delivery_delay = "";
             $delivery_number = "";
             $product_category = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
-            $shop_id = $product["id_shop"];
+            $shop_id = null;
 
             $item->__constructItem($european_article_numbering, $product_reference, $type, $name, $quantity, $unit_price, $tax_rate, $discount, $total_amount, $discount_description, $product_description, $delivery_method, $delivery_company, $delivery_delay, $delivery_number, $product_category, $shop_id);
 
             $cart->addItem($item);
         }
-        var_dump($cart);
-        die();
+
+        // Discount items
+        foreach ($this->cart->getCartRules() as $disc) {
+
+            $product_reference = "discount_".$disc["id_cart_rule"];
+            $name = $disc["name"];
+            $unit_price = -1 * Tools::ps_round($disc["value_real"],2);
+            $tax_rate = 0;
+            $discount = 0;
+            $discount_description = $disc["description"];
+            $total_amount = -1 *Tools::ps_round( $disc["value_real"],2);
+
+            $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeDiscount($product_reference, $name, $unit_price, $tax_rate, $discount, $discount_description, $total_amount);
+            $cart->addItem($item);
+        }
+
+        // Fees items
+        $product_reference = "fees_".$cartSummary["carrier"]->id_reference;
+        $name = $cartSummary["carrier"]->name;
+        $unit_price = $cartSummary["total_shipping"];
+        $tax_rate = $cartSummary["carrier"]->getTaxesRate($this->delivery);
+        $discount = 0;
+        $total_amount = $cartSummary["total_shipping"];
+        $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees($product_reference, $name, $unit_price, $tax_rate, $discount, $total_amount);
+        $cart->addItem($item);
+
     }
 
 }

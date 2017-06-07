@@ -29,6 +29,7 @@ class ApiCaller {
         $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
         //Set data to send to the API
         $orderRequest = new HostedPaymentFormatter($moduleInstance, $params);
+        var_dump($orderRequest->generate());
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
 

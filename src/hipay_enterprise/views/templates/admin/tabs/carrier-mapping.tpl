@@ -16,28 +16,39 @@
             <th>Prestashop carrier</th>
             <th>Order preparation estimate time</th>
             <th>Delivery estimate time</th>
-            <th>Hipay carrier</th>
+            <th>Hipay carrier mode</th>
+            <th>Hipay carrier shipping</th>
             </thead>
             <tbody>
                 {foreach $psCarriers as $car}
                     <tr>
                         <td>
-                            <input type="hidden" value="{$car["id_reference"]}" name="ps_map_{$car["id_reference"]}"/>
+                            <input type="hidden" value="{$car["id_carrier"]}" name="ps_map_{$car["id_carrier"]}"/>
                             {$car["name"]}
                         </td>
                         <td>
-                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])}{$mappedCarriers[$car["id_reference"]]["preparation_eta"]}{/if}" name="ps_map_prep_eta_{$car["id_reference"]}"/>
+                            <input type="text" value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["preparation_eta"]}{/if}" name="ps_map_prep_eta_{$car["id_carrier"]}"/>
                         </td>
                         <td>
-                            <input type="text" value="{if isset($mappedCarriers[$car["id_reference"]])}{$mappedCarriers[$car["id_reference"]]["delivery_eta"]}{/if}" name="ps_map__delivery_eta_{$car["id_reference"]}"/>
+                            <input type="text" value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["delivery_eta"]}{/if}" name="ps_map__delivery_eta_{$car["id_carrier"]}"/>
                         </td>
                         <td>
-                            <select name="hipay_map_{$car["id_reference"]}">
-                                {if !isset($mappedCarriers[$car["id_reference"]])}
+                            <select name="hipay_map_mode_{$car["id_carrier"]}">
+                                {if !isset($mappedCarriers[$car["id_carrier"]])}
                                     <option value="" >{l s="Unclassified" mod="hipay_professional"}</option>
                                 {/if}
-                                {foreach $hipayCarriers as $hpcar}
-                                    <option {if isset($mappedCarriers[$car["id_reference"]]) && $mappedCarriers[$car["id_reference"]]["id"] eq  $hpcar->getCode()} selected {/if} value="{$hpcar->getCode()}" >{$hpcar->getShipping()}</option>
+                                {foreach $hipayCarriers["mode"] as $hpcarmode}
+                                    <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
+                                {/foreach}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="hipay_map_shipping_{$car["id_carrier"]}">
+                                {if !isset($mappedCarriers[$car["id_carrier"]])}
+                                    <option value="" >{l s="Unclassified" mod="hipay_professional"}</option>
+                                {/if}
+                                {foreach $hipayCarriers["shipping"] as $hpcarmode}
+                                    <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
                                 {/foreach}
                             </select>
                         </td>

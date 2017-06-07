@@ -12,6 +12,7 @@
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerShippingInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../Info/DeliveryShippingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Cart/CartFormatter.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
@@ -53,6 +54,7 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $order->custom_data = null;
         $order->source = null;
         $order->basket = $this->getCart();
+        $order->delivery_information = $this->getDeliveryInformation();
     }
 
     /**
@@ -110,6 +112,12 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $cart = new CartFormatter($this->module);
 
         return $cart->generate();
+    }
+    
+    private function getDeliveryInformation(){
+        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module);
+        
+        return $deliveryInformation->generate();
     }
 
 }

@@ -114,7 +114,8 @@ class HipayDBQuery {
 
         $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '`(
                 `ps_carrier_id` INT(10) UNSIGNED NOT NULL,
-                `hp_carrier_id` INT(10) UNSIGNED NOT NULL,
+                `hp_carrier_mode` VARCHAR(255)  NOT NULL,
+                `hp_carrier_shipping` VARCHAR(255) NOT NULL,
                 `preparation_eta` FLOAT(10) UNSIGNED NOT NULL,
                 `delivery_eta` FLOAT(10) UNSIGNED NOT NULL,
                 `shop_id` INT(10) UNSIGNED NOT NULL,
@@ -188,9 +189,9 @@ class HipayDBQuery {
      * @param type $values
      */
     public function setHipayCarrierMapping($values) {
-        $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` (ps_carrier_id, hp_carrier_id, preparation_eta, delivery_eta, shop_id)
+        $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` (ps_carrier_id, hp_carrier_mode, hp_carrier_shipping, preparation_eta, delivery_eta, shop_id)
                 VALUES ' . join(",", $values) . ' '
-                . 'ON DUPLICATE KEY UPDATE ps_carrier_id=VALUES(ps_carrier_id), hp_carrier_id=VALUES(hp_carrier_id), preparation_eta=VALUES(preparation_eta), delivery_eta=VALUES(delivery_eta), shop_id=VALUES(shop_id);';
+                . 'ON DUPLICATE KEY UPDATE ps_carrier_id=VALUES(ps_carrier_id), hp_carrier_mode=VALUES(hp_carrier_mode), hp_carrier_shipping=VALUES(hp_carrier_shipping), preparation_eta=VALUES(preparation_eta), delivery_eta=VALUES(delivery_eta), shop_id=VALUES(shop_id);';
 
         return Db::getInstance()->execute($sql);
     }
@@ -210,4 +211,19 @@ class HipayDBQuery {
         return $result;
     }
 
+    /**
+     * 
+     * @param type $PSId
+     * @return int
+     */
+    public function getHipayCarrierFromPSId($PSId) {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` 
+                WHERE ps_carrier_id = ' . $PSId;
+
+        $result = Db::getInstance()->getRow($sql);
+
+        return $result;
+    }
+    
 }

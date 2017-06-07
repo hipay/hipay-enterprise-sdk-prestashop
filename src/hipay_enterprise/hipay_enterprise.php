@@ -290,7 +290,8 @@ class Hipay_enterprise extends PaymentModule {
             'mappedCategories' => $mappedCategories,
             'psCarriers' => $psCarriers,
             'hipayCarriers' => $hipayCarriers,
-            'mappedCarriers' => $mappedCarriers
+            'mappedCarriers' => $mappedCarriers,
+            'lang' => Tools::strtolower($this->context->language->iso_code),
         ));
 
         $this->logs->logsHipay('---- END function getContent');
@@ -364,17 +365,18 @@ class Hipay_enterprise extends PaymentModule {
             $psCarriers = $this->mapper->getPrestashopCarriers();
 
             $mapping = array();
-
+            
             foreach ($psCarriers as $car) {
 
-                $psMapCar = Tools::getValue('ps_map_' . $car["id_reference"]);
-                $hipayMapCar = Tools::getValue('hipay_map_' . $car["id_reference"]);
-                $hipayMapCarOETA = Tools::getValue('ps_map_prep_eta_' . $car["id_reference"]);
-                $hipayMapCarDETA = Tools::getValue('ps_map__delivery_eta_' . $car["id_reference"]);
+                $psMapCar = Tools::getValue('ps_map_' . $car["id_carrier"]);
+                $hipayMapCarMode = Tools::getValue('hipay_map_mode_' . $car["id_carrier"]);
+                $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_' . $car["id_carrier"]);
+                $hipayMapCarOETA = Tools::getValue('ps_map_prep_eta_' . $car["id_carrier"]);
+                $hipayMapCarDETA = Tools::getValue('ps_map__delivery_eta_' . $car["id_carrier"]);
 
-                if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
-                    $mapping[] = array("pscar" => $psMapCar, "hipaycar" => $hipayMapCar, "prepeta" => $hipayMapCarOETA, "deliveryeta" => $hipayMapCarDETA);
-                }
+             //   if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
+                    $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode, "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA, "deliveryeta" => $hipayMapCarDETA);
+             //   }
             }
 
             $response = $this->mapper->setMapping(HipayMapper::HIPAY_CARRIER_MAPPING, $mapping);
