@@ -1,0 +1,17 @@
+{
+    "name": "3xcb",
+    "config": {
+        "displayName" : "3x Carte Bancaire",
+        "activated" : 1,
+        "currencies" : ["EUR"],
+        "countries"  : ["FR"],
+        "countrySelectorReadOnly": 1,
+        "currencySelectorReadOnly": 1,
+        "forceHpayment": 0,
+        "forceBasket": 1,
+        "forceHpaymentOnElectronicSignature": 0,
+        "minAmount" : 100,
+        "logo" : "oney.png",
+        "additionalFields": {}
+    }
+}

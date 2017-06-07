@@ -49,7 +49,7 @@ class ApiCaller {
         //Set data to send to the API
         $orderRequest = new DirectPostFormatter($moduleInstance, $params);
         var_dump($orderRequest->generate());
-        die();
+    //    die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestNewOrder($orderRequest->generate());
 
