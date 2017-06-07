@@ -172,6 +172,10 @@ class HipayForm extends HipayFormInput {
 
         $form['form']['input'][] = $this->generateSwitchButton("electronic_signature", $this->module->l('Activate electronic signature', 'HipayForm'));
         
+        $form['form']['input'][] = $this->generateSwitchButton("activate_basket", $this->module->l('Activate basket', 'HipayForm'), array(
+                'hint' => $this->module->l('Send cart informations on Hipay API call.', 'HipayForm'),
+                ));
+        
         return $this->helper->generateForm(array($form));
     }
 
@@ -189,7 +193,8 @@ class HipayForm extends HipayFormInput {
             "activate_3d_secure" => "",
             "capture_mode" => "",
             "card_token" => "",
-            "electronic_signature" => ""
+            "electronic_signature" => "",
+            "activate_basket" => ""
         );
 
         // get field value from POST request or config (this way the displayed value is always the good one)

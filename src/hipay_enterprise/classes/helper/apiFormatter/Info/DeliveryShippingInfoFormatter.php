@@ -53,8 +53,10 @@ class DeliveryShippingInfoFormatter extends apiFormatterAbstract {
             $today = new \Datetime();
             $daysDelay = $this->mappedShipping["preparation_eta"] + $this->mappedShipping["delivery_eta"];
             $interval = new \DateInterval("P{$daysDelay}D");
+
             return $today->add($interval)->format("Y-m-d");
         }
+        return null;
     }
 
     /**
@@ -63,7 +65,7 @@ class DeliveryShippingInfoFormatter extends apiFormatterAbstract {
      * @return null|string
      */
     function getMappingShippingMethod() {
-        if ($this->mappedShipping) {
+        if ($this->mappedShipping != null) {
             return json_encode(array('mode' => $this->mappedShipping["hp_carrier_mode"], 'shipping' => $this->mappedShipping["hp_carrier_shipping"]));
         }
         return null;

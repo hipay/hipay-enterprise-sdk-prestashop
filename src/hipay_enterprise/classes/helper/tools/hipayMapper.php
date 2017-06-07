@@ -106,7 +106,7 @@ class HipayMapper {
             return (int) $hipayCatId["hp_cat_id"];
         }
 
-        return 1;
+        return null;
     }
 
     public function getMappedHipayCarrierFromPSId($PSId) {

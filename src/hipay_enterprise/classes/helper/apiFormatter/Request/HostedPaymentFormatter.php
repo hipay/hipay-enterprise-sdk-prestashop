@@ -16,7 +16,7 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
 
     
     public function __construct($moduleInstance, $params) {
-        parent::__construct($moduleInstance);
+        parent::__construct($moduleInstance, $params);
         $this->iframe = $params["iframe"];
         $this->productList = $params["productlist"];
     }

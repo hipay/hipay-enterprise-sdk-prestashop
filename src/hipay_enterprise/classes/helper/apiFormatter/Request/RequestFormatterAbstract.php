@@ -12,12 +12,17 @@
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerShippingInfoFormatter.php');
-require_once(dirname(__FILE__) . '/../Info/DeliveryShippingInfoFormatter.php');
-require_once(dirname(__FILE__) . '/../Cart/CartFormatter.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
 
+    protected $params;
+    
+    public function __construct($moduleInstance, $params){
+        parent::__construct($moduleInstance);
+        $this->params = $params;
+    }
+    
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
      * @param type $order
@@ -53,8 +58,8 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $order->language = $this->getLanguageCode($this->context->language->iso_code);
         $order->custom_data = null;
         $order->source = null;
-        $order->basket = $this->getCart();
-        $order->delivery_information = $this->getDeliveryInformation();
+        $order->basket = $this->params["basket"];
+        $order->delivery_information = $this->params["delivery_informations"];
     }
 
     /**
@@ -106,18 +111,6 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $billingInfo = new CustomerShippingInfoFormatter($this->module);
 
         return $billingInfo->generate();
-    }
-
-    private function getCart() {
-        $cart = new CartFormatter($this->module);
-
-        return $cart->generate();
-    }
-    
-    private function getDeliveryInformation(){
-        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module);
-        
-        return $deliveryInformation->generate();
     }
 
 }
