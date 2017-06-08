@@ -102,7 +102,7 @@ class CartFormatter extends ApiFormatterAbstract {
         $total_amount = -1 * Tools::ps_round($disc["value_real"], 3);
 
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeDiscount($product_reference, $name, $unit_price, $tax_rate, $discount, $discount_description, $total_amount);
-
+        // forced category
         $item->setProductCategory(1);
         
         return $item;
@@ -120,7 +120,7 @@ class CartFormatter extends ApiFormatterAbstract {
         $discount = 0.00;
         $total_amount = (float) $cartSummary["total_shipping"];
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees($product_reference, $name, $unit_price, $tax_rate, $discount, $total_amount);
-        
+        // forced category
         $item->setProductCategory(1);
         
         return $item;

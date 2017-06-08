@@ -103,12 +103,12 @@ class Apihandler {
     }
 
     /**
-     * 
+     * Init params send to the api caller
      * @param type $params
      * @param type $creditCard
      */
     private function baseParamsInit(&$params, $creditCard = true) {
-
+        // no basket sent if PS_ROUND_TYPE is ROUND_TOTAL (prestashop config)
         if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL) {
             $params["basket"] = null;
             $params["delivery_informations"] = null;
@@ -125,7 +125,7 @@ class Apihandler {
     }
 
     /**
-     * 
+     * return mapped cart
      * @return type
      */
     private function getCart() {
@@ -135,7 +135,7 @@ class Apihandler {
     }
 
     /**
-     * 
+     * return mapped delivery informations
      * @return type
      */
     private function getDeliveryInformation() {
@@ -213,7 +213,7 @@ class Apihandler {
     }
 
     /**
-     * 
+     * return mapped payment method
      * @param type $params
      * @param type $creditCard
      * @return mixte
