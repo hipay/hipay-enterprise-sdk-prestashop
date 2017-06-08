@@ -18,7 +18,7 @@
 </div>
 <!-- ALERTS START -->
 {* include file alerts.tpl *}
-{*include file='./alerts.tpl'*}
+{include file='./panelHeader/alert.tpl'}
 <!-- ALERTS END -->
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">

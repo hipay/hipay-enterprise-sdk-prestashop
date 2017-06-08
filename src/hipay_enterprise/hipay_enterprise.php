@@ -365,7 +365,7 @@ class Hipay_enterprise extends PaymentModule {
             $psCarriers = $this->mapper->getPrestashopCarriers();
 
             $mapping = array();
-            
+            $this->_errors = array();
             foreach ($psCarriers as $car) {
 
                 $psMapCar = Tools::getValue('ps_map_' . $car["id_carrier"]);
@@ -374,9 +374,18 @@ class Hipay_enterprise extends PaymentModule {
                 $hipayMapCarOETA = Tools::getValue('ps_map_prep_eta_' . $car["id_carrier"]);
                 $hipayMapCarDETA = Tools::getValue('ps_map__delivery_eta_' . $car["id_carrier"]);
 
-             //   if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
-                    $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode, "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA, "deliveryeta" => $hipayMapCarDETA);
-             //   }
+                if (empty($psMapCar) || empty($hipayMapCarMode) || empty($hipayMapCarShipping) || empty($hipayMapCarOETA) || empty($hipayMapCarDETA)) {
+                    $this->_errors[] = $this->l("all carrier mapping fields are required");
+                }
+
+                //   if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
+                $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode, "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA, "deliveryeta" => $hipayMapCarDETA);
+                //   }
+            }
+
+            if (!empty($this->_errors)) {
+                $this->_errors = array(end($this->_errors));
+                return false;
             }
 
             $response = $this->mapper->setMapping(HipayMapper::HIPAY_CARRIER_MAPPING, $mapping);
@@ -410,9 +419,18 @@ class Hipay_enterprise extends PaymentModule {
                 $psMapCat = Tools::getValue('ps_map_' . $cat["id_category"]);
                 $hipayMapCat = Tools::getValue('hipay_map_' . $cat["id_category"]);
 
+                if (empty($psMapCat) || empty($hipayMapCat)) {
+                    $this->_errors[] = $this->l("all category mapping fields are required");
+                }
+
                 if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
                     $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
                 }
+            }
+
+            if (!empty($this->_errors)) {
+                $this->_errors = array(end($this->_errors));
+                return false;
             }
 
             $response = $this->mapper->setMapping(HipayMapper::HIPAY_CAT_MAPPING, $mapping);
