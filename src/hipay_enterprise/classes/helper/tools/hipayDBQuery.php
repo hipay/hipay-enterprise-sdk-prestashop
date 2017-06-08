@@ -11,6 +11,9 @@
  */
 class HipayDBQuery {
 
+    const HIPAY_CAT_MAPPING_TABLE = 'hipay_cat_mapping';
+    const HIPAY_CARRIER_MAPPING_TABLE = 'hipay_carrier_mapping';
+
     public function __construct($moduleInstance) {
         $this->module = $moduleInstance;
         $this->logs = $this->module->getLogs();
@@ -83,4 +86,144 @@ class HipayDBQuery {
         return $result;
     }
 
+    /**
+     * Create categories mapping table
+     * @return type
+     */
+    public function createCatMappingTable() {
+
+        $this->logs->logsHipay('Create Hipay categories mapping table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '`(
+                `ps_cat_id` INT(10) UNSIGNED NOT NULL,
+                `hp_cat_id` INT(10) UNSIGNED NOT NULL,
+                `shop_id` INT(10) UNSIGNED NOT NULL,
+                PRIMARY KEY (`ps_cat_id`, `shop_id`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Create categories mapping table
+     * @return type
+     */
+    public function createCarrierMappingTable() {
+
+        $this->logs->logsHipay('Create Hipay carrier mapping table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '`(
+                `ps_carrier_id` INT(10) UNSIGNED NOT NULL,
+                `hp_carrier_mode` VARCHAR(255)  NOT NULL,
+                `hp_carrier_shipping` VARCHAR(255) NOT NULL,
+                `preparation_eta` FLOAT(10) UNSIGNED NOT NULL,
+                `delivery_eta` FLOAT(10) UNSIGNED NOT NULL,
+                `shop_id` INT(10) UNSIGNED NOT NULL,
+                PRIMARY KEY (`ps_carrier_id`, `shop_id` )
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Delete Hipay mapping table
+     * @return type
+     */
+    public function deleteCatMappingTable() {
+        $this->logs->logsHipay('Delete Hipay mapping table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Delete Hipay mapping table
+     * @return type
+     */
+    public function deleteCarrierMappingTable() {
+        $this->logs->logsHipay('Delete Hipay carrier mapping table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * 
+     * @param int $idShop
+     * @return type
+     */
+    public function getHipayMappedCategories($idShop) {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '`
+                WHERE `shop_id` = ' . $idShop;
+
+        return Db::getInstance()->executeS($sql);
+    }
+
+    /**
+     * 
+     * @param int $idShop
+     * @return type
+     */
+    public function getHipayMappedCarriers($idShop) {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '`
+                WHERE `shop_id` = ' . $idShop;
+
+        return Db::getInstance()->executeS($sql);
+    }
+
+    /**
+     * insert row in HIPAY_CAT_MAPPING_TABLE
+     * @param type $values
+     */
+    public function setHipayCatMapping($values) {
+        $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '` (ps_cat_id, hp_cat_id, shop_id)
+                VALUES ' . join(",", $values) . ' '
+                . 'ON DUPLICATE KEY UPDATE ps_cat_id=VALUES(ps_cat_id), hp_cat_id=VALUES(hp_cat_id), shop_id=VALUES(shop_id);';
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * insert row in HIPAY_CARRIER_MAPPING_TABLE
+     * @param type $values
+     */
+    public function setHipayCarrierMapping($values) {
+        $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` (ps_carrier_id, hp_carrier_mode, hp_carrier_shipping, preparation_eta, delivery_eta, shop_id)
+                VALUES ' . join(",", $values) . ' '
+                . 'ON DUPLICATE KEY UPDATE ps_carrier_id=VALUES(ps_carrier_id), hp_carrier_mode=VALUES(hp_carrier_mode), hp_carrier_shipping=VALUES(hp_carrier_shipping), preparation_eta=VALUES(preparation_eta), delivery_eta=VALUES(delivery_eta), shop_id=VALUES(shop_id);';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * 
+     * @param type $PSId
+     * @return int
+     */
+    public function getHipayCatFromPSId($PSId) {
+        $sql = 'SELECT hp_cat_id
+                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '` 
+                WHERE ps_cat_id = ' . $PSId;
+
+        $result = Db::getInstance()->getRow($sql);
+
+        return $result;
+    }
+
+    /**
+     * 
+     * @param type $PSId
+     * @return int
+     */
+    public function getHipayCarrierFromPSId($PSId) {
+        $sql = 'SELECT *
+                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` 
+                WHERE ps_carrier_id = ' . $PSId;
+
+        $result = Db::getInstance()->getRow($sql);
+
+        return $result;
+    }
+    
 }

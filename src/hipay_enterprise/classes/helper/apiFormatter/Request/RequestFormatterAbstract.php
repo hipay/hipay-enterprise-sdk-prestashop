@@ -16,6 +16,13 @@ require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
 
+    protected $params;
+    
+    public function __construct($moduleInstance, $params){
+        parent::__construct($moduleInstance);
+        $this->params = $params;
+    }
+    
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
      * @param type $order
@@ -49,6 +56,10 @@ abstract class RequestFormatterAbstract extends ApiFormatterAbstract {
         $order->cid = (int) $this->customer->id;
         $order->ipaddr = $_SERVER ['REMOTE_ADDR'];
         $order->language = $this->getLanguageCode($this->context->language->iso_code);
+        $order->custom_data = null;
+        $order->source = null;
+        $order->basket = $this->params["basket"];
+        $order->delivery_information = $this->params["delivery_informations"];
     }
 
     /**

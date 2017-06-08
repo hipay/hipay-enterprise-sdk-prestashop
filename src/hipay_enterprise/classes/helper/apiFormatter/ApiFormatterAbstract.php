@@ -28,6 +28,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface {
         $this->delivery = new Address((int) $this->cart->id_address_delivery);
         $this->deliveryCountry = new Country((int) $this->delivery->id_country);
         $this->currency = new Currency((int) $this->cart->id_currency);
+        $this->mapper = new HipayMapper($module);
     }
 
     /**

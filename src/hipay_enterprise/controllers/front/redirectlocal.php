@@ -41,8 +41,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $products = $this->getSDKPaymentMethod();
 
         //verify if the payment method exist in the SDK
-        if (!in_array(Tools::getValue("method"), $products))
-            Tools::redirect('index.php?controller=order');
+//        if (!in_array(Tools::getValue("method"), $products))
+//            Tools::redirect('index.php?controller=order');
 
         $mode = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"];
         $method = Tools::getValue("method");

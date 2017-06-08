@@ -41,6 +41,9 @@ class Hipay_enterprise extends PaymentModule {
         // init log object
         $this->logs = new HipayLogs($this);
 
+        // init mapper object
+        $this->mapper = new HipayMapper($this);
+
         // Compliancy
         $this->limited_countries = array(
             'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
@@ -132,13 +135,14 @@ class Hipay_enterprise extends PaymentModule {
     }
 
     public function uninstall() {
-        return /* $this->uninstallAdminTab() && */ parent::uninstall() && $this->clearAccountData();
+        return /* $this->uninstallAdminTab() && */ parent::uninstall() && $this->clearAccountData() && $this->deleteHipayTable();
     }
 
     public function installHipay() {
 
         $return = $this->installAdminTab();
         $return = $this->updateHiPayOrderStates();
+        $return = $this->createHipayTable();
         $return = $this->registerHook('backOfficeHeader');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
@@ -170,7 +174,7 @@ class Hipay_enterprise extends PaymentModule {
         $country = new Country(intval($address->id_country));
         $currency = new Currency(intval($params['cart']->id_currency));
         $orderTotal = $params['cart']->getOrderTotal();
-        
+
         $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
 
         $this->smarty->assign(array(
@@ -253,11 +257,21 @@ class Hipay_enterprise extends PaymentModule {
 
         $this->logs->logsHipay('##########################');
         $this->logs->logsHipay('---- START function getContent');
-        $formGenerator = new HipayForm($this);
 
         $this->postProcess();
 
+        $formGenerator = new HipayForm($this);
+
         $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
+
+        $psCategories = $this->mapper->getPrestashopCategories();
+        $hipayCategories = $this->mapper->getHipayCategories();
+
+        $psCarriers = $this->mapper->getPrestashopCarriers();
+        $hipayCarriers = $this->mapper->getHipayCarriers();
+
+        $mappedCategories = $this->mapper->getMappedCategories($this->context->shop->id);
+        $mappedCarriers = $this->mapper->getMappedCarriers($this->context->shop->id);
 
         $this->context->smarty->assign(array(
             'module_dir' => $this->_path,
@@ -270,7 +284,14 @@ class Hipay_enterprise extends PaymentModule {
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
             'this_callback' => $this->context->link->getModuleLink($this->name, 'validation', array(), true),
-            'ipaddr' => $_SERVER ['REMOTE_ADDR']
+            'ipaddr' => $_SERVER ['REMOTE_ADDR'],
+            'psCategories' => $psCategories,
+            'hipayCategories' => $hipayCategories,
+            'mappedCategories' => $mappedCategories,
+            'psCarriers' => $psCarriers,
+            'hipayCarriers' => $hipayCarriers,
+            'mappedCarriers' => $mappedCarriers,
+            'lang' => Tools::strtolower($this->context->language->iso_code),
         ));
 
         $this->logs->logsHipay('---- END function getContent');
@@ -320,7 +341,108 @@ class Hipay_enterprise extends PaymentModule {
             $this->logs->logsHipay('---- >> fraudSubmit');
             $this->saveFraudInformations();
             $this->context->smarty->assign('active_tab', 'fraud_form');
+        } else if (Tools::isSubmit('submitCategoryMapping')) {
+            $this->logs->logsHipay('---- >> submitCategoryMapping');
+            $this->saveCategoryMappingInformations();
+            $this->context->smarty->assign('active_tab', 'category_form');
+        } else if (Tools::isSubmit('submitCarrierMapping')) {
+            $this->logs->logsHipay('---- >> submitCarrierMapping');
+            $this->saveCarrierMappingInformations();
+            $this->context->smarty->assign('active_tab', 'carrier_form');
         }
+    }
+
+    /**
+     * Save Carrier Mapping informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveCarrierMappingInformations() {
+        $this->logs->logsHipay('---- >> function saveCarrierMappingInformations');
+
+        try {
+
+            $psCarriers = $this->mapper->getPrestashopCarriers();
+
+            $mapping = array();
+            $this->_errors = array();
+            foreach ($psCarriers as $car) {
+
+                $psMapCar = Tools::getValue('ps_map_' . $car["id_carrier"]);
+                $hipayMapCarMode = Tools::getValue('hipay_map_mode_' . $car["id_carrier"]);
+                $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_' . $car["id_carrier"]);
+                $hipayMapCarOETA = Tools::getValue('ps_map_prep_eta_' . $car["id_carrier"]);
+                $hipayMapCarDETA = Tools::getValue('ps_map__delivery_eta_' . $car["id_carrier"]);
+
+                if (empty($psMapCar) || empty($hipayMapCarMode) || empty($hipayMapCarShipping) || empty($hipayMapCarOETA) || empty($hipayMapCarDETA)) {
+                    $this->_errors[] = $this->l("all carrier mapping fields are required");
+                }
+
+                //   if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
+                $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode, "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA, "deliveryeta" => $hipayMapCarDETA);
+                //   }
+            }
+
+            if (!empty($this->_errors)) {
+                $this->_errors = array(end($this->_errors));
+                return false;
+            }
+
+            $response = $this->mapper->setMapping(HipayMapper::HIPAY_CARRIER_MAPPING, $mapping);
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Save Category Mapping informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveCategoryMappingInformations() {
+        $this->logs->logsHipay('---- >> function saveCategoryMappingInformations');
+
+        try {
+
+            $psCategories = $this->mapper->getPrestashopCategories();
+
+            $mapping = array();
+
+            foreach ($psCategories as $cat) {
+
+                $psMapCat = Tools::getValue('ps_map_' . $cat["id_category"]);
+                $hipayMapCat = Tools::getValue('hipay_map_' . $cat["id_category"]);
+
+                if (empty($psMapCat) || empty($hipayMapCat)) {
+                    $this->_errors[] = $this->l("all category mapping fields are required");
+                }
+
+                if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
+                    $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
+                }
+            }
+
+            if (!empty($this->_errors)) {
+                $this->_errors = array(end($this->_errors));
+                return false;
+            }
+
+            $response = $this->mapper->setMapping(HipayMapper::HIPAY_CAT_MAPPING, $mapping);
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
+
+        return false;
     }
 
     /**
@@ -587,11 +709,21 @@ class Hipay_enterprise extends PaymentModule {
     public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency, $orderTotal = 1) {
         $activatedPayment = array();
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
-            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) && $orderTotal >= $settings["minAmount"]) {
-                $activatedPayment[$name] = $settings;
+            if ($settings["activated"] &&
+                    (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) &&
+                    (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) &&
+                    $orderTotal >= $settings["minAmount"]
+            ) {
+                
                 if ($paymentMethodType == "local_payment") {
-                    $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
-                    $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/' . $settings["logo"];
+                    if(Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE || Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM || !$settings["forceBasket"] ){
+                        $activatedPayment[$name] = $settings;
+                        $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
+                        $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/' . $settings["logo"];
+                        
+                    }
+                }else{
+                    $activatedPayment[$name] = $settings;
                 }
             }
         }
@@ -689,6 +821,23 @@ class Hipay_enterprise extends PaymentModule {
         );
     }
 
+    /**
+     * 
+     */
+    private function createHipayTable() {
+        $this->mapper->createTable();
+
+        return true;
+    }
+
+    /**
+     * 
+     */
+    private function deleteHipayTable() {
+        $this->mapper->deleteTable();
+        return true;
+    }
+
 }
 
 if (_PS_VERSION_ >= '1.7') {
@@ -702,3 +851,4 @@ if (_PS_VERSION_ >= '1.7') {
 require_once(dirname(__FILE__) . '/classes/helper/tools/hipayLogs.php');
 require_once(dirname(__FILE__) . '/classes/helper/tools/hipayConfig.php');
 require_once(dirname(__FILE__) . '/classes/helper/forms/hipayForm.php');
+require_once(dirname(__FILE__) . '/classes/helper/tools/hipayMapper.php');

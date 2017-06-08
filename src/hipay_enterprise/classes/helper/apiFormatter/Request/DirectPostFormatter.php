@@ -14,12 +14,11 @@ require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 class DirectPostFormatter extends RequestFormatterAbstract {
 
-    private $cardToken;
     private $paymentProduct;
     private $deviceFingerprint;
 
     public function __construct($moduleInstance, $params) {
-        parent::__construct($moduleInstance);
+        parent::__construct($moduleInstance, $params);
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];

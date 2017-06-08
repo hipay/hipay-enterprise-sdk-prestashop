@@ -13,6 +13,8 @@ require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 
@@ -31,6 +33,7 @@ class Apihandler {
     public function __construct($moduleInstance, $contextInstance) {
         $this->module = $moduleInstance;
         $this->context = $contextInstance;
+        $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
     }
 
     /**
@@ -39,6 +42,8 @@ class Apihandler {
      * @param type $params
      */
     public function handleCreditCard($mode = Apihandler::HOSTEDPAGE, $params = array()) {
+
+        $this->baseParamsInit($params);
 
         $cart = $this->context->cart;
         $delivery = new Address((int) $cart->id_address_delivery);
@@ -75,6 +80,8 @@ class Apihandler {
      */
     public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array()) {
 
+        $this->baseParamsInit($params, false);
+
         switch ($mode) {
             case Apihandler::DIRECTPOST:
 
@@ -93,6 +100,48 @@ class Apihandler {
             default :
                 $this->module->getLogs()->logsHipay("Unknown payment mode");
         }
+    }
+
+    /**
+     * Init params send to the api caller
+     * @param type $params
+     * @param type $creditCard
+     */
+    private function baseParamsInit(&$params, $creditCard = true) {
+        // no basket sent if PS_ROUND_TYPE is ROUND_TOTAL (prestashop config)
+        if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL) {
+            $params["basket"] = null;
+            $params["delivery_informations"] = null;
+        } else if ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
+            $params["basket"] = $this->getCart();
+            $params["delivery_informations"] = $this->getDeliveryInformation();
+        } else if ($this->configHipay["payment"]["global"]["activate_basket"] || ( isset($params["method"]) && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"] )) {
+            $params["basket"] = $this->getCart();
+            $params["delivery_informations"] = $this->getDeliveryInformation();
+        } else {
+            $params["basket"] = null;
+            $params["delivery_informations"] = null;
+        }
+    }
+
+    /**
+     * return mapped cart
+     * @return type
+     */
+    private function getCart() {
+        $cart = new CartFormatter($this->module);
+
+        return $cart->generate();
+    }
+
+    /**
+     * return mapped delivery informations
+     * @return type
+     */
+    private function getDeliveryInformation() {
+        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module);
+
+        return $deliveryInformation->generate();
     }
 
     /**
@@ -149,7 +198,7 @@ class Apihandler {
         }
 
         var_dump($response);
-        
+
         Tools::redirect($redirectUrl);
     }
 
@@ -164,7 +213,7 @@ class Apihandler {
     }
 
     /**
-     * 
+     * return mapped payment method
      * @param type $params
      * @param type $creditCard
      * @return mixte
