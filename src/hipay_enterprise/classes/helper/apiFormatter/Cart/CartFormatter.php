@@ -96,8 +96,8 @@ class CartFormatter extends ApiFormatterAbstract {
         $product_reference = "discount_" . $disc["id_cart_rule"];
         $name = $disc["name"];
         $unit_price = -1 * Tools::ps_round($disc["value_real"], 3);
-        $tax_rate = 0;
-        $discount = 0;
+        $tax_rate = 0.00;
+        $discount = 0.00;
         $discount_description = $disc["description"];
         $total_amount = -1 * Tools::ps_round($disc["value_real"], 3);
 
@@ -115,10 +115,10 @@ class CartFormatter extends ApiFormatterAbstract {
     private function getFeesItem($cartSummary) {
         $product_reference = "fees_" . $cartSummary["carrier"]->id_reference;
         $name = $cartSummary["carrier"]->name;
-        $unit_price = $cartSummary["total_shipping"];
+        $unit_price = (float) $cartSummary["total_shipping"];
         $tax_rate = $cartSummary["carrier"]->getTaxesRate($this->delivery);
-        $discount = 0;
-        $total_amount = $cartSummary["total_shipping"];
+        $discount = 0.00;
+        $total_amount = (float) $cartSummary["total_shipping"];
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees($product_reference, $name, $unit_price, $tax_rate, $discount, $total_amount);
         
         $item->setProductCategory(1);

@@ -109,10 +109,13 @@ class Apihandler {
      */
     private function baseParamsInit(&$params, $creditCard = true) {
 
-        if ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
+        if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL) {
+            $params["basket"] = null;
+            $params["delivery_informations"] = null;
+        } else if ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
             $params["basket"] = $this->getCart();
             $params["delivery_informations"] = $this->getDeliveryInformation();
-        } else if ($this->configHipay["payment"]["global"]["activate_basket"] || ( isset($params["method"]) && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"] ) ) {
+        } else if ($this->configHipay["payment"]["global"]["activate_basket"] || ( isset($params["method"]) && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"] )) {
             $params["basket"] = $this->getCart();
             $params["delivery_informations"] = $this->getDeliveryInformation();
         } else {

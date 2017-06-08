@@ -174,6 +174,7 @@ class HipayForm extends HipayFormInput {
         
         $form['form']['input'][] = $this->generateSwitchButton("activate_basket", $this->module->l('Activate basket', 'HipayForm'), array(
                 'hint' => $this->module->l('Send cart informations on Hipay API call.', 'HipayForm'),
+                'desc' => "<i class='icon icon-warning text-danger'></i> " .$this->module->l("If 'Round on the total' is activated in prestashop configuration, cart will not be sent and payment method that force cart to be send will be disabled."),
                 ));
         
         return $this->helper->generateForm(array($form));

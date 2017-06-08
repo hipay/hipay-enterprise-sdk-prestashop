@@ -709,11 +709,21 @@ class Hipay_enterprise extends PaymentModule {
     public function getActivatedPaymentByCountryAndCurrency($paymentMethodType, $country, $currency, $orderTotal = 1) {
         $activatedPayment = array();
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
-            if ($settings["activated"] && (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) && (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) && $orderTotal >= $settings["minAmount"]) {
-                $activatedPayment[$name] = $settings;
+            if ($settings["activated"] &&
+                    (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"]) ) &&
+                    (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"]) ) &&
+                    $orderTotal >= $settings["minAmount"]
+            ) {
+                
                 if ($paymentMethodType == "local_payment") {
-                    $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
-                    $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/' . $settings["logo"];
+                    if(Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE || Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM || !$settings["forceBasket"] ){
+                        $activatedPayment[$name] = $settings;
+                        $activatedPayment[$name]["link"] = $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true);
+                        $activatedPayment[$name]['payment_button'] = $this->_path . 'views/img/' . $settings["logo"];
+                        
+                    }
+                }else{
+                    $activatedPayment[$name] = $settings;
                 }
             }
         }
