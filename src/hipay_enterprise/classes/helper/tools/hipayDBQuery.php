@@ -254,6 +254,11 @@ class HipayDBQuery {
         return false;
     }
 
+    /**
+     * update order payment line
+     * @param type $paymentData
+     * @return boolean
+     */
     public function updateOrderPayment($paymentData) {
 
         $cardData = "";
@@ -288,7 +293,7 @@ class HipayDBQuery {
     }
 
     /**
-     * 
+     * count order payment line
      * @param type $orderReference
      * @return boolean
      */
@@ -331,7 +336,7 @@ class HipayDBQuery {
     }
 
     /**
-     * 
+     * set invoice order
      * @param Order $order
      */
     public function setInvoiceOrder($order) {

@@ -16,6 +16,9 @@ use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
 class hipayNotification {
 
+    const TRANSACTION_REF_CAPTURE_SUFFIX = "capture";
+    const TRANSACTION_REF_REFUND_SUFFIX = "refund";
+
     protected $transaction;
     protected $cart;
     protected $orderExist = false;
@@ -75,104 +78,73 @@ class hipayNotification {
 
             switch ($this->transaction->getStatus()) {
                 // Do nothing - Just log the status and skip further processing
-                case TransactionStatus::CREATED : // Created
-                case TransactionStatus::CARD_HOLDER_ENROLLED : // Cardholder Enrolled 3DSecure
-                case TransactionStatus::CARD_HOLDER_NOT_ENROLLED : // Cardholder Not Enrolled 3DSecure
-                case TransactionStatus::UNABLE_TO_AUTHENTICATE : // Unable to Authenticate 3DSecure
-                case TransactionStatus::CARD_HOLDER_AUTHENTICATED : // Cardholder Authenticate
-                case TransactionStatus::AUTHENTICATION_ATTEMPTED : // Authentication Attempted
-                case TransactionStatus::COULD_NOT_AUTHENTICATE : // Could Not Authenticate
-                case TransactionStatus::AUTHENTICATION_FAILED : // Authentication Failed
-                case TransactionStatus::COLLECTED : // Collected
-                case TransactionStatus::ACQUIRER_FOUND : // Acquirer Found
-                case TransactionStatus::ACQUIRER_NOT_FOUND : // Acquirer not Found
-                case TransactionStatus::RISK_ACCEPTED : // Risk Accepted
+                case TransactionStatus::CREATED :
+                case TransactionStatus::CARD_HOLDER_ENROLLED :
+                case TransactionStatus::CARD_HOLDER_NOT_ENROLLED :
+                case TransactionStatus::UNABLE_TO_AUTHENTICATE :
+                case TransactionStatus::CARD_HOLDER_AUTHENTICATED :
+                case TransactionStatus::AUTHENTICATION_ATTEMPTED :
+                case TransactionStatus::COULD_NOT_AUTHENTICATE :
+                case TransactionStatus::AUTHENTICATION_FAILED :
+                case TransactionStatus::COLLECTED :
+                case TransactionStatus::ACQUIRER_FOUND :
+                case TransactionStatus::ACQUIRER_NOT_FOUND :
+                case TransactionStatus::RISK_ACCEPTED :
                 default :
                     $orderState = 'skip';
                     break;
-                // Status _PS_OS_ERROR_
-                case TransactionStatus::BLOCKED : // Blocked
-                case TransactionStatus::CHARGED_BACK : // Charged Back
+                case TransactionStatus::BLOCKED :
+                case TransactionStatus::CHARGED_BACK :
                     $this->updateOrderStatus(_PS_OS_ERROR_);
                     break;
-                // Status HIPAY_DENIED
-                case TransactionStatus::DENIED : // Denied
-                case TransactionStatus::REFUSED : // Refused
-                    // ctrl if payment accepted is already in order history
+                case TransactionStatus::DENIED :
+                case TransactionStatus::REFUSED :
                     if (!$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, Configuration::get('HIPAY_OS_DENIED', null, null, 1), true)) {
                         $this->updateOrderStatus(Configuration::get('HIPAY_OS_DENIED', null, null, 1));
                     }
                     break;
-                // Status HIPAY_CHALLENGED
-                case TransactionStatus::AUTHORIZED_AND_PENDING : // Authorized and Pending
+                case TransactionStatus::AUTHORIZED_AND_PENDING :
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1));
                     break;
-                // Status HIPAY_PENDING
-                case TransactionStatus::AUTHENTICATION_REQUESTED : // Authentication Requested
-                case TransactionStatus::AUTHORIZATION_REQUESTED : // Authorization Requested
-                case TransactionStatus::PENDING_PAYMENT : // Pending Payment
+                case TransactionStatus::AUTHENTICATION_REQUESTED :
+                case TransactionStatus::AUTHORIZATION_REQUESTED :
+                case TransactionStatus::PENDING_PAYMENT :
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_PENDING', null, null, 1));
                     break;
-                // Status HIPAY_EXPIRED
-                case TransactionStatus::EXPIRED : // Expired
+                case TransactionStatus::EXPIRED :
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED', null, null, 1));
                     break;
-                // Status _PS_OS_CANCELED_
-                case TransactionStatus::CANCELLED : // Cancelled
+                case TransactionStatus::CANCELLED :
                     $this->updateOrderStatus(_PS_OS_CANCELED_);
                     break;
-                // Status HIPAY_AUTHORIZED
                 case TransactionStatus::AUTHORIZED: //116
                     $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
                     break;
-                // Status HIPAY_CAPTURE_REQUESTED
-                case TransactionStatus::CAPTURED :
-                case TransactionStatus::CAPTURE_REQUESTED : // Capture Requested
+                case TransactionStatus::CAPTURED : //118
+                case TransactionStatus::CAPTURE_REQUESTED : //117
                     $orderState = _PS_OS_PAYMENT_;
                     if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
                         $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
                     }
-                    // on change de statut de la commande tous les critères sont ok
                     if ($this->updateOrderStatus($orderState)) {
-                        // on modifie la transaction de commande pour la référence commande
                         $this->captureOrder();
                     }
                     break;
-                // Status HIPAY_PARTIALLY_CAPTURED
-                case TransactionStatus::PARTIALLY_CAPTURED : // Partially Captured
-                    // on change de statut de la commande tous les critères sont ok
+                case TransactionStatus::PARTIALLY_CAPTURED : //119
                     if ($this->updateOrderStatus(Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1))) {
-                        // on modifie la transaction de commande pour la référence commande
                         $this->captureOrder();
                     }
                     break;
-                // Status HIPAY_REFUND_REQUESTED
-                case TransactionStatus::REFUND_REQUESTED : // Refund Requested
-                    $orderState = $stt_refunded_rq;
-                    // si commande existante, on modifie le statut de la commande
-                    if ($this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1))) {
-//                        $statuts = array(
-//                            'refund_requested' => $orderState,
-//                        );
-//                        $this->addMessageRefund($objOrder, $callback_arr, $hipay, $statuts);
-                    }
+                case TransactionStatus::REFUND_REQUESTED : //124
+                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
                     break;
-                // Status HIPAY_REFUNDED
-                case TransactionStatus::REFUNDED : // Refunded
-                    // si commande existante, on modifie le statut de la commande
-                    if ($this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1))) {
-//                        $this->refundOrder($callback_arr, $objOrder, $hipay, $stt_refunded);
-//                        $this->addMessageRefund($objOrder, $callback_arr, $hipay, $orderState);
-                    }
+                case TransactionStatus::REFUNDED : //125
+                    $this->refundOrder();
                     break;
-                // Status HIPAY_CHARGED BACK
-                case TransactionStatus::CHARGED_BACK : // Charged back
-                    // si commande existante, on modifie le statut de la commande
+                case TransactionStatus::CHARGED_BACK :
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHARGEDBACK', null, null, 1));
                     break;
-                // Status HIPAY_CAPTURE_REFUSED
-                case TransactionStatus::CAPTURE_REFUSED : // Capture Refused
-                    // si commande existante, on modifie le statut de la commande
+                case TransactionStatus::CAPTURE_REFUSED :
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_CAPTURE_REFUSED', null, null, 1));
                     break;
             }
@@ -195,26 +167,18 @@ class hipayNotification {
     private function updateOrderStatus($newState) {
 
         $return = true;
+        $this->addOrderMessage();
 
         if ($this->orderExist) {
-            if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)) {
+            if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true) && !$this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true)) {
 
-                $this->addOrderMessage();
-
-                $orderHistory = new OrderHistory();
-                $orderHistory->id_order = $this->order->id;
-                $orderHistory->changeIdOrderState($newState, $this->order->id, true);
-                $orderHistory->add();
-
+                $this->changeOrderStatus($newState);
                 $return = true;
-            }
-            if ($this->transaction->getStatus() == TransactionStatus::CAPTURED) {
-                $this->addOrderMessage();
             }
             $this->addHipayCaptureMessage();
 
             if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED && $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
-                $this->log->logsHipay('--------------- captured_amount (' . $this->transaction->getCapturedAmount() . ') is < to authorized_amount (' . $this->transaction->getAuthorizedAmount() . ')');
+                $this->log->logsHipay('--------------- captured_amount (' . $this->transaction->getCapturedAmount() . ') is < than authorized_amount (' . $this->transaction->getAuthorizedAmount() . ')');
                 $return = true;
             }
             return $return;
@@ -272,11 +236,11 @@ class hipayNotification {
     /**
      * create order payment line
      */
-    private function createOrderPayment() {
+    private function createOrderPayment($refund = false) {
         if ($this->orderExist) {
-            $amount = $this->getRealCapturedAmount(); 
+            $amount = $this->getRealCapturedAmount($refund);
             $payment_method = HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX . " " . (string) ucwords($this->transaction->getPaymentProduct());
-            $payment_transaction_id = $this->transaction->getTransactionReference() . '-' . $this->transaction->getCapturedAmount();
+            $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
             $currency = new Currency($this->order->id_currency);
             $payment_date = date("Y-m-d H:i:s");
             $order_invoice = null;
@@ -286,8 +250,6 @@ class hipayNotification {
                 if ($this->order->addOrderPayment($amount, $payment_method, $payment_transaction_id, $currency, $payment_date, $order_invoice)) {
                     // LOG
                     $this->log->logsHipay('--------------- Order payment add with success');
-                    // Add message for this status
-                    $this->addOrderMessage();
                 }
             } else {
                 $this->log->logsHipay('--------------- Error, order exist but the object order not loaded');
@@ -300,6 +262,7 @@ class hipayNotification {
      * @return boolean
      */
     private function captureOrder() {
+
         $this->log->logsHipay('--------------- Capture Order');
 
         $paymentMethod = null;
@@ -337,9 +300,44 @@ class hipayNotification {
             $this->db->setInvoiceOrder($this->order);
         }
 
-        $this->addOrderMessage();
+        return true;
+    }
+
+    private function refundOrder() {
+
+        //LOG 
+        $this->log->logsHipay('--------------- START refundOrder');
+
+        if ($this->orderExist) {
+
+            $this->addOrderMessage();
+
+            // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
+            if ($this->db->countOrderPayment($this->order->reference, $this->setTransactionRefForPrestashop(true)) == 0) {
+                $this->log->logsHipay('--------------- Create Order Payment');
+                $this->createOrderPayment(true);
+
+                //force refund order status
+                if($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
+                    $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
+                }else{
+                    $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
+                }
+            }
+        }
 
         return true;
+    }
+
+    /**
+     * change order status
+     * @param type $newState
+     */
+    private function changeOrderStatus($newState) {
+        $orderHistory = new OrderHistory();
+        $orderHistory->id_order = $this->order->id;
+        $orderHistory->changeIdOrderState($newState, $this->order->id, true);
+        $orderHistory->add();
     }
 
     /**
@@ -410,6 +408,8 @@ class hipayNotification {
             "status" => $this->transaction->getStatus(),
             "message" => $this->transaction->getMessage(),
             "amount" => $this->transaction->getAuthorizedAmount(),
+            "captured_amount" => $this->transaction->getCapturedAmount(),
+            "refunded_amount" => $this->transaction->getRefundedAmount(),
             "data" => $this->transaction->getCdata1(),
             "payment_product" => $this->transaction->getPaymentProduct(),
             "payment_start" => $this->transaction->getDateCreated(),
@@ -432,17 +432,32 @@ class hipayNotification {
      * every step of the capture is unique (id = {transacRef}-{CapturedAmount}). Prevent from duplicates or overwritting
      * @return string
      */
-    private function setTransactionRefForPrestashop() {
-        return $this->transaction->getTransactionReference() . "-" . $this->transaction->getCapturedAmount();
+    private function setTransactionRefForPrestashop($refund = false) {
+
+        $suffix = hipayNotification::TRANSACTION_REF_CAPTURE_SUFFIX;
+        $amount = $this->transaction->getCapturedAmount();
+
+        if ($refund) {
+            $suffix = hipayNotification::TRANSACTION_REF_REFUND_SUFFIX;
+            $amount = $this->transaction->getRefundedAmount();
+        }
+
+        return $this->transaction->getTransactionReference() . "-" . $amount . '-' . $suffix;
     }
 
     /**
      * notification send total captured amount, we want just the amount concerned by the notification
      * @return type
      */
-    private function getRealCapturedAmount() {
+    private function getRealCapturedAmount($refund = false) {
 
-        return $this->transaction->getCapturedAmount() - $this->order->getTotalPaid();
+        $amount = $this->transaction->getCapturedAmount() - $this->order->getTotalPaid();
+
+        if ($refund) {
+            $amount = -1 * ($this->order->getTotalPaid() - ( $this->transaction->getCapturedAmount() - $this->transaction->getRefundedAmount()));
+        }
+
+        return $amount;
     }
 
 }

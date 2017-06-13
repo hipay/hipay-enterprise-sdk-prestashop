@@ -842,6 +842,20 @@ class Hipay_enterprise extends PaymentModule {
                 "name_FR" => "Remboursement demandé (Hipay)",
                 "name_EN" => "Refund requested (Hipay)",
             ),
+            "HIPAY_OS_REFUNDED_PARTIALLY" => array(
+                "waiting_state_color" => "HotPink",
+                "setup" => array(
+                    'delivery' => false,
+                    'hidden' => false,
+                    'invoice' => true,
+                    'logable' => false,
+                    'module_name' => $this->name,
+                    'send_email' => false,
+                    'paid' => true
+                ),
+                "name_FR" => "Remboursé (Hipay)",
+                "name_EN" => "Refunded (Hipay)",
+            ),
             "HIPAY_OS_REFUNDED" => array(
                 "waiting_state_color" => "HotPink",
                 "setup" => array(
