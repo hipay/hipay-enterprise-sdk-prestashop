@@ -9,10 +9,15 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+//TODO : ON DUPLICATE KEYS ONLY MYSQL OR MYSQL-LIKE COMPLIANT => SET COMPATIBILITY WITH OTHER DATABASE 
+// https://stackoverflow.com/questions/15161578/sql-query-with-on-duplicate-key-update-clarification-needed
+// https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql
+
 class HipayDBQuery {
 
     const HIPAY_CAT_MAPPING_TABLE = 'hipay_cat_mapping';
     const HIPAY_CARRIER_MAPPING_TABLE = 'hipay_carrier_mapping';
+    const HIPAY_PAYMENT_ORDER_PREFIX = 'HiPay Enterprise';
 
     public function __construct($moduleInstance) {
         $this->module = $moduleInstance;
@@ -66,7 +71,7 @@ class HipayDBQuery {
     public function releaseSQLLock() {
         $sql = 'commit;';
         if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logsHipay('Bad LockSQL initiated for id_cart = ' . $objCart->id);
+            $this->logs->logsHipay('Bad LockSQL initiated ');
         }
     }
 
@@ -203,7 +208,7 @@ class HipayDBQuery {
      */
     public function getHipayCatFromPSId($PSId) {
         $sql = 'SELECT hp_cat_id
-                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '` 
+                FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CAT_MAPPING_TABLE . '` 
                 WHERE ps_cat_id = ' . $PSId;
 
         $result = Db::getInstance()->getRow($sql);
@@ -218,12 +223,138 @@ class HipayDBQuery {
      */
     public function getHipayCarrierFromPSId($PSId) {
         $sql = 'SELECT *
-                FROM `' . _DB_PREFIX_. HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` 
+                FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '` 
                 WHERE ps_carrier_id = ' . $PSId;
 
         $result = Db::getInstance()->getRow($sql);
 
         return $result;
     }
-    
+
+    /**
+     * check if specific order status exist in $idOrder order history
+     * @param type $status
+     * @param type $idOrder
+     * @return boolean
+     */
+    public function checkOrderStatusExist($status, $idOrder) {
+        $sql = 'SELECT COUNT(id_order_history) as count
+		FROM `' . _DB_PREFIX_ . 'order_history`
+		WHERE `id_order` = ' . (int) $idOrder . ' AND `id_order_state` = ' . (int) $status;
+
+        $this->logs->logsHipay('Check order status exist : ' . $sql);
+
+        $result = Db::getInstance()->getRow($sql);
+
+        $this->logs->logsHipay('Check order status exist : ' . print_r($result, true));
+
+        if (isset($result['count']) && $result['count'] > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * update order payment line
+     * @param type $paymentData
+     * @return boolean
+     */
+    public function updateOrderPayment($paymentData) {
+
+        $cardData = "";
+
+        if ($paymentData['payment_method'] != null) {
+            $cardData = " `card_number` = '" . $paymentData['payment_method']['pan'] . "',
+                    `card_brand` = '" . $paymentData['payment_method']['brand'] . "',
+                    `card_expiration` = '" . $paymentData['payment_method']['card_expiry_month'] . "/" . $paymentData['payment_method']['card_expiry_year'] . "',
+                    `card_holder` = '" . $paymentData['payment_method']['card_holder'] . "' ,";
+        }
+
+        $sql = "
+            UPDATE `" . _DB_PREFIX_ . "order_payment`
+            SET     " . $cardData . "
+                    `amount` = '" . $paymentData['captured_amount'] . "'
+                    
+            WHERE 
+                 `transaction_id` = '" . $paymentData['transaction_id'] . "' AND
+                `payment_method` = '" . HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX . " " . $paymentData["name"] . "'
+            AND `order_reference`= '" . $paymentData["order_reference"] . "';";
+
+
+        print_r($sql);
+
+        if (!Db::getInstance()->execute($sql)) {
+            //LOG 
+            $this->logs->logsHipay("ERROR : updateOrderPayment");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * count order payment line
+     * @param type $orderReference
+     * @return boolean
+     */
+    public function countOrderPayment($orderReference, $transactionId = null) {
+
+        $transactWhere = "";
+
+        if ($transactionId != null) {
+            $transactWhere = " transaction_id='" . $transactionId . "' AND ";
+        }
+
+        $sql = "SELECT COUNT(id_order_payment) as count "
+                . "FROM `" . _DB_PREFIX_ . "order_payment` "
+                . "WHERE " . $transactWhere . " `order_reference` = '" . $orderReference . "' ;"
+        ;
+
+        var_dump($sql);
+
+        $result = Db::getInstance()->getRow($sql);
+        if (isset($result['count'])) {
+            return $result['count'];
+        }
+        return 0;
+    }
+
+    /**
+     * Check if there is a duplicated OrderPayment and remove duplicate from same order ref but with incomplete payment method name
+     * @param type $orderReference
+     */
+    public function deleteOrderPaymentDuplicate($orderReference) {
+        $sql = "
+            DELETE FROM `" . _DB_PREFIX_ . "order_payment` 
+            WHERE 
+                payment_method='" . HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX . "' 
+                AND transaction_id='' 
+                AND order_reference='" . $orderReference . "'
+            ;";
+
+        Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * set invoice order
+     * @param Order $order
+     */
+    public function setInvoiceOrder($order) {
+
+        $sql = 'SELECT `id_order_payment`
+                FROM `' . _DB_PREFIX_ . 'order_payment`
+                WHERE order_reference="' . pSQL($order->reference) . ' LIMIT 1";';
+
+        $result = Db::getInstance()->getRow($sql);
+        $idOrderP = isset($result['id_order_payment']) ? $result['id_order_payment'] : false;
+
+        if ($idOrderP) {
+            $sqlUpdate = "
+			UPDATE `" . _DB_PREFIX_ . "order_invoice_payment`
+	                SET `id_order_payment` = " . (int) $idOrderP . "
+	                WHERE `id_order` = " . (int) $order->id;
+            Db::getInstance()->execute($sqlUpdate);
+        }
+    }
+
 }

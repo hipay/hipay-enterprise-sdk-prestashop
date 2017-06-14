@@ -41,9 +41,9 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
 
         // load order for id_order 
         $orderId = Order::getOrderByCartId($objCart->id);
-        
+
         $customer = new Customer((int) $objCart->id_customer);
-        
+
         if ($orderId && !empty($orderId) && $orderId > 0) {
             // load transaction by id_order
             $transaction = $db->getTransactionFromOrder($orderId);
@@ -71,7 +71,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             'id_cart' => $objCart->id,
             'id_module' => $this->module->id,
             'id_order' => $orderId,
-             'key' => $customer->secure_key,
+            'key' => $customer->secure_key,
         ]);
 
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
