@@ -823,7 +823,7 @@ class Hipay_enterprise extends PaymentModule {
                     'logable' => false,
                     'module_name' => $this->name,
                     'send_email' => false,
-                    'paid' => true
+                    'paid' => false
                 ),
                 "name_FR" => "Capture partielle (Hipay)",
                 "name_EN" => "partially captured (Hipay)",
@@ -837,7 +837,7 @@ class Hipay_enterprise extends PaymentModule {
                     'logable' => false,
                     'module_name' => $this->name,
                     'send_email' => false,
-                    'paid' => true
+                    'paid' => false
                 ),
                 "name_FR" => "Remboursement demandé (Hipay)",
                 "name_EN" => "Refund requested (Hipay)",
@@ -851,10 +851,10 @@ class Hipay_enterprise extends PaymentModule {
                     'logable' => false,
                     'module_name' => $this->name,
                     'send_email' => false,
-                    'paid' => true
+                    'paid' => false
                 ),
-                "name_FR" => "Remboursé (Hipay)",
-                "name_EN" => "Refunded (Hipay)",
+                "name_FR" => "Remboursé Partiellement (Hipay)",
+                "name_EN" => "Refunded Partially (Hipay)",
             ),
             "HIPAY_OS_REFUNDED" => array(
                 "waiting_state_color" => "HotPink",
@@ -865,7 +865,7 @@ class Hipay_enterprise extends PaymentModule {
                     'logable' => false,
                     'module_name' => $this->name,
                     'send_email' => false,
-                    'paid' => true
+                    'paid' => false
                 ),
                 "name_FR" => "Remboursé (Hipay)",
                 "name_EN" => "Refunded (Hipay)",
@@ -893,7 +893,7 @@ class Hipay_enterprise extends PaymentModule {
                     'logable' => false,
                     'module_name' => $this->name,
                     'send_email' => false,
-                    'paid' => true
+                    'paid' => false
                 ),
                 "name_FR" => "Charged back (Hipay)",
                 "name_EN" => "Charged back (Hipay)",
