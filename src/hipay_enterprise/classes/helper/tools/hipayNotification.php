@@ -318,9 +318,9 @@ class hipayNotification {
                 $this->createOrderPayment(true);
 
                 //force refund order status
-                if($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
+                if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
                     $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
-                }else{
+                } else {
                     $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
                 }
             }
@@ -417,7 +417,7 @@ class hipayNotification {
             "authorization_code" => $this->transaction->getAuthorizationCode(),
             "currency" => $this->transaction->getCurrency(),
             "ip_adress" => $this->transaction->getIpAddress(),
-                //  "basket" => ($this->transaction->getBasket() != null) ? true : false
+            "basket" => $this->transaction->getBasket()
         );
 
         $message = new Message();

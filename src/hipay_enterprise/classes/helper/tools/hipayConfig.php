@@ -9,9 +9,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
-
 
 class HipayConfig {
 
@@ -120,7 +118,7 @@ class HipayConfig {
         $configFields = array(
             "account" => array(
                 "global" => array(
-                    "sandbox_mode" => 0,
+                    "sandbox_mode" => 1,
                     "host_proxy" => "",
                     "host_proxy" => "",
                     "port_proxy" => "",
