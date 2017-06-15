@@ -3,6 +3,8 @@
     "config": {
         "displayName" : "Przelewy24",
         "activated" : 1,
+        "canRefund" : 1,
+        "canManualCapture" : 1,
         "currencies" : ["PLN"],
         "countries"  : ["PL"],
         "countrySelectorReadOnly": 1,

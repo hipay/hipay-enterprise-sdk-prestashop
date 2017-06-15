@@ -3,6 +3,8 @@
     "config": {
         "displayName" : "Yandex Money",
         "activated" : 1,
+        "canRefund" : 1,
+        "canManualCapture" : 1,
         "currencies" : ["RUB"],
         "countries"  : ["RU"],
         "countrySelectorReadOnly": 1,

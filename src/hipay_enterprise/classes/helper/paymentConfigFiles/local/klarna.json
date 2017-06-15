@@ -3,6 +3,8 @@
     "config": {
         "displayName" : "Klarna",
         "activated" : 1,
+        "canRefund" : 1,
+        "canManualCapture" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["DE"],
         "countrySelectorReadOnly": 0,

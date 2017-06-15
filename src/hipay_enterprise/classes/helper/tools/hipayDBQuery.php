@@ -13,6 +13,10 @@
 // https://stackoverflow.com/questions/15161578/sql-query-with-on-duplicate-key-update-clarification-needed
 // https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql
 
+require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
+
+use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
+
 class HipayDBQuery {
 
     const HIPAY_CAT_MAPPING_TABLE = 'hipay_cat_mapping';
@@ -355,6 +359,31 @@ class HipayDBQuery {
 	                WHERE `id_order` = " . (int) $order->id;
             Db::getInstance()->execute($sqlUpdate);
         }
+    }
+
+    /**
+     * 
+     * @param type $orderId
+     * @return boolean
+     */
+    public function alreadyCaptured($orderId) {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::CAPTURED . '%\' ;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (empty($result))
+            return false;
+        return true;
+    }
+
+    public function getPaymentProductFromMessage($orderId) {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::AUTHORIZED . '%\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            $message = Tools::jsonDecode($result[0]["message"], true);
+            return $message["payment_product"];
+        }
+        return false;
     }
 
 }
