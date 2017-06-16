@@ -1,6 +1,5 @@
 
 {capture name=path}{l s='HiPay payment.' mod='hipay_tpp'}{/capture}
-{include file="$tpl_dir./breadcrumb.tpl"}
 
 <h2>{l s='Payment Summary' mod='hipay_tpp'}</h2>
 

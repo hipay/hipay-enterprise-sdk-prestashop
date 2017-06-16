@@ -107,7 +107,7 @@ class HipayConfig {
 
     /**
      * init module configuration
-     * @return : boolrequire_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+     * @return : bool
 
      */
     private function insertConfigHiPay() {
@@ -156,7 +156,8 @@ class HipayConfig {
                     "capture_mode" => "manual",
                     "card_token" => 1,
                     "electronic_signature" => 1,
-                    "activate_basket" => 1
+                    "activate_basket" => 1,
+                    "regenerate_cart_on_decline" => 1
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()
