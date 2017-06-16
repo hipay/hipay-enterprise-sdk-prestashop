@@ -1,3 +1,4 @@
+
 {capture name=path}{l s='HiPay payment.' mod='hipay_tpp'}{/capture}
 {include file="$tpl_dir./breadcrumb.tpl"}
 
@@ -5,7 +6,7 @@
 
 <h3>{l s='HiPay payment.' mod='hipay_tpp'}</h3>
 
-<p>
-    <h1>{l s='Payment done' mod='hipay_tpp'}</h1>
-    {l s='Thank you! Once your payment has been processed, the order will be processed.' mod='hipay_tpp'}
+<p class="warning">
+    {l s='Your order has been declined' mod='hipay_tpp'}
 </p>
+<p><a href="{$link->getPageLink('order', true)}">{l s='Back to cart' mod='hipay_tpp'}</a></p>
