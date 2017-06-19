@@ -136,8 +136,6 @@ class hipayNotification {
                     }
                     break;
                 case TransactionStatus::REFUND_REQUESTED : //124
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
-                    break;
                 case TransactionStatus::REFUNDED : //125
                     $this->refundOrder();
                     break;
@@ -311,6 +309,11 @@ class hipayNotification {
         if ($this->orderExist) {
 
             $this->addOrderMessage();
+
+            if ($this->transaction->getStatus() == TransactionStatus::REFUND_REQUESTED) {
+                $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
+                return true;
+            }
 
             // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
             if ($this->db->countOrderPayment($this->order->reference, $this->setTransactionRefForPrestashop(true)) == 0) {

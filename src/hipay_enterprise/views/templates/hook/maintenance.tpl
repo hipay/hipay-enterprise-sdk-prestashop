@@ -7,11 +7,12 @@
                 {l s='Hipay Refund' mod='hipay_tpp'}
             </div>
             <div class="well hidden-print">
+                <a style="position: relative; top: -200px;" id="hipay"></a>
                 {if $error }
                     {if $error == "ok"}
-                        <p class="alert alert-danger">Text</p>
+                        <p class="alert alert-success">{l s="Request successfully sent"}</p>
                     {else}
-                        <p class="alert alert-success">{$error}</p>
+                        <p class="alert alert-danger">{$error}</p>
                     {/if}
                 {/if}
                 {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
@@ -19,10 +20,10 @@
                         <legend>{l s='Refund this order' }</legend>
                         <p><b>{l s='Amount that can be refunded' } :</b> <span class="badge badge-success">{$refundableAmountDisplay}</span></p>
                         <p class="help-block"><sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise'}</p>
-                        <form action="#" method="post" id="hipay_refund_form" class="form-horizontal ">
-                            <input type="hidden" name="id_order" value="" />
-                            <input type="hidden" name="id_emp" value="" />
-                            <input type="hidden" name="token" value="" />
+                        <form action="{$refundLink}" method="post" id="hipay_refund_form" class="form-horizontal ">
+                            <input type="hidden" name="id_order" value="{$orderId}" />
+                            <input type="hidden" name="id_emp" value="{$employeeId}" />
+                            <input type="hidden" name="token" value="{$tokenRefund}" />
                             <div class="form-group ">
                                 <label class="control-label " for="hipay_refund_type">{l s='Refund type'}</label>
                                 <select id="hipay_refund_type" name="hipay_refund_type" class="form-control ">
@@ -33,8 +34,12 @@
                                 </select>
                             </div>
                             <div id="block-refund-amount" {if !$partiallyRefunded} style="display:none;" {/if} class="form-group">
-                                <label class="control-label " for="hipay_refund_amount">{l s='Refund amount'}</label>
-                                <input type="text" name="hipay_refund_amount" value="{$refundableAmount}" />
+                                {if !$basket}
+                                    <label class="control-label " for="hipay_refund_amount">{l s='Refund amount'}</label>
+                                    <input type="text" name="hipay_refund_amount" value="{$refundableAmount}" />
+                                {else}
+                                    {$basket}
+                                {/if}
                             </div>
                             <div class="form-group">
                                 <button type="submit"  name="hipay_refund_submit" class="btn btn-primary pull-right" >
@@ -61,9 +66,9 @@
             <div class="well hidden-print">
                 {if $error }
                     {if $error == "ok"}
-                        <p class="alert alert-danger">Text</p>
+                        <p class="alert alert-success">{l s="Request successfully sent"}</p>
                     {else}
-                        <p class="alert alert-success">{$error}</p>
+                        <p class="alert alert-danger">{$error}</p>
                     {/if}
                 {/if}
                 {if $showCapture && $stillToCapture > 0 && $manualCapture}
@@ -78,10 +83,10 @@
                         <p><b>{l s='Amount already captured' } :</b> <span class="badge badge-success">{$refundableAmount}</span></p>
                         <p><b>{l s='Amount still to be captured' } :</b> <span class="badge badge-success">{$stillToCaptureDisplay}</span></p>
                         <p class="help-block"><sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise'}</p>
-                        <form action="#" method="post" id="hipay_capture_form" class="form-horizontal">
-                            <input type="hidden" name="id_order" value="" />
-                            <input type="hidden" name="id_emp" value="" />
-                            <input type="hidden" name="token" value="" />
+                        <form action="{$captureLink}" method="post" id="hipay_capture_form" class="form-horizontal">
+                            <input type="hidden" name="id_order" value="{$orderId}" />
+                            <input type="hidden" name="id_emp" value="{$employeeId}" />
+                            <input type="hidden" name="token" value="{$tokenCapture}" />
                             <div class="form-group ">
                                 <label class="control-label " for="hipay_capture_type">{l s='Capture type'}</label>
                                 <select id="hipay_capture_type" name="hipay_capture_type" class="form-control ">
@@ -92,8 +97,12 @@
                                 </select>
                             </div>
                             <div id="block-capture-amount" {if !$partiallyCaptured }style="display:none;" {/if} class="form-group">
-                                <label class="control-label " for="hipay_capture_amount">{l s='Capture amount'}</label>
-                                <input type="text" name="hipay_capture_amount" value="{$stillToCapture}" />
+                                {if !$basket}
+                                    <label class="control-label " for="hipay_capture_amount">{l s='Capture amount'}</label>
+                                    <input type="text" name="hipay_capture_amount" value="{$stillToCapture}" />
+                                {else}
+                                    {$basket}
+                                {/if}
                             </div>
                             <div class="form-group">
                                 <button type="submit"  name="hipay_capture_submit" class="btn btn-primary pull-right" >

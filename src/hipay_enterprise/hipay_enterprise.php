@@ -239,7 +239,7 @@ class Hipay_enterprise extends PaymentModule {
 
         $order = new Order((int) Tools::getValue('id_order'));
         $refundableAmount = $order->getTotalPaid();
-        $error = Tools::getValue('hipay_refund_err');
+        $error = Tools::getValue('hipay_err');
         $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
         $alreadyCaptured = $this->db->alreadyCaptured($order->id);
         $manualCapture = false;
@@ -247,12 +247,17 @@ class Hipay_enterprise extends PaymentModule {
         $showRefund = true;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
+        $token = Tools::getValue('token');
+        $orderId = $order->id;
+        $employeeId = $this->context->employee->id;
+        $basket = $this->db->getOrderBasket($order->id); 
         
-        if($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1)){
+        
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1)) {
             $partiallyCaptured = true;
         }
-        
-        if($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1)){
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1)) {
             $partiallyRefunded = true;
         }
 
@@ -311,7 +316,14 @@ class Hipay_enterprise extends PaymentModule {
             'partiallyRefunded' => $partiallyRefunded,
             'showCapture' => $showCapture,
             'showRefund' => $showRefund,
-            'manualCapture' => $manualCapture
+            'manualCapture' => $manualCapture,
+            'captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
+            'refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
+            'tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
+            'tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
+            'orderId' => $orderId,
+            'employeeId' => $employeeId,
+            'basket' => $basket
         ));
 
         return $this->display(dirname(__FILE__), 'views/templates/hook/maintenance.tpl');
@@ -1092,362 +1104,6 @@ class Hipay_enterprise extends PaymentModule {
     private function deleteHipayTable() {
         $this->mapper->deleteTable();
         return true;
-    }
-
-    public function HookDisplayAdminOrderez() {
-        $orderLoaded = new OrderCore(Tools::getValue('id_order'));
-        // Verify the payment method name
-        $payment_method_sql = "SELECT payment_method FROM `" . _DB_PREFIX_ . "order_payment` WHERE order_reference='" . $orderLoaded->reference . "'";
-        $payment_method = Db::getInstance()->executeS($payment_method_sql);
-        $hide_refund = false;
-        $hide_capture = false;
-        if (isset($payment_method [0] ['payment_method'])) {
-            $explode_payment_local_card = explode($this->displayName . ' via', $payment_method [0] ['payment_method']);
-            if (isset($explode_payment_local_card [1])) {
-                $payment_local_card = $explode_payment_local_card [1];
-                $local_cards = $this->checkLocalCards();
-                if (isset($local_cards)) {
-                    if (count($local_cards)) {
-                        foreach ($local_cards as $value) {
-                            if ((string) $value->name == trim($payment_local_card)) {
-                                if ((string) $value->refund == '0') {
-                                    $hide_refund = true;
-                                }
-                                if ((string) $value->manualcapture == '0') {
-                                    $hide_capture = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (Tools::strtolower(trim($payment_local_card)) == 'bcmc')
-                    $hide_refund = true;
-            }
-            // Verify if already CAPTURED
-            $payment_message_sql = "SELECT * FROM `" . _DB_PREFIX_ . "message` WHERE id_order='" . $orderLoaded->id . "' AND message LIKE 'HiPay%Status : 118%'";
-            $paymentmessage = Db::getInstance()->executeS($payment_message_sql);
-            if (empty($paymentmessage))
-                $hide_refund = true;
-        }
-        $currentState = $orderLoaded->current_state;
-        $stateLoaded = new OrderState($currentState);
-        // Check if current state = Configuration::get( 'HIPAY_REFUND_REQUESTED' )
-        // If renfund requested, then prevent any further refund until current refund has been completed
-        if ($currentState == Configuration::get('HIPAY_REFUND_REQUESTED')) {
-            $hide_refund = true;
-        }
-        $form = '';
-        if ($orderLoaded->module == $this->name) {
-            if ($stateLoaded->paid) {
-
-                /**
-                 * variables de vérification
-                 */
-                $orderTotal = $orderLoaded->total_products_wt + $orderLoaded->total_shipping_tax_incl + $orderLoaded->total_wrapping_tax_incl;
-                $totalEncaissement = $this->getOrderTotalAmountCaptured($orderLoaded->reference);
-                $adminDir = _PS_ADMIN_DIR_;
-                $adminDir = Tools::substr($adminDir, strrpos($adminDir, '/'));
-                $adminDir = Tools::substr($adminDir, strrpos($adminDir, '\\'));
-                $adminDir = str_replace('\\', '', $adminDir);
-                $adminDir = str_replace('/', '', $adminDir);
-                $context = Context::getContext();
-                $form_action = '../index.php?fc=module&module=' . $this->name . '&controller=refund';
-                if (version_compare(_PS_VERSION_, '1.6', '>')) {
-                    $form .= '<div id="htmlcontent" class="panel">
-	                 <div class="panel-heading"><img src="../img/admin/money.gif">&nbsp;&nbsp;' . $this->l('Hipay Refund') . '</div>
-	                 <fieldset>';
-                } else {
-                    $form .= '
-		        		<div style="height:10px"></div>
-		        		<div>
-		        		<fieldset>';
-                    $form .= '<legend><img src="../img/admin/money.gif">&nbsp;&nbsp;' . $this->l('Hipay Refund') . '</legend>';
-                }
-                if (Tools::getValue('hipay_refund_err')) {
-                    if (Tools::getValue('hipay_refund_err') == 'ok') {
-                        $form .= '<p style="" class="conf">
-									<a style="position: relative; top: -100px;" id="hipay"></a>
-			        				' . $this->l('Request successfully sent') . '
-						        	</p>';
-                    } else {
-                        if (_PS_VERSION_ >= '1.6') {
-                            $form .= '<style media="screen" type="text/css">
-							p.error{
-								color:red;
-							}
-							</style>';
-                        }
-                        $form .= '<p style="" class="error">
-									<a style="position: relative; top: -100px;" id="hipay"></a>
-						        	' . Tools::getValue('hipay_refund_err') . '
-						        	</p>';
-                    }
-                }
-                /**
-                 * FORMULAIRE DE REMBOURSEMENT
-                 */
-                $form .= '
-		        		<fieldset>
-		        			<legend>' . $this->l('Refund this order') . '</legend>';
-                // summary of amount captured, amount that can be refunded
-                $form .= '
-	        			<table class="table" width="auto" cellspacing="0" cellpadding="0">
-	        				<tr>
-	        					<th>' . $this->l('Amount that can be refunded') . '</th>
-	        				</tr>
-	        				<tr>
-	        					<td class="value"><span class="badge badge-success">' . Tools::displayPrice($totalEncaissement) . '</span></td>
-	        				</tr>
-	        			</table>';
-                $form .= '<div style="font-size: 12px;">
-					<sup>*</sup> ' . $this->l('Amount will be updated once the refund will be confirmed by HiPay Fullservice') . '</div>';
-                if ($totalEncaissement != 0 && $hide_refund == false) {
-                    $form .= '
-					<script>
-                       $( document ).ready(function() {
-                            $("#hipay_refund_form").submit( function(){
-                                var type=$("[name=hipay_refund_type]:checked").val();
-                                var proceed = "true";
-                                /*if(type=="partial")
-                                {
-                                    var amount=$("#hidden2").val();
-                                    if(amount == "" || !$.isNumeric(amount))
-                                    {
-                                        alert("' . $this->l('Please enter an amount') . '");
-                                        proceed = "false";
-                                    }
-                                    if(amount<=0)
-                                    {
-                                        alert("' . $this->l('Please enter an amount greater than zero') . '");
-                                        proceed = "false";
-                                    }
-                                    if(amount>' . $totalEncaissement . ')
-                                    {
-                                        alert("' . $this->l('Amount exceeding authorized amount') . '");
-                                        proceed = "false";
-                                    }
-                                }*/
-                                if(proceed == "false")
-                                {
-                                    return false;
-                                }else{
-                                    return true;
-                                }
-                                return false;
-                            });
-					    });
-                    </script>
-					<form action="' . $form_action . '" method="post" id="hipay_refund_form">';
-                    $form .= '<input type="hidden" name="id_order" value="' . Tools::getValue('id_order') . '" />';
-                    $form .= '<input type="hidden" name="id_emp" value="' . $context->employee->id . '" />';
-                    $form .= '<input type="hidden" name="token" value="' . Tools::getValue('token') . '" />';
-                    $form .= '<input type="hidden" name="adminDir" value="' . $adminDir . '" />';
-                    $form .= '<p><table>';
-                    $form .= '<tr><td><label for="hipay_refund_type">' . $this->l('Refund type') . '</label></td><td>&nbsp;</td>';
-                    if ((boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_REFUNDED'))) {
-                        $form .= '<td>';
-                        $form .= '<input type="radio" onclick="javascript:document.getElementById(\'hidden1\').style.display=\'inline\';javascript:document.getElementById(\'hidden2\').style.display=\'inline\';" name="hipay_refund_type" id="hipay_refund_type" value="partial" checked />' . $this->l('Partial') . '</td></tr>';
-                    } else {
-                        $form .= '<td><input type="radio" onclick="javascript:document.getElementById(\'hidden1\').style.display=\'none\';javascript:document.getElementById(\'hidden2\').style.display=\'none\';" name="hipay_refund_type" value="complete" checked />' . $this->l('Complete') . '<br/>';
-                        $form .= '<input type="radio" onclick="javascript:document.getElementById(\'hidden1\').style.display=\'inline\';javascript:document.getElementById(\'hidden2\').style.display=\'inline\';" name="hipay_refund_type" id="hipay_refund_type" value="partial" />' . $this->l('Partial') . '</td></tr>';
-                    }
-                    $form .= '</table></p>';
-                    $form .= '<p>';
-                    if ((boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_REFUNDED'))) {
-                        $form .= '<label style="display:block;" id="hidden1" for="">' . $this->l('Refund amount') . '</label>';
-                        $form .= '<input style="display:block;" id="hidden2" type="text" name="hipay_refund_amount" value="" />';
-                    } else {
-                        $form .= '<label style="display:none;" id="hidden1" for="">' . $this->l('Refund amount') . '</label>';
-                        $form .= '<input style="display:none;" id="hidden2" type="text" name="hipay_refund_amount" value="" />';
-                    }
-                    $form .= '</p>';
-                    $form .= '<label>&nbsp;</label><input type="submit" name="hipay_refund_submit" class="btn btn-primary" value="' . $this->l('Refund') . '" />';
-                    $form .= '</form>';
-                } else {
-                    $form .= $this->l('This order has already been fully refunded or refund is not allowed');
-                }
-                $form .= '</fieldset>';
-                $form .= '</fieldset></div>';
-            }
-            $showCapture = false;
-            if ($orderLoaded->current_state == Configuration::get('HIPAY_AUTHORIZED') || $orderLoaded->current_state == _PS_OS_PAYMENT_ || $orderLoaded->current_state == Configuration::get('HIPAY_PARTIALLY_CAPTURED')) {
-                $showCapture = true;
-            }
-            if ($showCapture) {
-                // Modification to allow a full capture if the previous state was HIPAY_PENDING or HIPAY_CHALLENGED
-                $get_HIPAY_MANUALCAPTURE = Configuration::get('HIPAY_MANUALCAPTURE');
-                $context = Context::getContext();
-                if ((boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_PENDING')) || (boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_CHALLENGED'))
-                ) {
-                    // Order was previously pending or challenged
-                    // Then check if its currently in authorized state
-                    if ($orderLoaded->current_state == Configuration::get('HIPAY_AUTHORIZED')) {
-                        $get_HIPAY_MANUALCAPTURE = 1;
-                    }
-                } else {
-                    // Nothing to do, classical system behaviour will take over
-                }
-                // FORCING ORDER CAPTURED AMOUNT UPDATE
-                $sql = "UPDATE `" . _DB_PREFIX_ . "order_payment`
-                        SET `amount` = '" . $this->getOrderTotalAmountCaptured($orderLoaded->reference) . "'
-                        WHERE `order_reference`='" . $orderLoaded->reference . "'";
-                //Db::getInstance()->execute($sql);
-                /**
-                 * FORMULAIRE DE CAPTURE
-                 */
-                if (version_compare(_PS_VERSION_, '1.6', '>')) {
-                    $form .= '<div id="htmlcontent" class="panel">
-	                 <div class="panel-heading"><img src="../img/admin/money.gif">&nbsp;&nbsp;' . $this->l('Hipay Capture') . '</div>
-	                 <fieldset>';
-                } else {
-                    $form .= '
-		        		<div style="height:10px"></div>
-		        		<div>
-		        		<fieldset>';
-                    $form .= '<legend><img src="../img/admin/money.gif">&nbsp;&nbsp;' . $this->l('Hipay Capture') . '</legend>';
-                }
-                if ($get_HIPAY_MANUALCAPTURE) {
-                    if (Tools::getValue('hipay_err')) {
-                        if (Tools::getValue('hipay_err') == 'ok') {
-                            $form .= '<p style="" class="conf">
-									<a style="position: relative; top: -100px;" id="hipay"></a>
-			        				' . $this->l('Request successfully sent') . '
-						        	</p>';
-                        } else {
-                            if (_PS_VERSION_ >= '1.6') {
-                                $form .= '<style media="screen" type="text/css">
-								p.error{
-									color:red;
-								}
-								</style>';
-                            }
-                            $form .= '<p style="" class="error">
-									<a style="position: relative; top: -100px;" id="hipay"></a>
-						        	' . Tools::getValue('hipay_err') . '
-						        	</p>';
-                        }
-                    }
-                    $form_action = '../index.php?fc=module&module=' . $this->name . '&controller=capture';
-                    $form .= '
-			        		<div style="height:10px"></div>
-			        		<fieldset>
-			        			<legend>' . $this->l('Capture this order') . '</legend>';
-                    $orderTotal = $orderLoaded->total_products_wt + $orderLoaded->total_shipping_tax_incl + $orderLoaded->total_wrapping_tax_incl;
-                    $totalEncaissement = $this->getOrderTotalAmountCaptured($orderLoaded->reference);
-                    $stillToCapture = $orderTotal - $totalEncaissement;
-
-                    // Modif ajout texte warning si montant pas completement capture
-                    if ($stillToCapture) {
-                        // Retrieve _PS_OS_PAYMENT_ real name
-                        $form .= '
-						   <table class="table" width="100%" cellspacing="0" cellpadding="0">
-						   <tr>
-								<th>' . $this->l('The order has not been fully captured.') . '</th>
-							</tr><tr>
-								<th>' . $this->l('To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.') . '</th>
-						   </tr>
-							</table>
-							<p>&nbsp;</p>
-							';
-                    }
-                    // summary of amount captured, still to capture
-                    $form .= '
-                                       <table class="table" width="100%" cellspacing="0" cellpadding="0">
-                                       <tr>
-                                       	<th>' . $this->l('Amount already captured') . '</th>
-                                       	<th>' . $this->l('Amount still to be captured') . '</th>
-                                       </tr>
-                                       <tr>
-                                       	<td class="value"><span class="badge badge-success">' . Tools::displayPrice($totalEncaissement) . '</span></td>
-                                       	<td class="value"><span class="badge badge-info">' . Tools::displayPrice($stillToCapture) . '</span></td>
-                                       </tr>
-                                       </table>';
-                    $form .= '<div style="font-size: 12px;">
-					<sup>*</sup> ' . $this->l('Amounts will be updated once the capture will be confirmed by HiPay Fullservice') . '</div>';
-                    $adminDir = _PS_ADMIN_DIR_;
-                    $adminDir = Tools::substr($adminDir, strrpos($adminDir, '/'));
-                    $adminDir = Tools::substr($adminDir, strrpos($adminDir, '\\'));
-                    $adminDir = str_replace('\\', '', $adminDir);
-                    $adminDir = str_replace('/', '', $adminDir);
-                    $context = Context::getContext();
-                    // Last check
-                    // If state should not allow user to manually capture then disable display
-                    if ($currentState == _PS_OS_ERROR_ || $currentState == _PS_OS_CANCELED_
-                            /* || $currentState == _PS_OS_PAYMENT_ issue with partical capture returning state _PS_OS_PAYMENT_ */ || $currentState == Configuration::get('HIPAY_EXPIRED') || $currentState == Configuration::get('HIPAY_REFUND_REQUESTED') || $currentState == Configuration::get('HIPAY_REFUNDED')) {
-                        $stillToCapture = false;
-                    }
-                    if (($stillToCapture) && $hide_capture == false) {
-                        $form .= "<script>
-                           $( document ).ready(function() {
-                            $('#hipay_capture_form').submit( function(){
-                                var type=$('[name=hipay_capture_type]:checked').val();
-                                var proceed = 'true';
-                                /*if(type=='partial')
-                                {
-                                    var amount=$('#hidden4').val();
-                                    if(amount == '')
-                                    {
-                                        alert('" . $this->l('Please enter an amount') . "');
-                                        proceed = 'false';
-                                    }
-                                    if(amount<=0)
-                                    {
-                                        alert('" . $this->l('Please enter an amount greater than zero') . "');
-                                        proceed = 'false';
-                                    }
-                                    if(amount>" . $stillToCapture . ")
-                                    {
-                                        alert('" . $this->l('Amount exceeding authorized amount') . "');
-                                        proceed = 'false';
-                                    }
-                                }*/
-    
-                                if(proceed == 'false')
-                                {
-                                    return false;
-                                }else{
-                                    return true;
-                                }
-    
-                                return false;
-                            });
-					    });
-                        </script>";
-                        $form .= '<form action="' . $form_action . '" method="post" id="hipay_capture_form">';
-                        $form .= '<input type="hidden" name="id_order" value="' . Tools::getValue('id_order') . '" />';
-                        $form .= '<input type="hidden" name="id_emp" value="' . $context->employee->id . '" />';
-                        $form .= '<input type="hidden" name="token" value="' . Tools::getValue('token') . '" />';
-                        $form .= '<input type="hidden" name="adminDir" value="' . $adminDir . '" />';
-                        $form .= '<p><table>';
-                        $form .= '<tr><td><label for="hipay_capture_type">' . $this->l('Capture type') . '</label></td><td>&nbsp;</td>';
-                        if ((boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_PARTIALLY_CAPTURED'))) {
-                            $form .= '<td>';
-                            $form .= '<input type="radio" onclick="javascript:document.getElementById(\'hidden3\').style.display=\'inline\';javascript:document.getElementById(\'hidden4\').style.display=\'inline\';" name="hipay_capture_type" id="hipay_capture_type" value="partial" checked />' . $this->l('Partial') . '</td></tr>';
-                        } else {
-                            $form .= '<td><input type="radio" onclick="javascript:document.getElementById(\'hidden3\').style.display=\'none\';javascript:document.getElementById(\'hidden4\').style.display=\'none\';" name="hipay_capture_type" value="complete" checked />' . $this->l('Complete') . '<br>';
-                            $form .= '<input type="radio" onclick="javascript:document.getElementById(\'hidden3\').style.display=\'inline\';javascript:document.getElementById(\'hidden4\').style.display=\'inline\';" name="hipay_capture_type" id="hipay_capture_type" value="partial" />' . $this->l('Partial') . '</td></tr>';
-                        }
-                        $form .= '</table></p>';
-                        $form .= '<p>';
-                        if ((boolean) $orderLoaded->getHistory($context->language->id, Configuration::get('HIPAY_PARTIALLY_CAPTURED'))) {
-                            $form .= '<label style="display:block;" id="hidden3" >' . $this->l('Capture amount') . '</label>';
-                            $form .= '<input style="display:block;" id="hidden4" type="text" name="hipay_capture_amount" value="' . round($stillToCapture, 2) . '" />';
-                        } else {
-                            $form .= '<label style="display:none;" id="hidden3" >' . $this->l('Capture amount') . '</label>';
-                            $form .= '<input style="display:none;" id="hidden4" type="text" name="hipay_capture_amount" value="' . round($stillToCapture, 2) . '" />';
-                        }
-                        $form .= '</p>';
-                        $form .= '<label>&nbsp;</label><input type="submit" name="hipay_capture_submit" class="btn btn-primary" value="' . $this->l('Capture') . '" />';
-                        $form .= '</form>';
-                    } else {
-                        $form .= '<p>' . $this->l('This order has already been fully captured, cannot be captured or waiting authorization for capture') . '</p>';
-                    }
-                    $form .= '</fieldset>';
-                }
-                $form .= '</fieldset></div>';
-            }
-            return $form;
-        }
     }
 
 }

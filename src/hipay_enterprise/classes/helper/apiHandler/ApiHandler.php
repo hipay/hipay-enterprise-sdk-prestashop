@@ -17,6 +17,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoForm
 require_once(dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
+use HiPay\Fullservice\Enum\Transaction\Operation;
 
 /**
  * Handle Hipay Api call 
@@ -99,6 +100,42 @@ class Apihandler {
                 break;
             default :
                 $this->module->getLogs()->logsHipay("Unknown payment mode");
+        }
+    }
+
+    /**
+     * 
+     * @param type $params
+     */
+    public function handleCapture($params) {
+        $this->handleMaintenance(Operation::CAPTURE, $params);
+    }
+
+    /**
+     * 
+     * @param type $params
+     */
+    public function handleRefund($params) {
+        $this->handleMaintenance(Operation::REFUND, $params);
+    }
+
+    /**
+     * 
+     * @param type $mode
+     * @param type $params
+     */
+    private function handleMaintenance($mode, $params = array()) {
+        switch ($mode) {
+            case Operation::CAPTURE:
+                $params["operation"] = Operation::CAPTURE;
+                ApiCaller::requestMaintenance($this->module, $params);
+                break;
+            case Operation::REFUND:
+                $params["operation"] = Operation::REFUND;
+                ApiCaller::requestMaintenance($this->module, $params);
+                break;
+            default :
+                $this->module->getLogs()->logsHipay("Unknown maintenance operation");
         }
     }
 

@@ -375,6 +375,27 @@ class HipayDBQuery {
         return true;
     }
 
+    /**
+     * 
+     * @param type $orderId
+     * @return boolean / int
+     */
+    public function getTransactionReference($orderId) {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::AUTHORIZED . '%\' LIMIT 1 ;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            $message = Tools::jsonDecode($result[0]["message"], true);
+            return $message["transaction_ref"];
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @param type $orderId
+     * @return boolean
+     */
     public function getPaymentProductFromMessage($orderId) {
         $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::AUTHORIZED . '%\' LIMIT 1;';
 
@@ -382,6 +403,17 @@ class HipayDBQuery {
         if (!empty($result)) {
             $message = Tools::jsonDecode($result[0]["message"], true);
             return $message["payment_product"];
+        }
+        return false;
+    }
+
+    public function getOrderBasket($orderId) {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::AUTHORIZED . '%\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            $message = Tools::jsonDecode($result[0]["message"], true);
+            return $message["basket"];
         }
         return false;
     }

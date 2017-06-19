@@ -11,6 +11,7 @@
  */
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 /**
@@ -56,6 +57,24 @@ class ApiCaller {
         //    die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestNewOrder($orderRequest->generate());
+
+        return $transaction;
+    }
+
+    /**
+     * request capture or refund to HiPay API
+     * @param type $moduleInstance
+     * @param type $params
+     * @return type
+     */
+    public static function requestMaintenance($moduleInstance, $params) {
+        //Create your gateway client
+        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+        //Set data to send to the API
+        $maintenanceRequest = new MaintenanceFormatter($moduleInstance, $params);
+        $moduleInstance->getLogs()->requestLogs(print_r($maintenanceRequest->generate(), true));
+        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
+        $transaction = $gatewayClient->requestMaintenanceOperation($params["operation"], $params["transaction_reference"], $params["amount"], null ,$maintenanceRequest->generate());
 
         return $transaction;
     }
