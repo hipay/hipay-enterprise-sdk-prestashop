@@ -21,6 +21,7 @@ class HipayDBQuery {
 
     const HIPAY_CAT_MAPPING_TABLE = 'hipay_cat_mapping';
     const HIPAY_CARRIER_MAPPING_TABLE = 'hipay_carrier_mapping';
+    const HIPAY_ORDER_REFUND_CAPTURE_TABLE = 'hipay_order_refund_capture';
     const HIPAY_PAYMENT_ORDER_PREFIX = 'HiPay Enterprise';
 
     public function __construct($moduleInstance) {
@@ -135,6 +136,26 @@ class HipayDBQuery {
     }
 
     /**
+     * 
+     * @return type
+     */
+    public function createOrderRefundCaptureTable() {
+        $this->logs->logsHipay('Create Hipay order refund capture table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`(
+                `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `ps_order_id` INT(10) UNSIGNED NOT NULL,
+                `ps_product_id` INT(10) UNSIGNED NOT NULL,
+                `type` VARCHAR(255)  NOT NULL,
+                `quantity` INT(10) UNSIGNED NOT NULL,
+                `amount` DECIMAL(5,2) UNSIGNED NOT NULL,
+                PRIMARY KEY (`hp_id`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
      * Delete Hipay mapping table
      * @return type
      */
@@ -153,6 +174,13 @@ class HipayDBQuery {
         $this->logs->logsHipay('Delete Hipay carrier mapping table');
 
         $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE . '`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    public function deleteOrderRefundCaptureTable() {
+        $this->logs->logsHipay('Delete Hipay order refund capture table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`';
         return Db::getInstance()->execute($sql);
     }
 
@@ -407,15 +435,71 @@ class HipayDBQuery {
         return false;
     }
 
+    /**
+     * 
+     * @param type $orderId
+     * @return boolean
+     */
     public function getOrderBasket($orderId) {
         $sql = 'SELECT * FROM `' . _DB_PREFIX_ . 'message` WHERE id_order=\'' . $orderId . '\' AND message LIKE \'%"status":' . TransactionStatus::AUTHORIZED . '%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
             $message = Tools::jsonDecode($result[0]["message"], true);
-            return $message["basket"];
+            return Tools::jsonDecode($message["basket"], true);
         }
         return false;
+    }
+
+    /**
+     * save order capture data (basket)
+     * @param type $values
+     * @return type
+     */
+    public function setCaptureOrder($values) {
+        $sql = 'INSERT INTO  `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '` (ps_order_id, ps_product_id, type, quantity, amount)
+                VALUES (' . join(",", $values) . ') ;';
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * get order capture saved data (basket)
+     * @param type $orderId
+     * @return type
+     */
+    public function getCapturedItems($orderId) {
+        return $this->getCapturedOrRefundedItems($orderId, "capture");
+    }
+
+    /**
+     * get order refund saved data (basket)
+     * @param type $orderId
+     * @return type
+     */
+    public function getRefundedItems($orderId) {
+        return $this->getCapturedOrRefundedItems($orderId, "refund");
+    }
+
+    /**
+     * get capture or refund saved data (basket)
+     * @param type $orderId
+     * @param type $type
+     * @return type
+     */
+    private function getCapturedOrRefundedItems($orderId, $type) {
+        $sql = 'SELECT `ps_product_id`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
+                FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`
+                WHERE `ps_order_id` = ' . $orderId . ' AND `type` = "' . $type . '"' .
+                ' GROUP BY `ps_product_id`';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        foreach ($result as $key => $item) {
+            $result[$item["ps_product_id"]] = $item;
+            unset($result[$key]);
+        }
+
+        return $result;
     }
 
 }

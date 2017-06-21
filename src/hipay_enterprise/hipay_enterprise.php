@@ -233,7 +233,7 @@ class Hipay_enterprise extends PaymentModule {
     }
 
     /**
-     * 
+     * Display refund and capture blocks in order admin page
      */
     public function HookDisplayAdminOrder() {
 
@@ -250,10 +250,11 @@ class Hipay_enterprise extends PaymentModule {
         $token = Tools::getValue('token');
         $orderId = $order->id;
         $employeeId = $this->context->employee->id;
-        $basket = $this->db->getOrderBasket($order->id); 
+        $basket = $this->db->getOrderBasket($order->id);
+        $products = $order->getProducts();
+        $capturedItems = $this->db->getCapturedItems($order->id);
         
-        
-        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1)) {
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) || !empty($capturedItems)) {
             $partiallyCaptured = true;
         }
 
@@ -323,7 +324,9 @@ class Hipay_enterprise extends PaymentModule {
             'tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
             'orderId' => $orderId,
             'employeeId' => $employeeId,
-            'basket' => $basket
+            'basket' => $basket,
+            'capturedItems' => $capturedItems,
+            'products' => $products
         ));
 
         return $this->display(dirname(__FILE__), 'views/templates/hook/maintenance.tpl');
@@ -1094,7 +1097,7 @@ class Hipay_enterprise extends PaymentModule {
      */
     private function createHipayTable() {
         $this->mapper->createTable();
-
+        $this->db->createOrderRefundCaptureTable();
         return true;
     }
 
@@ -1103,6 +1106,7 @@ class Hipay_enterprise extends PaymentModule {
      */
     private function deleteHipayTable() {
         $this->mapper->deleteTable();
+        $this->db->deleteOrderRefundCaptureTable();
         return true;
     }
 

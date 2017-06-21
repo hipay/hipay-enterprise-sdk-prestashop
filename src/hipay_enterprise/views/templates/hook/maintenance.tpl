@@ -101,11 +101,48 @@
                                     <label class="control-label " for="hipay_capture_amount">{l s='Capture amount'}</label>
                                     <input type="text" name="hipay_capture_amount" value="{$stillToCapture}" />
                                 {else}
-                                    {$basket}
+                                    <table class="table">
+                                        <tr>
+                                            <th>{l s="Product name"}</th>
+                                            <th>{l s="Already captured"}</th>
+                                            <th>{l s="Quantity remaining"}</th>
+                                        </tr>
+                                        {foreach $products as $item}
+                                            {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
+                                                {assign var="remainQty" value={$item["product_quantity"]} - $capturedItems[$item["product_id"]]["quantity"]}
+                                            {else}
+                                                {assign var="remainQty" value=$item["product_quantity"]}
+                                            {/if}
+                                            <tr >
+                                                <td>
+                                                    <input type="hidden" {if $remainQty == 0} disabled {/if} name="hipaycapture[{$item["product_id"]}]" value="{$item["product_id"]}"/>{$item["product_name"]}
+                                                </td>
+                                                <td>
+                                                    {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
+                                                        <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
+                                                            {$capturedItems[$item["product_id"]]["quantity"]} ({$capturedItems[$item["product_id"]]["amount"]})
+                                                        </span>
+                                                    {else}
+                                                        <span class="badge badge-warning">
+                                                            0
+                                                        </span>
+                                                    {/if}
+                                                </td>
+                                                <td >
+                                                    {if $remainQty > 0}
+                                                        <div class="col-lg-6 input-group">
+                                                            <input name="hipaycapture[{$item["product_id"]}]" type="number" min="0" max="{$remainQty}" name="" value="0">
+                                                            <div class="input-group-addon">/ {$remainQty}</div>
+                                                        </div>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                        {/foreach}
+                                    </table>
                                 {/if}
                             </div>
                             <div class="form-group">
-                                <button type="submit"  name="hipay_capture_submit" class="btn btn-primary pull-right" >
+                                <button type="submit"  name="{if !$basket}hipay_capture_submit{else}hipay_capture_basket_submit{/if}" class="btn btn-primary pull-right" >
                                     {l s="Capture" }
                                 </button>
                             </div>

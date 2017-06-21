@@ -72,9 +72,10 @@ class ApiCaller {
         $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
         //Set data to send to the API
         $maintenanceRequest = new MaintenanceFormatter($moduleInstance, $params);
-        $moduleInstance->getLogs()->requestLogs(print_r($maintenanceRequest->generate(), true));
+        $maintenanceRequestFormatted = $maintenanceRequest->generate();
+        $moduleInstance->getLogs()->requestLogs(print_r($maintenanceRequestFormatted, true));
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-        $transaction = $gatewayClient->requestMaintenanceOperation($params["operation"], $params["transaction_reference"], $params["amount"], null ,$maintenanceRequest->generate());
+        $transaction = $gatewayClient->requestMaintenanceOperation($params["operation"], $params["transaction_reference"], $maintenanceRequestFormatted->amount, null, $maintenanceRequestFormatted);
 
         return $transaction;
     }
