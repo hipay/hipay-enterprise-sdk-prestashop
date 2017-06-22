@@ -253,12 +253,13 @@ class Hipay_enterprise extends PaymentModule {
         $basket = $this->db->getOrderBasket($order->id);
         $products = $order->getProducts();
         $capturedItems = $this->db->getCapturedItems($order->id);
+        $refundedItems = $this->db->getRefundedItems($order->id);
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) || !empty($capturedItems)) {
             $partiallyCaptured = true;
         }
 
-        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1)) {
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1) || !empty($capturedItems)) {
             $partiallyRefunded = true;
         }
 
@@ -326,6 +327,7 @@ class Hipay_enterprise extends PaymentModule {
             'employeeId' => $employeeId,
             'basket' => $basket,
             'capturedItems' => $capturedItems,
+            'refundedItems' => $refundedItems,
             'products' => $products
         ));
 

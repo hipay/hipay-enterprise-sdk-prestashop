@@ -72,7 +72,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface {
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
     private function getGoodItem($product, $qty) {
-        var_dump($product);
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $european_article_numbering = $product["ean13"];
         $product_reference = "good_" . $product["id_product"];

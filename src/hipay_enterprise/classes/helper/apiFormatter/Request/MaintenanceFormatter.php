@@ -46,6 +46,8 @@ class MaintenanceFormatter implements ApiFormatterInterface {
      */
     protected function mapRequest(&$maintenance) {
         $maintenance->amount = $this->amount;
+        $maintenance->operation = $this->operation;
+        $maintenance->operation_id = $this->order->id.'-'.$this->operation;
 
         if ($this->refundItems) {
 
@@ -54,11 +56,7 @@ class MaintenanceFormatter implements ApiFormatterInterface {
             $params = array("products" => array(), "discounts" => $cart->getCartRules(), "order" => $this->order);
 
             $originalBasket = $this->db->getOrderBasket($this->order->id);
-            var_dump($originalBasket);
-            var_dump($this->refundItems);
 
-
-            var_dump($this->order);
             foreach ($cart->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
                     $params["products"][] = array("item" => $item, "quantity" => $this->refundItems[$item["id_product"]]);
@@ -83,8 +81,6 @@ class MaintenanceFormatter implements ApiFormatterInterface {
             }
 
             $maintenance->amount = Tools::ps_round($maintenance->amount, 3);
-            var_dump($maintenance->amount);
-            die();
             $maintenance->basket = $maintenance->basket->toJson();
         }
     }

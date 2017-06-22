@@ -99,13 +99,20 @@ class AdminHiPayCaptureController extends ModuleAdminController {
         } else if ((Tools::isSubmit('hipay_capture_basket_submit'))) {
 
             if (Tools::getValue('hipay_capture_type') == "partial") {
-                $params = array("refundItems" => Tools::getValue('hipaycapture'), "order" => $order->id, "transaction_reference" => $transactionReference);
-            }else{
+                $refundItems = Tools::getValue('hipaycapture');
+
+                //check if no items has been sent 
+                if (array_sum($refundItems) == 0) {
+                    $hipay_redirect_status = $this->module->l('Select at least one item to capture', 'capture');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
+                    die('');
+                }
+
+                $params = array("refundItems" => $refundItems, "order" => $order->id, "transaction_reference" => $transactionReference);
+            } else {
                 $params = array("refundItems" => "full", "order" => $order->id, "transaction_reference" => $transactionReference);
             }
             $this->apiHandler->handleCapture($params);
-
-            die();
         }
 
         Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=ok#hipay');
