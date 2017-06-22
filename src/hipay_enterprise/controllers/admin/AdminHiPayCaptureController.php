@@ -44,6 +44,7 @@ class AdminHiPayCaptureController extends ModuleAdminController {
 
         // First check
         if (Tools::isSubmit('hipay_capture_submit')) {
+            //capture with no basket
             if (Tools::isSubmit('hipay_capture_type')) {
                 $capture_type = Tools::getValue('hipay_capture_type');
                 $capture_amount = Tools::getValue('hipay_capture_amount');
@@ -68,15 +69,12 @@ class AdminHiPayCaptureController extends ModuleAdminController {
                 die('');
             }
 
-
+            // total captured amount 
             $totalPaid = $order->getTotalPaid();
+            // remaining amount to capture
             $stillToCapture = $order->total_paid_tax_incl - $totalPaid;
 
             if (round($capture_amount, 2) > round($stillToCapture, 2)) {
-                var_dump($capture_amount);
-                var_dump($stillToCapture);
-                var_dump($capture_amount > $stillToCapture);
-                die('');
                 $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount', 'capture');
                 Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
                 die('');
@@ -97,7 +95,7 @@ class AdminHiPayCaptureController extends ModuleAdminController {
                 $this->apiHandler->handleCapture($params);
             }
         } else if ((Tools::isSubmit('hipay_capture_basket_submit'))) {
-
+            //capture with basket
             if (Tools::getValue('hipay_capture_type') == "partial") {
                 $refundItems = Tools::getValue('hipaycapture');
 

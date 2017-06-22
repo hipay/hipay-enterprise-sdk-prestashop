@@ -44,6 +44,7 @@ class AdminHiPayRefundController extends ModuleAdminController {
 
         // First check
         if (Tools::isSubmit('hipay_refund_submit')) {
+            //refund with no basket
             if (Tools::isSubmit('hipay_refund_type')) {
                 $refund_type = Tools::getValue('hipay_refund_type');
                 $refund_amount = Tools::getValue('hipay_refund_amount');
@@ -67,7 +68,7 @@ class AdminHiPayRefundController extends ModuleAdminController {
                 Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
                 die('');
             }
-
+            // we can refund only what has been captured
             $refundableAmount = $order->getTotalPaid();
 
             if (round($refund_amount, 2) > round($refundableAmount, 2)) {
@@ -91,7 +92,7 @@ class AdminHiPayRefundController extends ModuleAdminController {
                 $this->apiHandler->handleRefund($params);
             }
         } else if ((Tools::isSubmit('hipay_refund_basket_submit'))) {
-
+            //refund with basket
             if (Tools::getValue('hipay_refund_type') == "partial") {
 
                 $refundItems = Tools::getValue('hipayrefund');
