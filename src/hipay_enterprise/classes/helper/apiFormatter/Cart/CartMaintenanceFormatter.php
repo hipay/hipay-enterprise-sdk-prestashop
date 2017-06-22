@@ -85,9 +85,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface {
         $discount = -1 * Tools::ps_round(( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]), 2);
         $total_amount = Tools::ps_round($product["total_wt"], 2);
         $unit_price = Tools::ps_round((($total_amount - $discount ) / $quantity), 3);
-        
-        $discount = Tools::ps_round((( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]) * $qty ) / $quantity, 3);
-        $total_amount = Tools::ps_round((($product["price_with_reduction"] * $product["cart_quantity"]) * $qty ) / $quantity, 3);
+        $discount = Tools::ps_round(($discount * $qty ) / $quantity, 3);
+        $total_amount = Tools::ps_round(($total_amount * $qty ) / $quantity, 3);
 
 
         $tax_rate = $product["rate"];

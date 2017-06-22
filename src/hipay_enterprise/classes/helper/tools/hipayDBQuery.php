@@ -493,13 +493,11 @@ class HipayDBQuery {
                 ' GROUP BY `ps_product_id`';
 
         $result = Db::getInstance()->executeS($sql);
-
+        $formattedResult = array();
         foreach ($result as $key => $item) {
-            $result[$item["ps_product_id"]] = $item;
-            unset($result[$key]);
+            $formattedResult[$item["ps_product_id"]] = $item;
         }
-
-        return $result;
+        return $formattedResult;
     }
 
 }

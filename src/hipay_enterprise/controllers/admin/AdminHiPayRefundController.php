@@ -48,33 +48,9 @@ class AdminHiPayRefundController extends ModuleAdminController {
             $refund_amount = floatval(str_replace(',', '.', $refund_amount));
         }
 
-        if (!$refund_amount) {
-            $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
-            Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
-            die('');
-        }
-        if ($refund_amount <= 0) {
-            $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero', 'capture');
-            Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
-            die('');
-        }
-
-        if (!is_numeric($refund_amount)) {
-            $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
-            Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
-            die('');
-        }
-
         // First check
         if (Tools::isSubmit('hipay_refund_submit')) {
             $refundableAmount = $order->getTotalPaid();
-
-            if (round($refund_amount, 2) > round($refundableAmount, 2)) {
-                die('');
-                $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount', 'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
-                die('');
-            }
 
             $transactionReference = $this->db->getTransactionReference($order->id);
 
@@ -89,6 +65,32 @@ class AdminHiPayRefundController extends ModuleAdminController {
                 $params = array("amount" => $refundableAmount, "transaction_reference" => $transactionReference);
                 $this->apiHandler->handleRefund($params);
             } else if ($refund_type == 'partial') {
+
+                if (!$refund_amount) {
+                    $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
+                    die('');
+                }
+                if ($refund_amount <= 0) {
+                    $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero', 'capture');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
+                    die('');
+                }
+
+                if (!is_numeric($refund_amount)) {
+                    $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
+                    die('');
+                }
+
+
+                if (round($refund_amount, 2) > round($refundableAmount, 2)) {
+                    die('');
+                    $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount', 'capture');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders') . '&id_order=' . (int) $order->id . '&vieworder&hipay_err=' . $hipay_redirect_status . '#hipay');
+                    die('');
+                }
+
                 $params = array("amount" => $refund_amount, "transaction_reference" => $transactionReference);
                 $this->apiHandler->handleRefund($params);
             }

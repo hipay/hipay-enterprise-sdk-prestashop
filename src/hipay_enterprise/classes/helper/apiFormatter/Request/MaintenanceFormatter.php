@@ -83,7 +83,6 @@ class MaintenanceFormatter implements ApiFormatterInterface {
             }
 
             $maintenance->amount = Tools::ps_round($maintenance->amount, 3);
-
             var_dump($maintenance->amount);
             die();
             $maintenance->basket = $maintenance->basket->toJson();
