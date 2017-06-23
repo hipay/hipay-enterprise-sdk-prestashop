@@ -73,6 +73,19 @@
                             </tr>
                         {/foreach}
                     </table>
+                    <div class="checkbox">
+                        {if $shippingCost > 0 } 
+                            {if !$capturedFees}
+                                <label>
+                                    <input type="checkbox" name="hipay_capture_fee" > {l s="Capture fee(s)"}
+                                </label>
+                            {else}
+                                <span>{l s="Shipping captured"}</span>
+                            {/if}
+                        {else}
+                            <span>{l s="Shipping is free"}</span>
+                        {/if}
+                    </div>
                 {/if}
             </div>
             <div class="form-group">

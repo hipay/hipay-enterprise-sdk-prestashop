@@ -68,6 +68,19 @@
                             {/if}
                         {/foreach}
                     </table>
+                    <div class="checkbox">
+                        {if $shippingCost > 0 } 
+                            {if $capturedFees && !$refundedFees}
+                                <label>
+                                    <input type="checkbox" name="hipay_refund_fee" > {l s="Refund fee(s)"}
+                                </label>
+                            {else}
+                                <span>{l s="Shipping refunded"}</span>
+                            {/if}
+                        {else}
+                            <span>{l s="Shipping is free"}</span>
+                        {/if}
+                    </div>
                 {/if}
             </div>
             <div class="form-group">

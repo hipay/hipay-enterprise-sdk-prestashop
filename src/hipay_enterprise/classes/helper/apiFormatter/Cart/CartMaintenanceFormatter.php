@@ -23,6 +23,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->products    = $params["products"];
         $this->discounts   = $params["discounts"];
         $this->order       = $params["order"];
+        $this->captureRefundFee  = $params["captureRefundFee"];
         $this->mapper      = new HipayMapper($module);
         $this->totalItem   = 0;
         // $this->db = new HipayDBQuery($module);
@@ -64,8 +65,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         // Fees items
-        $item = $this->getFeesItem();
-        //    $cart->addItem($item);
+        if ($this->captureRefundFee) {
+            $item = $this->getFeesItem();
+            $cart->addItem($item);
+        }
         var_dump($cart);
     }
 

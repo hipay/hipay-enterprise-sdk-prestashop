@@ -7,7 +7,7 @@
             </div>
             <div class="well hidden-print">
                 <a style="position: relative; top: -200px;" id="hipay"></a>
-                {include file='../front/partial/refund.partial.tpl'}
+                {include file='../admin/partial/refund.partial.tpl'}
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                 {l s='Hipay Capture' mod='hipay_tpp'}
             </div>
             <div class="well hidden-print">
-                {include file='../front/partial/capture.partial.tpl'}
+                {include file='../admin/partial/capture.partial.tpl'}
             </div>
         </div>
     </div>

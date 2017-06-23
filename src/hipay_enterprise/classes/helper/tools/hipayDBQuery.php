@@ -547,4 +547,40 @@ class HipayDBQuery
         }
         return array("message_id" => false, "attempt" => 0);
     }
+
+    /**
+     * get if is set fees captured message
+     * @param type $orderId
+     * @return boolean
+     */
+    public function feesAreCaptured($orderId)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"fees_captured":1%\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * get if is set fees refunded message
+     * @param type $orderId
+     * @return boolean
+     */
+    public function feesAreRefunded($orderId)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"fees_refunded":1%\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
 }

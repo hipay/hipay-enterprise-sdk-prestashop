@@ -238,6 +238,7 @@ class Hipay_enterprise extends PaymentModule {
     public function HookDisplayAdminOrder() {
 
         $order = new Order((int) Tools::getValue('id_order'));
+        $shippingCost = $order->total_shipping;
         $refundableAmount = $order->getTotalPaid();
         $error = Tools::getValue('hipay_err');
         $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
@@ -252,14 +253,16 @@ class Hipay_enterprise extends PaymentModule {
         $employeeId = $this->context->employee->id;
         $basket = $this->db->getOrderBasket($order->id);
         $products = $order->getProducts();
+        $capturedFees = $this->db->feesAreCaptured($order->id);
+        $refundedFees = $this->db->feesAreRefunded($order->id);
         $capturedItems = $this->db->getCapturedItems($order->id);
         $refundedItems = $this->db->getRefundedItems($order->id);
 
-        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) || !empty($capturedItems)) {
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) || !empty($capturedItems) || $capturedFees) {
             $partiallyCaptured = true;
         }
 
-        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1) || !empty($capturedItems)) {
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1) || !empty($capturedItems) || $capturedFees) {
             $partiallyRefunded = true;
         }
 
@@ -310,6 +313,7 @@ class Hipay_enterprise extends PaymentModule {
         $this->context->smarty->assign(array(
             'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
             'refundableAmount' => $refundableAmount,
+            'shippingCost' => $shippingCost,
             'error' => $error,
             'stillToCaptureDisplay' => Tools::displayPrice($stillToCapture),
             'stillToCapture' => $stillToCapture,
@@ -328,6 +332,8 @@ class Hipay_enterprise extends PaymentModule {
             'basket' => $basket,
             'capturedItems' => $capturedItems,
             'refundedItems' => $refundedItems,
+            'capturedFees' => $capturedFees,
+            'refundedFees' => $refundedFees,
             'products' => $products
         ));
 

@@ -19,17 +19,20 @@ class MaintenanceFormatter implements ApiFormatterInterface
 
     public function __construct($module, $params)
     {
-        $this->module      = $module;
-        $this->context     = Context::getContext();
-        $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
-        $this->amount      = (isset($params["amount"])) ? $params["amount"] : 0.01;
-        $this->refundItems = (isset($params["refundItems"])) ? $params["refundItems"]
+        $this->module           = $module;
+        $this->context          = Context::getContext();
+        $this->configHipay      = $this->module->hipayConfigTool->getConfigHipay();
+        $this->amount           = (isset($params["amount"])) ? $params["amount"]
+                : 0.01;
+        $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"]
                 : false;
-        $this->order       = (isset($params["order"])) ? new Order($params["order"])
+        $this->refundItems      = (isset($params["refundItems"])) ? $params["refundItems"]
                 : false;
-        $this->operation   = (isset($params["operation"])) ? $params["operation"]
+        $this->order            = (isset($params["order"])) ? new Order($params["order"])
                 : false;
-        $this->db          = new HipayDBQuery($module);
+        $this->operation        = (isset($params["operation"])) ? $params["operation"]
+                : false;
+        $this->db               = new HipayDBQuery($module);
     }
 
     /**
@@ -42,7 +45,6 @@ class MaintenanceFormatter implements ApiFormatterInterface
         $maintenance = new \HiPay\Fullservice\Gateway\Request\Maintenance\MaintenanceRequest();
 
         $this->mapRequest($maintenance);
-
         return $maintenance;
     }
 
@@ -65,14 +67,12 @@ class MaintenanceFormatter implements ApiFormatterInterface
 
         $maintenance->operation_id = $this->order->id.'-'.$this->operation.'-'.($transactionAttempt["attempt"]
             + 1);
-
         //if there's a basket
-        if ($this->refundItems) {
-
+        if ($this->refundItems || $this->captureRefundFee == "on") {
             $cart = new Cart($this->order->id_cart);
 
             $params = array("products" => array(), "discounts" => $cart->getCartRules(),
-                "order" => $this->order);
+                "order" => $this->order, "captureRefundFee" => $this->captureRefundFee);
 
             $originalBasket = $this->db->getOrderBasket($this->order->id);
 
@@ -98,7 +98,10 @@ class MaintenanceFormatter implements ApiFormatterInterface
                             '', $item->getProductReference()), '"'.$this->operation.'"',
                         $item->getQuantity(), Tools::ps_round($item->getTotalAmount(),
                             2));
-                    $this->db->setCaptureOrRefundOrder($captureData);
+                    //        $this->db->setCaptureOrRefundOrder($captureData);
+                } else if ($item->getType() == "fee") {
+                    HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,
+                        $this->operation);
                 }
                 $maintenance->amount += $item->getTotalAmount();
             }

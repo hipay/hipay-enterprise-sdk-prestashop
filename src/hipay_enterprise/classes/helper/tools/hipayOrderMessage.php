@@ -98,8 +98,9 @@ class HipayOrderMessage
      * @param type $attempt
      * @param type $messageId
      */
-    public static function captureOrRefundAttemptMessage($type, $orderId, $attempt,
-                                                 $messageId = false)
+    public static function captureOrRefundAttemptMessage($type, $orderId,
+                                                         $attempt,
+                                                         $messageId = false)
     {
 
         $data = Tools::jsonEncode(array($type."_attempt" => $attempt));
@@ -110,6 +111,16 @@ class HipayOrderMessage
             $updatedMsg->message = $data;
             $updatedMsg->save();
         }
+    }
+
+    /**
+     * write message when fees are refunded or captured
+     * @param type $orderId
+     */
+    public static function captureOrRefundFeesMessage($orderId, $type)
+    {
+        $data = Tools::jsonEncode(array("fees_".$type => 1));
+        HipayOrderMessage::addMessage($orderId, $data);
     }
 
     /**
