@@ -30,11 +30,11 @@ class AdminHiPayRefundController extends ModuleAdminController
         $context = Context::getContext();
 
         if (Tools::isSubmit('id_order') && Tools::getValue('id_order') > 0) {
-            $order                = new Order(Tools::getValue('id_order'));
-            if (!Validate::isLoadedObject($order))
-                    throw new PrestaShopException('Can\'t load Order object');
-            if (version_compare(_PS_VERSION_, '1.5.6', '>'))
-                    ShopUrl::cacheMainDomainForShop((int) $order->id_shop);
+            $order = new Order(Tools::getValue('id_order'));
+            if (!Validate::isLoadedObject($order)) {
+                throw new PrestaShopException('Can\'t load Order object');
+            }
+            ShopUrl::cacheMainDomainForShop((int) $order->id_shop);
             $transactionReference = $this->db->getTransactionReference($order->id);
         }
 
