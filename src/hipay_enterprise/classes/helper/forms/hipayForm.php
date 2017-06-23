@@ -177,6 +177,10 @@ class HipayForm extends HipayFormInput {
                 'desc' => "<i class='icon icon-warning text-danger'></i> " .$this->module->l("If 'Round on the total' is activated in prestashop configuration, cart will not be sent and payment method that force cart to be send will be disabled."),
                 ));
         
+        $form['form']['input'][] = $this->generateSwitchButton(
+                "regenerate_cart_on_decline", $this->module->l('Keep cart when payment fail', 'HipayForm')
+        );
+        
         return $this->helper->generateForm(array($form));
     }
 
@@ -195,7 +199,8 @@ class HipayForm extends HipayFormInput {
             "capture_mode" => "",
             "card_token" => "",
             "electronic_signature" => "",
-            "activate_basket" => ""
+            "activate_basket" => "",
+            "regenerate_cart_on_decline" => ""
         );
 
         // get field value from POST request or config (this way the displayed value is always the good one)

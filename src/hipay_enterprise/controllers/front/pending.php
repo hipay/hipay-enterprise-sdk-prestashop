@@ -9,6 +9,9 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
+require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
+
 class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController {
 
     /**
@@ -21,7 +24,9 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
 
         $context = Context::getContext();
 
+        HipayHelper::unsetCart();
         
+        $this->setTemplate ( 'paymentReturn/pending.tpl' );
     }
 
 }

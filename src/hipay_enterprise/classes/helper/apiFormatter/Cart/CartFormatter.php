@@ -42,11 +42,11 @@ class CartFormatter extends ApiFormatterAbstract {
         }
 
         // Discount items
-        foreach ($this->cart->getCartRules() as $disc) {
-            $item = $this->getDiscountItem($disc);
+
+        if (!empty($this->cart->getCartRules())) {
+            $item = $this->getDiscountItem();
             $cart->addItem($item);
         }
-
         // Fees items
         $item = $this->getFeesItem($cartSummary);
         $cart->addItem($item);
@@ -67,10 +67,10 @@ class CartFormatter extends ApiFormatterAbstract {
         $name = $product["name"];
         $quantity = $product["cart_quantity"];
 
-        
+
         $discount = -1 * Tools::ps_round(( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]), 2);
         $total_amount = Tools::ps_round($product["total_wt"], 2);
-        $unit_price = Tools::ps_round( (($total_amount - $discount ) / $quantity ), 3);
+        $unit_price = Tools::ps_round((($total_amount - $discount ) / $quantity), 3);
 
         $tax_rate = $product["rate"];
         $discount_description = "";
@@ -89,22 +89,30 @@ class CartFormatter extends ApiFormatterAbstract {
 
     /**
      * create a discount item from discount line informations
-     * @param int $discount
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getDiscountItem($disc) {
-        $product_reference = "discount_" . $disc["id_cart_rule"];
-        $name = $disc["name"];
-        $unit_price = -1 * Tools::ps_round($disc["value_real"], 3);
-        $tax_rate = 0.00;
-        $discount = 0.00;
-        $discount_description = $disc["description"];
-        $total_amount = -1 * Tools::ps_round($disc["value_real"], 3);
+    private function getDiscountItem() {
+
+        $product_reference = "";
+        $name = "";
+        $unit_price = 0;
+        $discount_description = "";
+        $total_amount = 0;
+
+        foreach ($this->cart->getCartRules() as $disc) {
+            $product_reference .= "discount_" . $disc["id_cart_rule"] . "/";
+            $name .= $disc["name"] . "/";
+            $unit_price += -1 * Tools::ps_round($disc["value_real"], 3);
+            $tax_rate = 0.00;
+            $discount = 0.00;
+            $discount_description .= $disc["description"] . "/";
+            $total_amount += -1 * Tools::ps_round($disc["value_real"], 3);
+        }
 
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeDiscount($product_reference, $name, $unit_price, $tax_rate, $discount, $discount_description, $total_amount);
         // forced category
         $item->setProductCategory(1);
-        
+
         return $item;
     }
 
@@ -122,7 +130,7 @@ class CartFormatter extends ApiFormatterAbstract {
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees($product_reference, $name, $unit_price, $tax_rate, $discount, $total_amount);
         // forced category
         $item->setProductCategory(1);
-        
+
         return $item;
     }
 

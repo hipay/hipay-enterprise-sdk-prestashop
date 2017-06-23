@@ -10,6 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontController {
@@ -18,7 +19,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
      * @see FrontController::postProcess()
      */
     public function postProcess() {
-        $this->unsetCart();
+        HipayHelper::unsetCart();
 
         $cartId = Tools::getValue('orderId');
         $transac = Tools::getValue('reference');
@@ -75,20 +76,6 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         ]);
 
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
-    }
-
-    /**
-     * empty customer cart 
-     * @return boolean
-     */
-    public function unsetCart() {
-        $context = Context::getContext();
-        $cart = new Cart($context->cookie->id_cart);
-        unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
-        $context->cookie->check_cgv = false;
-        $context->cookie->write();
-        $context->cookie->update();
-        return true;
     }
 
 }

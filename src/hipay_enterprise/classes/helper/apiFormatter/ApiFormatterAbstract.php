@@ -21,14 +21,14 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface {
     public function __construct($module) {
         $this->module = $module;
         $this->context = Context::getContext();
-        $this->cart = $this->context->cart;
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
+        $this->mapper = new HipayMapper($module);
+        $this->cart = $this->context->cart;
         $this->customer = new Customer((int) $this->cart->id_customer);
         $this->store = new Store((int) $this->cart->id_shop);
         $this->delivery = new Address((int) $this->cart->id_address_delivery);
         $this->deliveryCountry = new Country((int) $this->delivery->id_country);
         $this->currency = new Currency((int) $this->cart->id_currency);
-        $this->mapper = new HipayMapper($module);
     }
 
     /**
@@ -133,7 +133,6 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface {
         return $langCode;
     }
 
-    
     abstract public function generate();
 
     abstract protected function mapRequest(&$request);

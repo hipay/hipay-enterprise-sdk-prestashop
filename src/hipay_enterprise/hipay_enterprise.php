@@ -44,6 +44,9 @@ class Hipay_enterprise extends PaymentModule {
         // init mapper object
         $this->mapper = new HipayMapper($this);
 
+        // init query object
+        $this->db = new HipayDBQuery($this);
+
         // Compliancy
         $this->limited_countries = array(
             'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
@@ -144,6 +147,7 @@ class Hipay_enterprise extends PaymentModule {
         $return = $this->updateHiPayOrderStates();
         $return = $this->createHipayTable();
         $return = $this->registerHook('backOfficeHeader');
+        $return = $this->registerHook('displayAdminOrder');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
             $return = $return && $return17;
@@ -212,6 +216,11 @@ class Hipay_enterprise extends PaymentModule {
         return $hipay17->hookDisplayHeader($params);
     }
 
+    /**
+     * 
+     * @param type $params
+     * @return type
+     */
     public function hookPaymentReturn($params) {
 
         if (_PS_VERSION_ >= '1.7') {
@@ -221,6 +230,114 @@ class Hipay_enterprise extends PaymentModule {
             $this->hipayPaymentReturn($params);
             return $this->display(dirname(__FILE__), 'views/templates/hook/paymentReturn.tpl');
         }
+    }
+
+    /**
+     * Display refund and capture blocks in order admin page
+     */
+    public function HookDisplayAdminOrder() {
+
+        $order = new Order((int) Tools::getValue('id_order'));
+        $shippingCost = $order->total_shipping;
+        $refundableAmount = $order->getTotalPaid();
+        $error = Tools::getValue('hipay_err');
+        $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
+        $alreadyCaptured = $this->db->alreadyCaptured($order->id);
+        $manualCapture = false;
+        $showCapture = false;
+        $showRefund = true;
+        $partiallyCaptured = false;
+        $partiallyRefunded = false;
+        $token = Tools::getValue('token');
+        $orderId = $order->id;
+        $employeeId = $this->context->employee->id;
+        $basket = $this->db->getOrderBasket($order->id);
+        $products = $order->getProducts();
+        $capturedFees = $this->db->feesAreCaptured($order->id);
+        $refundedFees = $this->db->feesAreRefunded($order->id);
+        $capturedItems = $this->db->getCapturedItems($order->id);
+        $refundedItems = $this->db->getRefundedItems($order->id);
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) || !empty($capturedItems) || $capturedFees) {
+            $partiallyCaptured = true;
+        }
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED', null, null, 1) || !empty($capturedItems) || $capturedFees) {
+            $partiallyRefunded = true;
+        }
+
+        if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]) && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"] == "manual") {
+            $manualCapture = true;
+        }
+
+        if ((boolean) $order->getHistory($this->context->language->id, Configuration::get('HIPAY_OS_PENDING', null, null, 1)) || (boolean) $order->getHistory($this->context->language->id, Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1))) {
+            // Order was previously pending or challenged
+            // Then check if its currently in authorized state
+            if ($order->current_state == Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1)) {
+                $manualCapture = true;
+            }
+        }
+
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1) || $order->getCurrentState() == _PS_OS_PAYMENT_ || $order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1)) {
+            $showCapture = true;
+        }
+
+        $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
+        if ($paymentProduct) {
+            if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
+                if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["canRefund"]) {
+                    $showRefund = false;
+                }
+                if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["canManualCapture"]) {
+                    $showCapture = false;
+                }
+            } else if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
+                if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["canRefund"]) {
+                    $showRefund = false;
+                }
+                if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["canManualCapture"]) {
+                    $showCapture = false;
+                }
+            }
+        }
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED')) {
+            $showRefund = false;
+        }
+
+        if ($order->getCurrentState() == _PS_OS_ERROR_ || $order->getCurrentState() == _PS_OS_CANCELED_ || $order->getCurrentState() == Configuration::get('HIPAY_OS_EXPIRED', null, null, 1) || $order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1) || $order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED', null, null, 1)) {
+            $showCapture = false;
+        }
+
+        $this->context->smarty->assign(array(
+            'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
+            'refundableAmount' => $refundableAmount,
+            'shippingCost' => $shippingCost,
+            'error' => $error,
+            'stillToCaptureDisplay' => Tools::displayPrice($stillToCapture),
+            'stillToCapture' => $stillToCapture,
+            'alreadyCaptured' => $alreadyCaptured,
+            'partiallyCaptured' => $partiallyCaptured,
+            'partiallyRefunded' => $partiallyRefunded,
+            'showCapture' => $showCapture,
+            'showRefund' => $showRefund,
+            'manualCapture' => $manualCapture,
+            'captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
+            'refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
+            'tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
+            'tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
+            'orderId' => $orderId,
+            'employeeId' => $employeeId,
+            'basket' => $basket,
+            'capturedItems' => $capturedItems,
+            'refundedItems' => $refundedItems,
+            'capturedFees' => $capturedFees,
+            'refundedFees' => $refundedFees,
+            'products' => $products
+        ));
+
+        return $this->display(dirname(__FILE__), 'views/templates/hook/maintenance.tpl');
     }
 
     public function installAdminTab() {
@@ -988,7 +1105,7 @@ class Hipay_enterprise extends PaymentModule {
      */
     private function createHipayTable() {
         $this->mapper->createTable();
-
+        $this->db->createOrderRefundCaptureTable();
         return true;
     }
 
@@ -997,6 +1114,7 @@ class Hipay_enterprise extends PaymentModule {
      */
     private function deleteHipayTable() {
         $this->mapper->deleteTable();
+        $this->db->deleteOrderRefundCaptureTable();
         return true;
     }
 
@@ -1014,3 +1132,4 @@ require_once(dirname(__FILE__) . '/classes/helper/tools/hipayLogs.php');
 require_once(dirname(__FILE__) . '/classes/helper/tools/hipayConfig.php');
 require_once(dirname(__FILE__) . '/classes/helper/forms/hipayForm.php');
 require_once(dirname(__FILE__) . '/classes/helper/tools/hipayMapper.php');
+require_once(dirname(__FILE__) . '/classes/helper/tools/hipayDBQuery.php');

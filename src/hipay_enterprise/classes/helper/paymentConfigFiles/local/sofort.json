@@ -3,6 +3,8 @@
     "config": {
         "displayName" : "Sofort Überweisung",
         "activated" : 1,
+        "canRefund" : 1,
+        "canManualCapture" : 1,
         "currencies" : ["EUR"],
         "countries"  : ["GB", "FR"],
         "countrySelectorReadOnly": 0,
