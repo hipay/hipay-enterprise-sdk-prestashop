@@ -36,7 +36,7 @@ class ApiCaller
                 true));
 
         var_dump($orderRequest->generate());
-        die();
+//        die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
 
@@ -59,7 +59,7 @@ class ApiCaller
         $moduleInstance->getLogs()->requestLogs(print_r($orderRequest->generate(),
                 true));
         var_dump($orderRequest->generate());
-            die();
+//            die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction   = $gatewayClient->requestNewOrder($orderRequest->generate());
 
@@ -83,7 +83,7 @@ class ApiCaller
         $moduleInstance->getLogs()->requestLogs(print_r($maintenanceRequestFormatted,
                 true));
         var_dump($maintenanceRequestFormatted);
-        die();
+//        die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction                 = $gatewayClient->requestMaintenanceOperation($params["operation"],
             $params["transaction_reference"],
