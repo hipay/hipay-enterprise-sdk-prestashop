@@ -14,6 +14,14 @@ require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 {
 
+    public function __construct($module)
+    {
+
+        parent::__construct($module);
+
+        spl_autoload_register(array($this, 'autoloadCustomData'));
+    }
+
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe, Direct Post and Maintenance )
      * @param type $order
@@ -33,7 +41,6 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
     protected function setCustomData(&$request, $cart, $params)
     {
 
-        var_dump($params);
         $cartSummary = $cart->getSummaryDetails();
 
         $customer = new Customer($cartSummary["delivery"]->id_customer);
@@ -45,17 +52,33 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 
         if (isset($this->params["method"])) {
             $paymentCode = $this->params["method"];
-        } else if (isset($this->params["productlist"]) && !is_array($this->params["productlist"])) {
-            $paymentCode = $this->params["productlist"];
         }
 
-        $customData = array(
+        $customDataHipay = array(
             "shipping_description" => $cartSummary["carrier"]->name,
             "customer_code" => array_shift($group->name),
             "payment_code" => $paymentCode,
             "display_iframe" => $iframe,
         );
+        // Add custom data for transaction request
+        if (file_exists(dirname(__FILE__).'/../../HipayEnterpriseHelperCustomData.php')) {
+            if (class_exists('HipayEnterpriseHelperCustomData', true)) {
+                $customDataHelper = new HipayEnterpriseHelperCustomData();
+                if (method_exists($customDataHelper, 'getCustomData')) {
+                    $customData = $customDataHelper->getCustomData($cart,
+                        $params);
+                    if (is_array($customData)) {
+                        $customDataHipay = array_merge($customData,
+                            $customDataHipay);
+                    }
+                }
+            }
+        }
+        $request->custom_data = Tools::jsonEncode($customDataHipay);
+    }
 
-        $request->custom_data = Tools::jsonEncode($customData);
+    public function autoloadCustomData($class_name)
+    {
+        require_once dirname(__FILE__).'/../../'.$class_name.'.php';
     }
 }
