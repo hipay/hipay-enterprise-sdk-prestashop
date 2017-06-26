@@ -14,7 +14,7 @@ if [ ! -f /var/www/html/composer.json ];then
 
     echo "\n Instal SDK PHP \n";
     cd /var/www/html/modules/hipay_enterprise/ \
-    && composer install
+    && composer install --no-dev
 
     echo "\n Instal SDK JS \n";
     cd lib/ \
