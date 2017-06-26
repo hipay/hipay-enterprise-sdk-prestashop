@@ -30,10 +30,10 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         $request->source = Tools::jsonEncode($source);
     }
 
-    protected function setCustomData(&$request, $cart)
+    protected function setCustomData(&$request, $cart, $params)
     {
 
-        var_dump($cart->getSummaryDetails());
+        var_dump($params);
         $cartSummary = $cart->getSummaryDetails();
 
         $customer = new Customer($cartSummary["delivery"]->id_customer);
@@ -41,12 +41,19 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         $iframe   = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe")
                 ? 1 : 0;
 
+        $paymentCode = "hipay_hosted";
+
+        if (isset($this->params["method"])) {
+            $paymentCode = $this->params["method"];
+        } else if (isset($this->params["productlist"]) && !is_array($this->params["productlist"])) {
+            $paymentCode = $this->params["productlist"];
+        }
+
         $customData = array(
             "shipping_description" => $cartSummary["carrier"]->name,
             "customer_code" => array_shift($group->name),
-            "payment_code" => "",
+            "payment_code" => $paymentCode,
             "display_iframe" => $iframe,
-            "payment_type" => "",
         );
 
         $request->custom_data = Tools::jsonEncode($customData);

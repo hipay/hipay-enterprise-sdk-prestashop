@@ -22,14 +22,15 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         parent::__construct($moduleInstance);
         $this->params = $params;
     }
-    
+
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
      * @param type $order
      */
     protected function mapRequest(&$order)
     {
-        $this->setCustomData($order, $this->cart);
+        parent::mapRequest($order);
+        $this->setCustomData($order, $this->cart, $this->params);
         
         $order->orderid = $this->cart->id."(".time().")";
 
@@ -63,8 +64,6 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->cid                  = (int) $this->customer->id;
         $order->ipaddr               = $_SERVER ['REMOTE_ADDR'];
         $order->language             = $this->getLanguageCode($this->context->language->iso_code);
-        $order->custom_data          = null;
-        $order->source               = null;
         $order->basket               = $this->params["basket"];
         $order->delivery_information = $this->params["delivery_informations"];
     }

@@ -9,8 +9,8 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-
 {if !empty($activated_credit_card)}
+    
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <p class="payment_module" id="hipay_payment_button">

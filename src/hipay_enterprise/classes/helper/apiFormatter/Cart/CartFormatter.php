@@ -50,7 +50,7 @@ class CartFormatter extends ApiFormatterAbstract {
         // Fees items
         $item = $this->getFeesItem($cartSummary);
         $cart->addItem($item);
-        var_dump($cart);
+       // var_dump($cart);
     }
 
     /**
@@ -59,7 +59,7 @@ class CartFormatter extends ApiFormatterAbstract {
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
     private function getGoodItem($product) {
-        var_dump($product);
+        //var_dump($product);
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $european_article_numbering = $product["ean13"];
         $product_reference = "good_" . $product["id_product"];

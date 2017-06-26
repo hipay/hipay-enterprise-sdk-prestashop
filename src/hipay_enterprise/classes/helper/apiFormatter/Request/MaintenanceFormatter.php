@@ -21,6 +21,8 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
     {
         parent::__construct($module);
 
+        $this->params = $params;
+
         $this->amount           = (isset($params["amount"])) ? $params["amount"]
                 : 0.01;
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"]
@@ -56,8 +58,8 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
     protected function mapRequest(&$maintenance)
     {
         parent::mapRequest($maintenance);
-        $this->setCustomData($maintenance, $this->cart);
-        
+        $this->setCustomData($maintenance, $this->cart, $this->params);
+
         $maintenance->amount    = $this->amount;
         $maintenance->operation = $this->operation;
 

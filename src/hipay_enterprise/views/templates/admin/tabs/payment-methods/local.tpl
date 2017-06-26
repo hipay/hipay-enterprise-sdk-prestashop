@@ -39,7 +39,7 @@
                                     <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_professional'}</label>
                                     {foreach  $localPayment["currencies"] as $currency }
                                         <p>{$limitedCurrencies[$currency]}</p>
-                                        <input type="hidden" readonly value="{$currency}" name="{$localPayment@key}_countries[]" />
+                                        <input type="hidden" value="{$currency}" name="{$localPayment@key}_currencies[]" />
                                     {/foreach}
                                 </div>
                             </div>
