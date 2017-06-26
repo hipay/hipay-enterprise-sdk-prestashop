@@ -62,7 +62,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         $params = array(
                             "deviceFingerprint" => Tools::getValue('ioBB'),
                             "productlist" => Tools::getValue('card-brand'),
-                            "cardtoken" => Tools::getValue('card-token')
+                            "cardtoken" => Tools::getValue('card-token'),
+                            "method" => Tools::getValue('card-brand')
                         );
                         $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
                     } else {

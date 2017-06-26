@@ -37,6 +37,8 @@ class AdminHiPayCaptureController extends ModuleAdminController
             }
             ShopUrl::cacheMainDomainForShop((int) $order->id_shop);
             $transactionReference = $this->db->getTransactionReference($order->id);
+            $paymentProduct       = $this->db->getPaymentProductFromMessage($order->id);
+            $params               = array("method" => $paymentProduct);
         }
 
         if (Tools::isSubmit('id_emp') && Tools::getValue('id_emp') > 0) {
@@ -96,10 +98,12 @@ class AdminHiPayCaptureController extends ModuleAdminController
 
             if ($capture_type == 'complete') {
 
-                $params = array("amount" => $stillToCapture, "transaction_reference" => $transactionReference);
+                $params["amount"]                = $stillToCapture;
+                $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
             } else if ($capture_type == 'partial') {
-                $params = array("amount" => $capture_amount, "transaction_reference" => $transactionReference);
+                $params["amount"]                = $capture_amount;
+                $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
             }
         } else if ((Tools::isSubmit('hipay_capture_basket_submit'))) {
@@ -115,10 +119,14 @@ class AdminHiPayCaptureController extends ModuleAdminController
                     die('');
                 }
 
-                $params = array("refundItems" => $refundItems, "order" => $order->id,
-                    "transaction_reference" => $transactionReference, "capture_refund_fee" => Tools::getValue('hipay_capture_fee'));
+                $params["refundItems"]           = $refundItems;
+                $params["order"]                 = $order->id;
+                $params["transaction_reference"] = $transactionReference;
+                $params["capture_refund_fee"]    = Tools::getValue('hipay_capture_fee');
             } else {
-                $params = array("refundItems" => "full", "order" => $order->id, "transaction_reference" => $transactionReference);
+                $params["refundItems"]           = $refundItems;
+                $params["order"]                 = $order->id;
+                $params["transaction_reference"] = $transactionReference;
             }
             $this->apiHandler->handleCapture($params);
         }

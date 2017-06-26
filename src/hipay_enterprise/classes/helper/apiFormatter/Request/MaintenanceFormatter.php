@@ -8,20 +8,21 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__).'/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../Cart/CartMaintenanceFormatter.php');
 require_once(dirname(__FILE__).'/../../tools/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/../../tools/hipayOrderMessage.php');
 require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
-class MaintenanceFormatter implements ApiFormatterInterface
+class MaintenanceFormatter extends CommonRequestFormatterAbstract
 {
 
     public function __construct($module, $params)
     {
-        $this->module           = $module;
-        $this->context          = Context::getContext();
-        $this->configHipay      = $this->module->hipayConfigTool->getConfigHipay();
+        parent::__construct($module);
+
+        $this->params = $params;
+
         $this->amount           = (isset($params["amount"])) ? $params["amount"]
                 : 0.01;
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"]
@@ -33,6 +34,8 @@ class MaintenanceFormatter implements ApiFormatterInterface
         $this->operation        = (isset($params["operation"])) ? $params["operation"]
                 : false;
         $this->db               = new HipayDBQuery($module);
+        $this->cart             = ($this->order) ? new Cart($this->order->id_cart)
+                : false;
     }
 
     /**
@@ -54,6 +57,9 @@ class MaintenanceFormatter implements ApiFormatterInterface
      */
     protected function mapRequest(&$maintenance)
     {
+        parent::mapRequest($maintenance);
+        $this->setCustomData($maintenance, $this->cart, $this->params);
+
         $maintenance->amount    = $this->amount;
         $maintenance->operation = $this->operation;
 
@@ -69,14 +75,13 @@ class MaintenanceFormatter implements ApiFormatterInterface
             + 1);
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on") {
-            $cart = new Cart($this->order->id_cart);
 
-            $params = array("products" => array(), "discounts" => $cart->getCartRules(),
+            $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
                 "order" => $this->order, "captureRefundFee" => $this->captureRefundFee);
 
             $originalBasket = $this->db->getOrderBasket($this->order->id);
 
-            foreach ($cart->getProducts() as $item) {
+            foreach ($this->cart->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]]
                     > 0) {
                     $params["products"][] = array("item" => $item, "quantity" => $this->refundItems[$item["id_product"]]);

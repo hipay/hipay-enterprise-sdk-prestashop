@@ -9,6 +9,22 @@ echo "\n Execution PRESTASHOP Entrypoint \n";
 #===================================#
 #       CUSTOMS CONFIGURATIONS
 #===================================#
+
+if [ ! -f /var/www/html/composer.json ];then
+
+    echo "\n Instal SDK PHP \n";
+    cd /var/www/html/modules/hipay_enterprise/ \
+    && composer install --no-dev
+
+    echo "\n Instal SDK JS \n";
+    cd lib/ \
+    && bower install hipay-fullservice-sdk-js
+
+    #run unit tests
+    #phpunit -c 
+fi
+
+
 if [ ! -f /var/www/html/console/console.php ];then
     echo "\n Installation Prestashop Console \n";
     cd /var/www/html/ \
@@ -27,19 +43,7 @@ if [ ! -f /var/www/html/console/console.php ];then
     #service cron start
 fi
 
-if [ ! -f /var/www/html/comopser.json ];then
 
-    echo "\n Instal SDK PHP \n";
-    cd /var/www/html/modules/hipay_enterprise/ \
-    && composer install
-
-    echo "\n Instal SDK JS \n";
-    cd lib/ \
-    && bower install hipay-fullservice-sdk-js
-
-    #run unit tests
-    #phpunit -c 
-fi
 
 #===================================#
 #       START WEBSERVER

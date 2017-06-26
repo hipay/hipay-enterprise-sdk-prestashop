@@ -22,44 +22,44 @@ if [ "$1" = '' ] || [ "$1" = '--help' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" = '' ];then
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
-    sudo rm -Rf data/
-    sudo rm -Rf web16/
-    sudo rm -Rf web17/
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     rm -Rf data/
+     rm -Rf web16/
+     rm -Rf web17/
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
 fi
 
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
-    sudo docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml stop
-    sudo docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml rm -fv
-    sudo rm -Rf data/
-    sudo rm -Rf web16/
-    sudo rm -Rf web17/
-    sudo docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml build --no-cache
-    sudo docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
+     docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml stop
+     docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml rm -fv
+     rm -Rf data/
+     rm -Rf web16/
+     rm -Rf web17/
+     docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml build --no-cache
+     docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
 fi
 
 if [ "$1" = 'restart' ];then
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
 fi
 
 if [ "$1" = 'kill' ];then
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-    sudo docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
-    sudo rm -Rf data/
-    sudo rm -Rf web16/
-    sudo rm -Rf web17/
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
+     docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     rm -Rf data/
+     rm -Rf web16/
+     rm -Rf web17/
 fi
 
 if [ "$1" = 'up' ] && [ "$2" != '' ];then
-    sudo docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
+     docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
 fi
 
 if [ "$1" = 'exec' ] && [ "$2" != '' ];then
-    sudo docker exec -it hipay-enterprise-shop-ps"$2" bash
+     docker exec -it hipay-enterprise-shop-ps"$2" bash
 fi
 
 if [ "$1" = 'log' ] && [ "$2" != '' ];then
@@ -67,5 +67,5 @@ if [ "$1" = 'log' ] && [ "$2" != '' ];then
 fi
 
 if [ "$1" = 'console' ] && [ "$2" != '' ] && [ "$3" != '' ];then
-    sudo docker exec -it hipay-enterprise-shop-ps"$2" bash php console/console.php "$3"
+     docker exec -it hipay-enterprise-shop-ps"$2" bash php console/console.php "$3"
 fi
