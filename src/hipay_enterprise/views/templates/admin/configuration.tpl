@@ -77,3 +77,18 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <i class="icon-credit-card"></i>
+                Hipay technical details
+            </div>
+            <div class="well hidden-print">
+                <p>source : {$source}</p>
+                <p>IP Address : {$ipaddr}</p>
+                <p>Callback url : {$this_callback}</p>
+            </div>
+        </div>
+    </div>
+</div>

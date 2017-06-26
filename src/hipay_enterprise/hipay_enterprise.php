@@ -25,7 +25,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name                   = 'hipay_enterprise';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '1.0.0';
+        $this->version                = '2.0.0';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies             = true;
         $this->currencies_mode        = 'checkbox';
@@ -426,6 +426,15 @@ class Hipay_enterprise extends PaymentModule
         $mappedCategories = $this->mapper->getMappedCategories($this->context->shop->id);
         $mappedCarriers   = $this->mapper->getMappedCarriers($this->context->shop->id);
 
+        $source = array(
+            "source" => "CMS",
+            "brand" => "prestashop",
+            "brand_version" => _PS_VERSION_,
+            "integration_version" => $this->version,
+        );
+
+        $source = Tools::jsonEncode($source);
+
         $this->context->smarty->assign(array(
             'module_dir' => $this->_path,
             'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
@@ -437,7 +446,7 @@ class Hipay_enterprise extends PaymentModule
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
             'this_callback' => $this->context->link->getModuleLink($this->name,
-                'validation', array(), true),
+                'notify', array(), true),
             'ipaddr' => $_SERVER ['REMOTE_ADDR'],
             'psCategories' => $psCategories,
             'hipayCategories' => $hipayCategories,
@@ -446,6 +455,7 @@ class Hipay_enterprise extends PaymentModule
             'hipayCarriers' => $hipayCarriers,
             'mappedCarriers' => $mappedCarriers,
             'lang' => Tools::strtolower($this->context->language->iso_code),
+            'source' => $source
         ));
 
         $this->logs->logsHipay('---- END function getContent');
