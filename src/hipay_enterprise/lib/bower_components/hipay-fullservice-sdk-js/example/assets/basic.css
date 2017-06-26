@@ -1,0 +1,847 @@
+/* main */
+
+html body {
+    background-color: #333333;
+    background-position: center top;
+    background-repeat: no-repeat;
+    font-size: 12.5px;
+    color: #666666;
+    text-align: justify;
+}
+
+#main {
+    background-color: #fff;
+    height: 400px;
+    max-height: 490px;
+    margin-top: 20px;
+    padding: 0;
+    width: 900px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.col-md-6:first-child {
+    padding-left: 0;
+}
+
+.col-md-6:last-child {
+    padding-right: 0;
+}
+
+#left-side, #form {
+    display: table;
+    padding: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+body h1 {
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+body a {
+    font-weight: bold;
+    outline: none;
+}
+
+body a:hover, body a:focus {
+    color: #005a94;
+    text-decoration: none;
+}
+
+p {
+    color: #888888;
+    font-size: 1.3rem;
+    font-weight: 400;
+    padding: 10px 0;
+}
+
+.subtitle {
+    color: #aaaaaa;
+    font-size: 12.5px;
+}
+
+/* end - main */
+
+
+/* left side */
+
+    /** header **/
+
+    #merchant-logo {
+        background-color: #ffffff;
+        background-size: 100% auto;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        height: 55px;
+        width: 80px;
+    }
+
+    #merchant-logo-img {
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        height: 45px;
+        margin: 5px auto;
+        width: 70px;
+    }
+
+    #infos {
+        width: 100%;
+    }
+
+    #infos-txt {
+        text-align: left;
+        width: 100%;
+    }
+
+    #infos-txt #price {
+        color: #005a94;
+        font-size: 2.2rem;
+        font-weight: bold;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    #infos-txt #link-area {
+        color: #888888;
+        font-size: 1.3rem;
+        font-weight: 400;
+        padding: 0;
+    }
+
+    #infos-txt #link-area a#link {
+        color: #007cc1;
+        font-size: 1.3rem;
+        font-weight: bold;
+        letter-spacing: -0.01em;
+        margin: 0;
+    }
+
+    #infos-txt #order {
+        color: #888888;
+        font-size: 1.3rem;
+        font-weight: 400;
+        padding: 10px 0;
+    }
+
+    #infos-txt #code {
+        color: #aaa;
+        font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+        font-size: 13.5px;
+        margin-top: 5px;
+        width: 500px;                          /* specify width  */
+        white-space: pre-wrap;                 /* CSS3 browsers  */
+        white-space: -moz-pre-wrap !important; /* 1999+ Mozilla  */
+        white-space: -pre-wrap;                /* Opera 4 thru 6 */
+        white-space: -o-pre-wrap;              /* Opera 7 and up */
+        word-wrap: break-word;                 /* IE 5.5+ and up */
+        /* overflow-x: auto; */                /* Firefox 2 only */
+        /* width: 99%; */                      /* only if needed */
+    }
+
+    /** end - header **/
+
+#left-side {
+    background-color: #F5F5F5;
+    display: list-item;
+    list-style: outside none none;
+    min-height: 397px;
+    text-align: center;
+    border-radius: 3px 0 0 0;
+    -moz-border-radius: 3px 0 0 0;
+    -webkit-border-radius: 3px 0 0 0;
+}
+
+/* end - left side */
+
+
+
+
+
+
+
+/* right side */
+
+#form {
+    background-color: #fff;
+    border-radius: 0 3px 0 0;
+    -moz-border-radius: 0 3px 0 0;
+    -webkit-border-radius: 0 3px 0 0;
+}
+
+#form .col-md-6:first-child {
+    padding-right: 5px;
+}
+
+#form .col-md-6:last-child {
+    padding-left: 5px;
+}
+
+#form p {
+    padding: 10px 0 0;
+}
+
+#submit-zone {
+    float: left;
+    margin-top: 1.4rem;
+    width: 100%;
+}
+
+#charge button {
+    border: medium none;
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: bold;
+    padding: 6px 20px;
+    background-color: #005a94;
+}
+
+#charge button:hover {
+    background-color: #3399ff;
+    transition: all 0.1s ease 0s;
+}
+
+#charge button:disabled {
+    background-color: #ccc;
+}
+
+#charge button:disabled:hover {
+    background-color: #ccc;
+}
+
+#charge {
+    margin-top: 8px;
+}
+
+#submit-zone button {
+    border: medium none;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    padding: 10px 0;
+    transition: all 0.1s ease 0s;
+    width: 100%;
+}
+
+#error {
+    padding-bottom: 13px;
+    font-weight: bold;
+    color: #d26a6a;
+    font-size: 14px    
+}
+
+#pay-button {
+    background-color: #50b652;
+}
+
+#pay-button:disabled {
+    background-color: #ccc;
+}
+
+#pay-button:disabled:hover {
+    background-color: #ccc;
+}
+
+#pay-button:hover {
+    background-color: #66CC66;
+    transition: all 0.1s ease 0s;
+}
+
+#next-button {
+    background-color: #005A94;
+}
+
+#next-button:hover {
+    background-color: #4480a7;
+    transition: all 0.1s ease 0s;
+}
+
+    /** select **/
+
+    #select-method select {
+        border: 1px solid #dddddd;
+        border-radius: 3px;
+        box-shadow: none;
+        margin-bottom: 10px;
+        padding: 9px 12px;
+        width: 100%;
+        outline: medium none;
+        color: #005A94;
+        font-weight: bold;
+        height: 39px;
+    }
+
+    #select-method select option {
+        color: #666;
+        font-weight: normal;
+    }
+
+    /** end - select **/
+
+
+    /** input **/
+
+    .input-group, #submit-zone button {
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+    }
+
+    input {
+        border: none;
+        padding: 9px 12px 10px 0;
+        width: 100%;
+        border-left: medium none;
+        border-radius: 0 3px 3px 0;
+        -moz-border-radius: 0 3px 3px 0;
+        -webkit-border-radius: 0 3px 3px 0;
+        outline: 0;
+    }
+
+    input[placeholder]:disabled, [placeholder] {
+        color: #ccc !important;
+    }
+
+    .input-group {
+        border: 1px solid #dddddd;
+        box-shadow:none;
+        margin-bottom: 10px;
+        width: 100%
+    }
+
+    input[placeholder], [placeholder] {
+        color: #005a94 !important;
+        font-weight: bold;
+    }
+
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        color: #75a6c5 !important;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance:textfield;
+    }
+
+    span.input-group-addon{
+        background-image: url("sprite.png");
+        background-repeat: no-repeat;
+        border: none;
+        width: 40px;
+    }
+
+    #card-number span {
+        background-position: 5px 5px;
+    }
+
+    #name span {
+        background-position: -75px 5px;
+    }
+
+    #date span {
+        background-position: -35px 6px;
+    }
+
+    #cvv span {
+        background-position: -115px 5px;
+    }
+
+    #cvv, #cvv-button {
+        float: left;
+    }
+
+    #input-month {
+        border-right: 0;
+        border-radius: 0;
+        -moz-border-radius: 0;
+        -webkit-border-radius: 0;
+        float: left;
+        width: calc(50% - 21px);
+    }
+
+    #input-year {
+        border-left: 1px solid #ccc;
+        border-radius: 0 3px 3px 0;
+        -moz-border-radius: 0 3px 3px 0;
+        -webkit-border-radius: 0 3px 3px 0;
+        padding: 9px 12px 10px 12px;
+        float: left;
+        width: 50%;
+    }
+
+    #cvv-button {
+        padding: 9px;
+    }
+
+    #cvv-button button {
+        background-color: #75a6c5;
+        border: medium none;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 12.5px;
+        font-weight: bold;
+        height: 20px;
+        width: 20px;
+    }
+
+        /*** input focus ***/
+
+        .input-group-focus {
+            border: 1px solid #75a6c5;
+            box-shadow:none;
+        }
+
+        #card-number.input-group-focus .input-group-addon {
+            background-position: 5px -37px;
+        }
+
+        #name.input-group-focus .input-group-addon {
+            background-position: -75px -37px;
+        }
+
+        #date.input-group-focus .input-group-addon {
+            background-position: -35px -36px;
+        }
+
+        #cvv.input-group-focus .input-group-addon {
+            background-position: -115px -37px;
+        }
+
+        /*** end - input focus ***/ 
+
+        /*** invalid input ***/
+
+        .invalid {
+            border: 1px solid #ab534b;
+            box-shadow: none;
+        }
+
+        .invalid input[placeholder], .invalid [placeholder], .invalid [placeholder] {
+            color: #ab534b !important;
+        }
+
+        .invalid input, #input-month, #input-year {
+            box-shadow: none;
+        }
+
+        #card-number.invalid .input-group-addon {
+            background-position: 5px -79px;
+        }
+
+        #name.invalid .input-group-addon {
+            background-position: -82px -62px;
+        }
+
+        #date.invalid .input-group-addon {
+            background-position: -35px -78px;
+        }
+
+        #cvv.invalid .input-group-addon {
+            background-position: -115px -79px;
+        }
+
+        /*** end - invalid input ***/
+
+    /** end- input **/
+
+
+    /** cvv modal **/
+
+    .modal .modal-dialog {
+        margin: 55px auto;
+        max-width: 500px;
+        padding: 0 25px;
+    }
+
+    .modal .modal-backdrop.in {
+        opacity: 0.25;
+    }
+
+    .modal .modal-content {
+        border: medium none;    
+    }
+
+    .modal .modal-body {
+        padding: 20px 40px;    
+    }
+
+    .modal .modal-header {
+        padding: 15px 15px 15px 40px;    
+    }
+
+    .modal-body p {
+        color:#666666;
+        margin-bottom: 20px
+    }
+
+    #modal-header-title {
+        float: left;    
+    }
+
+    #modal-header-title h4 {
+        color: #005A94;
+        font-size: 16px;    
+        padding-top: 3px;
+        font-weight: bold;
+    }
+
+    #modal-header-close {
+        text-align: right;
+    }
+
+    #btn-close {
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: transparent;
+        padding: 0;
+        transition: all 0.2s ease 0s;
+    }
+
+    #btn-close::before {
+        width: 1px;
+        height: 20px;
+        position: absolute;
+        content: "";
+        border: none;
+        background: #666666;
+        -webkit-transform: rotateZ(45deg);
+        transform: rotateZ(45deg);
+        top: 20px;
+    }
+
+    #btn-close::after {
+        width: 1px;
+        height: 20px;
+        position: absolute;
+        content: "";
+        border: none;
+        background: #666666;
+        -webkit-transform: rotateZ(-45deg);
+        transform: rotateZ(-45deg);
+        top: 20px;
+    }
+
+    .modal-bold {
+        font-weight: 600;
+        color: #005A94;
+    }
+
+    .modal-body #cvv-img {
+        margin: 0 auto;
+        max-width: 399px;
+    }
+
+    .modal-body img {
+        width: 100%;
+    }
+
+    /** end - cvv modal **/
+
+
+    /** message modal **/
+
+    .message-modal .modal-dialog {
+        max-width: 380px;    
+    }
+
+    .message-modal .modal-header {
+        background-color: #ffffff;
+        border-radius: 3px 3px 0 0;
+        -moz-border-radius: 3px 3px 0 0;
+        -webkit-border-radius: 3px 3px 0 0;
+        float: left;
+        padding: 20px 40px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .message-modal .modal-body {
+        background-color: #ffffff;
+        border-radius: 0 0 3px 3px;
+        -moz-border-radius: 0 0 3px 3px;
+        -webkit-border-radius: 0 0 3px 3px;
+        float: left;
+        padding: 20px 40px; 
+    }
+
+    .message-modal #select-method {
+        margin: 0 auto; 
+    }
+
+    .message-modal #submit-zone {
+        float: inherit;
+        margin: 10px auto;
+    }
+
+    /** end - other method modal **/
+
+
+/* end - right side */
+
+
+/* footer */
+
+footer.container {
+    background-color: #F5F5F5;
+    border-top: 1px solid #dddddd;
+    display: inline-block;
+    float: left;
+    height: 60px;
+    padding: 0 5px;
+    width: 900px;
+    border-radius: 0 0 3px 3px;
+    -moz-border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+    text-align: center;
+}
+
+footer div.fcontent {
+    display: inline-block;
+    padding-top: 19px;
+    width: 24%;
+}
+
+.fcontent div {
+    background-image: url("sprite.png");
+    height: 22px;
+    margin: 0 auto;
+    width: 80px;
+    opacity: 0.4;
+}
+
+#certif-digicert {
+    background-position: 0px -209px;
+}
+
+#certif-pci {
+    background-position: 119px -208px;
+}
+
+#certif-mastercard {
+    background-position: 9px -250px;
+}
+
+#certif-visa {
+    background-position: 150px -251px;
+}
+
+/* end - footer */
+
+/* logo fullservice */
+
+#brand {
+    float: left;
+    padding: 20px;
+    width: 900px;
+}
+
+#fs-logo {
+    background-image: url("sprite.png");
+    background-position: 0 -168px;
+    display: block;
+    height: 17px;
+    margin: 0 auto;
+    outline: medium none;
+    width: 219px;
+}
+
+/* end - logo fullservice */
+
+
+
+/* media queries */
+
+@media screen and (max-width: 992px) {
+    #main, footer.container, #brand {
+        width: 480px;
+    }
+    #left-side {
+        -webkit-border-radius: 3px 3px 0;
+        -moz-border-radius: 3px 3px 0;
+        border-radius: 3px 3px 0;
+        min-height: inherit;
+        border-bottom: 1px solid #dddddd;
+    }
+    .col-md-6 {
+        float: left;
+        width: 50%;
+    }
+    #form {
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+        width: 100%;
+        padding: ;
+    }
+    #left-side, #form {
+        padding: 40px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+
+    html body {
+        background-image: none;
+        background-color: white;
+    }
+
+
+    
+    /** main - media queries **/
+
+    #main.container {
+        margin: 0;
+        max-height: inherit;
+        width: 100%;
+    }
+    
+    body .col-md-6 {
+        padding: 0;
+        width: 100%;
+    }
+    
+    /** end - main - media queries **/
+    
+    /** top - infos - media queries **/
+
+        #infos {
+            display: inline-block;
+            padding: 25px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        #merchant-logo {
+            float: left;    
+        }
+
+        #infos-txt #price {
+            color: #005a94;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #left-side {
+            border-radius: 3px 3px 0 0;
+            -moz-border-radius: 3px 3px 0 0;
+            -webkit-border-radius: 3px 3px 0 0;
+            min-height: inherit;   
+            padding: 0;
+        }
+    
+    /** end - infos - media queries **/
+    
+    
+    /** form - media queries **/
+    
+    #cvv, #cvv-button {
+        float: left;
+        width: 50%;    
+    }
+    #cvv-button {
+        margin: 10px;
+        width: 25%;
+    }
+    
+    #form {
+        height: auto;
+        border-radius: 0;
+        -moz-border-radius: 0;
+        -webkit-border-radius: 0;
+        padding: 25px 25px 15px;
+    }
+    
+    #form .col-md-6:first-child, #form .col-md-6:last-child {
+        padding: 0;
+    }
+    
+    /** end - form - media queries **/
+    
+    
+    /** footer - media queries **/
+    
+    footer.container {
+        background-color: #ffffff;
+        border-radius: 0;
+        -moz-border-radius: 0;
+        -webkit-border-radius: 0;
+        border-top: medium none;
+        padding: 0 5px;
+        width: 100%;
+    }
+    
+    footer.container .fcontent {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    #brand {
+        background-color: transparent;
+        border-top: 1px solid #dddddd;
+        border-radius: 0 0 3px 3px;
+        -moz-border-radius: 0 0 3px 3px;
+        -webkit-border-radius: 0 0 3px 3px;
+        width: 100%;
+    }
+    
+    #fs-logo {
+        background-position: 0 -129px;
+        opacity: 0.4;
+    }
+    
+    /** end - footer - media queries **/
+    
+    
+    /** modal - media queries **/
+    
+    .modal .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal .modal-body {
+        padding: 20px;
+    }
+    
+    #other-method-modal .modal-header, #other-method-modal .modal-body {
+        padding: 20px 20px;
+    }
+
+}
+
+
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 13/10), only screen and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 120dpi), only screen and (min-resolution: 1.3dppx) {
+    
+    span.input-group-addon, .fcontent div, #fs-logo{
+        background-image: url("sprite@2x.png");
+        background-size: 221px 274px;
+    }
+    
+    .payment-img {
+        background-image: url("https://stage-secure-gateway.allopass.com/images/payment-products/payment_product_sprites_big.png");
+        background-size: 675px 270px;
+    }
+
+}
+
+.details {
+    color: #2c383d;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* end - media queries */

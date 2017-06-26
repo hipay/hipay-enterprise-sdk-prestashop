@@ -1,0 +1,6 @@
+{
+    "name": "hipay/hipay-fullservice-tokenization-example",
+    "require": {
+        "hipay/hipay-fullservice-sdk-php": "^1.1"
+    }
+}
