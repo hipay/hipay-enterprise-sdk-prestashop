@@ -1,8 +1,0 @@
-web:
-  build: .
-  container_name: hipay-tokenization-js-example
-  volumes:
-    - .:/var/www/html
-  ports:
-    - "8080:80"
-

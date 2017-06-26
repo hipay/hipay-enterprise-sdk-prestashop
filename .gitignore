@@ -1,8 +1,8 @@
 data/
 web16/
 web17/
-#src/hipay_enterprise/lib/vendor/
-#src/hipay_enterprise/lib/bower_components/
+src/hipay_enterprise/lib/vendor/
+src/hipay_enterprise/lib/bower_components/
 src/hipay_enterprise/logs/*.txt
 prestashop.sh
 composer.lock
