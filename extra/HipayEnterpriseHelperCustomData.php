@@ -20,7 +20,7 @@ class HipayEnterpriseHelperCustomData
         $customData = array();
 
         // An example of adding custom data
-        if ($payment) {
+        if ($cart) {
             $customData['my_field_custom_1'] = $cart->recyclable;
         }
 
