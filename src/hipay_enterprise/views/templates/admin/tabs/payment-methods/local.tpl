@@ -4,7 +4,7 @@
     <ul class="nav nav-tabs" role="tablist">
         {foreach $config_hipay.payment.local_payment as $localPayment}
             <li role="presentation" class=" {if $localPayment@first} active {/if} ">
-                <a href="#{$localPayment@key}" aria-controls="{$localPayment@key}" role="tab" data-toggle="tab">{l s=$localPayment@key mod='hipay_professional'}</a>
+                <a href="#{$localPayment@key}" aria-controls="{$localPayment@key}" role="tab" data-toggle="tab">{l s=$localPayment["displayName"] mod='hipay_professional'}</a>
             </li>
         {/foreach}
     </ul>

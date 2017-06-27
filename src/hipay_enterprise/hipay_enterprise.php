@@ -684,8 +684,13 @@ class Hipay_enterprise extends PaymentModule
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
-                $fieldValue                    = Tools::getValue($key);
-                $this->logs->logsHipay($key." => ".$fieldValue);
+                if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
+                    $fieldValue = $value;
+                } else {
+                    $fieldValue = Tools::getValue($key);
+                }
+
+                $this->logs->logsHipay($key." => ".print_r($fieldValue,true));
                 $accountConfig["global"][$key] = $fieldValue;
             }
 

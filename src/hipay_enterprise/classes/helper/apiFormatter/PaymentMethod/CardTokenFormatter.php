@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,14 +8,19 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__).'/../../tools/hipayConfig.php');
 
-class CardTokenFormatter extends ApiFormatterAbstract {
+use HiPay\Fullservice\Enum\Transaction\ECI;
+use HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod;
 
+class CardTokenFormatter extends ApiFormatterAbstract
+{
     private $cardToken;
 
-    public function __construct($module, $cardToken) {
+    public function __construct($module, $cardToken)
+    {
         parent::__construct($module);
         $this->cardToken = $cardToken;
     }
@@ -25,9 +29,10 @@ class CardTokenFormatter extends ApiFormatterAbstract {
      * return mapped customer card payment informations
      * @return \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod
      */
-    public function generate() {
+    public function generate()
+    {
 
-        $cardTokenRequest = new \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod();
+        $cardTokenRequest = new CardTokenPaymentMethod();
 
         $this->mapRequest($cardTokenRequest);
 
@@ -38,11 +43,84 @@ class CardTokenFormatter extends ApiFormatterAbstract {
      * 
      * @param \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod $cardTokenRequest
      */
-    protected function mapRequest(&$cardTokenRequest) {
-        
-        $cardTokenRequest->cardtoken = $this->cardToken;
-        $cardTokenRequest->eci = 7;
-        $cardTokenRequest->authentication_indicator = 0;
+    protected function mapRequest(&$cardTokenRequest)
+    {
+
+        $cardTokenRequest->cardtoken                = $this->cardToken;
+        $cardTokenRequest->eci                      = ECI::SECURE_ECOMMERCE;
+        $cardTokenRequest->authentication_indicator = $this->setAuthenticationIndicator();
     }
 
+    /**
+     * set 3D-secure or not from configuration
+     * @return int
+     */
+    private function setAuthenticationIndicator()
+    {
+
+        switch ($this->configHipay["payment"]["global"]["activate_3d_secure"]) {
+            case HipayConfig::THREE_D_S_DISABLED :
+                return 0;
+            case HipayConfig::THREE_D_S_TRY_ENABLE_ALL :
+                return 1;
+            case HipayConfig::THREE_D_S_TRY_ENABLE_RULES :
+                $cartSummary = $this->cart->getSummaryDetails();
+                var_dump($this->configHipay["payment"]["global"]);
+                foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
+                    if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet($cartSummary[$rule["field"]],
+                            $rule["operator"], $rule["value"])) {
+                        return 0;
+                    }
+                }
+                return 1;
+            case HipayConfig::THREE_D_S_FORCE_ENABLE_RULES :
+                $cartSummary = $this->cart->getSummaryDetails();
+                var_dump($this->configHipay["payment"]["global"]);
+                foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
+                    if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet($cartSummary[$rule["field"]],
+                            $rule["operator"], $rule["value"])) {
+                        return 0;
+                    }
+                }
+                return 2;
+            case HipayConfig::THREE_D_S_FORCE_ENABLE_ALL :
+                return 2;
+            default :
+                return 0;
+        }
+    }
+
+    /**
+     * Test 2 value with $operator
+     * @param type $value1
+     * @param type $operator
+     * @param type $value2
+     * @return boolean
+     */
+    private function criteriaMet($value1, $operator, $value2)
+    {
+        switch ($operator) {
+            case '<':
+                return $value1 < $value2;
+                break;
+            case '<=':
+                return $value1 <= $value2;
+                break;
+            case '>':
+                return $value1 > $value2;
+                break;
+            case '>=':
+                return $value1 >= $value2;
+                break;
+            case '==':
+                return $value1 == $value2;
+                break;
+            case '!=':
+                return $value1 != $value2;
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
 }

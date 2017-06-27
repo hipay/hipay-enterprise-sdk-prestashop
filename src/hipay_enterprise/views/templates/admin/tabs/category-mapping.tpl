@@ -26,7 +26,7 @@
                         <td>
                             <select name="hipay_map_{$cat["id_category"]}">
                                 {if !isset($mappedCategories[$cat["id_category"]])}
-                                    <option value="" >{l s="Unclassified" mod="hipay_professional"}</option>
+                                    <option value="" >{l s="-- Select category" mod="hipay_professional"}</option>
                                 {/if}
                                 {foreach $hipayCategories as $hpcat}
                                     <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if} value="{$hpcat->getCode()}" >{$hpcat->getLocal($lang|upper)}</option>

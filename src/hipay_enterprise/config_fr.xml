@@ -2,7 +2,7 @@
 <module>
 	<name>hipay_enterprise</name>
 	<displayName><![CDATA[HiPay Enterprise]]></displayName>
-	<version><![CDATA[1.0.0]]></version>
+	<version><![CDATA[2.0.0]]></version>
 	<description><![CDATA[Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!]]></description>
 	<author><![CDATA[HiPay]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
