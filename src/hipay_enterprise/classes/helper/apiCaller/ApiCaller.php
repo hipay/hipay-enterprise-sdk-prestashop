@@ -59,7 +59,7 @@ class ApiCaller
         $moduleInstance->getLogs()->requestLogs(print_r($orderRequest->generate(),
                 true));
         var_dump($orderRequest->generate());
-//            die();
+//        die();
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction   = $gatewayClient->requestNewOrder($orderRequest->generate());
 

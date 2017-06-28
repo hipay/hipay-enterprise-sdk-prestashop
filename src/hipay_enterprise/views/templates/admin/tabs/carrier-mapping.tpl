@@ -35,7 +35,7 @@
                         <td>
                             <select name="hipay_map_mode_{$car["id_carrier"]}">
                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                    <option value="" >{l s="Unclassified" mod="hipay_professional"}</option>
+                                    <option value="" >{l s="-- Select carrier mode" mod="hipay_professional"}</option>
                                 {/if}
                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
@@ -45,7 +45,7 @@
                         <td>
                             <select name="hipay_map_shipping_{$car["id_carrier"]}">
                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                    <option value="" >{l s="Unclassified" mod="hipay_professional"}</option>
+                                    <option value="" >{l s="-- Select carrier shipping" mod="hipay_professional"}</option>
                                 {/if}
                                 {foreach $hipayCarriers["shipping"] as $hpcarmode}
                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>

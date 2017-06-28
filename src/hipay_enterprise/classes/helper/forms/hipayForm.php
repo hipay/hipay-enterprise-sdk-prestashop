@@ -133,10 +133,6 @@ class HipayForm extends HipayFormInput {
                 )
         );
 
-        $form['form']['input'][] = $this->generateSwitchButton(
-                "activate_3d_secure", $this->module->l('Activate 3-D secure', 'HipayForm')
-        );
-
         $form['form']['input'][] = $this->generateInputSelect(
                 "capture_mode", $this->module->l('Switch to capture in', 'HipayForm'), array(
             "options" => array(
@@ -195,7 +191,6 @@ class HipayForm extends HipayFormInput {
             "iframe_hosted_page_template" => "",
             "display_card_selector" => "",
             "css_url" => "",
-            "activate_3d_secure" => "",
             "capture_mode" => "",
             "card_token" => "",
             "electronic_signature" => "",

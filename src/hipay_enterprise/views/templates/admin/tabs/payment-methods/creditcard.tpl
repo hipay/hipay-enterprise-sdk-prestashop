@@ -4,7 +4,7 @@
     <ul class="nav nav-tabs" role="tablist">
         {foreach $config_hipay.payment.credit_card as $creditCard}
             <li role="presentation" class="{if $creditCard@first} active {/if} ">
-                <a href="#{$creditCard@key}" aria-controls="{$creditCard@key}" role="tab" data-toggle="tab">{l s=$creditCard@key mod='hipay_professional'}</a>
+                <a href="#{$creditCard@key}" aria-controls="{$creditCard@key}" role="tab" data-toggle="tab">{l s=$creditCard["displayName"] mod='hipay_professional'}</a>
             </li>
         {/foreach}
     </ul>

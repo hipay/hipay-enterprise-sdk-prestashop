@@ -15,6 +15,7 @@
 
     {$global_payment_methods_form}
     
+    {include file='./payment-methods/3d-secure.tpl'}
     {include file='./payment-methods/creditcard.tpl'}
     {include file='./payment-methods/local.tpl'}
     
