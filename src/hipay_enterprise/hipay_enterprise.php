@@ -494,6 +494,10 @@ class Hipay_enterprise extends PaymentModule
             $this->logs->logsHipay('---- >> submitGlobalPaymentMethods');
             $this->saveGlobalPaymentInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
+        } else if (Tools::isSubmit('submit3DSecure')) {
+            $this->logs->logsHipay('---- >> submit3DSecure');
+            $this->save3DSecureInformations();
+            $this->context->smarty->assign('active_tab', 'payment_form');
         } else if (Tools::isSubmit('creditCardSubmit')) {
             $this->logs->logsHipay('---- >> creditCardSubmit');
             $this->saveCreditCardInformations();
@@ -514,6 +518,42 @@ class Hipay_enterprise extends PaymentModule
             $this->logs->logsHipay('---- >> submitCarrierMapping');
             $this->saveCarrierMappingInformations();
             $this->context->smarty->assign('active_tab', 'carrier_form');
+        }
+    }
+
+    protected function save3DSecureInformations()
+    {
+        $this->logs->logsHipay('---- >> function save3DSecureInformations');
+
+        try {
+
+            $accountConfig                                 = array(
+                "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
+                // Not cool but works
+                "credit_card" => $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
+                "local_payment" => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
+            );
+            $accountConfig["global"]["activate_3d_secure"] = Tools::getValue("activate_3d_secure");
+            $accountConfig["global"]["3d_secure_rules"]    = array();
+
+            foreach (Tools::getValue("3d_secure_rules") as $rule) {
+                $newRules = array(
+                    "field" => $rule["field"],
+                    "operator" => htmlentities($rule["operator"]),
+                    "value" => $rule["value"],
+                );
+
+                $accountConfig["global"]["3d_secure_rules"][] = $newRules;
+            }
+            //save configuration
+            $this->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
+            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            return true;
+            return false;
+        } catch (Exception $ex) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
         }
     }
 
@@ -690,7 +730,7 @@ class Hipay_enterprise extends PaymentModule
                     $fieldValue = Tools::getValue($key);
                 }
 
-                $this->logs->logsHipay($key." => ".print_r($fieldValue,true));
+                $this->logs->logsHipay($key." => ".print_r($fieldValue, true));
                 $accountConfig["global"][$key] = $fieldValue;
             }
 

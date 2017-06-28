@@ -10,6 +10,9 @@ echo "\n Execution PRESTASHOP Entrypoint \n";
 #       CUSTOMS CONFIGURATIONS
 #===================================#
 
+chown -R www-data:www-data /var/www/html
+chmod -R a+rw /var/www/html
+
 if [ ! -f /var/www/html/composer.json ];then
 
     echo "\n Instal SDK PHP \n";

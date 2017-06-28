@@ -65,20 +65,21 @@ class CardTokenFormatter extends ApiFormatterAbstract
                 return 1;
             case HipayConfig::THREE_D_S_TRY_ENABLE_RULES :
                 $cartSummary = $this->cart->getSummaryDetails();
-                var_dump($this->configHipay["payment"]["global"]);
                 foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet($cartSummary[$rule["field"]],
-                            $rule["operator"], $rule["value"])) {
+                            html_entity_decode($rule["operator"]),
+                            $rule["value"])) {
                         return 0;
                     }
                 }
                 return 1;
             case HipayConfig::THREE_D_S_FORCE_ENABLE_RULES :
                 $cartSummary = $this->cart->getSummaryDetails();
-                var_dump($this->configHipay["payment"]["global"]);
+
                 foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
-                    if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet($cartSummary[$rule["field"]],
-                            $rule["operator"], $rule["value"])) {
+                    if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet((int) $cartSummary[$rule["field"]],
+                            html_entity_decode($rule["operator"]),
+                            (int) $rule["value"])) {
                         return 0;
                     }
                 }

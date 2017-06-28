@@ -93,7 +93,6 @@ class HipayConfig
 
         $confHipay[$key] = $value;
         //$confHipay = array_replace_recursive($confHipay,$value);
-
         if (Configuration::updateValue('HIPAY_CONFIG',
                 Tools::jsonEncode($confHipay), false, $id_shop_group, $id_shop)) {
             $this->configHipay = Tools::jsonDecode(Configuration::get('HIPAY_CONFIG',
