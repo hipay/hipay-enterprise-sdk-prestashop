@@ -11,7 +11,9 @@ echo "\n Execution PRESTASHOP Entrypoint \n";
 #===================================#
 
 chown -R www-data:www-data /var/www/html
-chmod -R a+rw /var/www/html
+chmod -R 755 /var/www/html
+chmod -R 777 /var/www/html/modules/hipay_enterprise/logs
+chmod 666 /var/www/html/modules/hipay_enterprise/logs/index.php
 
 if [ ! -f /var/www/html/composer.json ];then
 

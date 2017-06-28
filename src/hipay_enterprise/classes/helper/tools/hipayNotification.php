@@ -35,7 +35,7 @@ class hipayNotification
         $this->log->logsHipay("###### Mapped Transaction #####");
         $this->log->logsHipay(print_r($this->transaction, true));
 
-        print_r($this->transaction);
+      //  print_r($this->transaction);
         // if cart_id exist or not
         if ($this->transaction->getOrder() == null || $this->transaction->getOrder()->getId()
             == null) {

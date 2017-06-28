@@ -8,4 +8,8 @@
 <input id="card-token" type='hidden' name='card-token' value='' />
 <input id="card-brand" type='hidden' name='card-brand' value='' />
 <input id="card-pan" type='hidden' name='card-pan' value='' />
+<input id="card-expiry-month" type='hidden' name='card-expiry-month' value='' />
+<input id="card-expiry-year" type='hidden' name='card-expiry-year' value='' />
+<input id="card-issuer" type='hidden' name='card-issuer' value='' />
+<input id="card-country" type='hidden' name='card-country' value='' />
 <input id="ioBB" type="hidden" name="ioBB">

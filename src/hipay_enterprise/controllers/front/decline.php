@@ -28,7 +28,10 @@ class Hipay_enterpriseDeclineModuleFrontController extends ModuleFrontController
             HipayHelper::unsetCart();
         }
         
-        $this->setTemplate ( 'paymentReturn/decline.tpl' );
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/decline17.tpl'
+                            : 'paymentReturn/decline.tpl');
+
+        $this->setTemplate($path);
     }
 
 }

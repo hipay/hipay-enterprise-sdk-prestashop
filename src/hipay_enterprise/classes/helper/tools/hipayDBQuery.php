@@ -21,6 +21,7 @@ class HipayDBQuery
     const HIPAY_CAT_MAPPING_TABLE          = 'hipay_cat_mapping';
     const HIPAY_CARRIER_MAPPING_TABLE      = 'hipay_carrier_mapping';
     const HIPAY_ORDER_REFUND_CAPTURE_TABLE = 'hipay_order_refund_capture';
+    const HIPAY_CC_TOKEN_TABLE             = 'hipay_cc_token';
     const HIPAY_PAYMENT_ORDER_PREFIX       = 'HiPay Enterprise';
 
     public function __construct($moduleInstance)
@@ -163,6 +164,31 @@ class HipayDBQuery
     }
 
     /**
+     *
+     * @return type
+     */
+    public function createCCTokenTable()
+    {
+        $this->logs->logsHipay('Create Hipay credit card token table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`(
+                `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `customer_id` INT(10) UNSIGNED NOT NULL,
+                `token` VARCHAR(45) NOT NULL,
+                `brand` VARCHAR(255) NOT NULL,
+                `pan` VARCHAR(20)  NOT NULL,
+                `card_holder` VARCHAR(255) NOT NULL,
+                `card_expiry_month` INT(2) UNSIGNED NOT NULL,
+                `card_expiry_year` INT(4) UNSIGNED NOT NULL,
+                `issuer` VARCHAR(255) NOT NULL,
+                `country` VARCHAR(15) NOT NULL,
+                PRIMARY KEY (`hp_id`)
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
      * Delete Hipay mapping table
      * @return type
      */
@@ -191,6 +217,14 @@ class HipayDBQuery
         $this->logs->logsHipay('Delete Hipay order refund capture table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    public function deleteCCTokenTable()
+    {
+        $this->logs->logsHipay('Delete credit card table');
+
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`';
         return Db::getInstance()->execute($sql);
     }
 
@@ -582,5 +616,30 @@ class HipayDBQuery
         }
 
         return false;
+    }
+
+    public function ccTokenExist($customerId, $token)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE \'%'.$token.'%\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param type $values
+     * @return type
+     */
+    public function setCCToken($values)
+    {
+        $sql = 'INSERT INTO  `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` (customer_id, token, brand, pan, card_holder, card_expiry_month, card_expiry_year, issuer, country)
+                VALUES ('.join(",", $values).') ;';
+        return Db::getInstance()->execute($sql);
     }
 }

@@ -80,11 +80,20 @@
                         token = result.token;
                         brand = result.brand;
                         pan = result.pan;
-
+                        card_expiry_month = result.card_expiry_month;
+                        card_expiry_year = result.card_expiry_year;
+                        card_holder = result.card_holder;
+                        issuer = result.issuer;
+                        country = result.country;
+                        
                         // set tokenization response
                         $('#card-token').val(token);
                         $('#card-brand').val(brand);
-                        $('#card-pan').val(brand);
+                        $('#card-pan').val(pan);
+                        $('#card-expiry-month').val(card_expiry_month);
+                        $('#card-expiry-year').val(card_expiry_year);
+                        $('#card-issuer').val(issuer);
+                        $('#card-country').val(country);
 
                         // we empty the form so we don't send credit card informations to the server
                         $('#card-number').val("");
