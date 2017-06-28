@@ -74,7 +74,7 @@
 
 <script>
     {foreach $config_hipay.payment.credit_card as $creditCard}
-    var {$creditCard@key}_dualistbox = $('#countries_{$creditCard@key}').bootstrapDualListbox({
+    var cc_{$creditCard@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$creditCard@key}').bootstrapDualListbox({
         showFilterInputs: false,
         moveOnSelect: false,
         nonSelectedListLabel: '{l s='Available countries' mod='hipay_professional'}',

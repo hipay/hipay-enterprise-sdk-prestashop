@@ -1,0 +1,12 @@
+{
+    "name": "bcmc",
+    "config": {
+        "displayName" : "Bancontact / Mister Cash",
+        "activated" : 1,
+        "canRefund" : 1,
+        "canManualCapture" : 1,
+        "currencies" : ["EUR"],
+        "minAmount" : 0,
+        "countries"  : ["BE"]
+    }
+}
