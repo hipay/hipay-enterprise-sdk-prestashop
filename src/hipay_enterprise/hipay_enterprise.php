@@ -443,6 +443,7 @@ class Hipay_enterprise extends PaymentModule
             'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
             'fraud_form' => $formGenerator->getFraudForm(),
             'form_errors' => $this->_errors,
+            'form_successes' => $this->_successes,
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
             'this_callback' => $this->context->link->getModuleLink($this->name,

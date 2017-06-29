@@ -23,7 +23,7 @@
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation"
-            class=" {if ((isset($active_tab) == false) || ($active_tab == 'settings_form'))} active{/if}"><a
+            class=" {if ((isset($active_tab) == false) || ($active_tab == 'account_form'))} active{/if}"><a
                 href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">
                 <span class="icon icon-cogs"></span> {l s='Account informations' mod='hipay_professional'}</a>
         </li>
