@@ -30,16 +30,17 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $data[$key] = $value;
         }
         //LOG 
-        $this->module->getLogs()->logsHipay('##########################################');
-        $this->module->getLogs()->logsHipay('##########################################');
-        $this->module->getLogs()->logsHipay('CALLBACK HANDLING START');
-        $this->module->getLogs()->logsHipay(print_r($data, TRUE));
+        $this->module->getLogs()->callbackLogs('##########################################');
+        $this->module->getLogs()->callbackLogs('##########################################');
+        $this->module->getLogs()->callbackLogs('CALLBACK HANDLING START');
+        $this->module->getLogs()->callbackLogs(print_r($data, TRUE));
 
-     //   print_r($data);
-
+        //   print_r($data);
         // if state and status exist or not
         if (!isset($data['state']) && !isset($data['status'])) {
             $this->module->getLogs()->errorLogsHipay($this->module->l('Bad Callback initiated',
+                    'hipay'));
+            $this->module->getLogs()->callbackLogs($this->module->l('Bad Callback initiated',
                     'hipay'));
             die();
         }
@@ -51,9 +52,11 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
                 $this->module->hipayConfigTool->getConfigHipay(), true, $data)) {
             $this->module->getLogs()->errorLogsHipay($this->module->l('Bad Callback initiated',
                     'hipay'));
+            $this->module->getLogs()->callbackLogs($this->module->l('Bad Callback initiated',
+                    'hipay'));
             die('Bad Callback initiated');
         }
-        $this->module->getLogs()->logsHipay('state exist');
+        $this->module->getLogs()->callbackLogs('state exist');
 
         $notificationHandler = new hipayNotification($this->module, $data);
 

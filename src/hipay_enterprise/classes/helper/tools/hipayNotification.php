@@ -32,14 +32,15 @@ class hipayNotification
         $this->db      = new HipayDBQuery($this->module);
 
         $this->transaction = (new HiPay\Fullservice\Gateway\Mapper\TransactionMapper($data))->getModelObjectMapped();
-        $this->log->logsHipay("###### Mapped Transaction #####");
-        $this->log->logsHipay(print_r($this->transaction, true));
+        $this->log->callbackLogs("###### Mapped Transaction #####");
+        $this->log->callbackLogs(print_r($this->transaction, true));
 
-      //  print_r($this->transaction);
+        //  print_r($this->transaction);
         // if cart_id exist or not
         if ($this->transaction->getOrder() == null || $this->transaction->getOrder()->getId()
             == null) {
             $this->log->errorLogsHipay('Bad Callback initiated, no cart ID found ');
+            $this->log->callbackLogs('Bad Callback initiated, no cart ID found ');
             die('No cart found');
         }
 
@@ -48,11 +49,12 @@ class hipayNotification
         // check if cart is correctly loaded
         if (!Validate::isLoadedObject($this->cart)) {
             $this->log->errorLogsHipay('Bad Callback initiated, cart could not be initiated ');
+            $this->log->callbackLogs('Bad Callback initiated, cart could not be initiated ');
             die('Cart empty');
         }
 
-        $this->log->logsHipay('---------- Boutique N°'.$this->cart->id_shop);
-        $this->log->logsHipay('---------- panier exist ID = '.$this->cart->id);
+        $this->log->callbackLogs('---------- Boutique N°'.$this->cart->id_shop);
+        $this->log->callbackLogs('---------- panier exist ID = '.$this->cart->id);
 
         if ($this->cart->orderExists()) {
             // il existe une commande associée à ce panier
@@ -61,10 +63,10 @@ class hipayNotification
             $idOrder          = Order::getOrderByCartId($this->cart->id);
             if ($idOrder) {
                 $this->order = new Order((int) $idOrder);
-                $this->log->logsHipay('---------- objOrder initialisé');
+                $this->log->callbackLogs('---------- objOrder initialisé');
             }
-            $this->log->logsHipay('---------- order_exist = '.$this->orderExist);
-            $this->log->logsHipay('---------- id_order = '.$idOrder);
+            $this->log->callbackLogs('---------- order_exist = '.$this->orderExist);
+            $this->log->callbackLogs('---------- id_order = '.$idOrder);
         }
     }
 
@@ -193,12 +195,12 @@ class hipayNotification
 
             if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED
                 && $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
-                $this->log->logsHipay('--------------- captured_amount ('.$this->transaction->getCapturedAmount().') is < than authorized_amount ('.$this->transaction->getAuthorizedAmount().')');
+                $this->log->callbackLogs('--------------- captured_amount ('.$this->transaction->getCapturedAmount().') is < than authorized_amount ('.$this->transaction->getAuthorizedAmount().')');
                 $return = true;
             }
             return $return;
         } else {
-            $this->log->logsHipay('--------------- no status changed because there are no order');
+            $this->log->callbackLogs('--------------- no status changed because there are no order');
             return $this->registerOrder($newState);
         }
     }
@@ -237,7 +239,8 @@ class hipayNotification
 
                 return true;
             } catch (Exception $e) {
-                $this->log->logsHipay($e->getCode().' : '.$e->getMessage());
+                $this->log->errorLogsHipay($e->getCode().' : '.$e->getMessage());
+                $this->log->callbackLogs($e->getCode().' : '.$e->getMessage());
                 return false;
             }
         }
@@ -263,10 +266,11 @@ class hipayNotification
                         $payment_transaction_id, $currency, $payment_date,
                         $order_invoice)) {
                     // LOG
-                    $this->log->logsHipay('--------------- Order payment add with success');
+                    $this->log->callbackLogs('--------------- Order payment add with success');
                 }
             } else {
-                $this->log->logsHipay('--------------- Error, order exist but the object order not loaded');
+                $this->log->errorLogsHipay('--------------- Error, order exist but the object order not loaded');
+                $this->log->callbackLogs('--------------- Error, order exist but the object order not loaded');
             }
         }
     }
@@ -278,7 +282,7 @@ class hipayNotification
     private function captureOrder()
     {
 
-        $this->log->logsHipay('--------------- Capture Order');
+        $this->log->callbackLogs('--------------- Capture Order');
 
         $paymentMethod = null;
 
@@ -287,7 +291,7 @@ class hipayNotification
         // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
         if ($this->db->countOrderPayment($this->order->reference,
                 $this->setTransactionRefForPrestashop()) == 0) {
-            $this->log->logsHipay('--------------- Create Order Payment');
+            $this->log->callbackLogs('--------------- Create Order Payment');
             $this->createOrderPayment();
         }
 //        else {
@@ -324,7 +328,7 @@ class hipayNotification
     {
 
         //LOG 
-        $this->log->logsHipay('--------------- START refundOrder');
+        $this->log->refundLogs('--------------- START refundOrder');
 
         if ($this->orderExist) {
 
@@ -339,14 +343,21 @@ class hipayNotification
             // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
             if ($this->db->countOrderPayment($this->order->reference,
                     $this->setTransactionRefForPrestashop(true)) == 0) {
-                $this->log->logsHipay('--------------- Create Order Payment');
+                $this->log->refundLogs('--------------- Create Order Payment');
                 $this->createOrderPayment(true);
+
+                $this->log->refundLogs('--------------- refundOrder: '.$this->transaction->getRefundedAmount());
 
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
+                    $this->log->refundLogs('--------------- refundOrder: '.Configuration::get('HIPAY_OS_REFUNDED',
+                            null, null, 1));
                     $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED',
                             null, null, 1));
                 } else {
+                    $this->log->refundLogs('--------------- refundOrder: '.Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY',
+                            null, null, 1));
+
                     $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY',
                             null, null, 1));
                 }
@@ -386,18 +397,18 @@ class hipayNotification
     private function controleIfStatushistoryExist($paymentStatus, $orderState,
                                                   $forceCtrl = false)
     {
-        $this->log->logsHipay('--------------- controleIfStatushistoryExist ----- ');
+        $this->log->callbackLogs('--------------- controleIfStatushistoryExist ----- ');
 
-        $this->log->logsHipay('--------------- Status : '.$orderState);
+        $this->log->callbackLogs('--------------- Status : '.$orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
-            $this->log->logsHipay('--------------- Control Action: TRUE');
-            $this->log->logsHipay('--------------- Status Exist: TRUE');
+            $this->log->callbackLogs('--------------- Control Action: TRUE');
+            $this->log->callbackLogs('--------------- Status Exist: TRUE');
             return $this->db->checkOrderStatusExist($paymentStatus,
                     $this->order->id);
         }
 
-        $this->log->logsHipay('--------------- Status Exist: FALSE');
+        $this->log->callbackLogs('--------------- Status Exist: FALSE');
         return false;
     }
 
