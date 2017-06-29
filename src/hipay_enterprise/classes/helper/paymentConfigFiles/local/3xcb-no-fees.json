@@ -2,7 +2,7 @@
     "name": "3xcb-no-fees",
     "config": {
         "displayName" : "3x Carte Bancaire sans frais - Facilypay",
-        "activated" : 1,
+        "activated" : 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies" : ["EUR"],

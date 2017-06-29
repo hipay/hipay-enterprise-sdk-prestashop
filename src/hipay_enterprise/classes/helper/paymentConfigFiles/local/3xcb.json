@@ -2,7 +2,7 @@
     "name": "3xcb",
     "config": {
         "displayName" : "3x Carte Bancaire - Facilypay",
-        "activated" : 1,
+        "activated" : 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies" : ["EUR"],

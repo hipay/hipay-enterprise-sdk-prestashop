@@ -2,7 +2,7 @@
     "name": "sdd",
     "config": {
         "displayName": "SEPA Direct Debit",
-        "activated": 1,
+        "activated": 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies": ["EUR"],
