@@ -12,7 +12,7 @@
 abstract class HipayFormInput {
 
     protected function generateFormSplit() {
-        $params = array('col' => 12, 'offset' => 0);
+        $params = array('col' => 6, 'offset' => 0);
 
         return $this->generateInput('free', 'input_split', null, $params);
     }
