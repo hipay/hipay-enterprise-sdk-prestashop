@@ -321,7 +321,7 @@ class HipayForm extends HipayFormInput {
 
         // init field
         $values = array(
-            "input_split" => "",
+            "input_split" => "test",
             "payment_fraud_email_sender" => "",
             "send_payment_fraud_email_copy_to" => "",
             "send_payment_fraud_email_copy_method" => "",

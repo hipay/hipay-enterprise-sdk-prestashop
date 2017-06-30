@@ -62,7 +62,7 @@ class HipayDBQuery
     public function setSQLLockForCart($cartId)
     {
 
-        $this->logs->logsHipay('start LockSQL  for id_cart = '.$cartId);
+        $this->logs->callbackLogs('start LockSQL  for id_cart = '.$cartId);
 
         $sql = 'begin;';
         $sql .= 'SELECT id_cart FROM '._DB_PREFIX_.'cart WHERE id_cart = '.(int) $cartId.' FOR UPDATE;';
@@ -78,6 +78,9 @@ class HipayDBQuery
      */
     public function releaseSQLLock()
     {
+
+        $this->logs->callbackLogs('release LockSQL');
+
         $sql = 'commit;';
         if (!Db::getInstance()->execute($sql)) {
             $this->logs->logsHipay('Bad LockSQL initiated ');
