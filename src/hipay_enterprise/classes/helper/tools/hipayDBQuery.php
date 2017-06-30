@@ -396,7 +396,7 @@ class HipayDBQuery
             ."WHERE ".$transactWhere." `order_reference` = '".$orderReference."' ;"
         ;
 
-        var_dump($sql);
+       // var_dump($sql);
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['count'])) {

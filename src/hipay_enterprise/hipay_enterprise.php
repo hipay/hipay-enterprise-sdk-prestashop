@@ -17,6 +17,7 @@ class Hipay_enterprise extends PaymentModule
     public $limited_countries  = array();
     public $hipayConfigTool;
     public $_errors            = array();
+    public $_successes         = array();
     public $min_amount         = 1;
     public $limited_currencies = array();
     public $currencies_titles  = array();
@@ -158,7 +159,8 @@ class Hipay_enterprise extends PaymentModule
                 && $this->registerHook('actionFrontControllerSetMedia');
             $return   = $return && $return17;
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn');
+            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn')
+                && $this->registerHook('displayPaymentEU');
             $return   = $return && $return16;
         }
         return $return;
@@ -208,6 +210,48 @@ class Hipay_enterprise extends PaymentModule
 
         return $this->display(dirname(__FILE__),
                 'views/templates/hook/payment.tpl');
+    }
+
+    public function hookDisplayPaymentEU($params)
+    {
+        $this->logs->logsHipay('##########################');
+        $this->logs->logsHipay('---- START function hookDisplayPaymentEU');
+        $this->logs->logsHipay('##########################');
+
+        $address    = new Address(intval($params['cart']->id_address_delivery));
+        $country    = new Country(intval($address->id_country));
+        $currency   = new Currency(intval($params['cart']->id_currency));
+        $orderTotal = $params['cart']->getOrderTotal();
+
+        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card",
+            $country, $currency);
+
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment",
+            $country, $currency, $orderTotal);
+        $paymentOptions        = array();
+        $paymentOptionsCC      = array();
+        $paymentOptionsLP      = array();
+
+        if (!empty($activatedCreditCard)) {
+            $paymentOptionsCC[] = array(
+                'cta_text' => $this->l('Pay by credit or debit card'),
+                'logo' =>  Media::getMediaPath($this->_path.'views/img/amexa200.png'),
+                'action' => $this->context->link->getModuleLink($this->name,
+                    'redirect', array(), true)
+            );
+        }
+
+        if (!empty($activatedLocalPayment)) {
+            foreach ($activatedLocalPayment as $localPayment) {
+                $paymentOptionsLP[] = array(
+                    'cta_text' => $this->l('Pay by').' '.$localPayment['displayName'],
+                    'logo' => Media::getMediaPath($localPayment['payment_button']),
+                    'action' => $localPayment['link']
+                );
+            }
+        }
+        $paymentOptions = array_merge($paymentOptionsCC, $paymentOptionsLP);
+        return $paymentOptions;
     }
 
     /**

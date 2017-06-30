@@ -50,7 +50,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
 
         if (!HipayHelper::checkSignature($signature,
                 $this->module->hipayConfigTool->getConfigHipay(), true, $data)) {
-            $this->module->getLogs()->errorLogsHipay($this->module->l('Bad Callback initiated',
+            $this->module->getLogs()->errorLogsHipay($this->module->l('Bad Callback initiated - signature',
                     'hipay'));
             $this->module->getLogs()->callbackLogs($this->module->l('Bad Callback initiated',
                     'hipay'));

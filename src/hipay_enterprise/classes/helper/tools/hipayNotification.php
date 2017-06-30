@@ -375,7 +375,7 @@ class hipayNotification
     {
         $orderHistory           = new OrderHistory();
         $orderHistory->id_order = $this->order->id;
-        $orderHistory->changeIdOrderState($newState, $this->order->id, true);
+        $orderHistory->changeIdOrderState($newState, $this->order, true);
         $orderHistory->add();
     }
 
