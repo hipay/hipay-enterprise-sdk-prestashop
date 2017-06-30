@@ -10,10 +10,7 @@ echo "\n Execution PRESTASHOP Entrypoint \n";
 #       CUSTOMS CONFIGURATIONS
 #===================================#
 
-chown -R www-data:www-data /var/www/html
-chmod -R 755 /var/www/html
-chmod -R 777 /var/www/html/modules/hipay_enterprise/logs
-chmod 666 /var/www/html/modules/hipay_enterprise/logs/index.php
+
 
 if [ ! -f /var/www/html/composer.json ];then
 
@@ -48,7 +45,10 @@ if [ ! -f /var/www/html/console/console.php ];then
     #service cron start
 fi
 
-
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+chmod -R 777 /var/www/html/modules/hipay_enterprise/logs
+chmod 666 /var/www/html/modules/hipay_enterprise/logs/index.php
 
 #===================================#
 #       START WEBSERVER
