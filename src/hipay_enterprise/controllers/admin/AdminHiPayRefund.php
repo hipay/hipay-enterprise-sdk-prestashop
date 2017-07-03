@@ -18,6 +18,11 @@ class AdminHiPayRefundController extends ModuleAdminController
 
     public function __construct()
     {
+
+        $this->module    = 'hipay_enterprise';
+        $this->bootstrap = true;
+        $this->context   = Context::getContext();
+        
         parent::__construct();
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
@@ -26,7 +31,6 @@ class AdminHiPayRefundController extends ModuleAdminController
 
     public function postProcess()
     {
-
         $context = Context::getContext();
 
         if (Tools::isSubmit('id_order') && Tools::getValue('id_order') > 0) {
@@ -118,6 +122,7 @@ class AdminHiPayRefundController extends ModuleAdminController
             } else {
                 $params = array("refundItems" => "full", "order" => $order->id, "transaction_reference" => $transactionReference);
             }
+
             $this->apiHandler->handleRefund($params);
         }
 

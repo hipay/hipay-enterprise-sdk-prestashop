@@ -69,7 +69,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $item = $this->getFeesItem();
             $cart->addItem($item);
         }
-        var_dump($cart);
     }
 
     /**

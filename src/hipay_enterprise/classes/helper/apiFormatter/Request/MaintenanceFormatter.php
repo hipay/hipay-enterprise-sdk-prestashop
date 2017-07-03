@@ -103,7 +103,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                             '', $item->getProductReference()), '"'.$this->operation.'"',
                         $item->getQuantity(), Tools::ps_round($item->getTotalAmount(),
                             2));
-                    //        $this->db->setCaptureOrRefundOrder($captureData);
+                            $this->db->setCaptureOrRefundOrder($captureData);
                 } else if ($item->getType() == "fee") {
                     HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,
                         $this->operation);
