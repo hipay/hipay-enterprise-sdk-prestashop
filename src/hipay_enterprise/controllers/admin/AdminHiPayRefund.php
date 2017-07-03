@@ -107,7 +107,6 @@ class AdminHiPayRefundController extends ModuleAdminController
             if (Tools::getValue('hipay_refund_type') == "partial") {
 
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
-                var_dump($refundItems);
                 if (array_sum($refundItems) == 0 && Tools::getValue('hipay_refund_fee')
                     !== "on") {
                     $hipay_redirect_status = $this->module->l('Select at least one item to refund',

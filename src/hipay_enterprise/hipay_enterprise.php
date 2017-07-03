@@ -142,7 +142,7 @@ class Hipay_enterprise extends PaymentModule
 
     public function uninstall()
     {
-        return $this->uninstallAdminTab() &&  parent::uninstall() && $this->clearAccountData()
+        return $this->uninstallAdminTab() && parent::uninstall() && $this->clearAccountData()
             && $this->deleteHipayTable();
     }
 
@@ -160,7 +160,7 @@ class Hipay_enterprise extends PaymentModule
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn')
                 && $this->registerHook('displayPaymentEU');
-            $return  = $return && $return16;
+            $return   = $return && $return16;
         }
         return $return;
     }
@@ -319,6 +319,16 @@ class Hipay_enterprise extends PaymentModule
         $refundedFees      = $this->db->feesAreRefunded($order->id);
         $capturedItems     = $this->db->getCapturedItems($order->id);
         $refundedItems     = $this->db->getRefundedItems($order->id);
+        $totallyRefunded   = true;
+        
+        foreach ($order->getProducts() as $product) {
+            $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
+                >= $product["product_quantity"]);
+        }
+
+        if (!$refundedFees) {
+            $totallyRefunded = false;
+        }
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED',
                 null, null, 1) || !empty($capturedItems) || $capturedFees) {
@@ -326,7 +336,7 @@ class Hipay_enterprise extends PaymentModule
         }
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED',
-                null, null, 1) || !empty($capturedItems) || $capturedFees) {
+                null, null, 1) || !empty($refundedItems) || $refundedFees || $partiallyCaptured) {
             $partiallyRefunded = true;
         }
 
@@ -409,7 +419,8 @@ class Hipay_enterprise extends PaymentModule
             'refundedItems' => $refundedItems,
             'capturedFees' => $capturedFees,
             'refundedFees' => $refundedFees,
-            'products' => $products
+            'products' => $products,
+            'totallyRefunded' => $totallyRefunded
         ));
 
         return $this->display(dirname(__FILE__),
@@ -438,7 +449,7 @@ class Hipay_enterprise extends PaymentModule
                 $tab->name[$lang['id_lang']] = $this->name;
             }
             if (!$tab->add()) {
-            //    return false;
+                //    return false;
             }
         }
         return true;
@@ -1315,7 +1326,7 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-      //  $this->db->deleteOrderRefundCaptureTable();
+        //  $this->db->deleteOrderRefundCaptureTable();
         $this->db->deleteCCTokenTable();
         return true;
     }

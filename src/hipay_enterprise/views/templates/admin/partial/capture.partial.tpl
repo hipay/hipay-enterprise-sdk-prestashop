@@ -43,7 +43,7 @@
                         </tr>
                         {foreach $products as $item}
                             {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
-                                {assign var="remainQty" value={$item["product_quantity"]} - $capturedItems[$item["product_id"]]["quantity"]}
+                                {assign var="remainQty" value=$item["product_quantity"] - $capturedItems[$item["product_id"]]["quantity"]}
                             {else}
                                 {assign var="remainQty" value=$item["product_quantity"]}
                             {/if}
