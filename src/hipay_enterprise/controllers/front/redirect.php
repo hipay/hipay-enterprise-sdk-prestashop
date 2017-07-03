@@ -45,6 +45,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->module->name.'/views/templates/hook'
         ));
 
+        $savedCC = $this->ccToken->getSavedCC($cart->id_customer);
+
         //displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case "hosted_page":
@@ -61,12 +63,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
                     $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card",
                         $deliveryCountry, $currency);
-
-                    if (in_array(strtolower(Tools::getValue('card-brand')),
-                            array_keys($creditCard))) {
+                    $selectedCC = strtolower(str_replace(" ", "-",
+                            Tools::getValue('card-brand')));
+                    if (in_array($selectedCC, array_keys($creditCard))) {
                         $card = array(
                             "token" => '"'.Tools::getValue('card-token').'"',
-                            "brand" => '"'.Tools::getValue('card-brand').'"',
+                            "brand" => '"'.$selectedCC.'"',
                             "pan" => '"'.Tools::getValue('card-pan').'"',
                             "card_holder" => '"'.Tools::getValue('card-holder').'"',
                             "expiry-month" => Tools::getValue('card-expiry-month'),
@@ -77,20 +79,21 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
                         $params = array(
                             "deviceFingerprint" => Tools::getValue('ioBB'),
-                            "productlist" => Tools::getValue('card-brand'),
+                            "productlist" => $selectedCC,
                             "cardtoken" => Tools::getValue('card-token'),
-                            "method" => Tools::getValue('card-brand')
+                            "method" => $selectedCC
                         );
                         $this->ccToken->saveCCToken($cart->id_customer, $card);
                         $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST,
                             $params);
                     } else {
-                        if(_PS_VERSION_ >= '1.7') {
+                        if (_PS_VERSION_ >= '1.7') {
                             Tools::redirect('index.php?controller=order');
                         }
                         $context->smarty->assign(array(
                             'status_error' => '404',
                             'cart_id' => $cart->id,
+                            'savedCC' => $savedCC,
                             'amount' => $cart->getOrderTotal(true, Cart::BOTH),
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                         ));
@@ -100,6 +103,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     $context->smarty->assign(array(
                         'status_error' => '200', // Force to ok for first call
                         'cart_id' => $cart->id,
+                        'savedCC' => $savedCC,
                         'amount' => $cart->getOrderTotal(true, Cart::BOTH),
                         'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                     ));
@@ -130,6 +134,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/card-js.min.js'));
         $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js'));
         $this->addCSS(array(_MODULE_DIR_.'hipay_enterprise/views/css/card-js.min.css'));
+        $this->addCSS(array(_MODULE_DIR_.'hipay_enterprise/views/css/hipay-enterprise.css'));
         $this->context->controller->addJS(array(_MODULE_DIR_.'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
     }
 }

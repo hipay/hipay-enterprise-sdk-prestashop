@@ -30,7 +30,30 @@
 
     <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
-            <h1 class="page-subheading">{l s="Pay by credit or debit card" mod="hipay_enterprise"}</h1>
+            {if $confHipay.payment.global.card_token}
+                <h2 class="page-subheading">{l s="Pay with a saved credit or debit card" mod="hipay_enterprise"}</h2>
+                {if $savedCC}
+                    {foreach $savedCC as $cc}
+                        {*<p>{$cc.pan} {$cc.card_holder} {$cc.brand} {$cc.card_expiry_month} {$cc.card_expiry_year}</p> *}
+                        <div class="">
+                            <label  >
+                                <input type="radio" name="radio" id="radio3" />
+                                {$cc.pan} ({$cc.card_expiry_month} / {$cc.card_expiry_year}) - {$cc.card_holder} <img  src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png" />
+                            </label>
+                        </div>
+                            <br/>
+                    {/foreach}
+                {else}
+                    <div class="control-group">
+                        <p><strong>{l s='You have no saved credit or debit card' mod='hipay_enterprise'}</strong> </p>
+
+                        <div style="clear: both;"></div>
+                    </div>
+                {/if}
+
+            {/if}
+
+            <h2 class="page-subheading">{l s="Pay by credit or debit card" mod="hipay_enterprise"}</h2>
             <div class="control-group">
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
 
@@ -49,15 +72,15 @@
     </form>
     <script>
         {if $confHipay.account.global.sandbox_mode}
-            var api_tokenjs_mode = 'stage';
-            var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
-            var api_tokenjs_password_publickey = '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}';
+        var api_tokenjs_mode = 'stage';
+        var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
+        var api_tokenjs_password_publickey = '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}';
         {else}
-            var api_tokenjs_mode = 'production';
-            var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
-            var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
+        var api_tokenjs_mode = 'production';
+        var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
+        var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
         {/if}
-            
+
         $("#pay-button").click(function (e) {
             //set param for Api call
             var params = {

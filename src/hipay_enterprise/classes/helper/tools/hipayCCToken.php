@@ -35,4 +35,8 @@ class HipayCCToken
             $this->db->setCCToken($card);
         }
     }
+
+    public function getSavedCC($customerId){
+        return $this->db->getSavedCC($customerId);
+    }
 }

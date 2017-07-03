@@ -399,7 +399,7 @@ class HipayDBQuery
             ."WHERE ".$transactWhere." `order_reference` = '".$orderReference."' ;"
         ;
 
-       // var_dump($sql);
+        // var_dump($sql);
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['count'])) {
@@ -622,10 +622,9 @@ class HipayDBQuery
 
     public function ccTokenExist($customerId, $token)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE \'%'.$token.'%\' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE '.$token.' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
-
         if (!empty($result)) {
             return true;
         }
@@ -643,5 +642,18 @@ class HipayDBQuery
         $sql = 'INSERT INTO  `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` (customer_id, token, brand, pan, card_holder, card_expiry_month, card_expiry_year, issuer, country)
                 VALUES ('.join(",", $values).') ;';
         return Db::getInstance()->execute($sql);
+    }
+
+    public function getSavedCC($customerId)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' ;';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        if (!empty($result)) {
+            return $result;
+        }
+
+        return false;
     }
 }
