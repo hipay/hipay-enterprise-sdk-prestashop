@@ -28,36 +28,36 @@
         </p>
     {/if}
 
-    <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+    <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
+            <h1 class="page-subheading">{l s="Pay by credit or debit card" mod="hipay_enterprise"}</h1>
             <div class="control-group">
-                <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
-                <div class="controls" style="float: left; font-size: 13px; font-weight: bold;">
-                    #{$cart_id}<span id="cartIdMessage"></span>
-                    <input type="hidden" class="input-medium" name="cartId" id="cartId" value="{$cart_id}">
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-            <br />
-            <div class="control-group">
-                <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_tpp'}:&nbsp;</label>
-                <div class="controls" style="float: left; font-weight:bold; color:#072959;font-size:15px;">
-                    {$amount} {$currency->iso_code}
-                </div>
+                <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
+
                 <div style="clear: both;"></div>
             </div>
             <br />
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
-        </div>
-        <p class="cart_navigation clearfix">
-            <button id="pay-button" type="submit" name="processCarrier" class="button btn btn-default standard-checkout button-medium" style="">
+            <br/>
+            <button id="pay-button" type="submit" name="processCarrier" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
                 <span>
                     {l s='Pay' mod='hipay_tpp'}
                 </span>
             </button>
-        </p>
+
+        </div>
     </form>
     <script>
+        {if $confHipay.account.global.sandbox_mode}
+            var api_tokenjs_mode = 'stage';
+            var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
+            var api_tokenjs_password_publickey = '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}';
+        {else}
+            var api_tokenjs_mode = 'production';
+            var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
+            var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
+        {/if}
+            
         $("#pay-button").click(function (e) {
             //set param for Api call
             var params = {
@@ -70,9 +70,9 @@
             };
 
 
-            HiPay.setTarget('stage'); // default is production/live
+            HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
-            HiPay.setCredentials('{$confHipay.account.sandbox.api_tokenjs_username_sandbox}', '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}');
+            HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
 
             HiPay.create(params,
                     function (result) {
@@ -85,11 +85,12 @@
                         card_holder = result.card_holder;
                         issuer = result.issuer;
                         country = result.country;
-                        
+
                         // set tokenization response
                         $('#card-token').val(token);
                         $('#card-brand').val(brand);
                         $('#card-pan').val(pan);
+                        $('#card-holder').val($('#the-card-name-id').val());
                         $('#card-expiry-month').val(card_expiry_month);
                         $('#card-expiry-year').val(card_expiry_year);
                         $('#card-issuer').val(issuer);

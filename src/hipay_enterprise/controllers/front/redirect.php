@@ -65,13 +65,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     if (in_array(strtolower(Tools::getValue('card-brand')),
                             array_keys($creditCard))) {
                         $card = array(
-                            "token" => Tools::getValue('card-token'),
-                            "brand" => Tools::getValue('card-brand'),
-                            "pan" => Tools::getValue('card-pan'),
+                            "token" => '"'.Tools::getValue('card-token').'"',
+                            "brand" => '"'.Tools::getValue('card-brand').'"',
+                            "pan" => '"'.Tools::getValue('card-pan').'"',
+                            "card_holder" => '"'.Tools::getValue('card-holder').'"',
                             "expiry-month" => Tools::getValue('card-expiry-month'),
                             "expiry-year" => Tools::getValue('card-expiry-year'),
-                            "issuer" => Tools::getValue('card-issuer'),
-                            "country" => Tools::getValue('card-country'),
+                            "issuer" => '"'.Tools::getValue('card-issuer').'"',
+                            "country" => '"'.Tools::getValue('card-country').'"',
                         );
 
                         $params = array(
@@ -80,7 +81,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             "cardtoken" => Tools::getValue('card-token'),
                             "method" => Tools::getValue('card-brand')
                         );
-                        // $this->ccToken->saveCCToken($cart->id_customer, $card);
+                        $this->ccToken->saveCCToken($cart->id_customer, $card);
                         $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST,
                             $params);
                     } else {
