@@ -1304,7 +1304,7 @@ class Hipay_enterprise extends PaymentModule
     private function createHipayTable()
     {
         $this->mapper->createTable();
-      //  $this->db->createOrderRefundCaptureTable();
+        $this->db->createOrderRefundCaptureTable();
         $this->db->createCCTokenTable();
         return true;
     }
@@ -1315,7 +1315,7 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-        $this->db->deleteOrderRefundCaptureTable();
+      //  $this->db->deleteOrderRefundCaptureTable();
         $this->db->deleteCCTokenTable();
         return true;
     }
