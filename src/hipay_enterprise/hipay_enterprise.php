@@ -153,6 +153,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->createHipayTable();
         $return &= $this->registerHook('backOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
+        $return &= $this->registerHook('customerAccount');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header')
                 && $this->registerHook('actionFrontControllerSetMedia');
@@ -163,6 +164,22 @@ class Hipay_enterprise extends PaymentModule
             $return   = $return && $return16;
         }
         return $return;
+    }
+
+    public function hookCustomerAccount()
+    {
+        $this->smarty->assign(array(
+            "link" => $this->context->link->getModuleLink($this->name,
+                'userToken', array(), true)
+            )
+        );
+        if (_PS_VERSION_ >= '1.7') {
+            $path = 'views/templates/hook/my-account-17.tpl';
+        }else{
+            $path = 'views/templates/hook/my-account-16.tpl';
+        }
+
+        return $this->display(dirname(__FILE__), $path);
     }
 
     public function hookActionFrontControllerSetMedia($params)
@@ -320,7 +337,7 @@ class Hipay_enterprise extends PaymentModule
         $capturedItems     = $this->db->getCapturedItems($order->id);
         $refundedItems     = $this->db->getRefundedItems($order->id);
         $totallyRefunded   = true;
-        
+
         foreach ($order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
                 >= $product["product_quantity"]);
