@@ -8,52 +8,46 @@
     <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_tpp'}</p>
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_tpp'}</h3>
-    {if $status_error=='200'}
-        <p class="error"></p>
-    {else if $status_error=='400'}
-        <p class="error">{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_tpp'}</p>
-    {else if $status_error=='503'}
-        <p class="error">{l s='HiPay TPP is temporarily unable to process the request. Try again later.' mod='hipay_tpp'}</p>
-    {else if $status_error=='403'}
-        <p class="error">{l s='A forbidden action has been identified, process has been cancelled.' mod='hipay_tpp'}</p>
-    {else if $status_error=='999'}
-        <p class="error">{l s='Please select one of the memorized card before continuing.' mod='hipay_tpp'}</p>
-    {else if $status_error=='404'}
-        <p class="error">{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_tpp'}</p>
-    {else}
-        <p class="error">
-            <strong>{l s='Error code' mod='hipay_tpp'} : {$status_error}</strong>
-            <br />
-            {l s='An error occured, process has been cancelled.' mod='hipay_tpp'}
-        </p>
-    {/if}
 
     <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             {if $confHipay.payment.global.card_token}
-                <h2 class="page-subheading">{l s="Pay with a saved credit or debit card" mod="hipay_enterprise"}</h2>
                 {if $savedCC}
+                    <h2 class="page-subheading">{l s="Pay with a saved credit or debit card" mod="hipay_enterprise"}</h2>
+                    <div id="error-js-oc" style="display:none" class="alert alert-danger">
+                        <p>There is 1 error</p>
+                        <ol>
+                            <li class="error-oc"></li>
+                        </ol>
+                    </div>
+                    {if $status_error_oc == '400'}
+                        <div class="alert alert-danger">
+                            <p>There is 1 error</p>
+                            <ol>
+                                <li>{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_tpp'}</li>
+                            </ol>
+                        </div>
+                    {/if}
+
                     {foreach $savedCC as $cc}
-                        {*<p>{$cc.pan} {$cc.card_holder} {$cc.brand} {$cc.card_expiry_month} {$cc.card_expiry_year}</p> *}
                         <div class="">
                             <label  >
-                                <input type="radio" name="radio" id="radio3" />
-                                {$cc.pan} ({$cc.card_expiry_month} / {$cc.card_expiry_year}) - {$cc.card_holder} <img  src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png" />
+                                <input type="radio" name="ccTokenHipay" id="ccTokenHipay" value="{$cc.token}" />
+                                {$cc.pan} ({"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}) - {$cc.card_holder} <img  src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png" />
                             </label>
                         </div>
-                            <br/>
+                        <br/>
                     {/foreach}
-                {else}
-                    <div class="control-group">
-                        <p><strong>{l s='You have no saved credit or debit card' mod='hipay_enterprise'}</strong> </p>
-
-                        <div style="clear: both;"></div>
-                    </div>
+                    <button id="pay-button-one-click" type="submit" name="processCarrierHipay" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
+                        <span>
+                            {l s='Pay' mod='hipay_tpp'}
+                        </span>
+                    </button>
                 {/if}
-
             {/if}
 
             <h2 class="page-subheading">{l s="Pay by credit or debit card" mod="hipay_enterprise"}</h2>
+            {include file="$hipay_enterprise_tpl_dir/../front/partial/paymentError.tpl"}
             <div class="control-group">
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
 
@@ -62,12 +56,11 @@
             <br />
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
             <br/>
-            <button id="pay-button" type="submit" name="processCarrier" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
+            <button id="pay-button" type="submit" name="processCarrierHipay" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
                 <span>
                     {l s='Pay' mod='hipay_tpp'}
                 </span>
             </button>
-
         </div>
     </form>
     <script>
@@ -81,6 +74,26 @@
         var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
         {/if}
 
+        $("#pay-button-one-click").click(function (e) {
+            console.log($('input[name=ccTokenHipay]:checked').length);
+            // prevent form from being submitted 
+            e.preventDefault();
+            e.stopPropagation();
+
+
+            if ($('input[name=ccTokenHipay]:checked').length) {
+                // at least one of the radio buttons was checked
+                $("#tokenizerForm").submit();
+                return true; // allow whatever action would normally happen to continue
+            } else {
+                // no radio button was checked
+                $("#error-js-oc").show();
+                $(".error-oc").text("{l s="You must choose one of the saved card."}");
+                return false; // stop whatever action would normally happen
+            }
+
+        });
+
         $("#pay-button").click(function (e) {
             //set param for Api call
             var params = {
@@ -91,12 +104,9 @@
                 card_holder: $('#the-card-name-id').val(),
                 multi_use: '0'
             };
-
-
             HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
-
             HiPay.create(params,
                     function (result) {
                         // The card has been successfully tokenized
@@ -108,7 +118,6 @@
                         card_holder = result.card_holder;
                         issuer = result.issuer;
                         country = result.country;
-
                         // set tokenization response
                         $('#card-token').val(token);
                         $('#card-brand').val(brand);
@@ -118,23 +127,19 @@
                         $('#card-expiry-year').val(card_expiry_year);
                         $('#card-issuer').val(issuer);
                         $('#card-country').val(country);
-
                         // we empty the form so we don't send credit card informations to the server
                         $('#card-number').val("");
                         $('#cvc').val("");
                         $('input[name=expiry-month]').val("");
                         $('input[name=expiry-year]').val("");
                         $('#the-card-name-id').val("");
-
                         //submit the form
                         $("#tokenizerForm").submit();
-
                         return true;
                     },
                     function (errors) {
-                        console.log(errors);
                         // An error occurred
-
+                        $("#error-js").show();
                         if (typeof errors.message != "undefined") {
                             $(".error").text("Error: " + errors.message);
                         } else {
@@ -143,7 +148,6 @@
                         return false;
                     }
             );
-
             // prevent form from being submitted 
             e.preventDefault();
             e.stopPropagation();

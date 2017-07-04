@@ -28,7 +28,7 @@ class HipayCCToken
      */
     public function saveCCToken($customerId, $card)
     {
-        if (!$this->db->ccTokenExist($customerId, $card["token"])) {
+        if (!$this->tokenExist($customerId, $card["token"])) {
 
             $card = array_merge(array("customer" => $customerId), $card);
 
@@ -39,4 +39,13 @@ class HipayCCToken
     public function getSavedCC($customerId){
         return $this->db->getSavedCC($customerId);
     }
+
+    public function tokenExist($customerId, $token){
+        return $this->db->ccTokenExist($customerId, $token);
+    }
+
+    public function getTokenDetails($customerId, $token){
+        return $this->db->getToken($customerId, $token);
+    }
+
 }

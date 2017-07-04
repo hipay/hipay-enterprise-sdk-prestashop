@@ -648,10 +648,28 @@ class HipayDBQuery
     {
         $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' ;';
 
-        $result = Db::getInstance()->executeS($sql);
+        try {
+            $result = Db::getInstance()->executeS($sql);
+        } catch (Exception $exc) {
+            $this->logs->errorLogsHipay($exc->getMessage());
+            $this->logs->errorLogsHipay($exc->getTraceAsString());
+            return false;
+        }
 
         if (!empty($result)) {
             return $result;
+        }
+
+        return false;
+    }
+
+    public function getToken($customerId, $token)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE '.$token.' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return $result[0];
         }
 
         return false;

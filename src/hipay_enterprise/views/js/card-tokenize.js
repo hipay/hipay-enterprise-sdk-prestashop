@@ -4,12 +4,18 @@ $(document).ready(function () {
 
 $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
-     e.preventDefault();
-        e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
     var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='credit_card']").is(':checked');
 
     if (myPaymentMethodSelected) {
+
+        if ($('input[name=ccTokenHipay]:checked').length) {
+            // at least one of the radio buttons was checked
+            $("#tokenizerForm").submit();
+            return true; // allow whatever action would normally happen to continue
+        }
 
         //set param for Api call
         var params = {
@@ -24,7 +30,7 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
         HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
         HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
-        
+
         HiPay.create(params,
                 function (result) {
                     // The card has been successfully tokenized
@@ -60,9 +66,8 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     return true;
                 },
                 function (errors) {
-                    console.log(errors);
                     // An error occurred
-
+                    $("#error-js").show();
                     if (typeof errors.message != "undefined") {
                         $(".error").text("Error: " + errors.message);
                     } else {

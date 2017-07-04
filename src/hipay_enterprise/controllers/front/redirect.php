@@ -32,8 +32,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->ccToken    = new HipayCCToken($this->module);
 
         if ($cart->id == NULL) Tools::redirect('index.php?controller=order');
-
-
         $context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -56,52 +54,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 // if form is sent
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand')
                     && Tools::getValue('card-pan')) {
-
-                    $delivery        = new Address((int) $cart->id_address_delivery);
-                    $deliveryCountry = new Country((int) $delivery->id_country);
-                    $currency        = new Currency((int) $cart->id_currency);
-
-                    $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card",
-                        $deliveryCountry, $currency);
-                    $selectedCC = strtolower(str_replace(" ", "-",
-                            Tools::getValue('card-brand')));
-                    if (in_array($selectedCC, array_keys($creditCard))) {
-                        $card = array(
-                            "token" => '"'.Tools::getValue('card-token').'"',
-                            "brand" => '"'.$selectedCC.'"',
-                            "pan" => '"'.Tools::getValue('card-pan').'"',
-                            "card_holder" => '"'.Tools::getValue('card-holder').'"',
-                            "expiry-month" => Tools::getValue('card-expiry-month'),
-                            "expiry-year" => Tools::getValue('card-expiry-year'),
-                            "issuer" => '"'.Tools::getValue('card-issuer').'"',
-                            "country" => '"'.Tools::getValue('card-country').'"',
-                        );
-
-                        $params = array(
-                            "deviceFingerprint" => Tools::getValue('ioBB'),
-                            "productlist" => $selectedCC,
-                            "cardtoken" => Tools::getValue('card-token'),
-                            "method" => $selectedCC
-                        );
-                        $this->ccToken->saveCCToken($cart->id_customer, $card);
-                        $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST,
-                            $params);
-                    } else {
-                        if (_PS_VERSION_ >= '1.7') {
-                            Tools::redirect('index.php?controller=order');
-                        }
-                        $context->smarty->assign(array(
-                            'status_error' => '404',
-                            'cart_id' => $cart->id,
-                            'savedCC' => $savedCC,
-                            'amount' => $cart->getOrderTotal(true, Cart::BOTH),
-                            'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
-                        ));
-                        $path = 'paymentFormApi16.tpl';
-                    }
+                    $path = $this->apiNewCC($cart, $context, $savedCC);
+                } else if (Tools::getValue('ccTokenHipay')) {
+                    $path = $this->apiSavedCC('"'.Tools::getValue('ccTokenHipay').'"',
+                        $cart, $savedCC, $context);
                 } else {
                     $context->smarty->assign(array(
                         'status_error' => '200', // Force to ok for first call
+                        'status_error_oc' => '200',
                         'cart_id' => $cart->id,
                         'savedCC' => $savedCC,
                         'amount' => $cart->getOrderTotal(true, Cart::BOTH),
@@ -123,6 +83,99 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         }
 
         return $this->setTemplate($path);
+    }
+
+    /**
+     * handle One click payment
+     * @param type $token
+     * @param type $cart
+     * @param type $savedCC
+     * @param type $context
+     * @return string
+     */
+    private function apiSavedCC($token, $cart, $savedCC, $context)
+    {
+        if ($tokenDetails = $this->ccToken->getTokenDetails($cart->id_customer,
+            $token)) {
+
+            $params = array(
+                "deviceFingerprint" => Tools::getValue('ioBB'),
+                "productlist" => $tokenDetails['brand'],
+                "cardtoken" => $tokenDetails['token'],
+                "oneClick" => true,
+                "method" => $tokenDetails['brand']
+            );
+            $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
+        } else {
+            if (_PS_VERSION_ >= '1.7') {
+                Tools::redirect('index.php?controller=order');
+            }
+            $context->smarty->assign(array(
+                'status_error' => '200',
+                'status_error_oc' => '400',
+                'cart_id' => $cart->id,
+                'savedCC' => $savedCC,
+                'amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
+            ));
+            return 'paymentFormApi16.tpl';
+        }
+    }
+
+    /**
+     * Handle Credit card payment (not one click)
+     * @param type $cart
+     * @param type $context
+     * @param type $savedCC
+     * @return string
+     */
+    private function apiNewCC($cart, $context, $savedCC)
+    {
+        $delivery        = new Address((int) $cart->id_address_delivery);
+        $deliveryCountry = new Country((int) $delivery->id_country);
+        $currency        = new Currency((int) $cart->id_currency);
+        $customer        = new Customer((int) $cart->id_customer);
+
+        $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card",
+            $deliveryCountry, $currency);
+        $selectedCC = strtolower(str_replace(" ", "-",
+                Tools::getValue('card-brand')));
+        if (in_array($selectedCC, array_keys($creditCard))) {
+            $card = array(
+                "token" => '"'.Tools::getValue('card-token').'"',
+                "brand" => '"'.$selectedCC.'"',
+                "pan" => '"'.Tools::getValue('card-pan').'"',
+                "card_holder" => '"'.Tools::getValue('card-holder').'"',
+                "expiry-month" => Tools::getValue('card-expiry-month'),
+                "expiry-year" => Tools::getValue('card-expiry-year'),
+                "issuer" => '"'.Tools::getValue('card-issuer').'"',
+                "country" => '"'.Tools::getValue('card-country').'"',
+            );
+
+            $params = array(
+                "deviceFingerprint" => Tools::getValue('ioBB'),
+                "productlist" => $selectedCC,
+                "cardtoken" => Tools::getValue('card-token'),
+                "method" => $selectedCC
+            );
+            if(!$customer->is_guest){
+                $this->ccToken->saveCCToken($cart->id_customer, $card);
+            }
+            $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
+        } else {
+            if (_PS_VERSION_ >= '1.7') {
+                Tools::redirect('index.php?controller=order');
+            }
+            $context->smarty->assign(array(
+                'status_error' => '404',
+                'status_error_oc' => '200',
+                'cart_id' => $cart->id,
+                'savedCC' => $savedCC,
+                'amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
+            ));
+            return 'paymentFormApi16.tpl';
+        }
     }
 
     /**

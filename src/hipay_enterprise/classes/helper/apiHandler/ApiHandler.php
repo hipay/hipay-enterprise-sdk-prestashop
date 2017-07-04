@@ -55,7 +55,7 @@ class Apihandler
 
         switch ($mode) {
             case Apihandler::DIRECTPOST:
-                $params ["paymentmethod"] = $this->getPaymentMethod($params['cardtoken']);
+                $params ["paymentmethod"] = $this->getPaymentMethod($params);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME:
