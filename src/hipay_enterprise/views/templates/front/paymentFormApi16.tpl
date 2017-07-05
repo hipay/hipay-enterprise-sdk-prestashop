@@ -55,6 +55,17 @@
             </div>
             <br />
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
+            <br />
+            <div class="checkbox">
+                <label for="newsletter">
+                    <div class="checker" id="uniform-newsletter">
+                        <span class="">
+                            <input type="checkbox" name="saveTokenHipay" checked>
+                        </span>
+                    </div>
+                    {l s="Save credit card (One click payment)" mod="hipay_enterprise"}
+                </label>
+            </div>
             <br/>
             <button id="pay-button" type="submit" name="processCarrierHipay" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
                 <span>

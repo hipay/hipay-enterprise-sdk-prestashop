@@ -68,7 +68,7 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     $('#the-card-name-id').val("");
 
                     //submit the form
-                    // $("#tokenizerForm").submit();
+                    $("#tokenizerForm").submit();
 
                     return true;
                 },

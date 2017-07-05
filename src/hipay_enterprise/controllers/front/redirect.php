@@ -158,7 +158,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 "cardtoken" => Tools::getValue('card-token'),
                 "method" => $selectedCC
             );
-            if(!$customer->is_guest){
+            if(!$customer->is_guest && Tools::isSubmit('saveTokenHipay')){
                 $this->ccToken->saveCCToken($cart->id_customer, $card);
             }
             $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);
