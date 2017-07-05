@@ -30,7 +30,7 @@ class HipayCCToken
     {
         if (!$this->tokenExist($customerId, $card["token"])) {
 
-            $card = array_merge(array("customer" => $customerId), $card);
+            $card = array_merge(array("customer_id" => $customerId), $card);
 
             $this->db->setCCToken($card);
         }

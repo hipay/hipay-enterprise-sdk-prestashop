@@ -56,7 +56,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     && Tools::getValue('card-pan')) {
                     $path = $this->apiNewCC($cart, $context, $savedCC);
                 } else if (Tools::getValue('ccTokenHipay')) {
-                    $path = $this->apiSavedCC('"'.Tools::getValue('ccTokenHipay').'"',
+                    $path = $this->apiSavedCC(Tools::getValue('ccTokenHipay'),
                         $cart, $savedCC, $context);
                 } else {
                     $context->smarty->assign(array(
@@ -142,14 +142,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 Tools::getValue('card-brand')));
         if (in_array($selectedCC, array_keys($creditCard))) {
             $card = array(
-                "token" => '"'.Tools::getValue('card-token').'"',
-                "brand" => '"'.$selectedCC.'"',
-                "pan" => '"'.Tools::getValue('card-pan').'"',
-                "card_holder" => '"'.Tools::getValue('card-holder').'"',
-                "expiry-month" => Tools::getValue('card-expiry-month'),
-                "expiry-year" => Tools::getValue('card-expiry-year'),
-                "issuer" => '"'.Tools::getValue('card-issuer').'"',
-                "country" => '"'.Tools::getValue('card-country').'"',
+                "token" => Tools::getValue('card-token'),
+                "brand" => $selectedCC,
+                "pan" => Tools::getValue('card-pan'),
+                "card_holder" => Tools::getValue('card-holder'),
+                "card_expiry_month" => Tools::getValue('card-expiry-month'),
+                "card_expiry_year" => Tools::getValue('card-expiry-year'),
+                "issuer" => Tools::getValue('card-issuer'),
+                "country" => Tools::getValue('card-country'),
             );
 
             $params = array(

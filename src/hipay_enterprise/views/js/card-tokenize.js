@@ -33,6 +33,8 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
         HiPay.create(params,
                 function (result) {
+                    $('.card-js').hide();
+                    $('#payment-loader-hp').show();
                     // The card has been successfully tokenized
                     token = result.token;
                     brand = result.brand;
