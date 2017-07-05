@@ -13,6 +13,10 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
         if ($('input[name=ccTokenHipay]:checked').length) {
             // at least one of the radio buttons was checked
+            $('#tokenizerForm').hide();
+            $('#payment-loader-hp').show();
+            $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
+            
             $("#tokenizerForm").submit();
             return true; // allow whatever action would normally happen to continue
         }
@@ -33,8 +37,9 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
         HiPay.create(params,
                 function (result) {
-                    $('.card-js').hide();
+                    $('#tokenizerForm').hide();
                     $('#payment-loader-hp').show();
+                    $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
                     // The card has been successfully tokenized
                     token = result.token;
                     brand = result.brand;
@@ -63,7 +68,7 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     $('#the-card-name-id').val("");
 
                     //submit the form
-                    $("#tokenizerForm").submit();
+                    // $("#tokenizerForm").submit();
 
                     return true;
                 },

@@ -14,7 +14,3 @@
 <input id="card-issuer" type='hidden' name='card-issuer' value='' />
 <input id="card-country" type='hidden' name='card-country' value='' />
 <input id="ioBB" type="hidden" name="ioBB">
-<p id="payment-loader-hp" style='text-align: center; display:none;'>
-    <strong>{l s='Your payment is being proceded. Please wait.'}</strong> <br/>
-    <img src="{$this_path_ssl}/views/img/loading.gif">
-</p>

@@ -63,6 +63,10 @@
             </button>
         </div>
     </form>
+    <p id="payment-loader-hp" style='text-align: center; display:none;'>
+        <strong>{l s='Your payment is being processed. Please wait.'}</strong> <br/>
+        <img src="{$this_path_ssl}/views/img/loading.gif">
+    </p>
     <script>
         {if $confHipay.account.global.sandbox_mode}
         var api_tokenjs_mode = 'stage';
@@ -83,6 +87,11 @@
 
             if ($('input[name=ccTokenHipay]:checked').length) {
                 // at least one of the radio buttons was checked
+                $('#tokenizerForm').hide();
+                $('#payment-loader-hp').show();
+                $("#pay-button-one-click").prop('disabled', true);
+                $("#pay-button").prop('disabled', true);
+
                 $("#tokenizerForm").submit();
                 return true; // allow whatever action would normally happen to continue
             } else {
@@ -109,6 +118,12 @@
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
             HiPay.create(params,
                     function (result) {
+
+                        $('#tokenizerForm').hide();
+                        $('#payment-loader-hp').show();
+                        $("#pay-button-one-click").prop('disabled', true);
+                        $("#pay-button").prop('disabled', true);
+
                         // The card has been successfully tokenized
                         token = result.token;
                         brand = result.brand;

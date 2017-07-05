@@ -31,6 +31,10 @@
     </div>
     {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
 </form>
+<p id="payment-loader-hp" style='text-align: center; display:none;'>
+    <strong>{l s='Your payment is being processed. Please wait.'}</strong> <br/>
+    <img src="{$this_path_ssl}/views/img/loading.gif">
+</p>
 <script>
 
     {if $confHipay.account.global.sandbox_mode}
