@@ -40,7 +40,7 @@ class HipayDBQuery
 
         $sql = 'SELECT `id_cart`
                 FROM `'._DB_PREFIX_.'cart`
-                WHERE `id_customer` = '.$userId.'
+                WHERE `id_customer` = '.pSQL($userId).'
                 ORDER BY date_upd DESC';
 
         $result  = Db::getInstance()->getRow($sql);
@@ -65,7 +65,7 @@ class HipayDBQuery
         $this->logs->callbackLogs('start LockSQL  for id_cart = '.$cartId);
 
         $sql = 'begin;';
-        $sql .= 'SELECT id_cart FROM '._DB_PREFIX_.'cart WHERE id_cart = '.(int) $cartId.' FOR UPDATE;';
+        $sql .= 'SELECT id_cart FROM '._DB_PREFIX_.'cart WHERE id_cart = '.pSQL((int) $cartId).' FOR UPDATE;';
 
         if (!Db::getInstance()->execute($sql)) {
             $this->logs->logsHipay('Bad LockSQL initiated, Lock could not be initiated for id_cart = '.$cartId);
@@ -97,7 +97,7 @@ class HipayDBQuery
         $sql = 'SELECT DISTINCT(op.transaction_id)
                 FROM `'._DB_PREFIX_.'order_payment` op
                 INNER JOIN `'._DB_PREFIX_.'orders` o ON o.reference = op.order_reference
-                WHERE o.id_order = '.$orderId;
+                WHERE o.id_order = '.pSQL((int)$orderId);
 
         $result = Db::getInstance()->getRow($sql);
 
@@ -240,7 +240,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT *
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CAT_MAPPING_TABLE.'`
-                WHERE `shop_id` = '.$idShop;
+                WHERE `shop_id` = '.pSQL((int)$idShop);
 
         return Db::getInstance()->executeS($sql);
     }
@@ -254,7 +254,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT *
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE.'`
-                WHERE `shop_id` = '.$idShop;
+                WHERE `shop_id` = '.pSQL((int)$idShop);
 
         return Db::getInstance()->executeS($sql);
     }
@@ -293,7 +293,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT hp_cat_id
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CAT_MAPPING_TABLE.'` 
-                WHERE ps_cat_id = '.$PSId;
+                WHERE ps_cat_id = '.pSQL((int)$PSId);
 
         $result = Db::getInstance()->getRow($sql);
 
@@ -309,7 +309,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT *
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE.'` 
-                WHERE ps_carrier_id = '.$PSId;
+                WHERE ps_carrier_id = '.pSQL((int)$PSId);
 
         $result = Db::getInstance()->getRow($sql);
 
@@ -326,7 +326,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT COUNT(id_order_history) as count
 		FROM `'._DB_PREFIX_.'order_history`
-		WHERE `id_order` = '.(int) $idOrder.' AND `id_order_state` = '.(int) $status;
+		WHERE `id_order` = '.pSQL((int) $idOrder).' AND `id_order_state` = '.pSQL((int) $status);
 
         $this->logs->logsHipay('Check order status exist : '.$sql);
 
@@ -352,10 +352,10 @@ class HipayDBQuery
         $cardData = "";
 
         if ($paymentData['payment_method'] != null) {
-            $cardData = " `card_number` = '".$paymentData['payment_method']['pan']."',
-                    `card_brand` = '".$paymentData['payment_method']['brand']."',
-                    `card_expiration` = '".$paymentData['payment_method']['card_expiry_month']."/".$paymentData['payment_method']['card_expiry_year']."',
-                    `card_holder` = '".$paymentData['payment_method']['card_holder']."' ,";
+            $cardData = " `card_number` = '".pSQL($paymentData['payment_method']['pan'])."',
+                    `card_brand` = '".pSQL($paymentData['payment_method']['brand'])."',
+                    `card_expiration` = '".pSQL($paymentData['payment_method']['card_expiry_month'])."/".pSQL($paymentData['payment_method']['card_expiry_year'])."',
+                    `card_holder` = '".pSQL($paymentData['payment_method']['card_holder'])."' ,";
         }
 
         $sql = "
@@ -391,12 +391,12 @@ class HipayDBQuery
         $transactWhere = "";
 
         if ($transactionId != null) {
-            $transactWhere = " transaction_id='".$transactionId."' AND ";
+            $transactWhere = " transaction_id='".pSQL($transactionId)."' AND ";
         }
 
         $sql = "SELECT COUNT(id_order_payment) as count "
             ."FROM `"._DB_PREFIX_."order_payment` "
-            ."WHERE ".$transactWhere." `order_reference` = '".$orderReference."' ;"
+            ."WHERE ".$transactWhere." `order_reference` = '".pSQL($orderReference)."' ;"
         ;
 
         // var_dump($sql);
@@ -456,7 +456,7 @@ class HipayDBQuery
      */
     public function alreadyCaptured($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"status":'.TransactionStatus::CAPTURED.'%\' ;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"status":'.TransactionStatus::CAPTURED.'%\' ;';
 
         $result = Db::getInstance()->executeS($sql);
         if (empty($result)) return false;
@@ -470,7 +470,7 @@ class HipayDBQuery
      */
     public function getTransactionReference($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1 ;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1 ;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
@@ -487,7 +487,7 @@ class HipayDBQuery
      */
     public function getPaymentProductFromMessage($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
@@ -504,7 +504,7 @@ class HipayDBQuery
      */
     public function getOrderBasket($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"status":'.TransactionStatus::AUTHORIZED.'%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
@@ -556,7 +556,7 @@ class HipayDBQuery
     {
         $sql = 'SELECT `ps_product_id`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
-                WHERE `ps_order_id` = '.$orderId.' AND `type` = "'.$type.'"'.
+                WHERE `ps_order_id` = '.pSQL($orderId).' AND `type` = "'.pSQL($type).'"'.
             ' GROUP BY `ps_product_id`';
 
         $result          = Db::getInstance()->executeS($sql);
@@ -575,7 +575,7 @@ class HipayDBQuery
      */
     public function getCaptureOrRefundAttempt($type, $orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"'.$type.'_attempt":%\' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"'.pSQL($type).'_attempt":%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
@@ -592,7 +592,7 @@ class HipayDBQuery
      */
     public function feesAreCaptured($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"fees_capture":1%\' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"fees_capture":1%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
 
@@ -610,19 +610,7 @@ class HipayDBQuery
      */
     public function feesAreRefunded($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.$orderId.'\' AND message LIKE \'%"fees_refund":1%\' LIMIT 1;';
-
-        $result = Db::getInstance()->executeS($sql);
-        if (!empty($result)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function ccTokenExist($customerId, $token)
-    {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE '.$token.' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order=\''.pSQL($orderId).'\' AND message LIKE \'%"fees_refund":1%\' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
@@ -633,7 +621,25 @@ class HipayDBQuery
     }
 
     /**
-     *
+     * check if token exist for this customer
+     * @param type $customerId
+     * @param type $token
+     * @return boolean
+     */
+    public function ccTokenExist($customerId, $token)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.pSQL($customerId).'\' AND token LIKE '.pSQL($token).' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * save credit card token and other informations
      * @param type $values
      * @return type
      */
@@ -644,9 +650,14 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
+    /**
+     * get all credit card saved for this customer
+     * @param type $customerId
+     * @return boolean
+     */
     public function getSavedCC($customerId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' ;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.pSQL($customerId).'\' ;';
 
         try {
             $result = Db::getInstance()->executeS($sql);
@@ -663,15 +674,47 @@ class HipayDBQuery
         return false;
     }
 
+    /**
+     * get token informations
+     * @param type $customerId
+     * @param type $token
+     * @return boolean
+     */
     public function getToken($customerId, $token)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.$customerId.'\' AND token LIKE '.$token.' LIMIT 1;';
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.pSQL($customerId).'\' AND token LIKE '.pSQL($token).' LIMIT 1;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
             return $result[0];
         }
 
+        return false;
+    }
+
+    /**
+     * delete credit card token
+     * @param type $customerId
+     * @param type $tokenId
+     * @return boolean
+     */
+    public function deleteToken($customerId, $tokenId)
+    {
+        // check if tokenID exist for this user 
+        $sqlExist = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'` WHERE customer_id=\''.pSQL($customerId).'\' AND hp_id = '.pSQL((int)$tokenId).';';
+
+        $result = Db::getInstance()->executeS($sqlExist);
+
+        if (!empty($result)) {
+            // delete
+            $sql = 'DELETE FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`
+                WHERE customer_id=\''.pSQL($customerId).'\'
+                AND hp_id=\''.pSQL((int)$tokenId).'\' ;'; 
+
+            Db::getInstance()->execute($sql);
+
+            return true;
+        }
         return false;
     }
 }

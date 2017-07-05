@@ -1,14 +1,18 @@
-{extends file='customer/page.tpl'}
+{capture name=path}
+    <a href="{$link->getPageLink('my-account', true)|escape:'html':'UTF-8'}">
+        {l s='My account'}
+    </a>
+    <span class="navigation-pipe">{$navigationPipe}</span>
+    <span class="navigation_page">{l s='Order history'}</span>
+{/capture}
+{include file="$tpl_dir./errors.tpl"}
 
-{block name='page_title'}
-    {l s='Manage saved credit/debit card' d='hipay_enterprise'}
-{/block}
-
-{block name='page_content'}
-    <h6>{l s='Saved credit/debit card' d='hipay_enterprise'}</h6>
+<h1 class="page-heading bottom-indent">{l s='Saved credit/debit card' d='hipay_enterprise'}</h1>
+<p class="info-title">{l s='Here are the saved credit card from previous order.' mod='hipay_enterprise'}</p>
+<div class="block-center">
     {if $savedCC }
-        <table class="table table-striped table-bordered hidden-sm-down">
-            <thead class="thead-default">
+        <table id="order-list" class="table table-bordered footab default footable-loaded footable">
+            <thead>
                 <tr>
                     <th>{l s="Card number" mod="hipay_enterprise"}</th>
                     <th>{l s="Card owner" mod="hipay_enterprise"}</th>
@@ -27,16 +31,31 @@
                             <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'userToken', [], true)|escape:'html'}" method="post">
                                 <input type="hidden" name="hipayCCTokenId" value="{$cc.hp_id}" />
                                 <button type="submit" name="submitDelToken"  class="btn btn-danger" >
-                                    <i class="material-icons" > delete </i>
+                                    <i class="icon-remove" ></i>
                                     {l s='Delete' mod='hipay_enterprise'}
                                 </button>
                             </form>
                         </td>
                     </tr>
                 {/foreach}
-            {/if}
+            {else}
+            <p class="alert alert-warning">{l s='You have no saved credit/debit card.'}</p>
+        {/if}
         </tbody>
     </table>
 
-{/block}
-
+</div>
+<ul class="footer_links clearfix">
+    <li>
+        <a class="btn btn-default button button-small" href="{$link->getPageLink('my-account', true)|escape:'html':'UTF-8'}">
+            <span>
+                <i class="icon-chevron-left"></i> {l s='Back to Your Account'}
+            </span>
+        </a>
+    </li>
+    <li>
+        <a class="btn btn-default button button-small" href="{$base_dir}">
+            <span><i class="icon-chevron-left"></i> {l s='Home'}</span>
+        </a>
+    </li>
+</ul>

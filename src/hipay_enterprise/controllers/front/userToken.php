@@ -15,11 +15,11 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
     public $auth = true;
     public $ssl  = true;
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
 
         $this->ccToken = new HipayCCToken($this->module);
-        
     }
 
     public function initContent()
@@ -31,12 +31,14 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
                     : 'user-token-16.tpl');
 
         $savedCC = $this->ccToken->getSavedCC($context->customer->id);
-        if(!$savedCC){
-            $this->warning[] = $this->l('You have no saved credit/debit card.', array(), 'hipay_enterprise');
+        if (!$savedCC) {
+            $this->warning[] = $this->module->l('You have no saved credit/debit card.',
+                array(), 'hipay_enterprise');
         }
         $this->context->smarty->assign(
             array(
-                'link' => $this->getTemplateVarPage(),
+                'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
+                'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
                 'savedCC' => $savedCC
             )
         );
@@ -55,17 +57,37 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
 
         $context = Context::getContext();
 
+        if (Tools::isSubmit('submitDelToken')) {
+            if ($this->ccToken->deleteToken($context->customer->id,
+                    Tools::getValue('hipayCCTokenId'))) {
+                $this->success[] = $this->module->l('Credit card successfully deleted.',
+                    array(), 'hipay_enterprise');
+            } else {
+                $this->errors[] = $this->module->l('This credit card doesn\'t exist.',
+                    array(), 'hipay_enterprise');
+            }
+        }
 
         $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/user-token-17.tpl'
                     : 'user-token-16.tpl');
 
+        $savedCC = $this->ccToken->getSavedCC($context->customer->id);
+
         $this->context->smarty->assign(
-            array('link' => $this->getTemplateVarPage())
+            array(
+                'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
+                'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
+                'savedCC' => $savedCC
+            )
         );
 
         $this->setTemplate($path);
     }
 
+    /**
+     * Prestashop 1.7
+     * @return type
+     */
     public function getBreadcrumbLinks()
     {
         $breadcrumb = parent::getBreadcrumbLinks();
@@ -75,6 +97,10 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
         return $breadcrumb;
     }
 
+    /**
+     * Prestashop 1.7
+     * @return boolean
+     */
     public function getTemplateVarPage()
     {
 

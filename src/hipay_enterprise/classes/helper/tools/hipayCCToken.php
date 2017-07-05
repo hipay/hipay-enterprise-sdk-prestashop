@@ -22,7 +22,7 @@ class HipayCCToken
     }
 
     /**
-     *
+     * save credit card token and other informations
      * @param int $customerId
      * @param array $card
      */
@@ -36,16 +36,46 @@ class HipayCCToken
         }
     }
 
-    public function getSavedCC($customerId){
+    /**
+     * get all saved credit card from customer
+     * @param type $customerId
+     * @return type
+     */
+    public function getSavedCC($customerId)
+    {
         return $this->db->getSavedCC($customerId);
     }
 
-    public function tokenExist($customerId, $token){
+    /**
+     * check if customer credit card token exit
+     * @param type $customerId
+     * @param type $token
+     * @return type
+     */
+    public function tokenExist($customerId, $token)
+    {
         return $this->db->ccTokenExist($customerId, $token);
     }
 
-    public function getTokenDetails($customerId, $token){
+    /**
+     * get token informations
+     * @param type $customerId
+     * @param type $token
+     * @return type
+     */
+    public function getTokenDetails($customerId, $token)
+    {
         return $this->db->getToken($customerId, $token);
     }
 
+    /**
+     * delete customer credit card token
+     * @param type $customerId
+     * @param type $tokenId
+     * @return type
+     */
+    public function deleteToken($customerId, $tokenId)
+    {
+        return $this->db->deleteToken($customerId, $tokenId);
+    }
 }
