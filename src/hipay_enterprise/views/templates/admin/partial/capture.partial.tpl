@@ -1,8 +1,8 @@
-{if $error }
-    {if $error == "ok"}
+{if $errorHipayCapture }
+    {if $errorHipayCapture == "ok"}
         <p class="alert alert-success">{l s="Request successfully sent"}</p>
     {else}
-        <p class="alert alert-danger">{$error}</p>
+        <p class="alert alert-danger">{$errorHipayCapture}</p>
     {/if}
 {/if}
 {if $showCapture && $stillToCapture > 0 && $manualCapture}

@@ -64,20 +64,20 @@ class AdminHiPayCaptureController extends ModuleAdminController
             if (!$capture_amount) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount',
                     'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                 die('');
             }
             if ($capture_amount <= 0) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero',
                     'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
             if (!is_numeric($capture_amount)) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount',
                     'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
@@ -89,14 +89,14 @@ class AdminHiPayCaptureController extends ModuleAdminController
             if (round($capture_amount, 2) > round($stillToCapture, 2)) {
                 $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount',
                     'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
             if (!$transactionReference) {
                 $hipay_redirect_status = $this->module->l('No transaction reference link to this order',
                     'capture');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
@@ -119,7 +119,7 @@ class AdminHiPayCaptureController extends ModuleAdminController
                     !== "on") {
                     $hipay_redirect_status = $this->module->l('Select at least one item to capture',
                         'capture');
-                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture='.$hipay_redirect_status.'#hipay');
                     die('');
                 }
 
@@ -135,6 +135,6 @@ class AdminHiPayCaptureController extends ModuleAdminController
             $this->apiHandler->handleCapture($params);
         }
 
-        Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err=ok#hipay');
+        Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_capture=ok#hipay');
     }
 }

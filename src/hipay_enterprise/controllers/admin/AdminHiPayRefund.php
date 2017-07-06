@@ -61,20 +61,20 @@ class AdminHiPayRefundController extends ModuleAdminController
             if (!$refund_amount) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount',
                     'refund');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                 die('');
             }
             if ($refund_amount <= 0) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero',
                     'refund');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
             if (!is_numeric($refund_amount)) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount',
                     'refund');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                 die('');
             }
             // we can refund only what has been captured
@@ -83,14 +83,14 @@ class AdminHiPayRefundController extends ModuleAdminController
             if (round($refund_amount, 2) > round($refundableAmount, 2)) {
                 $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount',
                     'refund');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
             if (!$transactionReference) {
                 $hipay_redirect_status = $this->module->l('No transaction reference link to this order',
                     'refund');
-                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                 die('');
             }
 
@@ -111,7 +111,7 @@ class AdminHiPayRefundController extends ModuleAdminController
                     !== "on") {
                     $hipay_redirect_status = $this->module->l('Select at least one item to refund',
                         'capture');
-                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err='.$hipay_redirect_status.'#hipay');
+                    Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund='.$hipay_redirect_status.'#hipay');
                     die('');
                 }
 
@@ -125,6 +125,6 @@ class AdminHiPayRefundController extends ModuleAdminController
             $this->apiHandler->handleRefund($params);
         }
 
-        Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err=ok#hipay');
+        Tools::redirectAdmin($context->link->getAdminLink('AdminOrders').'&id_order='.(int) $order->id.'&vieworder&hipay_err_refund=ok#hipay');
     }
 }

@@ -1,8 +1,8 @@
-{if $error }
-    {if $error == "ok"}
+{if $errorHipayRefund }
+    {if $errorHipayRefund == "ok"}
         <p class="alert alert-success">{l s="Request successfully sent"}</p>
     {else}
-        <p class="alert alert-danger">{$error}</p>
+        <p class="alert alert-danger">{$errorHipayRefund}</p>
     {/if}
 {/if}
 {if $showRefund && $alreadyCaptured && $refundableAmount > 0}

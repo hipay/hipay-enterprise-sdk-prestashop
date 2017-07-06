@@ -175,7 +175,7 @@ class Hipay_enterprise extends PaymentModule
         );
         if (_PS_VERSION_ >= '1.7') {
             $path = 'views/templates/hook/my-account-17.tpl';
-        }else{
+        } else {
             $path = 'views/templates/hook/my-account-16.tpl';
         }
 
@@ -319,7 +319,8 @@ class Hipay_enterprise extends PaymentModule
         $order             = new Order((int) Tools::getValue('id_order'));
         $shippingCost      = $order->total_shipping;
         $refundableAmount  = $order->getTotalPaid();
-        $error             = Tools::getValue('hipay_err');
+        $errorHipayCapture = Tools::getValue('hipay_err_capture');
+        $errorHipayRefund  = Tools::getValue('hipay_err_refund');
         $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
         $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
         $manualCapture     = false;
@@ -416,7 +417,8 @@ class Hipay_enterprise extends PaymentModule
             'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
             'refundableAmount' => $refundableAmount,
             'shippingCost' => $shippingCost,
-            'error' => $error,
+            'errorHipayCapture' => $errorHipayCapture,
+            'errorHipayRefund' => $errorHipayRefund,
             'stillToCaptureDisplay' => Tools::displayPrice($stillToCapture),
             'stillToCapture' => $stillToCapture,
             'alreadyCaptured' => $alreadyCaptured,
