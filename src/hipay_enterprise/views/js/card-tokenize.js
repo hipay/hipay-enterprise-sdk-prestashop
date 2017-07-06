@@ -16,7 +16,7 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
             $('#tokenizerForm').hide();
             $('#payment-loader-hp').show();
             $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
-            
+
             $("#tokenizerForm").submit();
             return true; // allow whatever action would normally happen to continue
         }
@@ -42,7 +42,11 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
                     // The card has been successfully tokenized
                     token = result.token;
-                    brand = result.brand;
+                    if (result.hasOwnProperty('domestic_network')) {
+                        brand = result.domestic_network;
+                    } else {
+                        brand = result.brand;
+                    }
                     pan = result.pan;
                     card_expiry_month = result.card_expiry_month;
                     card_expiry_year = result.card_expiry_year;

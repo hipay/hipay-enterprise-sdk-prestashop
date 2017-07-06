@@ -129,7 +129,6 @@
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
             HiPay.create(params,
                     function (result) {
-
                         $('#tokenizerForm').hide();
                         $('#payment-loader-hp').show();
                         $("#pay-button-one-click").prop('disabled', true);
@@ -137,7 +136,11 @@
 
                         // The card has been successfully tokenized
                         token = result.token;
-                        brand = result.brand;
+                        if (result.hasOwnProperty('domestic_network')) {
+                            brand = result.domestic_network;
+                        } else {
+                            brand = result.brand;
+                        }
                         pan = result.pan;
                         card_expiry_month = result.card_expiry_month;
                         card_expiry_year = result.card_expiry_year;
