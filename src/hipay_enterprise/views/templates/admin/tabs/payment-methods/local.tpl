@@ -38,8 +38,12 @@
                                 <div class="form-group">
                                     <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_professional'}</label>
                                     {foreach  $localPayment["currencies"] as $currency }
-                                        <p>{$limitedCurrencies[$currency]}</p>
-                                        <input type="hidden" value="{$currency}" name="{$localPayment@key}_currencies[]" />
+                                        {if isset($limitedCurrencies[$currency])}
+                                            <p>{$limitedCurrencies[$currency]}</p>
+                                            <input type="hidden" value="{$currency}" name="{$localPayment@key}_currencies[]" />
+                                        {else}
+                                            <p>{$currency} : {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}</p>
+                                        {/if}
                                     {/foreach}
                                 </div>
                             </div>

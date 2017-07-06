@@ -14,13 +14,11 @@ if (!defined('_PS_VERSION_')) {
 
 class Hipay_enterprise extends PaymentModule
 {
-    public $limited_countries  = array();
     public $hipayConfigTool;
-    public $_errors            = array();
-    public $_successes         = array();
-    public $min_amount         = 1;
-    public $limited_currencies = array();
-    public $currencies_titles  = array();
+    public $_errors           = array();
+    public $_successes        = array();
+    public $min_amount        = 1;
+    public $currencies_titles = array();
 
     public function __construct()
     {
@@ -48,67 +46,23 @@ class Hipay_enterprise extends PaymentModule
         // init query object
         $this->db = new HipayDBQuery($this);
 
-        // Compliancy
-        $this->limited_countries = array(
-            'AT', 'BE', 'CH', 'CY', 'CZ', 'DE', 'DK',
-            'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HK',
-            'HR', 'HU', 'IE', 'IT', 'LI', 'LT', 'LU',
-            'LV', 'MC', 'MT', 'NL', 'NO', 'PL', 'PT',
-            'RO', 'RU', 'SE', 'SI', 'SK', 'TR'
-        );
-
-        $this->countries_titles = array(
-            'AT' => $this->l('Austria'),
-            'BE' => $this->l('Belgium'),
-            'CH' => $this->l('Switzerland'),
-            'CY' => $this->l('Cyprus'),
-            'CZ' => $this->l('Czech Republic'),
-            'DE' => $this->l('Germany'),
-            'DK' => $this->l('Denmark'),
-            'EE' => $this->l('Estonia'),
-            'ES' => $this->l('Spain'),
-            'FI' => $this->l('Finland'),
-            'FR' => $this->l('France'),
-            'GB' => $this->l('United Kingdom'),
-            'GR' => $this->l('Greece'),
-            'HK' => $this->l('Hong Kong'),
-            'HR' => $this->l('Croatia'),
-            'HU' => $this->l('Hungary'),
-            'IE' => $this->l('Ireland'),
-            'IT' => $this->l('Italy'),
-            'LI' => $this->l('Liechtenstein'),
-            'LT' => $this->l('Lithuania'),
-            'LU' => $this->l('Luxembourg'),
-            'LV' => $this->l('Latvia'),
-            'MC' => $this->l('Monaco'),
-            'MT' => $this->l('Malta'),
-            'NL' => $this->l('Netherlands'),
-            'NO' => $this->l('Norway'),
-            'PL' => $this->l('Poland'),
-            'PT' => $this->l('Portugal'),
-            'RO' => $this->l('Romania'),
-            'RU' => $this->l('Russia'),
-            'SE' => $this->l('Sweden'),
-            'SI' => $this->l('Slovenia'),
-            'SK' => $this->l('Slovakia'),
-            'TR' => $this->l('Turkey')
-        );
-
-        $this->currencies_titles = array(
-            'AUD' => $this->l('Australian dollar'),
-            'CAD' => $this->l('Canadian dollar'),
-            'CHF' => $this->l('Swiss franc'),
-            'EUR' => $this->l('Euro'),
-            'GBP' => $this->l('Pound sterling'),
-            'PLN' => $this->l('Polish złoty'),
-            'SEK' => $this->l('Swedish krona'),
-            'USD' => $this->l('United States dollar'),
-            'RUB' => $this->l('Russian ruble'),
-        );
-
-        $this->limited_currencies = array_keys($this->currencies_titles);
 
         parent::__construct();
+
+        $this->currencies_titles = array();
+        $this->countries_titles  = array();
+
+        $countries = Country::getCountries($this->context->language->id);
+
+        foreach ($countries as $country) {
+            $this->countries_titles[$country["iso_code"]] = $country["name"];
+        }
+
+        $currencies = $this->getCurrency();
+
+        foreach ($currencies as $currency) {
+            $this->currencies_titles[$currency["iso_code"]] = $currency["name"];
+        }
 
         if (!Configuration::get('HIPAY_CONFIG')) {
             $this->warning = $this->l('Please, do not forget to configure your module');
@@ -133,10 +87,7 @@ class Hipay_enterprise extends PaymentModule
             return false;
         }
         $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
-        if (in_array($iso_code, $this->limited_countries) == false) {
-            $this->_errors[] = $this->l('This module cannot work in your country');
-            return false;
-        }
+
         return parent::install() && $this->installHipay();
     }
 
