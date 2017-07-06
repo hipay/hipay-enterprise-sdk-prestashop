@@ -1,12 +1,8 @@
 mysql:
   container_name: mysql-hipay-enterprise
   image: mysql:5.6.23
-  env_file:
-    - ./conf/env_file/env
   ports:
     - "3307:3306"
-  volumes:
-    - ./data/:/var/lib/mysql
 smtp:
   image: schickling/mailcatcher
   container_name: smtp-hipay-enterprise

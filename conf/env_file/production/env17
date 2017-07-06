@@ -1,0 +1,6 @@
+#====================================================
+# Specific configuration for Prestashop 1.7
+#=====================================================
+PS_VERSION=1.7.1.0
+PS_DOMAIN=hipay-enterprise-shop-ps17-develop.hipay-pos-platform.com
+DB_NAME=prestashop17

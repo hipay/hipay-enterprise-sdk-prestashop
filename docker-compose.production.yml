@@ -1,0 +1,28 @@
+mysql:
+  env_file:
+    - ./conf/env_file/production/env
+prestashop16:
+  container_name: hipay-enterprise-shop-ps16-develop
+  dockerfile: ./conf/docker/Dockerfile16
+  build: .
+  ports:
+    - "8086:80"
+  links:
+    - smtp
+    - mysql
+  env_file:
+    - ./conf/env_file/production/env
+    - ./conf/env_file/production/env16
+prestashop17:
+  container_name: hipay-enterprise-shop-ps17-develop
+  dockerfile: ./conf/docker/Dockerfile17
+  build: .
+  ports:
+    - "8087:80"
+  links:
+    - smtp
+    - mysql
+  env_file:
+    - ./conf/env_file/production/env
+    - ./conf/env_file/production/env17
+
