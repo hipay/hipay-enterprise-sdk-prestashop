@@ -18,6 +18,10 @@ class AdminHiPayCaptureController extends ModuleAdminController
 
     public function __construct()
     {
+        $this->module    = 'hipay_enterprise';
+        $this->bootstrap = true;
+        $this->context   = Context::getContext();
+
         parent::__construct();
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);

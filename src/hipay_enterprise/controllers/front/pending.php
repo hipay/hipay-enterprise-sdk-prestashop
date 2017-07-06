@@ -25,8 +25,12 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         $context = Context::getContext();
 
         HipayHelper::unsetCart();
-        
-        $this->setTemplate ( 'paymentReturn/pending.tpl' );
+
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/pending17.tpl'
+                            : 'paymentReturn/pending.tpl');
+
+        $this->setTemplate($path);
+
     }
 
 }

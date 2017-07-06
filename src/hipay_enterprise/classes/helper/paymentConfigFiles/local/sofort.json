@@ -2,7 +2,7 @@
     "name": "sofort-uberweisung",
     "config": {
         "displayName" : "Sofort Überweisung",
-        "activated" : 1,
+        "activated" : 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies" : ["EUR"],

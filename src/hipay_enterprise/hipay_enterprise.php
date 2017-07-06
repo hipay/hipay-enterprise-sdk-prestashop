@@ -17,6 +17,7 @@ class Hipay_enterprise extends PaymentModule
     public $limited_countries  = array();
     public $hipayConfigTool;
     public $_errors            = array();
+    public $_successes         = array();
     public $min_amount         = 1;
     public $limited_currencies = array();
     public $currencies_titles  = array();
@@ -141,27 +142,44 @@ class Hipay_enterprise extends PaymentModule
 
     public function uninstall()
     {
-        return /* $this->uninstallAdminTab() && */ parent::uninstall() && $this->clearAccountData()
+        return $this->uninstallAdminTab() && parent::uninstall() && $this->clearAccountData()
             && $this->deleteHipayTable();
     }
 
     public function installHipay()
     {
-
         $return = $this->installAdminTab();
-        $return = $this->updateHiPayOrderStates();
-        $return = $this->createHipayTable();
-        $return = $this->registerHook('backOfficeHeader');
-        $return = $this->registerHook('displayAdminOrder');
+        $return &= $this->updateHiPayOrderStates();
+        $return &= $this->createHipayTable();
+        $return &= $this->registerHook('backOfficeHeader');
+        $return &= $this->registerHook('displayAdminOrder');
+        $return &= $this->registerHook('customerAccount');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header')
                 && $this->registerHook('actionFrontControllerSetMedia');
             $return   = $return && $return17;
         } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn');
+            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn')
+                && $this->registerHook('displayPaymentEU');
             $return   = $return && $return16;
         }
         return $return;
+    }
+
+    public function hookCustomerAccount()
+    {
+        $this->smarty->assign(array(
+            "link" => $this->context->link->getModuleLink($this->name,
+                'userToken', array(), true)
+            )
+        );
+        if (_PS_VERSION_ >= '1.7') {
+            $path = 'views/templates/hook/my-account-17.tpl';
+        }else{
+            $path = 'views/templates/hook/my-account-16.tpl';
+        }
+
+        return $this->display(dirname(__FILE__), $path);
     }
 
     public function hookActionFrontControllerSetMedia($params)
@@ -208,6 +226,48 @@ class Hipay_enterprise extends PaymentModule
 
         return $this->display(dirname(__FILE__),
                 'views/templates/hook/payment.tpl');
+    }
+
+    public function hookDisplayPaymentEU($params)
+    {
+        $this->logs->logsHipay('##########################');
+        $this->logs->logsHipay('---- START function hookDisplayPaymentEU');
+        $this->logs->logsHipay('##########################');
+
+        $address    = new Address(intval($params['cart']->id_address_delivery));
+        $country    = new Country(intval($address->id_country));
+        $currency   = new Currency(intval($params['cart']->id_currency));
+        $orderTotal = $params['cart']->getOrderTotal();
+
+        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card",
+            $country, $currency);
+
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment",
+            $country, $currency, $orderTotal);
+        $paymentOptions        = array();
+        $paymentOptionsCC      = array();
+        $paymentOptionsLP      = array();
+
+        if (!empty($activatedCreditCard)) {
+            $paymentOptionsCC[] = array(
+                'cta_text' => $this->l('Pay by credit or debit card'),
+                'logo' => Media::getMediaPath($this->_path.'views/img/amexa200.png'),
+                'action' => $this->context->link->getModuleLink($this->name,
+                    'redirect', array(), true)
+            );
+        }
+
+        if (!empty($activatedLocalPayment)) {
+            foreach ($activatedLocalPayment as $localPayment) {
+                $paymentOptionsLP[] = array(
+                    'cta_text' => $this->l('Pay by').' '.$localPayment['displayName'],
+                    'logo' => Media::getMediaPath($localPayment['payment_button']),
+                    'action' => $localPayment['link']
+                );
+            }
+        }
+        $paymentOptions = array_merge($paymentOptionsCC, $paymentOptionsLP);
+        return $paymentOptions;
     }
 
     /**
@@ -263,7 +323,7 @@ class Hipay_enterprise extends PaymentModule
         $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
         $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
         $manualCapture     = false;
-        $showCapture       = false;
+        $showCapture       = true;
         $showRefund        = true;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
@@ -276,6 +336,16 @@ class Hipay_enterprise extends PaymentModule
         $refundedFees      = $this->db->feesAreRefunded($order->id);
         $capturedItems     = $this->db->getCapturedItems($order->id);
         $refundedItems     = $this->db->getRefundedItems($order->id);
+        $totallyRefunded   = true;
+
+        foreach ($order->getProducts() as $product) {
+            $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
+                >= $product["product_quantity"]);
+        }
+
+        if (!$refundedFees) {
+            $totallyRefunded = false;
+        }
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED',
                 null, null, 1) || !empty($capturedItems) || $capturedFees) {
@@ -283,7 +353,7 @@ class Hipay_enterprise extends PaymentModule
         }
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_REFUNDED',
-                null, null, 1) || !empty($capturedItems) || $capturedFees) {
+                null, null, 1) || !empty($refundedItems) || $refundedFees || $partiallyCaptured) {
             $partiallyRefunded = true;
         }
 
@@ -366,7 +436,8 @@ class Hipay_enterprise extends PaymentModule
             'refundedItems' => $refundedItems,
             'capturedFees' => $capturedFees,
             'refundedFees' => $refundedFees,
-            'products' => $products
+            'products' => $products,
+            'totallyRefunded' => $totallyRefunded
         ));
 
         return $this->display(dirname(__FILE__),
@@ -395,7 +466,26 @@ class Hipay_enterprise extends PaymentModule
                 $tab->name[$lang['id_lang']] = $this->name;
             }
             if (!$tab->add()) {
-                return false;
+                //    return false;
+            }
+        }
+        return true;
+    }
+
+    public function uninstallAdminTab()
+    {
+        $class_names = [
+            'AdminHiPayCapture',
+            'AdminHiPayRefund',
+            'AdminHiPayConfig',
+        ];
+        foreach ($class_names as $class_name) {
+            $id_tab = (int) Tab::getIdFromClassName($class_name);
+            if ($id_tab) {
+                $tab = new Tab($id_tab);
+                if (!$tab->delete()) {
+                    return false;
+                }
             }
         }
         return true;
@@ -443,6 +533,7 @@ class Hipay_enterprise extends PaymentModule
             'global_payment_methods_form' => $formGenerator->getGlobalPaymentMethodsForm(),
             'fraud_form' => $formGenerator->getFraudForm(),
             'form_errors' => $this->_errors,
+            'form_successes' => $this->_successes,
             'limitedCurrencies' => $this->currencies_titles,
             'limitedCountries' => $this->countries_titles,
             'this_callback' => $this->context->link->getModuleLink($this->name,
@@ -1242,6 +1333,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->mapper->createTable();
         $this->db->createOrderRefundCaptureTable();
+        $this->db->createCCTokenTable();
         return true;
     }
 
@@ -1251,7 +1343,8 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-        $this->db->deleteOrderRefundCaptureTable();
+        //  $this->db->deleteOrderRefundCaptureTable();
+        $this->db->deleteCCTokenTable();
         return true;
     }
 }

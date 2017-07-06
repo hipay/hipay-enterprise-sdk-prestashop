@@ -35,42 +35,44 @@
                             <th>{l s="Quantity refundable"}</th>
                         </tr>
                         {foreach $products as $item}
-                            {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
-                                {if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
-                                    {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
-                                {else}
-                                    {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"]}
-                                {/if}
-                                <tr >
-                                    <td>
-                                        <input type="hidden" {if $remainQty == 0} disabled {/if} name="hipayrefund[{$item["product_id"]}]" value="{$item["product_id"]}"/>{$item["product_name"]}
-                                    </td>
-                                    <td>
-                                        {if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
-                                            <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                                {$refundedItems[$item["product_id"]]["quantity"]} ({$refundedItems[$item["product_id"]]["amount"]})
-                                            </span>
-                                        {else}
-                                            <span class="badge badge-warning">
-                                                0
-                                            </span>
-                                        {/if}
-                                    </td>
-                                    <td >
-                                        {if $remainQty > 0}
-                                            <div class="col-lg-6 input-group">
-                                                <input name="hipayrefund[{$item["product_id"]}]" type="number" min="0" max="{$remainQty}" name="" value="0">
-                                                <div class="input-group-addon">/ {$remainQty}</div>
-                                            </div>
-                                        {/if}
-                                    </td>
-                                </tr>
+                            {if empty($capturedItems) && !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
+                                {assign var="remainQty" value=$item["product_quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
+                            {else if empty($capturedItems)}
+                                {assign var="remainQty" value=$item["product_quantity"]}
+                            {else if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
+                                {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
+                            {else}
+                                {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"]}
                             {/if}
+                            <tr >
+                                <td>
+                                    <input type="hidden" {if $remainQty == 0} disabled {/if} name="hipayrefund[{$item["product_id"]}]" value="{$item["product_id"]}"/>{$item["product_name"]}
+                                </td>
+                                <td>
+                                    {if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
+                                        <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
+                                            {$refundedItems[$item["product_id"]]["quantity"]} ({$refundedItems[$item["product_id"]]["amount"]})
+                                        </span>
+                                    {else}
+                                        <span class="badge badge-warning">
+                                            0
+                                        </span>
+                                    {/if}
+                                </td>
+                                <td >
+                                    {if $remainQty > 0}
+                                        <div class="col-lg-6 input-group">
+                                            <input name="hipayrefund[{$item["product_id"]}]" type="number" min="0" max="{$remainQty}" name="" value="0">
+                                            <div class="input-group-addon">/ {$remainQty}</div>
+                                        </div>
+                                    {/if}
+                                </td>
+                            </tr>
                         {/foreach}
                     </table>
                     <div class="checkbox">
                         {if $shippingCost > 0 } 
-                            {if $capturedFees && !$refundedFees}
+                            {if ($capturedFees && !$refundedFees) || ($stillToCaptureDisplay <= 0 && !$refundedFees)}
                                 <label>
                                     <input type="checkbox" name="hipay_refund_fee" > {l s="Refund fee(s)"}
                                 </label>
@@ -84,9 +86,11 @@
                 {/if}
             </div>
             <div class="form-group">
+                {if !$totallyRefunded}
                 <button type="submit"  name="{if !$basket}hipay_refund_submit{else}hipay_refund_basket_submit{/if}" class="btn btn-primary pull-right" >
                     {l s="Refund" }
                 </button>
+                {/if}
             </div>
         </form>
     </fieldset>

@@ -1,12 +1,25 @@
-$( document ).ready(function() {
+$(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
 });
 
 $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
 
+    e.preventDefault();
+    e.stopPropagation();
+
     var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='credit_card']").is(':checked');
 
     if (myPaymentMethodSelected) {
+
+        if ($('input[name=ccTokenHipay]:checked').length) {
+            // at least one of the radio buttons was checked
+            $('#tokenizerForm').hide();
+            $('#payment-loader-hp').show();
+            $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
+
+            $("#tokenizerForm").submit();
+            return true; // allow whatever action would normally happen to continue
+        }
 
         //set param for Api call
         var params = {
@@ -18,21 +31,38 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
             multi_use: '0'
         };
 
-        HiPay.setTarget('stage'); // default is production/live
+        HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
-        HiPay.setCredentials(api_tokenjs_username_sandbox, api_tokenjs_password_publickey_sandbox);
+        HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
 
         HiPay.create(params,
                 function (result) {
+                    $('#tokenizerForm').hide();
+                    $('#payment-loader-hp').show();
+                    $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
                     // The card has been successfully tokenized
                     token = result.token;
-                    brand = result.brand;
+                    if (result.hasOwnProperty('domestic_network')) {
+                        brand = result.domestic_network;
+                    } else {
+                        brand = result.brand;
+                    }
                     pan = result.pan;
+                    card_expiry_month = result.card_expiry_month;
+                    card_expiry_year = result.card_expiry_year;
+                    card_holder = result.card_holder;
+                    issuer = result.issuer;
+                    country = result.country;
 
                     // set tokenization response
                     $('#card-token').val(token);
                     $('#card-brand').val(brand);
-                    $('#card-pan').val(brand);
+                    $('#card-pan').val(pan);
+                    $('#card-holder').val($('#the-card-name-id').val());
+                    $('#card-expiry-month').val(card_expiry_month);
+                    $('#card-expiry-year').val(card_expiry_year);
+                    $('#card-issuer').val(issuer);
+                    $('#card-country').val(country);
 
                     // we empty the form so we don't send credit card informations to the server
                     $('#card-number').val("");
@@ -47,9 +77,8 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     return true;
                 },
                 function (errors) {
-                    console.log(errors);
                     // An error occurred
-
+                    $("#error-js").show();
                     if (typeof errors.message != "undefined") {
                         $(".error").text("Error: " + errors.message);
                     } else {

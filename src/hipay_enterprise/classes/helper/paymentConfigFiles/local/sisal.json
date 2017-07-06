@@ -2,7 +2,7 @@
     "name": "sisal",
     "config": {
         "displayName" : "Sisal",
-        "activated" : 1,
+        "activated" : 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies" : ["EUR"],

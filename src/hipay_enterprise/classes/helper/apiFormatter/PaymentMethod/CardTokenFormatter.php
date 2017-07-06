@@ -19,10 +19,12 @@ class CardTokenFormatter extends ApiFormatterAbstract
 {
     private $cardToken;
 
-    public function __construct($module, $cardToken)
+    public function __construct($module, $params)
     {
         parent::__construct($module);
-        $this->cardToken = $cardToken;
+        $this->cardToken = $params['cardtoken'];
+        $this->oneClick  = (isset($params['oneClick']) && $params['oneClick']) ? true
+                : false;
     }
 
     /**
@@ -47,7 +49,8 @@ class CardTokenFormatter extends ApiFormatterAbstract
     {
 
         $cardTokenRequest->cardtoken                = $this->cardToken;
-        $cardTokenRequest->eci                      = ECI::SECURE_ECOMMERCE;
+        $cardTokenRequest->eci                      = ($this->oneClick) ? ECI::RECURRING_ECOMMERCE
+                : ECI::SECURE_ECOMMERCE;
         $cardTokenRequest->authentication_indicator = $this->setAuthenticationIndicator();
     }
 

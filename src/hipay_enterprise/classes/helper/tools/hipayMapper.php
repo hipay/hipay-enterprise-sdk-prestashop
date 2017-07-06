@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,27 +8,29 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/hipayDBQuery.php');
 
-class HipayMapper {
-
-    const PS_CAT_LEVEL_DEPTH = 1;
-    const HIPAY_CAT_MAPPING = 'category';
+class HipayMapper
+{
+    const PS_CAT_LEVEL_DEPTH    = 1;
+    const HIPAY_CAT_MAPPING     = 'category';
     const HIPAY_CARRIER_MAPPING = 'carrier';
 
-    public function __construct($moduleInstance) {
-        $this->module = $moduleInstance;
-        $this->logs = $this->module->getLogs();
+    public function __construct($moduleInstance)
+    {
+        $this->module  = $moduleInstance;
+        $this->logs    = $this->module->getLogs();
         $this->context = Context::getContext();
-        $this->db = new HipayDBQuery($this->module);
+        $this->db      = new HipayDBQuery($this->module);
     }
 
     /**
      * return all Hipay categories from SDK
      * @return array
      */
-    public function getHipayCategories() {
+    public function getHipayCategories()
+    {
         return HiPay\Fullservice\Data\Category\Collection::getItems();
     }
 
@@ -37,15 +38,18 @@ class HipayMapper {
      * return all active prestashop categories (depth level = PS_CAT_LEVEL_DEPTH)
      * @return array
      */
-    public function getPrestashopCategories() {
-        return Category::getCategories($this->context->language->id, true, false, 'AND `level_depth` = ' . HipayMapper::PS_CAT_LEVEL_DEPTH);
+    public function getPrestashopCategories()
+    {
+        return Category::getCategories($this->context->language->id, true,
+                false, 'AND `level_depth` = '.HipayMapper::PS_CAT_LEVEL_DEPTH);
     }
 
     /**
      * return all Hipay carriers from SDK
      * @return array
      */
-    public function getHipayCarriers() {
+    public function getHipayCarriers()
+    {
         return HiPay\Fullservice\Data\DeliveryMethod\CollectionModeShipping::getItems();
     }
 
@@ -53,7 +57,8 @@ class HipayMapper {
      * return all active prestashop carriers (depth level = PS_CAT_LEVEL_DEPTH)
      * @return array
      */
-    public function getPrestashopCarriers() {
+    public function getPrestashopCarriers()
+    {
         return Carrier::getCarriers($this->context->language->id, true);
     }
 
@@ -62,7 +67,8 @@ class HipayMapper {
      * @param type $idShop
      * @return array
      */
-    public function getMappedCategories($idShop) {
+    public function getMappedCategories($idShop)
+    {
         $categoriesDB = $this->db->getHipayMappedCategories($idShop);
 
         if (!$categoriesDB) {
@@ -81,24 +87,26 @@ class HipayMapper {
      * @param type $idShop
      * @return array
      */
-    public function getMappedCarriers($idShop) {
+    public function getMappedCarriers($idShop)
+    {
         $carriersDB = $this->db->getHipayMappedCarriers($idShop);
 
         if (!$carriersDB) {
             $carriers = array();
         } else {
             foreach ($carriersDB as $car) {
-                $carriers[$car["ps_carrier_id"]]["mode"] = $car["hp_carrier_mode"];
-                $carriers[$car["ps_carrier_id"]]["shipping"] = $car["hp_carrier_shipping"];
+                $carriers[$car["ps_carrier_id"]]["mode"]            = $car["hp_carrier_mode"];
+                $carriers[$car["ps_carrier_id"]]["shipping"]        = $car["hp_carrier_shipping"];
                 $carriers[$car["ps_carrier_id"]]["preparation_eta"] = $car["preparation_eta"];
-                $carriers[$car["ps_carrier_id"]]["delivery_eta"] = $car["delivery_eta"];
+                $carriers[$car["ps_carrier_id"]]["delivery_eta"]    = $car["delivery_eta"];
             }
         }
 
         return $carriers;
     }
 
-    public function getMappedHipayCatFromPSId($PSId) {
+    public function getMappedHipayCatFromPSId($PSId)
+    {
 
         $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
 
@@ -109,7 +117,8 @@ class HipayMapper {
         return null;
     }
 
-    public function getMappedHipayCarrierFromPSId($PSId) {
+    public function getMappedHipayCarrierFromPSId($PSId)
+    {
         $hipayCarrier = $this->db->getHipayCarrierFromPSId($PSId);
         if ($hipayCarrier) {
             return $hipayCarrier;
@@ -121,7 +130,8 @@ class HipayMapper {
     /**
      * create mapping tables
      */
-    public function createTable() {
+    public function createTable()
+    {
         if (!$this->db->createCatMappingTable() || !$this->db->createCarrierMappingTable()) {
             $this->logs->logsHipay('Cannot create Mapping table');
             die('Module DB Error');
@@ -131,7 +141,8 @@ class HipayMapper {
     /**
      * delete mapping tables
      */
-    public function deleteTable() {
+    public function deleteTable()
+    {
         if (!$this->db->deleteCatMappingTable() || !$this->db->deleteCarrierMappingTable()) {
             $this->logs->logsHipay('Cannot delete Mapping table');
         }
@@ -141,38 +152,46 @@ class HipayMapper {
      * save mapping
      * @param type $values
      */
-    public function setMapping($type, $values) {
+    public function setMapping($type, $values)
+    {
         switch ($type) {
             case HipayMapper::HIPAY_CAT_MAPPING :
                 if (!empty($values)) {
 
                     foreach ($values as $val) {
-                        $row[] = '(' . $val["pscat"] . ',' . $val["hipaycat"] . ',' . $this->context->shop->id . ')';
+
+                        $row[] = array("ps_cat_id" => pSQL((int) $val["pscat"]),
+                            "hp_cat_id" => pSQL((int) $val["hipaycat"]), "shop_id" => $this->context->shop->id);
 
                         $rootCat = new Category($val["pscat"]);
                         // we mapp all childs of root category
                         foreach ($rootCat->getAllChildren() as $childCat) {
-                            $row[] = '(' . $childCat->id . ',' . $val["hipaycat"] . ',' . $this->context->shop->id . ')';
+                            $row[] = array("ps_cat_id" => (int) $childCat->id, "hp_cat_id" => pSQL((int) $val["hipaycat"]),
+                                "shop_id" => (int) $this->context->shop->id);
                         }
                     }
 
-                    return $this->db->setHipayCatMapping($row);
+                    return $this->db->setHipayCatMapping($row,
+                            $this->context->shop->id);
                 }
                 return true;
                 break;
             case HipayMapper::HIPAY_CARRIER_MAPPING :
                 if (!empty($values)) {
-
                     foreach ($values as $val) {
-                        $row[] = '(' . $val["pscar"] . ','
-                                . '"' . $val["hipaycarmode"] . '",'
-                                . '"' . $val["hipaycarshipping"] . '",'
-                                . $val["prepeta"] . ','
-                                . $val["deliveryeta"] . ','
-                                . $this->context->shop->id . ')';
+                        $row[] = array(
+                            "ps_carrier_id" => pSQL((int) $val["pscar"]),
+                            "hp_carrier_mode" => pSQL($val["hipaycarmode"]),
+                            "hp_carrier_shipping" => pSQL($val["hipaycarshipping"]),
+                            "preparation_eta" => pSQL((int) $val["prepeta"]),
+                            "delivery_eta" => pSQL((int) $val["deliveryeta"]),
+                            "shop_id" => (int) $this->context->shop->id
+                            )
+                        ;
                     }
 
-                    $this->db->setHipayCarrierMapping($row);
+                    $this->db->setHipayCarrierMapping($row,
+                        $this->context->shop->id);
                 }
                 return true;
                 break;
@@ -184,8 +203,9 @@ class HipayMapper {
      * @param int $catId
      * @return boolean
      */
-    public function hipayCategoryExist($catId) {
-        $hipayCat = $this->getHipayCategories();
+    public function hipayCategoryExist($catId)
+    {
+        $hipayCat   = $this->getHipayCategories();
         $hipayCatId = array();
 
         foreach ($hipayCat as $cat) {
@@ -193,7 +213,6 @@ class HipayMapper {
         }
         return in_array($catId, $hipayCatId);
     }
-
 //    /**
 //     * check if id is an hipay carrier code
 //     * @param int $catId

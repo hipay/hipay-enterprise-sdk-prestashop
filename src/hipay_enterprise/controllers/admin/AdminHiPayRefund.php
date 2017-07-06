@@ -18,6 +18,11 @@ class AdminHiPayRefundController extends ModuleAdminController
 
     public function __construct()
     {
+
+        $this->module    = 'hipay_enterprise';
+        $this->bootstrap = true;
+        $this->context   = Context::getContext();
+        
         parent::__construct();
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
@@ -26,7 +31,6 @@ class AdminHiPayRefundController extends ModuleAdminController
 
     public function postProcess()
     {
-
         $context = Context::getContext();
 
         if (Tools::isSubmit('id_order') && Tools::getValue('id_order') > 0) {
@@ -103,7 +107,6 @@ class AdminHiPayRefundController extends ModuleAdminController
             if (Tools::getValue('hipay_refund_type') == "partial") {
 
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
-                var_dump($refundItems);
                 if (array_sum($refundItems) == 0 && Tools::getValue('hipay_refund_fee')
                     !== "on") {
                     $hipay_redirect_status = $this->module->l('Select at least one item to refund',
@@ -118,6 +121,7 @@ class AdminHiPayRefundController extends ModuleAdminController
             } else {
                 $params = array("refundItems" => "full", "order" => $order->id, "transaction_reference" => $transactionReference);
             }
+
             $this->apiHandler->handleRefund($params);
         }
 

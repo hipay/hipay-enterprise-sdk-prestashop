@@ -246,6 +246,8 @@ class HipayForm extends HipayFormInput {
                 )
         );
 
+        $form['form']['input'][] = $this->generateFormSplit();
+
         $form['form']['input'][] = $this->generateInputText(
                 "payment_fraud_accept_email_sender", $this->module->l('Payment Fraud Accept Email Sender', 'HipayForm')
         );
@@ -319,6 +321,7 @@ class HipayForm extends HipayFormInput {
 
         // init field
         $values = array(
+            "input_split" => "test",
             "payment_fraud_email_sender" => "",
             "send_payment_fraud_email_copy_to" => "",
             "send_payment_fraud_email_copy_method" => "",
@@ -332,9 +335,9 @@ class HipayForm extends HipayFormInput {
 
         // get field value from POST request or config (this way the displayed value is always the good one)
         foreach ($values as $key => $value) {
-            if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
+            if (is_bool(Tools::getValue($key)) && !Tools::getValue($key) && $key != "input_split") {
                 $values[$key] = $this->configHipay["fraud"][$key];
-            } else {
+            } else if($key != "input_split") {
                 $values[$key] = Tools::getValue($key);
             }
         }

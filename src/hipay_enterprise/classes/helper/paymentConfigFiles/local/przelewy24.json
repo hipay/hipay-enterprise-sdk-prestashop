@@ -2,7 +2,7 @@
     "name": "przelewy24",
     "config": {
         "displayName" : "Przelewy24",
-        "activated" : 1,
+        "activated" : 0,
         "canRefund" : 1,
         "canManualCapture" : 1,
         "currencies" : ["PLN"],

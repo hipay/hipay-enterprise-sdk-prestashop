@@ -10,6 +10,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__) . '/classes/helper/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/classes/helper/tools/hipayCCToken.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -40,6 +41,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
      */
     public function hookDisplayHeader($params) {
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
+        $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
         $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
         $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/views/js/devicefingerprint.js'));
         $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
@@ -72,8 +74,14 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                     $paymentOptions[] = $newOption;
                     break;
                 case "api":
+                    // set credit card for one click
+                    $this->ccToken    = new HipayCCToken($this);
+                    $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
+                    
                     $this->context->smarty->assign(array(
                         'module_dir' => $this->_path,
+                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/',
+                        'savedCC' => $savedCC,
                         'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                         'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook',
                         'action' => $this->context->link->getModuleLink($this->name, 'redirect', array(), true),

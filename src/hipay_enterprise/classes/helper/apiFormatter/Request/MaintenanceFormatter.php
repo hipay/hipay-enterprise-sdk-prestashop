@@ -99,11 +99,14 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             foreach ($maintenance->basket->getAllItems() as $item) {
                 if ($item->getType() == "good") {
                     //save capture items and quantity in prestashop
-                    $captureData = array($this->order->id, str_replace('good_',
-                            '', $item->getProductReference()), '"'.$this->operation.'"',
-                        $item->getQuantity(), Tools::ps_round($item->getTotalAmount(),
-                            2));
-                    //        $this->db->setCaptureOrRefundOrder($captureData);
+                    $captureData = array(
+                        "ps_order_id" => $this->order->id,
+                        "ps_product_id" => str_replace('good_', '',
+                            $item->getProductReference()),
+                        "type" => $this->operation,
+                        "quantity" => $item->getQuantity(),
+                        "amount" => Tools::ps_round($item->getTotalAmount(), 2));
+                    $this->db->setCaptureOrRefundOrder($captureData);
                 } else if ($item->getType() == "fee") {
                     HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,
                         $this->operation);
