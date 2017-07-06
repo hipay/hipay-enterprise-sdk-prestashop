@@ -48,12 +48,17 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label class="control-label col-lg-3" >{l s='Activated Currencies' mod='hipay_professional'}</label>
-                                    {foreach $limitedCurrencies as $currency }
-                                        <label class="control-label col-lg-1"> 
-                                            <input type="checkbox" name="{$localPayment@key}_currencies[]" {if $currency@key|in_array:$localPayment.currencies } checked {/if} value="{$currency@key}" />
-                                            {$currency}
-                                        </label>
-                                    {/foreach}
+                                    <div class="col-lg-9">
+                                        {foreach $limitedCurrencies as $currency }
+                                            <label class="control-label col-lg-2"> 
+                                                <input type="checkbox" name="{$localPayment@key}_currencies[]" {if $currency@key|in_array:$localPayment.currencies } checked {/if} value="{$currency@key}" />
+                                                <br/>
+                                                {$currency@key}
+                                                <br/>
+                                                {$currency}
+                                            </label>
+                                        {/foreach}
+                                    </div>
                                 </div>
                             </div>
                         {/if}
@@ -99,13 +104,13 @@
 <script>
     {foreach $config_hipay.payment.local_payment as $localPayment}
         {if !$localPayment["countrySelectorReadOnly"]}
-            var local_{$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
-                showFilterInputs: false,
-                moveOnSelect: false,
-                nonSelectedListLabel: '{l s='Available countries' mod='hipay_professional'}',
-                selectedListLabel: '{l s='Authorized countries' mod='hipay_professional'}',
-                infoText: false
-            });
+    var local_{$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
+        showFilterInputs: false,
+        moveOnSelect: false,
+        nonSelectedListLabel: '{l s='Available countries' mod='hipay_professional'}',
+        selectedListLabel: '{l s='Authorized countries' mod='hipay_professional'}',
+        infoText: false
+    });
         {/if}
     {/foreach}
 </script>

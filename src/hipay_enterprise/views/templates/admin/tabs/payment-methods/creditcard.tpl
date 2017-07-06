@@ -21,10 +21,10 @@
                             <div class="col-lg-9">
                                 <span class="switch prestashop-switch fixed-width-lg">
                                     <input type="radio" name="{$creditCard@key}_activated" id="{$creditCard@key}_activated_on" value="1"
-                                         {if $creditCard.activated }checked="checked"{/if}  >
+                                           {if $creditCard.activated }checked="checked"{/if}  >
                                     <label for="{$creditCard@key}_activated_on">{l s='Yes' mod='hipay_professional'}</label>
                                     <input type="radio" name="{$creditCard@key}_activated" id="{$creditCard@key}_activated_off" value="0"
-                                          {if $creditCard.activated == false }checked="checked"{/if}  >
+                                           {if $creditCard.activated == false }checked="checked"{/if}  >
                                     <label for="{$creditCard@key}_activated_off">{l s='No' mod='hipay_professional'}</label>
                                     <a class="slide-button btn"></a>
                                 </span>
@@ -35,12 +35,17 @@
                         <div class="row">
                             <div class="form-group">
                                 <label class="control-label col-lg-3">{l s='Currencies' mod='hipay_professional'}</label>
-                                {foreach $limitedCurrencies as $currency }
-                                    <label class="control-label col-lg-1"> 
-                                        <input type="checkbox" name="{$creditCard@key}_currencies[]" {if $currency@key|in_array:$creditCard.currencies } checked {/if} value="{$currency@key}" />
-                                        {$currency}
-                                    </label>
-                                {/foreach}
+                                <div class="col-lg-9">
+                                    {foreach $limitedCurrencies as $currency }
+                                        <label class="control-label col-lg-2"> 
+                                            <input type="checkbox" name="{$creditCard@key}_currencies[]" {if $currency@key|in_array:$creditCard.currencies } checked {/if} value="{$currency@key}" />
+                                            <br/>
+                                            {$currency@key}
+                                            <br/>
+                                            {$currency}
+                                        </label>
+                                    {/foreach}
+                                </div>
                             </div>
                         </div>
 
