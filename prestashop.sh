@@ -2,7 +2,6 @@
 
 #=============================================================================
 #  Use this script build hipay images and run Hipay Professional's containers
-#
 #==============================================================================
 if [ "$1" = '' ] || [ "$1" = '--help' ];then
     printf "\n                                                                                  "
@@ -29,6 +28,13 @@ if [ "$1" = 'init' ] && [ "$2" = '' ];then
      rm -Rf web17/
      docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
      docker-compose -f docker-compose.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+fi
+
+if [ "$1" = 'init-production' ] && [ "$2" = '' ];then
+     docker-compose -f docker-compose.yml -f docker-compose.production.yml stop
+     docker-compose -f docker-compose.yml -f docker-compose.production.yml rm -fv
+     docker-compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache
+     docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d
 fi
 
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
