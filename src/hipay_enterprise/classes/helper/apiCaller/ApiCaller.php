@@ -14,7 +14,7 @@ require_once(dirname(__FILE__).'/../apiFormatter/Request/MaintenanceFormatter.ph
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 /**
- * Handle Hipay Api call 
+ * Handle Hipay Api call
  */
 class ApiCaller
 {
@@ -32,8 +32,7 @@ class ApiCaller
         //Set data to send to the API
         $orderRequest  = new HostedPaymentFormatter($moduleInstance, $params);
 
-        $moduleInstance->getLogs()->requestLogs(print_r($orderRequest->generate(),
-                true));
+        $moduleInstance->getLogs()->requestLogs(print_r($orderRequest->generate(), true));
 
         //var_dump($orderRequest->generate());
 //        die();
@@ -99,7 +98,6 @@ class ApiCaller
      */
     private static function createGatewayClient($moduleInstance)
     {
-
         if ($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]) {
             $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
                 $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"],

@@ -13,7 +13,7 @@ class HipayHelper
 {
 
     /**
-     * empty customer cart 
+     * empty customer cart
      * @return boolean
      */
     public static function unsetCart()
@@ -32,12 +32,10 @@ class HipayHelper
      * @param type $signature
      * @param type $config
      * @param type $fromNotification
-     * @param type $response
      * @return boolean
      */
     public static function checkSignature($signature, $config,
-                                          $fromNotification = false,
-                                          $response = null)
+                                          $fromNotification = false)
     {
         $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
                 : $config["account"]["production"]["api_secret_passphrase_production"];
@@ -47,7 +45,7 @@ class HipayHelper
         }
 
         if ($fromNotification) {
-            $rawPostData = file_get_contents("php://input");
+            $rawPostData = Tools::file_get_contents("php://input");
             if ($signature == sha1($rawPostData.$passphrase)) {
                 return true;
             }

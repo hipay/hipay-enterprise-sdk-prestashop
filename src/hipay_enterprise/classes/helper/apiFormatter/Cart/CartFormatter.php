@@ -13,14 +13,15 @@ require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../../tools/hipayMapper.php');
 
-class CartFormatter extends ApiFormatterAbstract {
+class CartFormatter extends ApiFormatterAbstract
+{
 
     /**
      * return mapped cart informations
      * @return json
      */
-    public function generate() {
-
+    public function generate()
+    {
         $cart = new HiPay\Fullservice\Gateway\Model\Cart\Cart();
 
         $this->mapRequest($cart);
@@ -32,8 +33,8 @@ class CartFormatter extends ApiFormatterAbstract {
      * map prestashop cart informations to request fields
      * @param HiPay\Fullservice\Gateway\Model\Cart\Cart $cart
      */
-    protected function mapRequest(&$cart) {
-
+    protected function mapRequest(&$cart)
+    {
         $cartSummary = $this->cart->getSummaryDetails();
         // Good items
         foreach ($this->cart->getProducts() as $product) {
@@ -58,7 +59,8 @@ class CartFormatter extends ApiFormatterAbstract {
      * @param type $good
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getGoodItem($product) {
+    private function getGoodItem($product)
+    {
         //var_dump($product);
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $european_article_numbering = $product["ean13"];
@@ -68,9 +70,9 @@ class CartFormatter extends ApiFormatterAbstract {
         $quantity = $product["cart_quantity"];
 
 
-        $discount = -1 * Tools::ps_round(( $product["price_without_reduction"] * $product["cart_quantity"] ) - ($product["price_with_reduction"] * $product["cart_quantity"]), 2);
+        $discount = -1 * Tools::ps_round(($product["price_without_reduction"] * $product["cart_quantity"]) - ($product["price_with_reduction"] * $product["cart_quantity"]), 2);
         $total_amount = Tools::ps_round($product["total_wt"], 2);
-        $unit_price = Tools::ps_round((($total_amount - $discount ) / $quantity), 3);
+        $unit_price = Tools::ps_round((($total_amount - $discount) / $quantity), 3);
 
         $tax_rate = $product["rate"];
         $discount_description = "";
@@ -91,8 +93,8 @@ class CartFormatter extends ApiFormatterAbstract {
      * create a discount item from discount line informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getDiscountItem() {
-
+    private function getDiscountItem()
+    {
         $product_reference = "";
         $name = "";
         $unit_price = 0;
@@ -120,7 +122,8 @@ class CartFormatter extends ApiFormatterAbstract {
      * create a Fees item from cart informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getFeesItem($cartSummary) {
+    private function getFeesItem($cartSummary)
+    {
         $product_reference = "fees_" . $cartSummary["carrier"]->id_reference;
         $name = $cartSummary["carrier"]->name;
         $unit_price = (float) $cartSummary["total_shipping"];
@@ -133,5 +136,4 @@ class CartFormatter extends ApiFormatterAbstract {
 
         return $item;
     }
-
 }

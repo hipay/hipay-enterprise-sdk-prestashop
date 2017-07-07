@@ -35,7 +35,6 @@ class HipayConfig
      */
     public function getConfigHipay()
     {
-
         if (empty($this->configHipay)) {
             $this->initConfigHiPay();
         }
@@ -49,8 +48,9 @@ class HipayConfig
      */
     private function updateConfig()
     {
-
         $this->module->getLogs()->logsHipay('---- >> function updateConfig << --------');
+
+        $configFields = array();
 
         $configFields["payment"]["credit_card"]   = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
@@ -129,8 +129,6 @@ class HipayConfig
     {
         $this->module->getLogs()->logsHipay('---- >> function insertConfigHiPay');
 
-        //TODO mock config for front test. credit_card and payment indexes must be injected through json
-
         $configFields                             = array(
             "account" => array(
                 "global" => array(
@@ -186,13 +184,13 @@ class HipayConfig
                 "local_payment" => array()
             ),
             "fraud" => array(
-                "payment_fraud_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "payment_fraud_email_sender" => (string) Configuration::get('PS_SHOP_EMAIL'),
                 "send_payment_fraud_email_copy_to" => "",
                 "send_payment_fraud_email_copy_method" => "bcc",
-                "payment_fraud_accept_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "payment_fraud_accept_email_sender" => (string) Configuration::get('PS_SHOP_EMAIL'),
                 "send_payment_accept_email_copy_to" => "",
                 "send_payment_accept_email_copy_method" => "bcc",
-                "payment_fraud_deny_email_sender" => strval(Configuration::get('PS_SHOP_EMAIL')),
+                "payment_fraud_deny_email_sender" => (string) Configuration::get('PS_SHOP_EMAIL'),
                 "send_payment_deny_email_copy_to" => "",
                 "send_payment_deny_email_copy_method" => "bcc"
             )
@@ -262,11 +260,10 @@ class HipayConfig
      */
     private function addPaymentConfig($file, $folderName)
     {
-
         $creditCard = array();
 
         if (preg_match('/(.*)\.json/', $file) == 1) {
-            $json                      = Tools::jsonDecode(file_get_contents($this->jsonFilesPath.$folderName.$file),
+            $json                      = Tools::jsonDecode(Tools::file_get_contents($this->jsonFilesPath.$folderName.$file),
                     true);
             $creditCard[$json["name"]] = $json["config"];
         }

@@ -36,20 +36,22 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
      * @param type $idGender
      * @return type
      */
-    protected function getGender($idGender = NULL)
+    protected function getGender($idGender = null)
     {
         // Gender of the customer (M=male, F=female, U=unknown).
         $gender = Gender::UNKNOWN;
 
-        if ($idGender == NULL) $gender = 'U';
+        if ($idGender == null) {
+            $gender = 'U';
+        }
         switch ($idGender) {
-            case '1' :
+            case '1':
                 $gender = Gender::MALE;
                 break;
-            case '2' :
+            case '2':
                 $gender = Gender::FEMALE;
                 break;
-            default :
+            default:
                 $gender = Gender::UNKNOWN;
                 break;
         }
@@ -66,68 +68,68 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
     {
         $langCode = 'en_GB';
         switch (Tools::strtolower($isoCode)) {
-            case 'fr' :
+            case 'fr':
                 $langCode = 'fr_FR';
                 break;
-            case 'fr' :
+            case 'fr':
                 $langCode = 'fr_BE';
                 break;
-            case 'fr' :
+            case 'fr':
                 $langCode = 'fr_LU';
                 break;
-            case 'lv' :
+            case 'lv':
                 $langCode = 'lv_LV';
                 break;
-            case 'es' :
+            case 'es':
                 $langCode = 'es_ES';
                 break;
-            case 'pt' :
+            case 'pt':
                 $langCode = 'pt_PT';
                 break;
-            case 'nl' :
+            case 'nl':
                 $langCode = 'nl_NL';
                 break;
-            case 'nl' :
+            case 'nl':
                 $langCode = 'nl_BE';
                 break;
-            case 'de' :
+            case 'de':
                 $langCode = 'de_DE';
                 break;
-            case 'de' :
+            case 'de':
                 $langCode = 'de_AT';
                 break;
-            case 'de' :
+            case 'de':
                 $langCode = 'de_LU';
                 break;
-            case 'it' :
+            case 'it':
                 $langCode = 'it_IT';
                 break;
-            case 'da' :
+            case 'da':
                 $langCode = 'da_DK';
                 break;
-            case 'cs' :
+            case 'cs':
                 $langCode = 'cs_CZ';
                 break;
-            case 'pl' :
+            case 'pl':
                 $langCode = 'pl_PL';
                 break;
-            case 'fi' :
+            case 'fi':
                 $langCode = 'fi_FI';
                 break;
-            case 'hu' :
+            case 'hu':
                 $langCode = 'hu_HU';
                 break;
-            case 'no' :
+            case 'no':
                 $langCode = 'no_NO';
                 break;
-            case 'sv' :
+            case 'sv':
                 $langCode = 'sv_SE';
                 break;
-            case 'zh' :
+            case 'zh':
                 $langCode = 'zh_CN';
                 break;
-            case 'en' :
-            default :
+            case 'en':
+            default:
                 $langCode = 'en_GB';
                 break;
         }

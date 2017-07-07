@@ -11,12 +11,14 @@
  */
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 
-class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController {
+class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController
+{
 
     /**
      * @see FrontController::postProcess()
      */
-    public function postProcess() {
+    public function postProcess()
+    {
         $this->display_column_left = false;
         $this->display_column_right = false;
         parent::initContent();
@@ -31,7 +33,5 @@ class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController 
                             : 'paymentReturn/cancel.tpl');
 
         $this->setTemplate($path);
-
     }
-
 }

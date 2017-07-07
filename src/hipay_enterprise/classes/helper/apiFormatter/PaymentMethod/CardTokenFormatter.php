@@ -33,7 +33,6 @@ class CardTokenFormatter extends ApiFormatterAbstract
      */
     public function generate()
     {
-
         $cardTokenRequest = new CardTokenPaymentMethod();
 
         $this->mapRequest($cardTokenRequest);
@@ -42,12 +41,11 @@ class CardTokenFormatter extends ApiFormatterAbstract
     }
 
     /**
-     * 
+     *
      * @param \HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod $cardTokenRequest
      */
     protected function mapRequest(&$cardTokenRequest)
     {
-
         $cardTokenRequest->cardtoken                = $this->cardToken;
         $cardTokenRequest->eci                      = ($this->oneClick) ? ECI::RECURRING_ECOMMERCE
                 : ECI::SECURE_ECOMMERCE;
@@ -60,13 +58,12 @@ class CardTokenFormatter extends ApiFormatterAbstract
      */
     private function setAuthenticationIndicator()
     {
-
         switch ($this->configHipay["payment"]["global"]["activate_3d_secure"]) {
-            case HipayConfig::THREE_D_S_DISABLED :
+            case HipayConfig::THREE_D_S_DISABLED:
                 return 0;
-            case HipayConfig::THREE_D_S_TRY_ENABLE_ALL :
+            case HipayConfig::THREE_D_S_TRY_ENABLE_ALL:
                 return 1;
-            case HipayConfig::THREE_D_S_TRY_ENABLE_RULES :
+            case HipayConfig::THREE_D_S_TRY_ENABLE_RULES:
                 $cartSummary = $this->cart->getSummaryDetails();
                 foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet($cartSummary[$rule["field"]],
@@ -76,7 +73,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
                     }
                 }
                 return 1;
-            case HipayConfig::THREE_D_S_FORCE_ENABLE_RULES :
+            case HipayConfig::THREE_D_S_FORCE_ENABLE_RULES:
                 $cartSummary = $this->cart->getSummaryDetails();
 
                 foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
@@ -87,9 +84,9 @@ class CardTokenFormatter extends ApiFormatterAbstract
                     }
                 }
                 return 2;
-            case HipayConfig::THREE_D_S_FORCE_ENABLE_ALL :
+            case HipayConfig::THREE_D_S_FORCE_ENABLE_ALL:
                 return 2;
-            default :
+            default:
                 return 0;
         }
     }
@@ -106,22 +103,16 @@ class CardTokenFormatter extends ApiFormatterAbstract
         switch ($operator) {
             case '<':
                 return $value1 < $value2;
-                break;
             case '<=':
                 return $value1 <= $value2;
-                break;
             case '>':
                 return $value1 > $value2;
-                break;
             case '>=':
                 return $value1 >= $value2;
-                break;
             case '==':
                 return $value1 == $value2;
-                break;
             case '!=':
                 return $value1 != $value2;
-                break;
             default:
                 return false;
         }

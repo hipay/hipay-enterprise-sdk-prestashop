@@ -15,10 +15,8 @@ use HiPay\Fullservice\Enum\Transaction\Operation;
 
 class AdminHiPayRefundController extends ModuleAdminController
 {
-
     public function __construct()
     {
-
         $this->module    = 'hipay_enterprise';
         $this->bootstrap = true;
         $this->context   = Context::getContext();
@@ -42,12 +40,6 @@ class AdminHiPayRefundController extends ModuleAdminController
             $transactionReference = $this->db->getTransactionReference($order->id);
         }
 
-        if (Tools::isSubmit('id_emp') && Tools::getValue('id_emp') > 0) {
-            $id_employee = Tools::getValue('id_emp');
-        } else {
-            $id_employee = '1';
-        }
-
         // First check
         if (Tools::isSubmit('hipay_refund_submit')) {
             //refund with no basket
@@ -55,7 +47,7 @@ class AdminHiPayRefundController extends ModuleAdminController
                 $refund_type   = Tools::getValue('hipay_refund_type');
                 $refund_amount = Tools::getValue('hipay_refund_amount');
                 $refund_amount = str_replace(' ', '', $refund_amount);
-                $refund_amount = floatval(str_replace(',', '.', $refund_amount));
+                $refund_amount = (float) str_replace(',', '.', $refund_amount);
             }
 
             if (!$refund_amount) {
@@ -95,17 +87,15 @@ class AdminHiPayRefundController extends ModuleAdminController
             }
 
             if ($refund_type == 'complete') {
-
                 $params = array("amount" => $refundableAmount, "transaction_reference" => $transactionReference);
                 $this->apiHandler->handleRefund($params);
-            } else if ($refund_type == 'partial') {
+            } elseif ($refund_type == 'partial') {
                 $params = array("amount" => $refund_amount, "transaction_reference" => $transactionReference);
                 $this->apiHandler->handleRefund($params);
             }
-        } else if ((Tools::isSubmit('hipay_refund_basket_submit'))) {
+        } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
             //refund with basket
             if (Tools::getValue('hipay_refund_type') == "partial") {
-
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
                 if (array_sum($refundItems) == 0 && Tools::getValue('hipay_refund_fee')
                     !== "on") {

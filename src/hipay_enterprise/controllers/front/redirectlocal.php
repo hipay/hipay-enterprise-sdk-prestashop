@@ -21,7 +21,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
      */
     public function initContent()
     {
-
         $this->display_column_left  = false;
         $this->display_column_right = false;
         parent::initContent();
@@ -31,18 +30,16 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
 
-        if ($cart->id == NULL) Tools::redirect('index.php?controller=order');
+        if ($cart->id == null) {
+            Tools::redirect('index.php?controller=order');
+        }
 
         $params = array("productlist" => Tools::getValue("method"), "iframe" => true,
             "deviceFingerprint" => null);
 
-        if (!$params) Tools::redirect('index.php?controller=order');
-
-        $products = $this->getSDKPaymentMethod();
-
-        //verify if the payment method exist in the SDK
-//        if (!in_array(Tools::getValue("method"), $products))
-//            Tools::redirect('index.php?controller=order');
+        if (!$params) {
+            Tools::redirect('index.php?controller=order');
+        }
 
         $mode   = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"];
         $method = Tools::getValue("method");
@@ -79,15 +76,15 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
                 // if electronic signature is on and payment force hpayment when electronic signature is on  OR form is submit OR there's no additional fields
                 if (Tools::isSubmit("localSubmit") || empty($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"])
-                    || ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["forceHpaymentOnElectronicSignature"]
+                    || ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["forceHpaymentOnElectronicSignature"]
                     && $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"])) {
-                    // if form submit 
+                    // if form submit
                     if (Tools::isSubmit("localSubmit")) {
                         foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["additionalFields"]["formFields"] as $name => $field) {
                             $params[$name] = Tools::getValue($name);
                         }
                     }
-                    // set authentication_indicator depending if lectronic signature is on or not 
+                    // set authentication_indicator depending if lectronic signature is on or not
                     if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]) {
                         $params["authentication_indicator"] = 1;
                     } else {
@@ -116,7 +113,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
                             : '16').'paymentFormIframe.tpl';
                 break;
-            default :
+            default:
 
                 break;
         }
@@ -134,22 +131,5 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js'));
         $this->addCSS(array(_MODULE_DIR_.'hipay_enterprise/views/css/card-js.min.css'));
         $this->context->controller->addJS(array(_MODULE_DIR_.'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
-    }
-
-    /**
-     * return all code of Payment method present in the SDK
-     * @return type
-     */
-    private function getSDKPaymentMethod()
-    {
-        $collection = HiPay\Fullservice\Data\PaymentProduct\Collection::getItems();
-
-        $paymentName = array();
-
-        foreach ($collection as $payment) {
-            $paymentName[] = $payment->getProductCode();
-        }
-
-        return $paymentName;
     }
 }

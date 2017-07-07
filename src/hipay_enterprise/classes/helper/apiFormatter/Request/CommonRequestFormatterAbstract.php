@@ -13,10 +13,8 @@ require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
 abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 {
-
     public function __construct($module)
     {
-
         parent::__construct($module);
 
         spl_autoload_register(array($this, 'autoloadCustomData'));
@@ -40,7 +38,6 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 
     protected function setCustomData(&$request, $cart, $params)
     {
-
         $cartSummary = $cart->getSummaryDetails();
 
         $customer = new Customer($cartSummary["delivery"]->id_customer);

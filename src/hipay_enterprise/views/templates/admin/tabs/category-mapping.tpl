@@ -12,7 +12,7 @@
 <div class="panel">
     <div role="tabpanel">
         <div class="alert alert-info">
-		{l s="You must map your shop category to hipay's category. Category mapping is mandatory for Oney payment method"  mod="hipay_enterprise"}
+		{l s='You must map your shop category to hipay category. Category mapping is mandatory for Oney payment method'  mod='hipay_enterprise'}
 	</div>
         <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="category_form">
             <div class="panel" id="fieldset_0">
@@ -34,7 +34,7 @@
                                         <td>
                                             <select name="hipay_map_{$cat["id_category"]}">
                                                 {if !isset($mappedCategories[$cat["id_category"]])}
-                                                    <option value="" >{l s="-- Select category" mod="hipay_enterprise"}</option>
+                                                    <option value="" >{l s='-- Select category" mod="hipay_enterprise' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCategories as $hpcat}
                                                     <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if} value="{$hpcat->getCode()}" >{$hpcat->getLocal($lang|upper)}</option>

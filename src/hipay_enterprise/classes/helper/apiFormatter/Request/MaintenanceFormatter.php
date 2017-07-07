@@ -16,7 +16,6 @@ require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
 class MaintenanceFormatter extends CommonRequestFormatterAbstract
 {
-
     public function __construct($module, $params)
     {
         parent::__construct($module);
@@ -44,7 +43,6 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
      */
     public function generate()
     {
-
         $maintenance = new \HiPay\Fullservice\Gateway\Request\Maintenance\MaintenanceRequest();
 
         $this->mapRequest($maintenance);
@@ -52,7 +50,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
     }
 
     /**
-     * map prestashop order informations to request fields 
+     * map prestashop order informations to request fields
      * @param type $maintenance
      */
     protected function mapRequest(&$maintenance)
@@ -75,17 +73,14 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             + 1);
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on") {
-
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
                 "order" => $this->order, "captureRefundFee" => $this->captureRefundFee);
-
-            $originalBasket = $this->db->getOrderBasket($this->order->id);
 
             foreach ($this->cart->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]]
                     > 0) {
                     $params["products"][] = array("item" => $item, "quantity" => $this->refundItems[$item["id_product"]]);
-                } else if ($this->refundItems == "full") {
+                } elseif ($this->refundItems == "full") {
                     $params["products"][] = array("item" => $item, "quantity" => $item["cart_quantity"]);
                 }
             }
@@ -107,7 +102,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                         "quantity" => $item->getQuantity(),
                         "amount" => Tools::ps_round($item->getTotalAmount(), 2));
                     $this->db->setCaptureOrRefundOrder($captureData);
-                } else if ($item->getType() == "fee") {
+                } elseif ($item->getType() == "fee") {
                     HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,
                         $this->operation);
                 }

@@ -14,7 +14,6 @@ require_once(dirname(__FILE__).'/../../tools/hipayMapper.php');
 
 class CartMaintenanceFormatter implements ApiFormatterInterface
 {
-
     public function __construct($module, $params)
     {
         $this->module      = $module;
@@ -35,7 +34,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     public function generate()
     {
-
         $cart = new HiPay\Fullservice\Gateway\Model\Cart\Cart();
 
         $this->mapRequest($cart);
@@ -49,7 +47,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     protected function mapRequest(&$cart)
     {
-
         $totalQty = 0;
         // Good items
         foreach ($this->products as $product) {
@@ -87,14 +84,14 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
 
         $this->totalItem += $quantity;
 
-        $discount     = -1 * Tools::ps_round(( $product["price_without_reduction"]
-                * $product["cart_quantity"] ) - ($product["price_with_reduction"]
+        $discount     = -1 * Tools::ps_round(($product["price_without_reduction"]
+                * $product["cart_quantity"]) - ($product["price_with_reduction"]
                 * $product["cart_quantity"]), 2);
         $total_amount = Tools::ps_round($product["total_wt"], 2);
-        $unit_price   = Tools::ps_round((($total_amount - $discount ) / $quantity),
+        $unit_price   = Tools::ps_round((($total_amount - $discount) / $quantity),
                 3);
-        $discount     = Tools::ps_round(($discount * $qty ) / $quantity, 3);
-        $total_amount = Tools::ps_round(($total_amount * $qty ) / $quantity, 3);
+        $discount     = Tools::ps_round(($discount * $qty) / $quantity, 3);
+        $total_amount = Tools::ps_round(($total_amount * $qty) / $quantity, 3);
 
 
         $tax_rate             = $product["rate"];
@@ -122,7 +119,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     private function getDiscountItem($totalQty)
     {
-
         $product_reference    = "";
         $name                 = "";
         $unit_price           = 0;
@@ -139,7 +135,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $total_amount += -1 * Tools::ps_round($disc["value_real"], 3);
         }
 
-        $unit_price   = Tools::ps_round(($unit_price * $totalQty ) / $this->totalItem,
+        $unit_price   = Tools::ps_round(($unit_price * $totalQty) / $this->totalItem,
                 3);
         $total_amount = Tools::ps_round(($total_amount * $totalQty) / $this->totalItem,
                 3);
@@ -159,7 +155,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     private function getFeesItem()
     {
-
         $carrier           = new Carrier($this->order->id_carrier);
         $delivery          = new Address($this->order->id_address_delivery);
         $product_reference = "fees_".$carrier->id_reference;

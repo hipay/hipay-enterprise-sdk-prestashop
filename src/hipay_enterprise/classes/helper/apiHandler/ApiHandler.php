@@ -19,7 +19,7 @@ use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;
 
 /**
- * Handle Hipay Api call 
+ * Handle Hipay Api call
  */
 class Apihandler
 {
@@ -45,7 +45,6 @@ class Apihandler
     public function handleCreditCard($mode = Apihandler::HOSTEDPAGE,
                                      $params = array())
     {
-
         $this->baseParamsInit($params);
 
         $cart            = $this->context->cart;
@@ -64,7 +63,6 @@ class Apihandler
                 $params["productlist"] = $this->getCreditCardProductList($deliveryCountry,
                     $currency);
                 return $this->handleIframe($params);
-                break;
             case Apihandler::HOSTEDPAGE:
                 $params["iframe"]      = true;
                 $params["productlist"] = $this->getCreditCardProductList($deliveryCountry,
@@ -72,7 +70,7 @@ class Apihandler
 
                 $this->handleHostedPayment($params);
                 break;
-            default :
+            default:
                 $this->module->getLogs()->logsHipay("Unknown payment mode");
         }
     }
@@ -86,7 +84,6 @@ class Apihandler
     public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE,
                                        $params = array())
     {
-
         $this->baseParamsInit($params, false);
 
         switch ($mode) {
@@ -97,21 +94,20 @@ class Apihandler
                 var_dump($params);
                 $this->handleDirectOrder($params);
                 break;
-            case Apihandler::IFRAME :
+            case Apihandler::IFRAME:
 
                 return $this->handleIframe($params);
-                break;
-            case Apihandler::HOSTEDPAGE :
+            case Apihandler::HOSTEDPAGE:
 
                 $this->handleHostedPayment($params);
                 break;
-            default :
+            default:
                 $this->module->getLogs()->logsHipay("Unknown payment mode");
         }
     }
 
     /**
-     * 
+     *
      * @param type $params
      */
     public function handleCapture($params)
@@ -120,7 +116,7 @@ class Apihandler
     }
 
     /**
-     * 
+     *
      * @param type $params
      */
     public function handleRefund($params)
@@ -129,7 +125,7 @@ class Apihandler
     }
 
     /**
-     * 
+     *
      * @param type $mode
      * @param type $params
      */
@@ -144,7 +140,7 @@ class Apihandler
                 $params["operation"] = Operation::REFUND;
                 ApiCaller::requestMaintenance($this->module, $params);
                 break;
-            default :
+            default:
                 $this->module->getLogs()->logsHipay("Unknown maintenance operation");
         }
     }
@@ -160,10 +156,10 @@ class Apihandler
         if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL) {
             $params["basket"]                = null;
             $params["delivery_informations"] = null;
-        } else if ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
+        } elseif ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
             $params["basket"]                = $this->getCart();
             $params["delivery_informations"] = $this->getDeliveryInformation();
-        } else if ($this->configHipay["payment"]["global"]["activate_basket"] || ( isset($params["method"])
+        } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"])
             && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
             && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]) {
             $params["basket"]                = $this->getCart();
@@ -197,7 +193,7 @@ class Apihandler
     }
 
     /**
-     * call Api to get forwarding URL 
+     * call Api to get forwarding URL
      */
     private function handleHostedPayment($params)
     {
@@ -214,11 +210,10 @@ class Apihandler
     }
 
     /**
-     * call api and redirect to success or error page 
+     * call api and redirect to success or error page
      */
     private function handleDirectOrder($params)
     {
-
         $response = ApiCaller::requestDirectPost($this->module, $params);
 
         $acceptUrl    = $this->context->link->getModuleLink($this->module->name,
@@ -262,7 +257,7 @@ class Apihandler
     }
 
     /**
-     * return well formatted authorize credit card payment methods 
+     * return well formatted authorize credit card payment methods
      * @return string
      */
     private function getCreditCardProductList($deliveryCountry, $currency)
@@ -281,7 +276,6 @@ class Apihandler
      */
     private function getPaymentMethod($params, $creditCard = true)
     {
-
         if ($creditCard) {
             $paymentMethod = new CardTokenFormatter($this->module, $params);
         } else {

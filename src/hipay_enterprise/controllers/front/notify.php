@@ -19,7 +19,6 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
      */
     public function postProcess()
     {
-
         if ($this->module->active == false) {
             die;
         }
@@ -29,11 +28,11 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         foreach ($postData as $key => $value) {
             $data[$key] = $value;
         }
-        //LOG 
+        //LOG
         $this->module->getLogs()->callbackLogs('##########################################');
         $this->module->getLogs()->callbackLogs('##########################################');
         $this->module->getLogs()->callbackLogs('CALLBACK HANDLING START');
-        $this->module->getLogs()->callbackLogs(print_r($data, TRUE));
+        $this->module->getLogs()->callbackLogs(print_r($data, true));
 
         //   print_r($data);
         // if state and status exist or not

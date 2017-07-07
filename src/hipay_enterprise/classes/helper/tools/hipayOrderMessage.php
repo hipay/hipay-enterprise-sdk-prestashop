@@ -23,7 +23,6 @@ class HipayOrderMessage
      */
     public static function orderMessage($orderId, $transaction)
     {
-
         $data = HipayOrderMessage::formatOrderData($transaction);
         HipayOrderMessage::addMessage($orderId, $data);
     }
@@ -63,7 +62,6 @@ class HipayOrderMessage
      */
     public static function captureMessage($orderId, $transaction)
     {
-
         $amount    = ($transaction->getStatus() == TransactionStatus::AUTHORIZED
                     ? '0.00' : (($transaction->getCapturedAmount() != null) ? $transaction->getCapturedAmount()
                         : '0.00'));
@@ -102,7 +100,6 @@ class HipayOrderMessage
                                                          $attempt,
                                                          $messageId = false)
     {
-
         $data = Tools::jsonEncode(array($type."_attempt" => $attempt));
         if (!$messageId) {
             HipayOrderMessage::addMessage($orderId, $data);

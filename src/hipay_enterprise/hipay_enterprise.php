@@ -109,7 +109,7 @@ class Hipay_enterprise extends PaymentModule
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header')
                 && $this->registerHook('actionFrontControllerSetMedia');
             $return   = $return && $return17;
-        } else if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+        } elseif (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn')
                 && $this->registerHook('displayPaymentEU');
             $return   = $return && $return16;
@@ -153,9 +153,9 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPayment($params)
     {
-        $address    = new Address(intval($params['cart']->id_address_delivery));
-        $country    = new Country(intval($address->id_country));
-        $currency   = new Currency(intval($params['cart']->id_currency));
+        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $country    = new Country((int) $address->id_country);
+        $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
 
         $this->context->controller->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js'));
@@ -185,9 +185,9 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logsHipay('---- START function hookDisplayPaymentEU');
         $this->logs->logsHipay('##########################');
 
-        $address    = new Address(intval($params['cart']->id_address_delivery));
-        $country    = new Country(intval($address->id_country));
-        $currency   = new Currency(intval($params['cart']->id_currency));
+        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $country    = new Country((int) $address->id_country);
+        $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
 
         $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card",
@@ -244,13 +244,12 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * 
+     *
      * @param type $params
      * @return type
      */
     public function hookPaymentReturn($params)
     {
-
         if (_PS_VERSION_ >= '1.7') {
             $hipay17 = new HipayProfessionalNew();
             $hipay17->hipayPaymentReturnNew($params);
@@ -266,7 +265,6 @@ class Hipay_enterprise extends PaymentModule
      */
     public function HookDisplayAdminOrder()
     {
-
         $order             = new Order((int) Tools::getValue('id_order'));
         $shippingCost      = $order->total_shipping;
         $refundableAmount  = $order->getTotalPaid();
@@ -279,7 +277,6 @@ class Hipay_enterprise extends PaymentModule
         $showRefund        = true;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
-        $token             = Tools::getValue('token');
         $orderId           = $order->id;
         $employeeId        = $this->context->employee->id;
         $basket            = $this->db->getOrderBasket($order->id);
@@ -342,7 +339,7 @@ class Hipay_enterprise extends PaymentModule
                 if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["canManualCapture"]) {
                     $showCapture = false;
                 }
-            } else if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
+            } elseif (isset($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
                 if (!(bool) $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["canRefund"]) {
                     $showRefund = false;
                 }
@@ -399,11 +396,11 @@ class Hipay_enterprise extends PaymentModule
 
     public function installAdminTab()
     {
-        $class_names = [
+        $class_names = array(
             'AdminHiPayCapture',
             'AdminHiPayRefund',
             'AdminHiPayConfig',
-        ];
+        );
         return $this->createTabAdmin($class_names);
     }
 
@@ -427,11 +424,11 @@ class Hipay_enterprise extends PaymentModule
 
     public function uninstallAdminTab()
     {
-        $class_names = [
+        $class_names = array(
             'AdminHiPayCapture',
             'AdminHiPayRefund',
             'AdminHiPayConfig',
-        ];
+        );
         foreach ($class_names as $class_name) {
             $id_tab = (int) Tab::getIdFromClassName($class_name);
             if ($id_tab) {
@@ -450,7 +447,6 @@ class Hipay_enterprise extends PaymentModule
      */
     public function getContent()
     {
-
         $this->logs->logsHipay('##########################');
         $this->logs->logsHipay('---- START function getContent');
 
@@ -524,41 +520,41 @@ class Hipay_enterprise extends PaymentModule
                 die('<h1>File not found</h1>');
             } else {
                 header('Content-Type: text/plain');
-                $content = file_get_contents($path);
+                $content = Tools::file_get_contents($path);
                 echo $content;
                 die();
             }
-        } else if (Tools::isSubmit('submitAccount')) {
+        } elseif (Tools::isSubmit('submitAccount')) {
             $this->logs->logsHipay('---- >> submitAccount');
 
             $this->saveAccountInformations();
 
             $this->context->smarty->assign('active_tab', 'account_form');
-        } else if (Tools::isSubmit('submitGlobalPaymentMethods')) {
+        } elseif (Tools::isSubmit('submitGlobalPaymentMethods')) {
             $this->logs->logsHipay('---- >> submitGlobalPaymentMethods');
             $this->saveGlobalPaymentInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
-        } else if (Tools::isSubmit('submit3DSecure')) {
+        } elseif (Tools::isSubmit('submit3DSecure')) {
             $this->logs->logsHipay('---- >> submit3DSecure');
             $this->save3DSecureInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
-        } else if (Tools::isSubmit('creditCardSubmit')) {
+        } elseif (Tools::isSubmit('creditCardSubmit')) {
             $this->logs->logsHipay('---- >> creditCardSubmit');
             $this->saveCreditCardInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
-        } else if (Tools::isSubmit('localPaymentSubmit')) {
+        } elseif (Tools::isSubmit('localPaymentSubmit')) {
             $this->logs->logsHipay('---- >> localPaymentSubmit');
             $this->saveLocalPaymentInformations();
             $this->context->smarty->assign('active_tab', 'payment_form');
-        } else if (Tools::isSubmit('fraudSubmit')) {
+        } elseif (Tools::isSubmit('fraudSubmit')) {
             $this->logs->logsHipay('---- >> fraudSubmit');
             $this->saveFraudInformations();
             $this->context->smarty->assign('active_tab', 'fraud_form');
-        } else if (Tools::isSubmit('submitCategoryMapping')) {
+        } elseif (Tools::isSubmit('submitCategoryMapping')) {
             $this->logs->logsHipay('---- >> submitCategoryMapping');
             $this->saveCategoryMappingInformations();
             $this->context->smarty->assign('active_tab', 'category_form');
-        } else if (Tools::isSubmit('submitCarrierMapping')) {
+        } elseif (Tools::isSubmit('submitCarrierMapping')) {
             $this->logs->logsHipay('---- >> submitCarrierMapping');
             $this->saveCarrierMappingInformations();
             $this->context->smarty->assign('active_tab', 'carrier_form');
@@ -570,7 +566,6 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logsHipay('---- >> function save3DSecureInformations');
 
         try {
-
             $accountConfig                                 = array(
                 "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
                 // Not cool but works
@@ -610,13 +605,11 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logsHipay('---- >> function saveCarrierMappingInformations');
 
         try {
-
             $psCarriers = $this->mapper->getPrestashopCarriers();
 
             $mapping       = array();
             $this->_errors = array();
             foreach ($psCarriers as $car) {
-
                 $psMapCar            = Tools::getValue('ps_map_'.$car["id_carrier"]);
                 $hipayMapCarMode     = Tools::getValue('hipay_map_mode_'.$car["id_carrier"]);
                 $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_'.$car["id_carrier"]);
@@ -663,13 +656,11 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logsHipay('---- >> function saveCategoryMappingInformations');
 
         try {
-
             $psCategories = $this->mapper->getPrestashopCategories();
 
             $mapping = array();
 
             foreach ($psCategories as $cat) {
-
                 $psMapCat    = Tools::getValue('ps_map_'.$cat["id_category"]);
                 $hipayMapCat = Tools::getValue('hipay_map_'.$cat["id_category"]);
 
@@ -687,8 +678,7 @@ class Hipay_enterprise extends PaymentModule
                 return false;
             }
 
-            $response           = $this->mapper->setMapping(HipayMapper::HIPAY_CAT_MAPPING,
-                $mapping);
+            $this->mapper->setMapping(HipayMapper::HIPAY_CAT_MAPPING, $mapping);
             $this->_successes[] = $this->l('Settings configuration saved successfully.');
             return true;
         } catch (Exception $e) {
@@ -726,13 +716,13 @@ class Hipay_enterprise extends PaymentModule
                     && Tools::getValue("api_password_sandbox") && !Tools::getValue("api_username_sandbox"))) {
                     $this->_errors[] = $this->l("If sandbox api username is filled sandbox api password is mandatory");
                     return false;
-                } else if (($key == "api_tokenjs_username_sandbox" && Tools::getValue("api_tokenjs_username_sandbox")
+                } elseif (($key == "api_tokenjs_username_sandbox" && Tools::getValue("api_tokenjs_username_sandbox")
                     && !Tools::getValue("api_tokenjs_password_publickey_sandbox"))
                     || ($key == "api_tokenjs_password_publickey_sandbox" && Tools::getValue("api_tokenjs_password_publickey_sandbox")
                     && !Tools::getValue("api_tokenjs_username_sandbox"))) {
                     $this->_errors[] = $this->l("If sandbox api TokenJS username is filled sandbox api TokenJS password is mandatory");
                     return false;
-                } else if (($key == "api_moto_username_sandbox" && Tools::getValue("api_moto_username_sandbox")
+                } elseif (($key == "api_moto_username_sandbox" && Tools::getValue("api_moto_username_sandbox")
                     && !Tools::getValue("api_moto_password_sandbox")) || ($key == "api_moto_password_sandbox"
                     && Tools::getValue("api_moto_password_sandbox") && !Tools::getValue("api_moto_username_sandbox"))) {
                     $this->_errors[] = $this->l("If sandbox api MO/TO username is filled sandbox api MO/TO password is mandatory");
@@ -749,19 +739,20 @@ class Hipay_enterprise extends PaymentModule
                     && Tools::getValue("api_password_production") && !Tools::getValue("api_username_production"))) {
                     $this->_errors[] = $this->l("If production api username is filled production api password is mandatory");
                     return false;
-                } else if (($key == "api_tokenjs_username_production" && Tools::getValue("api_tokenjs_username_production")
+                } elseif (($key == "api_tokenjs_username_production" && Tools::getValue("api_tokenjs_username_production")
                     && !Tools::getValue("api_tokenjs_password_publickey_production"))
                     || ($key == "api_tokenjs_password_publickey_production" && Tools::getValue("api_tokenjs_password_publickey_production")
                     && !Tools::getValue("api_tokenjs_username_production"))) {
                     $this->_errors[] = $this->l("If production api TokenJS username is filled production api TokenJS password is mandatory");
                     return false;
-                } else if (($key == "api_moto_username_production" && Tools::getValue("api_moto_username_production")
-                    && !Tools::getValue("api_moto_password_production")) || ($key == "api_moto_password_production"
-                    && Tools::getValue("api_moto_password_production") && !Tools::getValue("api_moto_username_production"))) {
+                } elseif (($key == "api_moto_username_production" && Tools::getValue("api_moto_username_production")
+                    && !Tools::getValue("api_moto_password_production")) || ($key
+                    == "api_moto_password_production" && Tools::getValue("api_moto_password_production")
+                    && !Tools::getValue("api_moto_username_production"))) {
                     $this->_errors[] = $this->l("If production api MO/TO username is filled production api MO/TO password is mandatory");
                     return false;
                 } else {
-                    $fieldValue                     = Tools::getValue($key);
+                    $fieldValue                        = Tools::getValue($key);
                     $accountConfig["production"][$key] = $fieldValue;
                 }
             }
@@ -975,11 +966,11 @@ class Hipay_enterprise extends PaymentModule
         $dir            = _PS_MODULE_DIR_.$this->logs->getBasePath();
         $files          = scandir($dir, 1);
         // init array files
-        $error_files    = [];
-        $info_files     = [];
-        $callback_files = [];
-        $request_files  = [];
-        $refund_files   = [];
+        $error_files    = array();
+        $info_files     = array();
+        $callback_files = array();
+        $request_files  = array();
+        $refund_files   = array();
         // dispatch files
         foreach ($files as $file) {
             if (preg_match("/error/i", $file) && count($error_files) < 10) {
@@ -998,13 +989,13 @@ class Hipay_enterprise extends PaymentModule
                 $refund_files[] = $file;
             }
         }
-        return [
+        return array(
             'error' => $error_files,
             'infos' => $info_files,
             'callback' => $callback_files,
             'request' => $request_files,
             'refund' => $refund_files
-        ];
+        );
     }
 
     /**
@@ -1032,12 +1023,11 @@ class Hipay_enterprise extends PaymentModule
         foreach ($this->hipayConfigTool->getConfigHipay()["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] &&
                 (empty($settings["countries"]) || in_array($country->iso_code,
-                    $settings["countries"]) ) &&
+                    $settings["countries"])) &&
                 (empty($settings["currencies"]) || in_array($currency->iso_code,
-                    $settings["currencies"]) ) &&
+                    $settings["currencies"])) &&
                 $orderTotal >= $settings["minAmount"]
             ) {
-
                 if ($paymentMethodType == "local_payment") {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE
                         || Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM
@@ -1061,7 +1051,6 @@ class Hipay_enterprise extends PaymentModule
      */
     public function updateHiPayOrderStates()
     {
-
         $hipayStates = array(
             "HIPAY_OS_PENDING" => array(
                 "waiting_state_color" => "#4169E1",
@@ -1289,7 +1278,7 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * 
+     *
      * @param type $params
      * @return type
      */
@@ -1316,7 +1305,7 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * 
+     *
      */
     private function createHipayTable()
     {
@@ -1327,7 +1316,7 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * 
+     *
      */
     private function deleteHipayTable()
     {

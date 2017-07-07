@@ -14,14 +14,16 @@ require_once(dirname(__FILE__) . '/classes/helper/tools/hipayCCToken.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
-class HipayEnterpriseNew extends Hipay_enterprise {
+class HipayEnterpriseNew extends Hipay_enterprise
+{
 
     /**
      * Display new payment options
      * @param type $params
      * @return type
      */
-    public function hipayPaymentOptions($params) {
+    public function hipayPaymentOptions($params)
+    {
         if (!$this->active) {
             return;
         }
@@ -39,7 +41,8 @@ class HipayEnterpriseNew extends Hipay_enterprise {
      * Add CSS and JS in header
      * @param type $params
      */
-    public function hookDisplayHeader($params) {
+    public function hookDisplayHeader($params)
+    {
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
         $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
@@ -52,8 +55,8 @@ class HipayEnterpriseNew extends Hipay_enterprise {
      * @param type $params
      * @return PaymentOption
      */
-    public function hipayExternalPaymentOption($params) {
-
+    public function hipayExternalPaymentOption($params)
+    {
         $address = new Address(intval($params['cart']->id_address_delivery));
         $country = new Country(intval($address->id_country));
         $currency = new Currency(intval($params['cart']->id_currency));
@@ -104,7 +107,7 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                     ;
                     $paymentOptions[] = $newOption;
                     break;
-                default :
+                default:
                     break;
             }
         }
@@ -114,7 +117,6 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $params['cart']->getOrderTotal());
 
         if (!empty($activatedLocalPayment)) {
-
             $this->context->smarty->assign(array(
                 'module_dir' => $this->_path,
                 'confHipay' => $this->hipayConfigTool->getConfigHipay(),
@@ -146,8 +148,8 @@ class HipayEnterpriseNew extends Hipay_enterprise {
                         ->setForm($paymentForm)
                 ;
 
-                // if no credit card, we force ioBB input to be displayed 
-                if($i == 0 && empty($activatedCreditCard)) {
+                // if no credit card, we force ioBB input to be displayed
+                if ($i == 0 && empty($activatedCreditCard)) {
                     $ioBB = '<input id="ioBB" type="hidden" name="ioBB">' ;
                     $newOption->setAdditionalInformation($ioBB);
                 }
@@ -161,11 +163,12 @@ class HipayEnterpriseNew extends Hipay_enterprise {
     }
 
     /**
-     * 
+     *
      * @param type $cart
      * @return boolean
      */
-    public function checkCurrency($cart) {
+    public function checkCurrency($cart)
+    {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
         if (is_array($currencies_module)) {
@@ -182,7 +185,8 @@ class HipayEnterpriseNew extends Hipay_enterprise {
      * add JS to the bottom of the page
      * @param type $params
      */
-    public function hipayActionFrontControllerSetMedia($params) {
+    public function hipayActionFrontControllerSetMedia($params)
+    {
 
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
@@ -192,11 +196,12 @@ class HipayEnterpriseNew extends Hipay_enterprise {
     }
 
     /**
-     * 
+     *
      * @param type $params
      * @return type
      */
-    public function hipayPaymentReturnNew($params) {
+    public function hipayPaymentReturnNew($params)
+    {
         // Payement return for PS 1.7
         if ($this->active == false) {
             return;
@@ -214,5 +219,4 @@ class HipayEnterpriseNew extends Hipay_enterprise {
         ));
         return $this->fetch('module:' . $this->name . '/views/templates/hook/paymentReturn.tpl');
     }
-
 }

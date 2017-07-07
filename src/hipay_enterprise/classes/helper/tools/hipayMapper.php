@@ -75,7 +75,7 @@ class HipayMapper
             $categories = array();
         } else {
             foreach ($categoriesDB as $cat) {
-                $categories[$cat["ps_cat_id"]] = $cat["hp_cat_id"];
+                $categories[$cat["hp_ps_cat_id"]] = $cat["hp_cat_id"];
             }
         }
 
@@ -95,10 +95,10 @@ class HipayMapper
             $carriers = array();
         } else {
             foreach ($carriersDB as $car) {
-                $carriers[$car["ps_carrier_id"]]["mode"]            = $car["hp_carrier_mode"];
-                $carriers[$car["ps_carrier_id"]]["shipping"]        = $car["hp_carrier_shipping"];
-                $carriers[$car["ps_carrier_id"]]["preparation_eta"] = $car["preparation_eta"];
-                $carriers[$car["ps_carrier_id"]]["delivery_eta"]    = $car["delivery_eta"];
+                $carriers[$car["hp_ps_carrier_id"]]["mode"]            = $car["hp_carrier_mode"];
+                $carriers[$car["hp_ps_carrier_id"]]["shipping"]        = $car["hp_carrier_shipping"];
+                $carriers[$car["hp_ps_carrier_id"]]["preparation_eta"] = $car["preparation_eta"];
+                $carriers[$car["hp_ps_carrier_id"]]["delivery_eta"]    = $car["delivery_eta"];
             }
         }
 
@@ -107,7 +107,6 @@ class HipayMapper
 
     public function getMappedHipayCatFromPSId($PSId)
     {
-
         $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
 
         if ($hipayCatId) {
@@ -155,18 +154,17 @@ class HipayMapper
     public function setMapping($type, $values)
     {
         switch ($type) {
-            case HipayMapper::HIPAY_CAT_MAPPING :
+            case HipayMapper::HIPAY_CAT_MAPPING:
                 if (!empty($values)) {
-
+                    $row = array();
                     foreach ($values as $val) {
-
-                        $row[] = array("ps_cat_id" => pSQL((int) $val["pscat"]),
+                        $row[] = array("hp_ps_cat_id" => pSQL((int) $val["pscat"]),
                             "hp_cat_id" => pSQL((int) $val["hipaycat"]), "shop_id" => $this->context->shop->id);
 
                         $rootCat = new Category($val["pscat"]);
                         // we mapp all childs of root category
                         foreach ($rootCat->getAllChildren() as $childCat) {
-                            $row[] = array("ps_cat_id" => (int) $childCat->id, "hp_cat_id" => pSQL((int) $val["hipaycat"]),
+                            $row[] = array("hp_ps_cat_id" => (int) $childCat->id, "hp_cat_id" => pSQL((int) $val["hipaycat"]),
                                 "shop_id" => (int) $this->context->shop->id);
                         }
                     }
@@ -175,12 +173,11 @@ class HipayMapper
                             $this->context->shop->id);
                 }
                 return true;
-                break;
-            case HipayMapper::HIPAY_CARRIER_MAPPING :
+            case HipayMapper::HIPAY_CARRIER_MAPPING:
                 if (!empty($values)) {
                     foreach ($values as $val) {
                         $row[] = array(
-                            "ps_carrier_id" => pSQL((int) $val["pscar"]),
+                            "hp_ps_carrier_id" => pSQL((int) $val["pscar"]),
                             "hp_carrier_mode" => pSQL($val["hipaycarmode"]),
                             "hp_carrier_shipping" => pSQL($val["hipaycarshipping"]),
                             "preparation_eta" => pSQL((int) $val["prepeta"]),
@@ -194,7 +191,6 @@ class HipayMapper
                         $this->context->shop->id);
                 }
                 return true;
-                break;
         }
     }
 

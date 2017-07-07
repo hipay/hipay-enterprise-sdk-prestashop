@@ -12,7 +12,6 @@ require_once(dirname(__FILE__).'/hipayDBQuery.php');
 
 class HipayCCToken
 {
-
     public function __construct($moduleInstance)
     {
         $this->module  = $moduleInstance;
@@ -29,7 +28,6 @@ class HipayCCToken
     public function saveCCToken($customerId, $card)
     {
         if (!$this->tokenExist($customerId, $card["token"])) {
-
             $card = array_merge(array("customer_id" => $customerId), $card);
 
             $this->db->setCCToken($card);

@@ -15,7 +15,6 @@ use HiPay\Fullservice\Enum\Transaction\Operation;
 
 class AdminHiPayCaptureController extends ModuleAdminController
 {
-
     public function __construct()
     {
         $this->module    = 'hipay_enterprise';
@@ -30,7 +29,6 @@ class AdminHiPayCaptureController extends ModuleAdminController
 
     public function postProcess()
     {
-
         $context = Context::getContext();
 
 
@@ -45,12 +43,6 @@ class AdminHiPayCaptureController extends ModuleAdminController
             $params               = array("method" => $paymentProduct);
         }
 
-        if (Tools::isSubmit('id_emp') && Tools::getValue('id_emp') > 0) {
-            $id_employee = Tools::getValue('id_emp');
-        } else {
-            $id_employee = '1';
-        }
-
         // First check
         if (Tools::isSubmit('hipay_capture_submit')) {
             //capture with no basket
@@ -58,7 +50,7 @@ class AdminHiPayCaptureController extends ModuleAdminController
                 $capture_type   = Tools::getValue('hipay_capture_type');
                 $capture_amount = Tools::getValue('hipay_capture_amount');
                 $capture_amount = str_replace(' ', '', $capture_amount);
-                $capture_amount = floatval(str_replace(',', '.', $capture_amount));
+                $capture_amount = (float) str_replace(',', '.', $capture_amount);
             }
 
             if (!$capture_amount) {
@@ -81,7 +73,7 @@ class AdminHiPayCaptureController extends ModuleAdminController
                 die('');
             }
 
-            // total captured amount 
+            // total captured amount
             $totalPaid      = $order->getTotalPaid();
             // remaining amount to capture
             $stillToCapture = $order->total_paid_tax_incl - $totalPaid;
@@ -101,20 +93,19 @@ class AdminHiPayCaptureController extends ModuleAdminController
             }
 
             if ($capture_type == 'complete') {
-
                 $params["amount"]                = $stillToCapture;
                 $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
-            } else if ($capture_type == 'partial') {
+            } elseif ($capture_type == 'partial') {
                 $params["amount"]                = $capture_amount;
                 $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
             }
-        } else if ((Tools::isSubmit('hipay_capture_basket_submit'))) {
+        } elseif ((Tools::isSubmit('hipay_capture_basket_submit'))) {
             //capture with basket
             if (Tools::getValue('hipay_capture_type') == "partial") {
                 $refundItems = (!Tools::getValue('hipaycapture')) ? array() : Tools::getValue('hipaycapture');
-                //check if no items has been sent 
+                //check if no items has been sent
                 if (array_sum($refundItems) == 0 && Tools::getValue('hipay_capture_fee')
                     !== "on") {
                     $hipay_redirect_status = $this->module->l('Select at least one item to capture',

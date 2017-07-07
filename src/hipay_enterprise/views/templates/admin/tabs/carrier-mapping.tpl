@@ -12,7 +12,7 @@
 <div class="panel">
     <div role="tabpanel">
         <div class="alert alert-info">
-		{l s="You must map your shop carrier to hipay's carriers category. Carrier mapping is mandatory for Oney payment method"  mod="hipay_enterprise"}
+		{l s='You must map your shop carrier to hipay carriers category. Carrier mapping is mandatory for Oney payment method'  mod='hipay_enterprise'}
 	</div>
         <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="category_form">
             <div class="panel" id="fieldset_0">
@@ -43,7 +43,7 @@
                                         <td>
                                             <select name="hipay_map_mode_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="" >{l s="-- Select carrier mode" mod="hipay_enterprise"}</option>
+                                                    <option value="" >{l s='-- Select carrier mode" mod="hipay_enterprise' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
@@ -53,7 +53,7 @@
                                         <td>
                                             <select name="hipay_map_shipping_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="" >{l s="-- Select carrier shipping" mod="hipay_enterprise"}</option>
+                                                    <option value="" >{l s='-- Select carrier shipping" mod="hipay_enterprise' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["shipping"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>

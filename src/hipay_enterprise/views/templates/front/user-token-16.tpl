@@ -14,10 +14,10 @@
         <table id="order-list" class="table table-bordered footab default footable-loaded footable">
             <thead>
                 <tr>
-                    <th>{l s="Card number" mod="hipay_enterprise"}</th>
-                    <th>{l s="Card owner" mod="hipay_enterprise"}</th>
-                    <th>{l s="Expiration date" mod="hipay_enterprise"}</th>
-                    <th>{l s="Action" mod="hipay_enterprise"}</th>
+                    <th>{l s='Card number' mod='hipay_enterprise'}</th>
+                    <th>{l s='Card owner' mod='hipay_enterprise'}</th>
+                    <th>{l s='Expiration date' mod='hipay_enterprise'}</th>
+                    <th>{l s='Action' mod='hipay_enterprise'}</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +39,7 @@
                     </tr>
                 {/foreach}
             {else}
-            <p class="alert alert-warning">{l s='You have no saved credit/debit card.'}</p>
+            <p class="alert alert-warning">{l s='You have no saved credit/debit card.' mod='hipay_enterprise'}</p>
         {/if}
         </tbody>
     </table>
@@ -49,13 +49,13 @@
     <li>
         <a class="btn btn-default button button-small" href="{$link->getPageLink('my-account', true)|escape:'html':'UTF-8'}">
             <span>
-                <i class="icon-chevron-left"></i> {l s='Back to Your Account'}
+                <i class="icon-chevron-left"></i> {l s='Back to Your Account' mod='hipay_enterprise'}
             </span>
         </a>
     </li>
     <li>
         <a class="btn btn-default button button-small" href="{$base_dir}">
-            <span><i class="icon-chevron-left"></i> {l s='Home'}</span>
+            <span><i class="icon-chevron-left"></i> {l s='Home' mod='hipay_enterprise'}</span>
         </a>
     </li>
 </ul>

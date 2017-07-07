@@ -31,7 +31,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->apiHandler = new ApiHandler($this->module, $this->context);
         $this->ccToken    = new HipayCCToken($this->module);
 
-        if ($cart->id == NULL) Tools::redirect('index.php?controller=order');
+        if ($cart->id == null) {
+            Tools::redirect('index.php?controller=order');
+        }
         $context->smarty->assign(array(
             'nbProducts' => $cart->nbProducts(),
             'cust_currency' => $cart->id_currency,
@@ -55,7 +57,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand')
                     && Tools::getValue('card-pan')) {
                     $path = $this->apiNewCC($cart, $context, $savedCC);
-                } else if (Tools::getValue('ccTokenHipay')) {
+                } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(Tools::getValue('ccTokenHipay'),
                         $cart, $savedCC, $context);
                 } else {
@@ -77,7 +79,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
                             : '16').'paymentFormIframe.tpl';
                 break;
-            default :
+            default:
 
                 break;
         }
@@ -97,7 +99,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
         if ($tokenDetails = $this->ccToken->getTokenDetails($cart->id_customer,
             $token)) {
-
             $params = array(
                 "deviceFingerprint" => Tools::getValue('ioBB'),
                 "productlist" => $tokenDetails['brand'],
@@ -138,7 +139,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency("credit_card",
             $deliveryCountry, $currency);
-        $selectedCC = strtolower(str_replace(" ", "-",
+        $selectedCC = Tools::strtolower(str_replace(" ", "-",
                 Tools::getValue('card-brand')));
         if (in_array($selectedCC, array_keys($creditCard))) {
             $card = array(
@@ -158,7 +159,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 "cardtoken" => Tools::getValue('card-token'),
                 "method" => $selectedCC
             );
-            if(!$customer->is_guest && Tools::isSubmit('saveTokenHipay')){
+            if (!$customer->is_guest && Tools::isSubmit('saveTokenHipay')) {
                 $this->ccToken->saveCCToken($cart->id_customer, $card);
             }
             $this->apiHandler->handleCreditCard(Apihandler::DIRECTPOST, $params);

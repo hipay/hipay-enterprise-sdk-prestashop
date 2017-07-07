@@ -12,15 +12,16 @@
 require_once(dirname(__FILE__) . '/hipayFormInput.php');
 require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
 
-class HipayForm extends HipayFormInput {
-
+class HipayForm extends HipayFormInput
+{
     protected $context = false;
     protected $helper = false;
     protected $module = false;
     public $name = false;
     public $configHipay;
 
-    public function __construct($module_instance) {
+    public function __construct($module_instance)
+    {
         // Requirements
         $this->context = Context::getContext();
         $this->module = $module_instance;
@@ -50,7 +51,8 @@ class HipayForm extends HipayFormInput {
         return $this->helper;
     }
 
-    public function generateForm($form) {
+    public function generateForm($form)
+    {
         return $this->helper->generateForm($form);
     }
 
@@ -58,8 +60,8 @@ class HipayForm extends HipayFormInput {
      * global payment form
      * @return type
      */
-    public function getGlobalPaymentMethodsForm() {
-
+    public function getGlobalPaymentMethodsForm()
+    {
         $form = array();
 
         $this->helper->tpl_vars['fields_value'] = $this->getGlobalPaymentMethodsFormValues();
@@ -181,10 +183,11 @@ class HipayForm extends HipayFormInput {
     }
 
     /**
-     * get value for global payment methods form 
+     * get value for global payment methods form
      * @return type
      */
-    public function getGlobalPaymentMethodsFormValues() {
+    public function getGlobalPaymentMethodsFormValues()
+    {
         //init fields
         $values = array(
             "operating_mode" => "",
@@ -214,7 +217,8 @@ class HipayForm extends HipayFormInput {
      * fraud payment form
      * @return type
      */
-    public function getFraudForm() {
+    public function getFraudForm()
+    {
         $form = array();
 
         $this->helper->tpl_vars['fields_value'] = $this->getFraudFormValues();
@@ -314,10 +318,11 @@ class HipayForm extends HipayFormInput {
     }
 
     /**
-     * get value for fraud form 
+     * get value for fraud form
      * @return type
      */
-    public function getFraudFormValues() {
+    public function getFraudFormValues()
+    {
 
         // init field
         $values = array(
@@ -337,12 +342,11 @@ class HipayForm extends HipayFormInput {
         foreach ($values as $key => $value) {
             if (is_bool(Tools::getValue($key)) && !Tools::getValue($key) && $key != "input_split") {
                 $values[$key] = $this->configHipay["fraud"][$key];
-            } else if($key != "input_split") {
+            } elseif ($key != "input_split") {
                 $values[$key] = Tools::getValue($key);
             }
         }
 
         return $values;
     }
-
 }

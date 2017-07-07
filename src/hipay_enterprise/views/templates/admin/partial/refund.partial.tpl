@@ -1,6 +1,6 @@
 {if $errorHipayRefund }
     {if $errorHipayRefund == "ok"}
-        <p class="alert alert-success">{l s="Request successfully sent"}</p>
+        <p class="alert alert-success">{l s='Request successfully sent'}</p>
     {else}
         <p class="alert alert-danger">{$errorHipayRefund}</p>
     {/if}
@@ -18,9 +18,9 @@
                 <label class="control-label " for="hipay_refund_type">{l s='Refund type'}</label>
                 <select id="hipay_refund_type" name="hipay_refund_type" class="form-control ">
                     {if !$partiallyRefunded}
-                        <option value="complete" >{l s="Complete"}</option>
+                        <option value="complete" >{l s='Complete'}</option>
                     {/if}
-                    <option value="partial" >{l s="Partial"}</option>
+                    <option value="partial" >{l s='Partial'}</option>
                 </select>
             </div>
             <div id="block-refund-amount" {if !$partiallyRefunded} style="display:none;" {/if} class="form-group">
@@ -30,9 +30,9 @@
                 {else}
                     <table class="table">
                         <tr>
-                            <th>{l s="Product name"}</th>
-                            <th>{l s="Already refunded"}</th>
-                            <th>{l s="Quantity refundable"}</th>
+                            <th>{l s='Product name'}</th>
+                            <th>{l s='Already refunded'}</th>
+                            <th>{l s='Quantity refundable'}</th>
                         </tr>
                         {foreach $products as $item}
                             {if empty($capturedItems) && !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
@@ -74,13 +74,13 @@
                         {if $shippingCost > 0 } 
                             {if ($capturedFees && !$refundedFees) || ($stillToCaptureDisplay <= 0 && !$refundedFees)}
                                 <label>
-                                    <input type="checkbox" name="hipay_refund_fee" > {l s="Refund fee(s)"}
+                                    <input type="checkbox" name="hipay_refund_fee" > {l s='Refund fee(s)'}
                                 </label>
                             {else}
-                                <span>{l s="Shipping refunded"}</span>
+                                <span>{l s='Shipping refunded'}</span>
                             {/if}
                         {else}
-                            <span>{l s="Shipping is free"}</span>
+                            <span>{l s='Shipping is free'}</span>
                         {/if}
                     </div>
                 {/if}
@@ -88,7 +88,7 @@
             <div class="form-group">
                 {if !$totallyRefunded}
                 <button type="submit"  name="{if !$basket}hipay_refund_submit{else}hipay_refund_basket_submit{/if}" class="btn btn-primary pull-right" >
-                    {l s="Refund" }
+                    {l s='Refund' }
                 </button>
                 {/if}
             </div>
@@ -96,6 +96,6 @@
     </fieldset>
 {else}
     <p class="alert alert-warning">
-        {l s="This order has already been fully refunded, cannot be refunded or waiting authorization for refund"} <br/>
+        {l s='This order has already been fully refunded, cannot be refunded or waiting authorization for refund'} <br/>
     </p>
 {/if}

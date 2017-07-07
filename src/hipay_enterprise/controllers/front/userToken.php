@@ -103,7 +103,6 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
      */
     public function getTemplateVarPage()
     {
-
         $page = parent::getTemplateVarPage();
 
         $page['body_classes']['page-customer-account'] = true;

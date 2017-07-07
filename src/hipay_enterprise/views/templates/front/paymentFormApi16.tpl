@@ -5,15 +5,15 @@
 {include file="$tpl_dir./order-steps.tpl"}
 
 {if $nbProducts <= 0}
-    <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_tpp'}</p>
+    <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_enterprise'}</p>
 {else}
-    <h3>{l s='HiPay payment.' mod='hipay_tpp'}</h3>
+    <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 
     <form enctype="application/x-www-form-urlencoded" action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}" class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             {if $confHipay.payment.global.card_token}
                 {if $savedCC}
-                    <h2 class="page-subheading">{l s="Pay with a saved credit or debit card" mod="hipay_enterprise"}</h2>
+                    <h2 class="page-subheading">{l s='Pay with a saved credit or debit card' mod='hipay_enterprise'}</h2>
                     <div id="error-js-oc" style="display:none" class="alert alert-danger">
                         <p>There is 1 error</p>
                         <ol>
@@ -40,13 +40,13 @@
                     {/foreach}
                     <button id="pay-button-one-click" type="submit" name="processCarrierHipay" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
                         <span>
-                            {l s='Pay' mod='hipay_tpp'}
+                            {l s='Pay' mod='hipay_enterprise'}
                         </span>
                     </button>
                 {/if}
             {/if}
 
-            <h2 class="page-subheading">{l s="Pay by credit or debit card" mod="hipay_enterprise"}</h2>
+            <h2 class="page-subheading">{l s='Pay by credit or debit card' mod='hipay_enterprise'}</h2>
             {include file="$hipay_enterprise_tpl_dir/../front/partial/paymentError.tpl"}
             <div class="control-group">
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
@@ -63,19 +63,19 @@
                             <input type="checkbox" name="saveTokenHipay" checked>
                         </span>
                     </div>
-                    {l s="Save credit card (One click payment)" mod="hipay_enterprise"}
+                    {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
                 </label>
             </div>
             <br/>
             <button id="pay-button" type="submit" name="processCarrierHipay" class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
                 <span>
-                    {l s='Pay' mod='hipay_tpp'}
+                    {l s='Pay' mod='hipay_enterprise'}
                 </span>
             </button>
         </div>
     </form>
     <p id="payment-loader-hp" style='text-align: center; display:none;'>
-        <strong>{l s='Your payment is being processed. Please wait.'}</strong> <br/>
+        <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
     <script>
@@ -108,7 +108,7 @@
             } else {
                 // no radio button was checked
                 $("#error-js-oc").show();
-                $(".error-oc").text("{l s="You must choose one of the saved card."}");
+                $(".error-oc").text("{l s='You must choose one of the saved card.' mod='hipay_enterprise'}");
                 return false; // stop whatever action would normally happen
             }
 

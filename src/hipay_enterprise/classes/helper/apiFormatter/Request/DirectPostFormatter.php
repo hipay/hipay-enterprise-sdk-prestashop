@@ -12,12 +12,13 @@
 require_once(dirname(__FILE__) . '/RequestFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
-class DirectPostFormatter extends RequestFormatterAbstract {
-
+class DirectPostFormatter extends RequestFormatterAbstract
+{
     private $paymentProduct;
     private $deviceFingerprint;
 
-    public function __construct($moduleInstance, $params) {
+    public function __construct($moduleInstance, $params)
+    {
         parent::__construct($moduleInstance, $params);
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
@@ -28,8 +29,8 @@ class DirectPostFormatter extends RequestFormatterAbstract {
      * generate request data before API call
      * @return \HiPay\Fullservice\Gateway\Request\Order\OrderRequest
      */
-    public function generate() {
-
+    public function generate()
+    {
         $order = new \HiPay\Fullservice\Gateway\Request\Order\OrderRequest();
 
         $this->mapRequest($order);
@@ -41,14 +42,11 @@ class DirectPostFormatter extends RequestFormatterAbstract {
      * map prestashop order informations to request fields (Direct Post)
      * @param type $order
      */
-    protected function mapRequest(&$order) {
+    protected function mapRequest(&$order)
+    {
         parent::mapRequest($order);
         $order->payment_product = $this->paymentProduct;
         $order->device_fingerprint = $this->deviceFingerprint;
         $order->paymentMethod = $this->paymentMethod;
-       
     }
-
-    
-
 }

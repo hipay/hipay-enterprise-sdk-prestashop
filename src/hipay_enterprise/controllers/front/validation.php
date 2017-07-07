@@ -13,12 +13,14 @@ require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayDBQuery.php')
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
-class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontController {
+class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontController
+{
 
     /**
      * @see FrontController::postProcess()
      */
-    public function postProcess() {
+    public function postProcess()
+    {
         HipayHelper::unsetCart();
 
         $cartId = Tools::getValue('orderId');
@@ -35,12 +37,12 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $objCart = new Cart((int) $cartId);
         }
 
-        // SQL LOCK 
+        // SQL LOCK
         //#################################################################
 
         $db->setSQLLockForCart($objCart->id);
 
-        // load order for id_order 
+        // load order for id_order
         $orderId = Order::getOrderByCartId($objCart->id);
 
         $customer = new Customer((int) $objCart->id_customer);
@@ -61,21 +63,20 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         }
 
         $db->releaseSQLLock();
-        // END SQL LOCK 
+        // END SQL LOCK
         //#################################################################
 
         $transaction = isset($transac['transaction_id']) ? $transac['transaction_id'] : (int) $transac;
 
         Hook::exec('displayHiPayAccepted', array('cart' => $objCart, "order_id" => $orderId));
 
-        $params = http_build_query([
+        $params = http_build_query(array(
             'id_cart' => $objCart->id,
             'id_module' => $this->module->id,
             'id_order' => $orderId,
             'key' => $customer->secure_key,
-        ]);
+        ));
 
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
     }
-
 }

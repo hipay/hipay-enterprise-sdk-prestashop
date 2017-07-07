@@ -105,7 +105,6 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerBillingInfo()
     {
-
         $billingInfo = new CustomerBillingInfoFormatter($this->module);
 
         return $billingInfo->generate();
@@ -117,7 +116,6 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerShippingInfo()
     {
-
         $billingInfo = new CustomerShippingInfoFormatter($this->module);
 
         return $billingInfo->generate();
