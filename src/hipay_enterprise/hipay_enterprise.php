@@ -721,13 +721,49 @@ class Hipay_enterprise extends PaymentModule
             }
 
             foreach ($this->hipayConfigTool->getConfigHipay()["account"]["sandbox"] as $key => $value) {
-                $fieldValue                     = Tools::getValue($key);
-                $accountConfig["sandbox"][$key] = $fieldValue;
+                if (($key == "api_username_sandbox" && Tools::getValue("api_username_sandbox")
+                    && !Tools::getValue("api_password_sandbox")) || ($key == "api_password_sandbox"
+                    && Tools::getValue("api_password_sandbox") && !Tools::getValue("api_username_sandbox"))) {
+                    $this->_errors[] = $this->l("If sandbox api username is filled sandbox api password is mandatory");
+                    return false;
+                } else if (($key == "api_tokenjs_username_sandbox" && Tools::getValue("api_tokenjs_username_sandbox")
+                    && !Tools::getValue("api_tokenjs_password_publickey_sandbox"))
+                    || ($key == "api_tokenjs_password_publickey_sandbox" && Tools::getValue("api_tokenjs_password_publickey_sandbox")
+                    && !Tools::getValue("api_tokenjs_username_sandbox"))) {
+                    $this->_errors[] = $this->l("If sandbox api TokenJS username is filled sandbox api TokenJS password is mandatory");
+                    return false;
+                } else if (($key == "api_moto_username_sandbox" && Tools::getValue("api_moto_username_sandbox")
+                    && !Tools::getValue("api_moto_password_sandbox")) || ($key == "api_moto_password_sandbox"
+                    && Tools::getValue("api_moto_password_sandbox") && !Tools::getValue("api_moto_username_sandbox"))) {
+                    $this->_errors[] = $this->l("If sandbox api MO/TO username is filled sandbox api MO/TO password is mandatory");
+                    return false;
+                } else {
+                    $fieldValue                     = Tools::getValue($key);
+                    $accountConfig["sandbox"][$key] = $fieldValue;
+                }
             }
 
             foreach ($this->hipayConfigTool->getConfigHipay()["account"]["production"] as $key => $value) {
-                $fieldValue                        = Tools::getValue($key);
-                $accountConfig["production"][$key] = $fieldValue;
+                if (($key == "api_username_production" && Tools::getValue("api_username_production")
+                    && !Tools::getValue("api_password_production")) || ($key == "api_password_production"
+                    && Tools::getValue("api_password_production") && !Tools::getValue("api_username_production"))) {
+                    $this->_errors[] = $this->l("If production api username is filled production api password is mandatory");
+                    return false;
+                } else if (($key == "api_tokenjs_username_production" && Tools::getValue("api_tokenjs_username_production")
+                    && !Tools::getValue("api_tokenjs_password_publickey_production"))
+                    || ($key == "api_tokenjs_password_publickey_production" && Tools::getValue("api_tokenjs_password_publickey_production")
+                    && !Tools::getValue("api_tokenjs_username_production"))) {
+                    $this->_errors[] = $this->l("If production api TokenJS username is filled production api TokenJS password is mandatory");
+                    return false;
+                } else if (($key == "api_moto_username_production" && Tools::getValue("api_moto_username_production")
+                    && !Tools::getValue("api_moto_password_production")) || ($key == "api_moto_password_production"
+                    && Tools::getValue("api_moto_password_production") && !Tools::getValue("api_moto_username_production"))) {
+                    $this->_errors[] = $this->l("If production api MO/TO username is filled production api MO/TO password is mandatory");
+                    return false;
+                } else {
+                    $fieldValue                     = Tools::getValue($key);
+                    $accountConfig["production"][$key] = $fieldValue;
+                }
             }
 
             //save configuration
