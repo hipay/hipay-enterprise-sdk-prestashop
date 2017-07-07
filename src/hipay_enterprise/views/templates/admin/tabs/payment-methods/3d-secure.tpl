@@ -1,4 +1,4 @@
-<h3><i class="icon icon-credit-card"></i> {l s='3-D secure configurations' mod='hipay_professional'}</h3>   
+<h3><i class="icon icon-credit-card"></i> {l s='3-D secure configurations' mod='hipay_enterprise'}</h3>   
 
 <div role="tabpanel">
     <form method="post" class="defaultForm form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">

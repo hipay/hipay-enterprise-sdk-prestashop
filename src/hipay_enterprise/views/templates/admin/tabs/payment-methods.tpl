@@ -11,7 +11,7 @@
 *}
 <div class="panel">
     <script type="text/javascript" src="{$module_dir}views/js/jquery.bootstrap-duallistbox.min.js" ></script>
-    <h3><i class="icon icon-credit-card"></i> {l s='Global settings' mod='hipay_professional'}</h3>   
+    <h3><i class="icon icon-credit-card"></i> {l s='Global settings' mod='hipay_enterprise'}</h3>   
 
     {$global_payment_methods_form}
     

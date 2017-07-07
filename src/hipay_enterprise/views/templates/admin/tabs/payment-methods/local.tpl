@@ -1,10 +1,10 @@
-<h3><i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_professional'}</h3>   
+<h3><i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_enterprise'}</h3>   
 
 <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
         {foreach $config_hipay.payment.local_payment as $localPayment}
             <li role="presentation" class=" {if $localPayment@first} active {/if} ">
-                <a href="#{$localPayment@key}" aria-controls="{$localPayment@key}" role="tab" data-toggle="tab">{l s=$localPayment["displayName"] mod='hipay_professional'}</a>
+                <a href="#{$localPayment@key}" aria-controls="{$localPayment@key}" role="tab" data-toggle="tab">{l s=$localPayment["displayName"] mod='hipay_enterprise'}</a>
             </li>
         {/foreach}
     </ul>
@@ -17,16 +17,16 @@
                         <!-- SWITCH MODE START -->
                         <div class="row">
                             <label  class="control-label col-lg-3">
-                                {l s='Activated' mod='hipay_professional'}
+                                {l s='Activated' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-9">
                                 <span class="switch prestashop-switch fixed-width-lg">
                                     <input type="radio" name="{$localPayment@key}_activated" id="{$localPayment@key}_activated_on" value="1"
                                            {if $localPayment.activated }checked="checked"{/if}   >
-                                    <label for="{$localPayment@key}_activated_on">{l s='Yes' mod='hipay_professional'}</label>
+                                    <label for="{$localPayment@key}_activated_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                     <input type="radio" name="{$localPayment@key}_activated" id="{$localPayment@key}_activated_off" value="0"
                                            {if $localPayment.activated == false }checked="checked"{/if}  >
-                                    <label for="{$localPayment@key}_activated_off">{l s='No' mod='hipay_professional'}</label>
+                                    <label for="{$localPayment@key}_activated_off">{l s='No' mod='hipay_enterprise'}</label>
                                     <a class="slide-button btn"></a>
                                 </span>
                             </div>
@@ -36,7 +36,7 @@
                         {if $localPayment["currencySelectorReadOnly"]}
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_professional'}</label>
+                                    <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                                     {foreach  $localPayment["currencies"] as $currency }
                                         {if isset($limitedCurrencies[$currency])}
                                             <p>{$limitedCurrencies[$currency]}</p>
@@ -51,7 +51,7 @@
                         {else}
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="control-label col-lg-3" >{l s='Activated Currencies' mod='hipay_professional'}</label>
+                                    <label class="control-label col-lg-3" >{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                                     <div class="col-lg-9">
                                         {foreach $limitedCurrencies as $currency }
                                             <label class="control-label col-lg-2"> 
@@ -70,7 +70,7 @@
                         {if $localPayment["countrySelectorReadOnly"]}
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="control-label col-lg-3" >{l s='Activated Countries' mod='hipay_professional'}</label>
+                                    <label class="control-label col-lg-3" >{l s='Activated Countries' mod='hipay_enterprise'}</label>
                                     {foreach  $localPayment["countries"] as $country }
                                         <p>{$limitedCountries[$country]}</p>
                                         <input type="hidden" readonly value="{$country}" name="{$localPayment@key}_countries[]" />
@@ -91,10 +91,10 @@
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
                                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
-                                        class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_professional'}
+                                        class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
                                 </button>
                                 <button type="submit" class="btn btn-default btn btn-default pull-right" name="localPaymentSubmit">
-                                    <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_professional'}
+                                    <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
                                 </button>
                             </div>
                         </div>        
@@ -111,8 +111,8 @@
     var local_{$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
         showFilterInputs: false,
         moveOnSelect: false,
-        nonSelectedListLabel: '{l s='Available countries' mod='hipay_professional'}',
-        selectedListLabel: '{l s='Authorized countries' mod='hipay_professional'}',
+        nonSelectedListLabel: '{l s='Available countries' mod='hipay_enterprise'}',
+        selectedListLabel: '{l s='Authorized countries' mod='hipay_enterprise'}',
         infoText: false
     });
         {/if}

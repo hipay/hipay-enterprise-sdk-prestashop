@@ -43,7 +43,7 @@
                                         <td>
                                             <select name="hipay_map_mode_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="" >{l s="-- Select carrier mode" mod="hipay_professional"}</option>
+                                                    <option value="" >{l s="-- Select carrier mode" mod="hipay_enterprise"}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
@@ -53,7 +53,7 @@
                                         <td>
                                             <select name="hipay_map_shipping_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="" >{l s="-- Select carrier shipping" mod="hipay_professional"}</option>
+                                                    <option value="" >{l s="-- Select carrier shipping" mod="hipay_enterprise"}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["shipping"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if} value="{$hpcarmode->getCode()}" >{$hpcarmode->getDisplayName($lang|upper)} </option>
@@ -71,10 +71,10 @@
             <div class="panel-footer">
                 <div class="col-md-12 col-xs-12">
                     <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
-                            class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_professional'}
+                            class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
                     </button>
                     <button type="submit" class="btn btn-default btn btn-default pull-right" name="submitCarrierMapping">
-                        <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_professional'}
+                        <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
                     </button>
                 </div>
             </div>
