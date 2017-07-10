@@ -18,8 +18,8 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
     {
         parent::__construct($module);
         // fields only used for customer billing mapping
-        $this->invoice = new Address((int) $this->cart->id_address_invoice);
-        $this->country = new Country((int) $this->invoice->id_country);
+        $this->invoice = new Address((int)$this->cart->id_address_invoice);
+        $this->country = new Country((int)$this->invoice->id_country);
     }
 
     /**
@@ -47,8 +47,11 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
 
         $dob = $this->customer->birthday;
         if (!is_null($dob) && !empty($dob)) {
-            $customerBillingInfo->birthdate = str_replace('-', '', $dob);
-            ;
+            $customerBillingInfo->birthdate = str_replace(
+                '-',
+                '',
+                $dob
+            );
         }
 
         $customerBillingInfo->gender = $this->getGender($this->customer->id_gender);

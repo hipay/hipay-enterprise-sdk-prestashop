@@ -18,8 +18,8 @@ class HipayHelper
      */
     public static function unsetCart()
     {
-        $context                    = Context::getContext();
-        $cart                       = new Cart($context->cookie->id_cart);
+        $context = Context::getContext();
+        $cart = new Cart($context->cookie->id_cart);
         unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
@@ -34,11 +34,13 @@ class HipayHelper
      * @param type $fromNotification
      * @return boolean
      */
-    public static function checkSignature($signature, $config,
-                                          $fromNotification = false)
-    {
+    public static function checkSignature(
+        $signature,
+        $config,
+        $fromNotification = false
+    ) {
         $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
-                : $config["account"]["production"]["api_secret_passphrase_production"];
+            : $config["account"]["production"]["api_secret_passphrase_production"];
 
         if (empty($passphrase) && empty($signature)) {
             return true;
@@ -46,7 +48,7 @@ class HipayHelper
 
         if ($fromNotification) {
             $rawPostData = Tools::file_get_contents("php://input");
-            if ($signature == sha1($rawPostData.$passphrase)) {
+            if ($signature == sha1($rawPostData . $passphrase)) {
                 return true;
             }
             return false;

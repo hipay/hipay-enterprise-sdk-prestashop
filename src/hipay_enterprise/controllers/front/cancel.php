@@ -25,12 +25,14 @@ class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController
 
         $context = Context::getContext();
 
-        if (!(bool) $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["regenerate_cart_on_decline"]) {
+        if (!(bool)$this->module->hipayConfigTool->getConfigHipay(
+        )["payment"]["global"]["regenerate_cart_on_decline"]
+        ) {
             HipayHelper::unsetCart();
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/cancel17.tpl'
-                            : 'paymentReturn/cancel.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/cancel17.tpl'
+            : 'paymentReturn/cancel.tpl');
 
         $this->setTemplate($path);
     }

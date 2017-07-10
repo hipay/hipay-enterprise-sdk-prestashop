@@ -26,12 +26,14 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
 
         $context = Context::getContext();
 
-        if (!(bool) $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["regenerate_cart_on_decline"]) {
+        if (!(bool)$this->module->hipayConfigTool->getConfigHipay(
+        )["payment"]["global"]["regenerate_cart_on_decline"]
+        ) {
             HipayHelper::unsetCart();
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/exception17.tpl'
-                            : 'paymentReturn/exception.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/exception17.tpl'
+            : 'paymentReturn/exception.tpl');
 
         $this->setTemplate($path);
     }

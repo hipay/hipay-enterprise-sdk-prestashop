@@ -1,4 +1,3 @@
-
 {capture name=path}{l s='HiPay payment.' mod='hipay_tpp'}{/capture}
 
 <h2>{l s='Payment Summary' mod='hipay_tpp'}</h2>

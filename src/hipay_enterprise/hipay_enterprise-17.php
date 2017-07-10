@@ -43,11 +43,22 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hookDisplayHeader($params)
     {
-        $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
-        $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
-        $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
+        $this->context->controller->addCSS(
+            _MODULE_DIR_ . $this->name . '/views/css/card-js.min.css',
+            'all'
+        );
+        $this->context->controller->addCSS(
+            _MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css',
+            'all'
+        );
+        $this->context->controller->addJS(
+            _MODULE_DIR_ . $this->name . '/views/js/card-js.min.js',
+            'all'
+        );
         $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/views/js/devicefingerprint.js'));
-        $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'));
+        $this->context->controller->addJS(
+            array(_MODULE_DIR_ . $this->name . '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
+        );
     }
 
     /**
@@ -62,7 +73,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
         $currency = new Currency(intval($params['cart']->id_currency));
 
         // get activated card for customer currency and country
-        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency("credit_card", $country, $currency);
+        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(
+            "credit_card",
+            $country,
+            $currency
+        );
 
         $paymentOptions = array();
 
@@ -72,30 +87,45 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 case "hosted_page":
                     $newOption = new PaymentOption();
                     $newOption->setCallToActionText($this->l("pay by card"))
-                            ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
-                    ;
+                        ->setAction(
+                            $this->context->link->getModuleLink(
+                                $this->name,
+                                'redirect',
+                                array(),
+                                true
+                            )
+                        );
                     $paymentOptions[] = $newOption;
                     break;
                 case "api":
                     // set credit card for one click
-                    $this->ccToken    = new HipayCCToken($this);
+                    $this->ccToken = new HipayCCToken($this);
                     $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
-                    
-                    $this->context->smarty->assign(array(
-                        'module_dir' => $this->_path,
-                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/',
-                        'savedCC' => $savedCC,
-                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook',
-                        'action' => $this->context->link->getModuleLink($this->name, 'redirect', array(), true),
-                    ));
+
+                    $this->context->smarty->assign(
+                        array(
+                            'module_dir' => $this->_path,
+                            'this_path_ssl' => Tools::getShopDomainSsl(
+                                    true,
+                                    true
+                                ) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+                            'savedCC' => $savedCC,
+                            'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook',
+                            'action' => $this->context->link->getModuleLink(
+                                $this->name,
+                                'redirect',
+                                array(),
+                                true
+                            ),
+                        )
+                    );
 
                     $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/hook/paymentForm17.tpl');
                     $newOption = new PaymentOption();
                     $newOption->setCallToActionText($this->l("pay by card"))
-                            ->setModuleName("credit_card")
-                            ->setForm($paymentForm)
-                    ;
+                        ->setModuleName("credit_card")
+                        ->setForm($paymentForm);
 
                     $paymentOptions[] = $newOption;
 
@@ -103,8 +133,14 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 case "iframe":
                     $newOption = new PaymentOption();
                     $newOption->setCallToActionText($this->l("pay by card"))
-                            ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true))
-                    ;
+                        ->setAction(
+                            $this->context->link->getModuleLink(
+                                $this->name,
+                                'redirect',
+                                array(),
+                                true
+                            )
+                        );
                     $paymentOptions[] = $newOption;
                     break;
                 default:
@@ -114,43 +150,71 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
 
         // get activated local payment for customer currency and country
-        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency("local_payment", $country, $currency, $params['cart']->getOrderTotal());
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
+            "local_payment",
+            $country,
+            $currency,
+            $params['cart']->getOrderTotal()
+        );
 
         if (!empty($activatedLocalPayment)) {
-            $this->context->smarty->assign(array(
-                'module_dir' => $this->_path,
-                'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
-                'methodFields' => array()
-            ));
+            $this->context->smarty->assign(
+                array(
+                    'module_dir' => $this->_path,
+                    'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
+                    'methodFields' => array()
+                )
+            );
 
             $i = 0;
             foreach ($activatedLocalPayment as $name => $localpayment) {
                 $newOption = new PaymentOption();
 
-                $this->context->smarty->assign(array(
-                    'action' => $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true),
-                ));
-                if (!empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])) {
-                    $this->context->smarty->assign(array(
-                        'methodFields' => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
-                    ));
+                $this->context->smarty->assign(
+                    array(
+                        'action' => $this->context->link->getModuleLink(
+                            $this->name,
+                            'redirectlocal',
+                            array("method" => $name),
+                            true
+                        ),
+                    )
+                );
+                if (!empty(
+                $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"]
+                )
+                ) {
+                    $this->context->smarty->assign(
+                        array(
+                            'methodFields' => $this->hipayConfigTool->getConfigHipay(
+                            )["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
+                        )
+                    );
                 } else {
-                    $this->context->smarty->assign(array(
-                        'methodFields' => array()
-                    ));
+                    $this->context->smarty->assign(
+                        array(
+                            'methodFields' => array()
+                        )
+                    );
                 }
                 $paymentForm = $this->fetch('module:' . $this->name . '/views/templates/front/paymentLocalForm17.tpl');
 
                 $newOption->setCallToActionText($this->l("pay by") . " " . $localpayment["displayName"])
-                        ->setAction($this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true))
-                        ->setModuleName($this->name)
-                        ->setForm($paymentForm)
-                ;
+                    ->setAction(
+                        $this->context->link->getModuleLink(
+                            $this->name,
+                            'redirectlocal',
+                            array("method" => $name),
+                            true
+                        )
+                    )
+                    ->setModuleName($this->name)
+                    ->setForm($paymentForm);
 
                 // if no credit card, we force ioBB input to be displayed
                 if ($i == 0 && empty($activatedCreditCard)) {
-                    $ioBB = '<input id="ioBB" type="hidden" name="ioBB">' ;
+                    $ioBB = '<input id="ioBB" type="hidden" name="ioBB">';
                     $newOption->setAdditionalInformation($ioBB);
                 }
 
@@ -190,8 +254,14 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
-            $this->context->controller->registerJavascript('card-tokenize', 'modules/' . $this->name . '/views/js/card-tokenize.js');
-            $this->context->controller->registerJavascript('device-fingerprint', 'modules/' . $this->name . '/views/js/devicefingerprint.js');
+            $this->context->controller->registerJavascript(
+                'card-tokenize',
+                'modules/' . $this->name . '/views/js/card-tokenize.js'
+            );
+            $this->context->controller->registerJavascript(
+                'device-fingerprint',
+                'modules/' . $this->name . '/views/js/devicefingerprint.js'
+            );
         }
     }
 
@@ -208,15 +278,24 @@ class HipayEnterpriseNew extends Hipay_enterprise
         }
         $order = $params['order'];
         if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->smarty->assign('status', 'ok');
+            $this->smarty->assign(
+                'status',
+                'ok'
+            );
         }
-        $this->smarty->assign(array(
-            'id_order' => $order->id,
-            'reference' => $order->reference,
-            'params' => $params,
-            'total_to_pay' => Tools::displayPrice($order->total_paid, null, false),
-            'shop_name' => $this->context->shop->name,
-        ));
+        $this->smarty->assign(
+            array(
+                'id_order' => $order->id,
+                'reference' => $order->reference,
+                'params' => $params,
+                'total_to_pay' => Tools::displayPrice(
+                    $order->total_paid,
+                    null,
+                    false
+                ),
+                'shop_name' => $this->context->shop->name,
+            )
+        );
         return $this->fetch('module:' . $this->name . '/views/templates/hook/paymentReturn.tpl');
     }
 }

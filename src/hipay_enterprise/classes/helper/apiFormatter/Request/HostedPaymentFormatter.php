@@ -14,13 +14,18 @@ require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 class HostedPaymentFormatter extends RequestFormatterAbstract
 {
-    public function __construct($moduleInstance, $params)
-    {
-        parent::__construct($moduleInstance, $params);
+    public function __construct(
+        $moduleInstance,
+        $params
+    ) {
+        parent::__construct(
+            $moduleInstance,
+            $params
+        );
         $this->iframe = $params["iframe"];
         $this->productList = $params["productlist"];
     }
-    
+
     /**
      * generate request data before API call
      * @return \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest
@@ -30,7 +35,7 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order = new \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest();
 
         $this->mapRequest($order);
-        
+
         return $order;
     }
 

@@ -8,16 +8,16 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__).'/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/hipayDBQuery.php');
 
 class HipayCCToken
 {
     public function __construct($moduleInstance)
     {
-        $this->module  = $moduleInstance;
-        $this->logs    = $this->module->getLogs();
+        $this->module = $moduleInstance;
+        $this->logs = $this->module->getLogs();
         $this->context = Context::getContext();
-        $this->db      = new HipayDBQuery($this->module);
+        $this->db = new HipayDBQuery($this->module);
     }
 
     /**
@@ -25,10 +25,19 @@ class HipayCCToken
      * @param int $customerId
      * @param array $card
      */
-    public function saveCCToken($customerId, $card)
-    {
-        if (!$this->tokenExist($customerId, $card["token"])) {
-            $card = array_merge(array("customer_id" => $customerId), $card);
+    public function saveCCToken(
+        $customerId,
+        $card
+    ) {
+        if (!$this->tokenExist(
+            $customerId,
+            $card["token"]
+        )
+        ) {
+            $card = array_merge(
+                array("customer_id" => $customerId),
+                $card
+            );
 
             $this->db->setCCToken($card);
         }
@@ -50,9 +59,14 @@ class HipayCCToken
      * @param type $token
      * @return type
      */
-    public function tokenExist($customerId, $token)
-    {
-        return $this->db->ccTokenExist($customerId, $token);
+    public function tokenExist(
+        $customerId,
+        $token
+    ) {
+        return $this->db->ccTokenExist(
+            $customerId,
+            $token
+        );
     }
 
     /**
@@ -61,9 +75,14 @@ class HipayCCToken
      * @param type $token
      * @return type
      */
-    public function getTokenDetails($customerId, $token)
-    {
-        return $this->db->getToken($customerId, $token);
+    public function getTokenDetails(
+        $customerId,
+        $token
+    ) {
+        return $this->db->getToken(
+            $customerId,
+            $token
+        );
     }
 
     /**
@@ -72,8 +91,13 @@ class HipayCCToken
      * @param type $tokenId
      * @return type
      */
-    public function deleteToken($customerId, $tokenId)
-    {
-        return $this->db->deleteToken($customerId, $tokenId);
+    public function deleteToken(
+        $customerId,
+        $tokenId
+    ) {
+        return $this->db->deleteToken(
+            $customerId,
+            $tokenId
+        );
     }
 }

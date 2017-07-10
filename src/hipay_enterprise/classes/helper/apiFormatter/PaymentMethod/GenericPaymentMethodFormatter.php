@@ -16,8 +16,10 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract
 {
     private $params;
 
-    public function __construct($module, $params)
-    {
+    public function __construct(
+        $module,
+        $params
+    ) {
         parent::__construct($module);
         $this->params = $params;
     }

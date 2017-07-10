@@ -23,34 +23,39 @@
     {else}
         <p class="error">
             <strong>{l s='Error code' mod='hipay_tpp'} : {$status_error}</strong>
-            <br />
+            <br/>
             {l s='An error occured, process has been cancelled.' mod='hipay_tpp'}
         </p>
     {/if}
-
-    <form enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+    <form enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal"
+          method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             <div class="control-group">
-                <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}:&nbsp;</label>
+                <label class="control-label"
+                       style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_tpp'}
+                    :&nbsp;</label>
                 <div class="controls" style="float: left; font-size: 13px; font-weight: bold;">
                     #{$cart_id}<span id="cartIdMessage"></span>
                     <input type="hidden" class="input-medium" name="cartId" id="cartId" value="{$cart_id}">
                 </div>
                 <div style="clear: both;"></div>
             </div>
-            <br />
+            <br/>
             <div class="control-group">
-                <label class="control-label" style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_tpp'}:&nbsp;</label>
+                <label class="control-label"
+                       style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_tpp'}
+                    :&nbsp;</label>
                 <div class="controls" style="float: left; font-weight:bold; color:#072959;font-size:15px;">
                     {$amount} {$currency->iso_code}
                 </div>
                 <div style="clear: both;"></div>
             </div>
-            <br />
+            <br/>
             {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
         </div>
         <p class="cart_navigation clearfix">
-            <button id="pay-button" type="submit" name="processCarrier" class="button btn btn-default standard-checkout button-medium" style="">
+            <button id="pay-button" type="submit" name="processCarrier"
+                    class="button btn btn-default standard-checkout button-medium" style="">
                 <span>
                     {l s='Pay' mod='hipay_tpp'}
                 </span>

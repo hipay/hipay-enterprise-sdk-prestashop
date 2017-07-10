@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-</div>                          
+</div>
 
 <script>
     $("#hipay_refund_type").change(function () {

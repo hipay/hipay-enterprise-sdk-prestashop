@@ -1,19 +1,23 @@
 {
-    "name": "klarna",
-    "config": {
-        "displayName" : "Klarna",
-        "activated" : 0,
-        "canRefund" : 1,
-        "canManualCapture" : 1,
-        "currencies" : ["EUR"],
-        "countries"  : ["DE"],
-        "countrySelectorReadOnly": 0,
-        "currencySelectorReadOnly": 0,
-        "forceHpayment": 0,
-        "forceBasket": 1,
-        "forceHpaymentOnElectronicSignature": 0,
-        "minAmount" : 0,
-        "logo" : "klarna.png",
-        "additionalFields": {}
-    }
+  "name": "klarna",
+  "config": {
+    "displayName": "Klarna",
+    "activated": 0,
+    "canRefund": 1,
+    "canManualCapture": 1,
+    "currencies": [
+      "EUR"
+    ],
+    "countries": [
+      "DE"
+    ],
+    "countrySelectorReadOnly": 0,
+    "currencySelectorReadOnly": 0,
+    "forceHpayment": 0,
+    "forceBasket": 1,
+    "forceHpaymentOnElectronicSignature": 0,
+    "minAmount": 0,
+    "logo": "klarna.png",
+    "additionalFields": {}
+  }
 }

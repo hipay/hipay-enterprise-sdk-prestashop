@@ -16,7 +16,7 @@
         <ul class="list-unstyled">
             {foreach from=$form_errors item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-                {/foreach}
+            {/foreach}
         </ul>
     </div>
 {/if}
@@ -27,7 +27,7 @@
         <ul class="list-unstyled">
             {foreach from=$form_infos item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-                {/foreach}
+            {/foreach}
         </ul>
     </div>
 {/if}
@@ -38,7 +38,7 @@
         <ul class="list-unstyled">
             {foreach from=$form_successes item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-                {/foreach}
+            {/foreach}
         </ul>
     </div>
 {/if}

@@ -24,21 +24,29 @@
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation"
             class=" {if ((isset($active_tab) == false) || ($active_tab == 'account_form'))} active{/if}"><a
-                href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">
+                    href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">
                 <span class="icon icon-cogs"></span> {l s='Account informations' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'payment_form'))} active{/if}"><a
-                href="#payment_form" aria-controls="payment_form" role="tab" data-toggle="tab">
+                    href="#payment_form" aria-controls="payment_form" role="tab" data-toggle="tab">
                 <span class="icon icon-money"></span> {l s='Payment methods' mod='hipay_enterprise'}</a>
         </li>
-        <li role="presentation" class=" {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}"><a href="#fraud" aria-controls="fraud" role="tab" data-toggle="tab">
+        <li role="presentation"
+            class=" {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}"><a href="#fraud"
+                                                                                                         aria-controls="fraud"
+                                                                                                         role="tab"
+                                                                                                         data-toggle="tab">
                 <span class="icon icon-exclamation"></span> {l s='Fraud' mod='hipay_enterprise'}</a>
         </li>
-        <li role="presentation" class=" {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}"><a href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
+        <li role="presentation"
+            class=" {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}"><a
+                    href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
                 <span class="icon icon-copy"></span> {l s='Category Mapping' mod='hipay_enterprise'}</a>
         </li>
-        <li role="presentation" class=" {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}" ><a href="#carrier-mapping" aria-controls="carrier-mapping" role="tab" data-toggle="tab">
+        <li role="presentation"
+            class=" {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}"><a
+                    href="#carrier-mapping" aria-controls="carrier-mapping" role="tab" data-toggle="tab">
                 <span class="icon icon-copy"></span> {l s='Carrier Mapping' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"><a href="#faq" aria-controls="faq" role="tab" data-toggle="tab">
@@ -60,13 +68,19 @@
              id="payment_form">
             {include file='./tabs/payment-methods.tpl'}
         </div>
-        <div role="tabpanel" class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}" id="fraud">
+        <div role="tabpanel"
+             class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}"
+             id="fraud">
             {include file='./tabs/fraud.tpl'}
         </div>
-        <div role="tabpanel" class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}" id="category-mapping" >
+        <div role="tabpanel"
+             class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}"
+             id="category-mapping">
             {include file='./tabs/category-mapping.tpl'}
         </div>
-        <div role="tabpanel" class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}" id="carrier-mapping">
+        <div role="tabpanel"
+             class="tab-pane {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}"
+             id="carrier-mapping">
             {include file='./tabs/carrier-mapping.tpl'}
         </div>
         <div role="tabpanel" class="tab-pane" id="faq">

@@ -8,8 +8,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
-require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 {
@@ -36,14 +36,17 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         $request->source = Tools::jsonEncode($source);
     }
 
-    protected function setCustomData(&$request, $cart, $params)
-    {
+    protected function setCustomData(
+        &$request,
+        $cart,
+        $params
+    ) {
         $cartSummary = $cart->getSummaryDetails();
 
         $customer = new Customer($cartSummary["delivery"]->id_customer);
-        $group    = new Group($customer->id_default_group);
-        $iframe   = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe")
-                ? 1 : 0;
+        $group = new Group($customer->id_default_group);
+        $iframe = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe")
+            ? 1 : 0;
 
         $paymentCode = "hipay_hosted";
 
@@ -58,15 +61,25 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "display_iframe" => $iframe,
         );
         // Add custom data for transaction request
-        if (file_exists(dirname(__FILE__).'/../../HipayEnterpriseHelperCustomData.php')) {
-            if (class_exists('HipayEnterpriseHelperCustomData', true)) {
+        if (file_exists(dirname(__FILE__) . '/../../HipayEnterpriseHelperCustomData.php')) {
+            if (class_exists(
+                'HipayEnterpriseHelperCustomData',
+                true
+            )) {
                 $customDataHelper = new HipayEnterpriseHelperCustomData();
-                if (method_exists($customDataHelper, 'getCustomData')) {
-                    $customData = $customDataHelper->getCustomData($cart,
-                        $params);
+                if (method_exists(
+                    $customDataHelper,
+                    'getCustomData'
+                )) {
+                    $customData = $customDataHelper->getCustomData(
+                        $cart,
+                        $params
+                    );
                     if (is_array($customData)) {
-                        $customDataHipay = array_merge($customData,
-                            $customDataHipay);
+                        $customDataHipay = array_merge(
+                            $customData,
+                            $customDataHipay
+                        );
                     }
                 }
             }
@@ -76,6 +89,6 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 
     public function autoloadCustomData($class_name)
     {
-        require_once dirname(__FILE__).'/../../'.$class_name.'.php';
+        require_once dirname(__FILE__) . '/../../' . $class_name . '.php';
     }
 }

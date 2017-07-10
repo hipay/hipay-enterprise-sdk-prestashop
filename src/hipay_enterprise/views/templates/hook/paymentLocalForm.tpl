@@ -1,13 +1,13 @@
 {foreach $methodFields as $name => $field}
 
     {if $field["type"] eq "text"}
-         {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/inputText.tpl"}
-    
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/inputText.tpl"}
+
     {else if $field["type"] eq "gender"}
-         {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/inputGender.tpl"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/inputGender.tpl"}
     {/if}
-<br />
+    <br/>
 {/foreach}
 {if !empty($methodFields)}
-<input type="hidden"  name="localSubmit" />
+    <input type="hidden" name="localSubmit"/>
 {/if}

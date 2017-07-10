@@ -15,7 +15,8 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-danger">Error Logs</a>
                 {foreach from=$logs['error'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
+                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -23,7 +24,8 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-info">Info Logs</a>
                 {foreach from=$logs['infos'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
+                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -31,7 +33,8 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-info">Callback Logs</a>
                 {foreach from=$logs['callback'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
+                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -41,7 +44,8 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-warning">Request Logs</a>
                 {foreach from=$logs['request'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
+                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -49,7 +53,8 @@
             <div class="list-group">
                 <a href="#" class="list-group-item list-group-item-warning">Refund Logs</a>
                 {foreach from=$logs['refund'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank" class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
+                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>

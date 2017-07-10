@@ -1,50 +1,55 @@
 {
-    "name": "sdd",
-    "config": {
-        "displayName": "SEPA Direct Debit",
-        "activated": 0,
-        "canRefund" : 1,
-        "canManualCapture" : 1,
-        "currencies": ["EUR"],
-        "countries": ["GB", "FR"],
-        "countrySelectorReadOnly": 0,
-        "currencySelectorReadOnly": 0,
-        "forceHpayment": 0,
-        "forceBasket": 0,
-        "forceHpaymentOnElectronicSignature": 1,
-        "minAmount": 0,
-        "logo": "sdd.png",
-        "additionalFields": {
-            "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\SEPADirectDebitPaymentMethod",
-            "defaultFieldsValue": {
-                "recurring_payment": 0
-            },
-            "formFields": {
-                "gender": {
-                    "label": "Gender",
-                    "type": "gender"
-                },
-                "firstname": {
-                    "label": "Firstname",
-                    "type": "text"
-                },
-                "lastname": {
-                    "label": "Lastname",
-                    "type": "text"
-                },
-                "bank_name": {
-                    "label": "Bank Name",
-                    "type": "text"
-                },
-                "iban": {
-                    "label": "International Bank Account Number (IBAN)",
-                    "type": "text"
-                },
-                "issuer_bank_id": {
-                    "label": "Business Identifier Code (BIC)",
-                    "type": "text"
-                }
-            }
+  "name": "sdd",
+  "config": {
+    "displayName": "SEPA Direct Debit",
+    "activated": 0,
+    "canRefund": 1,
+    "canManualCapture": 1,
+    "currencies": [
+      "EUR"
+    ],
+    "countries": [
+      "GB",
+      "FR"
+    ],
+    "countrySelectorReadOnly": 0,
+    "currencySelectorReadOnly": 0,
+    "forceHpayment": 0,
+    "forceBasket": 0,
+    "forceHpaymentOnElectronicSignature": 1,
+    "minAmount": 0,
+    "logo": "sdd.png",
+    "additionalFields": {
+      "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\SEPADirectDebitPaymentMethod",
+      "defaultFieldsValue": {
+        "recurring_payment": 0
+      },
+      "formFields": {
+        "gender": {
+          "label": "Gender",
+          "type": "gender"
+        },
+        "firstname": {
+          "label": "Firstname",
+          "type": "text"
+        },
+        "lastname": {
+          "label": "Lastname",
+          "type": "text"
+        },
+        "bank_name": {
+          "label": "Bank Name",
+          "type": "text"
+        },
+        "iban": {
+          "label": "International Bank Account Number (IBAN)",
+          "type": "text"
+        },
+        "issuer_bank_id": {
+          "label": "Business Identifier Code (BIC)",
+          "type": "text"
         }
+      }
     }
+  }
 }
