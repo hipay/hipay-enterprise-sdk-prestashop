@@ -7,3 +7,5 @@ src/hipay_enterprise/logs/*.txt
 prestashop.sh
 composer.lock
 /nbproject/
+.php_cs.cache
+.idea/

@@ -1,11 +1,22 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
+{capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
 
-{capture name=path}{l s='HiPay payment.' mod='hipay_tpp'}{/capture}
+<h2>{l s='Payment Summary' mod='hipay_enterprise'}</h2>
 
-<h2>{l s='Payment Summary' mod='hipay_tpp'}</h2>
+<h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 
-<h3>{l s='HiPay payment.' mod='hipay_tpp'}</h3>
-
-<p>{l s='Your order is awaiting confirmation from the bank.' mod='hipay_tpp'}
-    <br /><br />{l s='Once it is approved it will be available in your' mod='hipay_tpp'} <strong><a href="{$link->getPageLink('history', true)}">{l s='order history' mod='hipay_tpp'}</a></strong>
+<p>{l s='Your order is awaiting confirmation from the bank.' mod='hipay_enterprise'}
+    <br/><br/>{l s='Once it is approved it will be available in your' mod='hipay_enterprise'} <strong><a
+                href="{$link->getPageLink('history', true)}">{l s='order history' mod='hipay_enterprise'}</a></strong>
 </p>
-<p><a href="index.php">{l s='Back to home' mod='hipay_tpp'}</a></p>
+<p><a href="index.php">{l s='Back to home' mod='hipay_enterprise'}</a></p>

@@ -1,19 +1,23 @@
 {
-    "name": "yandex",
-    "config": {
-        "displayName" : "Yandex Money",
-        "activated" : 0,
-        "canRefund" : 1,
-        "canManualCapture" : 1,
-        "currencies" : ["RUB"],
-        "countries"  : ["RU"],
-        "countrySelectorReadOnly": 1,
-        "currencySelectorReadOnly": 1,
-        "forceHpayment": 1,
-        "forceBasket": 0,
-        "forceHpaymentOnElectronicSignature": 0,
-        "minAmount" : 0,
-        "logo" : "yandex.png",
-        "additionalFields": {}
-    }
+  "name": "yandex",
+  "config": {
+    "displayName": "Yandex Money",
+    "activated": 0,
+    "canRefund": 1,
+    "canManualCapture": 1,
+    "currencies": [
+      "RUB"
+    ],
+    "countries": [
+      "RU"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "forceHpayment": 1,
+    "forceBasket": 0,
+    "forceHpaymentOnElectronicSignature": 0,
+    "minAmount": 0,
+    "logo": "yandex.png",
+    "additionalFields": {}
+  }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -12,12 +11,14 @@
 
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 
-class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController {
+class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
+{
 
     /**
      * @see FrontController::postProcess()
      */
-    public function postProcess() {
+    public function postProcess()
+    {
         $this->display_column_left = false;
         $this->display_column_right = false;
         parent::initContent();
@@ -26,11 +27,9 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
 
         HipayHelper::unsetCart();
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/pending17.tpl'
-                            : 'paymentReturn/pending.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/pending17.tpl'
+            : 'paymentReturn/pending.tpl');
 
         $this->setTemplate($path);
-
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,28 +8,34 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__) . '/RequestFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
-class HostedPaymentFormatter extends RequestFormatterAbstract {
-
-    
-    public function __construct($moduleInstance, $params) {
-        parent::__construct($moduleInstance, $params);
+class HostedPaymentFormatter extends RequestFormatterAbstract
+{
+    public function __construct(
+        $moduleInstance,
+        $params
+    ) {
+        parent::__construct(
+            $moduleInstance,
+            $params
+        );
         $this->iframe = $params["iframe"];
         $this->productList = $params["productlist"];
     }
-    
+
     /**
      * generate request data before API call
      * @return \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest
      */
-    public function generate() {
-
+    public function generate()
+    {
         $order = new \HiPay\Fullservice\Gateway\Request\Order\HostedPaymentPageRequest();
 
         $this->mapRequest($order);
-        
+
         return $order;
     }
 
@@ -38,7 +43,8 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
      * map prestashop order informations to request fields (Hpayment Post)
      * @param type $order
      */
-    protected function mapRequest(&$order) {
+    protected function mapRequest(&$order)
+    {
         parent::mapRequest($order);
 
         $order->template = ($this->configHipay["payment"]["global"]["operating_mode"] !== "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
@@ -47,6 +53,4 @@ class HostedPaymentFormatter extends RequestFormatterAbstract {
         $order->payment_product_list = $this->productList;
         $order->payment_product_category_list = '';
     }
-    
-
 }

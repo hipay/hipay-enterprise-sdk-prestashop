@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,17 +8,19 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__)  . '/../../../../lib/vendor/autoload.php');
+
+require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 
-class CustomerShippingInfoFormatter extends apiFormatterAbstract {
+class CustomerShippingInfoFormatter extends apiFormatterAbstract
+{
 
     /**
      * return mapped customer shipping informations
      * @return \HiPay\Fullservice\Gateway\Request\Info\CustomerShippingInfoRequest
      */
-    public function generate() {
-
+    public function generate()
+    {
         $customerHippingInfo = new \HiPay\Fullservice\Gateway\Request\Info\CustomerShippingInfoRequest();
 
         $this->mapRequest($customerHippingInfo);
@@ -31,8 +32,8 @@ class CustomerShippingInfoFormatter extends apiFormatterAbstract {
      * map prestashop shipping informations to request fields (Hpayment Post)
      * @param \HiPay\Fullservice\Gateway\Request\Info\CustomerShippingInfoRequest $customerHippingInfo
      */
-    protected function mapRequest(&$customerHippingInfo) {
-
+    protected function mapRequest(&$customerHippingInfo)
+    {
         $customerHippingInfo->shipto_firstname = $this->delivery->firstname;
         $customerHippingInfo->shipto_lastname = $this->delivery->lastname;
         $customerHippingInfo->shipto_streetaddress = $this->delivery->address1;
@@ -49,13 +50,14 @@ class CustomerShippingInfoFormatter extends apiFormatterAbstract {
      * return well formatted phone number
      * @return string
      */
-    private function getPhone() {
-        if (isset($this->delivery->phone) && $this->delivery->phone != '')
+    private function getPhone()
+    {
+        if (isset($this->delivery->phone) && $this->delivery->phone != '') {
             return $this->delivery->phone;
-        elseif (isset($this->delivery->phone_mobile) && $this->delivery->phone_mobile != '')
+        } elseif (isset($this->delivery->phone_mobile) && $this->delivery->phone_mobile != '') {
             return $this->delivery->phone_mobile;
-        else
+        } else {
             return '';
+        }
     }
-
 }

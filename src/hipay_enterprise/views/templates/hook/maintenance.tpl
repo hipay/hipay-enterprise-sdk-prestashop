@@ -1,9 +1,20 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
 <div class="row">
     <div class="col-lg-6">
         <div class="panel">
             <div class="panel-heading">
                 <i class="icon-credit-card"></i>
-                {l s='Hipay Refund' mod='hipay_tpp'}
+                {l s='Hipay Refund' mod='hipay_enterprise'}
             </div>
             <div class="well hidden-print">
                 <a style="position: relative; top: -200px;" id="hipay"></a>
@@ -16,14 +27,14 @@
         <div class="panel">
             <div class="panel-heading">
                 <i class="icon-credit-card"></i>
-                {l s='Hipay Capture' mod='hipay_tpp'}
+                {l s='Hipay Capture' mod='hipay_enterprise'}
             </div>
             <div class="well hidden-print">
                 {include file='../admin/partial/capture.partial.tpl'}
             </div>
         </div>
     </div>
-</div>                          
+</div>
 
 <script>
     $("#hipay_refund_type").change(function () {

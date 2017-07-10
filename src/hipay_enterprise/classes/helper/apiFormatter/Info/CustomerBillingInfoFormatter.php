@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,24 +8,26 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 
-class CustomerBillingInfoFormatter extends ApiFormatterAbstract {
-
-    public function __construct($module) {
+class CustomerBillingInfoFormatter extends ApiFormatterAbstract
+{
+    public function __construct($module)
+    {
         parent::__construct($module);
         // fields only used for customer billing mapping
-        $this->invoice = new Address((int) $this->cart->id_address_invoice);
-        $this->country = new Country((int) $this->invoice->id_country);
+        $this->invoice = new Address((int)$this->cart->id_address_invoice);
+        $this->country = new Country((int)$this->invoice->id_country);
     }
 
     /**
      * return mapped customer billing informations
      * @return \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest
      */
-    public function generate() {
-
+    public function generate()
+    {
         $customerBillingInfo = new \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest();
 
         $this->mapRequest($customerBillingInfo);
@@ -38,17 +39,19 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract {
      * map prestashop billing informations to request fields (Hpayment Post)
      * @param \HiPay\Fullservice\Gateway\Request\Info\CustomerBillingInfoRequest $customerBillingInfo
      */
-    protected function mapRequest(&$customerBillingInfo) {
-
-
+    protected function mapRequest(&$customerBillingInfo)
+    {
         $customerBillingInfo->firstname = $this->customer->firstname;
         $customerBillingInfo->lastname = $this->customer->lastname;
         $customerBillingInfo->email = $this->customer->email;
 
         $dob = $this->customer->birthday;
         if (!is_null($dob) && !empty($dob)) {
-            $customerBillingInfo->birthdate = str_replace('-', '', $dob);
-            ;
+            $customerBillingInfo->birthdate = str_replace(
+                '-',
+                '',
+                $dob
+            );
         }
 
         $customerBillingInfo->gender = $this->getGender($this->customer->id_gender);
@@ -67,13 +70,14 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract {
      * return well formatted phone number
      * @return string
      */
-    private function getPhone() {
-        if (isset($this->invoice->phone) && $this->invoice->phone != '')
+    private function getPhone()
+    {
+        if (isset($this->invoice->phone) && $this->invoice->phone != '') {
             return $this->invoice->phone;
-        elseif (isset($this->invoice->phone_mobile) && $this->invoice->phone_mobile != '')
+        } elseif (isset($this->invoice->phone_mobile) && $this->invoice->phone_mobile != '') {
             return $this->invoice->phone_mobile;
-        else
+        } else {
             return '';
+        }
     }
-
 }

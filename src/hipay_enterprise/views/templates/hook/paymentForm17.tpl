@@ -1,7 +1,19 @@
-<form action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
+<form action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post"
+      name="tokenizerForm" id="tokenizerForm" autocomplete="off">
     {if $confHipay.payment.global.card_token}
         {if $savedCC}
-            <p><strong>{l s="Pay with a saved credit or debit card" mod="hipay_enterprise"}</strong></p>
+            <p><strong>{l s='Pay with a saved credit or debit card' mod='hipay_enterprise'}</strong></p>
             <div id="error-js-oc" style="display:none" class="alert alert-danger">
                 <p>There is 1 error</p>
                 <ol>
@@ -9,20 +21,20 @@
                 </ol>
             </div>
             {foreach $savedCC as $cc}
-                <label >
+                <label>
                     <span class="custom-radio">
-                        <input type="radio" name="ccTokenHipay"  value="{$cc.token}" />
+                        <input type="radio" name="ccTokenHipay" value="{$cc.token}"/>
                         <span></span>
                     </span>
-                    {$cc.pan} <img  src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png" /> <br/>
-                    {l s="Expiration date"} : {"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}<br/>
-                    {$cc.card_holder} 
+                    {$cc.pan} <img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> <br/>
+                    {l s='Expiration date'} : {"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}<br/>
+                    {$cc.card_holder}
                 </label>
                 <br/>
             {/foreach}
         {/if}
     {/if}
-    <p><strong>{l s="Pay by credit or debit card" mod="hipay_enterprise"}</strong></p>
+    <p><strong>{l s='Pay by credit or debit card' mod='hipay_enterprise'}</strong></p>
     <div id="error-js" style="display:none" class="alert alert-danger">
         <p>There is 1 error</p>
         <ol>
@@ -34,7 +46,7 @@
     <span class="custom-checkbox">
         <input type="checkbox" name="saveTokenHipay" checked>
         <span><i class="material-icons checkbox-checked"></i></span>
-        <label>{l s="Save credit card (One click payment)" mod="hipay_enterprise"}</label>
+        <label>{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
     </span>
 </form>
 <p id="payment-loader-hp" style='text-align: center; display:none;'>

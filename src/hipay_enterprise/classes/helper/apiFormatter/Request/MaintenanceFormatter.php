@@ -8,34 +8,36 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once(dirname(__FILE__).'/CommonRequestFormatterAbstract.php');
-require_once(dirname(__FILE__).'/../Cart/CartMaintenanceFormatter.php');
-require_once(dirname(__FILE__).'/../../tools/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/../../tools/hipayOrderMessage.php');
-require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
+
+require_once(dirname(__FILE__) . '/CommonRequestFormatterAbstract.php');
+require_once(dirname(__FILE__) . '/../Cart/CartMaintenanceFormatter.php');
+require_once(dirname(__FILE__) . '/../../tools/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../tools/hipayOrderMessage.php');
+require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
 
 class MaintenanceFormatter extends CommonRequestFormatterAbstract
 {
-
-    public function __construct($module, $params)
-    {
+    public function __construct(
+        $module,
+        $params
+    ) {
         parent::__construct($module);
 
         $this->params = $params;
 
-        $this->amount           = (isset($params["amount"])) ? $params["amount"]
-                : 0.01;
+        $this->amount = (isset($params["amount"])) ? $params["amount"]
+            : 0.01;
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"]
-                : false;
-        $this->refundItems      = (isset($params["refundItems"])) ? $params["refundItems"]
-                : false;
-        $this->order            = (isset($params["order"])) ? new Order($params["order"])
-                : false;
-        $this->operation        = (isset($params["operation"])) ? $params["operation"]
-                : false;
-        $this->db               = new HipayDBQuery($module);
-        $this->cart             = ($this->order) ? new Cart($this->order->id_cart)
-                : false;
+            : false;
+        $this->refundItems = (isset($params["refundItems"])) ? $params["refundItems"]
+            : false;
+        $this->order = (isset($params["order"])) ? new Order($params["order"])
+            : false;
+        $this->operation = (isset($params["operation"])) ? $params["operation"]
+            : false;
+        $this->db = new HipayDBQuery($module);
+        $this->cart = ($this->order) ? new Cart($this->order->id_cart)
+            : false;
     }
 
     /**
@@ -44,7 +46,6 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
      */
     public function generate()
     {
-
         $maintenance = new \HiPay\Fullservice\Gateway\Request\Maintenance\MaintenanceRequest();
 
         $this->mapRequest($maintenance);
@@ -52,45 +53,55 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
     }
 
     /**
-     * map prestashop order informations to request fields 
+     * map prestashop order informations to request fields
      * @param type $maintenance
      */
     protected function mapRequest(&$maintenance)
     {
         parent::mapRequest($maintenance);
-        $this->setCustomData($maintenance, $this->cart, $this->params);
+        $this->setCustomData(
+            $maintenance,
+            $this->cart,
+            $this->params
+        );
 
-        $maintenance->amount    = $this->amount;
+        $maintenance->amount = $this->amount;
         $maintenance->operation = $this->operation;
 
         // retrieve number of capture or refund request
-        $transactionAttempt = $this->db->getCaptureOrRefundAttempt($this->operation,
-            $this->order->id);
+        $transactionAttempt = $this->db->getCaptureOrRefundAttempt(
+            $this->operation,
+            $this->order->id
+        );
         // save number of capture or refund attempt
-        HipayOrderMessage::captureOrRefundAttemptMessage($this->operation,
-            $this->order->id, ($transactionAttempt["attempt"] + 1),
-            $transactionAttempt["message_id"]);
+        HipayOrderMessage::captureOrRefundAttemptMessage(
+            $this->operation,
+            $this->order->id,
+            ($transactionAttempt["attempt"] + 1),
+            $transactionAttempt["message_id"]
+        );
 
-        $maintenance->operation_id = $this->order->id.'-'.$this->operation.'-'.($transactionAttempt["attempt"]
-            + 1);
+        $maintenance->operation_id = $this->order->id . '-' . $this->operation . '-' . ($transactionAttempt["attempt"]
+                + 1);
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on") {
-
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
                 "order" => $this->order, "captureRefundFee" => $this->captureRefundFee);
 
-            $originalBasket = $this->db->getOrderBasket($this->order->id);
-
             foreach ($this->cart->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]]
-                    > 0) {
+                    > 0
+                ) {
                     $params["products"][] = array("item" => $item, "quantity" => $this->refundItems[$item["id_product"]]);
-                } else if ($this->refundItems == "full") {
+                } elseif ($this->refundItems == "full") {
                     $params["products"][] = array("item" => $item, "quantity" => $item["cart_quantity"]);
                 }
             }
 
-            $cart = new CartMaintenanceFormatter($this->module, $params);
+            $cart = new CartMaintenanceFormatter(
+                $this->module,
+                $params
+            );
 
             $maintenance->basket = $cart->generate();
 
@@ -101,20 +112,31 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                     //save capture items and quantity in prestashop
                     $captureData = array(
                         "ps_order_id" => $this->order->id,
-                        "ps_product_id" => str_replace('good_', '',
-                            $item->getProductReference()),
+                        "ps_product_id" => str_replace(
+                            'good_',
+                            '',
+                            $item->getProductReference()
+                        ),
                         "type" => $this->operation,
                         "quantity" => $item->getQuantity(),
-                        "amount" => Tools::ps_round($item->getTotalAmount(), 2));
+                        "amount" => Tools::ps_round(
+                            $item->getTotalAmount(),
+                            2
+                        ));
                     $this->db->setCaptureOrRefundOrder($captureData);
-                } else if ($item->getType() == "fee") {
-                    HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,
-                        $this->operation);
+                } elseif ($item->getType() == "fee") {
+                    HipayOrderMessage::captureOrRefundFeesMessage(
+                        $this->order->id,
+                        $this->operation
+                    );
                 }
                 $maintenance->amount += $item->getTotalAmount();
             }
 
-            $maintenance->amount = Tools::ps_round($maintenance->amount, 3);
+            $maintenance->amount = Tools::ps_round(
+                $maintenance->amount,
+                3
+            );
             $maintenance->basket = $maintenance->basket->toJson();
         }
     }

@@ -1,12 +1,17 @@
 {
-    "name": "mastercard",
-    "config": {
-        "displayName" : "Mastercard",
-        "activated" : 1,
-        "canRefund" : 1,
-        "canManualCapture" : 1,
-        "currencies" : ["EUR"],
-        "minAmount" : 0,
-        "countries"  : ["GB","FR"]
-    }
+  "name": "mastercard",
+  "config": {
+    "displayName": "Mastercard",
+    "activated": 1,
+    "canRefund": 1,
+    "canManualCapture": 1,
+    "currencies": [
+      "EUR"
+    ],
+    "minAmount": 0,
+    "countries": [
+      "GB",
+      "FR"
+    ]
+  }
 }

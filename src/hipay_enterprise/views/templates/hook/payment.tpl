@@ -10,35 +10,36 @@
 *
 *}
 {if !empty($activated_credit_card)}
-    
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <p class="payment_module" id="hipay_payment_button">
                 {if $cart->getOrderTotal() < $min_amount}
                     <a href="#">
                         <img src="{$domain|cat:$payment_button|escape:'htmlall':'UTF-8'}"
-                             alt="{l s='Pay by credit or debit card' mod='hipay_professional'} "
+                             alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'} "
                              style="max-width: 70px; max-height: 40px;"
-                             />
+                        />
 
                         <span>
-                            {l s='Pay by credit or debit card' mod='hipay_professional' }
-                            {l s='Minimum amount required in order to pay by credit card:' mod='hipay_professional' } {convertPrice price=$min_amount}
+                            {l s='Pay by credit or debit card' mod='hipay_enterprise' }
+                            {l s='Minimum amount required in order to pay by credit card:' mod='hipay_enterprise' } {convertPrice price=$min_amount}
                             {if isset($hipay_prod) && (!$hipay_prod)}
-                                <em>{l s='(sandbox / test mode)' mod='hipay_professional'}</em>
+                                <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                             {/if}
                         </span>
                     </a>
                 {else}
                     <a href="{$link->getModuleLink('hipay_enterprise', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}"
-                       title="{l s='Pay by credit or debit card' mod='hipay_professional' }">
+                       title="{l s='Pay by credit or debit card' mod='hipay_enterprise' }">
 
-                        <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}" style="max-width: 70px; max-height: 40px;" alt="{l s='Pay by credit or debit card' mod='hipay_professional'}" />
-                        {l s='Pay by credit or debit card' mod='hipay_professional' }
+                        <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
+                             style="max-width: 70px; max-height: 40px;"
+                             alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'}"/>
+                        {l s='Pay by credit or debit card' mod='hipay_enterprise' }
                         <span>
 
                             {if isset($hipay_prod) && (!$hipay_prod)}
-                                <em>{l s='(sandbox / test mode)' mod='hipay_professional'}</em>
+                                <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                             {/if}
                         </span>
                     </a>
@@ -55,12 +56,14 @@
                 <div class="col-xs-12 col-md-12">
                     <p class="payment_module" id="hipay_payment_button">
                         <a href="#">
-                            <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}" style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}" class="" />
+                            <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}"
+                                 style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}"
+                                 class=""/>
                             <span>
-                                {l s='Pay by credit or debit card' mod='hipay_professional' }
-                                {l s='Minimum amount required in order to pay by credit card:' mod='hipay_professional' } {convertPrice price=$min_amount}
+                                {l s='Pay by credit or debit card' mod='hipay_enterprise' }
+                                {l s='Minimum amount required in order to pay by credit card:' mod='hipay_enterprise' } {convertPrice price=$min_amount}
                                 {if isset($hipay_prod) && (!$hipay_prod)}
-                                    <em>{l s='(sandbox / test mode)' mod='hipay_professional'}</em>
+                                    <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                                 {/if}
                             </span>
                         </a>
@@ -72,12 +75,14 @@
                 <div class="col-xs-12 col-md-12">
                     <form class="localpayment" method="post" action="{$local_payment.link}">
                         <p class="payment_module" id="hipay_payment_button">
-                            <a href="javascript:void(0);" onclick="{literal}$(this).closest('form').submit();{/literal}" title="{l s='Pay by ' mod='hipay_professional' } {$local_payment.displayName}">
-                                <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}" style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}"  />
-                                {l s='Pay by' mod='hipay_professional' } {$local_payment.displayName}
+                            <a href="javascript:void(0);" onclick="{literal}$(this).closest('form').submit();{/literal}"
+                               title="{l s='Pay by ' mod='hipay_enterprise' } {$local_payment.displayName}">
+                                <img src="{$domain|cat:$local_payment.payment_button|escape:'html':'UTF-8'}"
+                                     style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}"/>
+                                {l s='Pay by' mod='hipay_enterprise' } {$local_payment.displayName}
                                 <span>
                                     {if isset($hipay_prod) && (!$hipay_prod)}
-                                        <em>{l s='(sandbox / test mode)' mod='hipay_professional'}</em>
+                                        <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                                     {/if}
                                 </span>
                             </a>
