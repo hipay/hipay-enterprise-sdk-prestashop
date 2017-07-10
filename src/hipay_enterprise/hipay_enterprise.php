@@ -730,7 +730,7 @@ class Hipay_enterprise extends PaymentModule
             );
             $this->_successes[] = $this->l('Settings configuration saved successfully.');
             return true;
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             // LOGS
             $this->logs->errorLogsHipay($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
