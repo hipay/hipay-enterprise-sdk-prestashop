@@ -2,7 +2,7 @@
   "name": "visa",
   "config": {
     "displayName": "Visa",
-    "activated": 0,
+    "activated": 1,
     "canRefund": 1,
     "canManualCapture": 1,
     "currencies": [
