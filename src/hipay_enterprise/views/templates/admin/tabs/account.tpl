@@ -116,7 +116,7 @@
                                             {l s='Api password' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text" name="api_password_production"
+                                            <input class="form-control" type="password" name="api_password_production"
                                                    value="{$config_hipay.account.production.api_password_production}">
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                                             {l s='Api TokenJS Password/Public Key ' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text"
+                                            <input class="form-control" type="password"
                                                    name="api_tokenjs_password_publickey_production"
                                                    value="{$config_hipay.account.production.api_tokenjs_password_publickey_production}">
                                         </div>
@@ -148,7 +148,7 @@
                                             {l s='Secret passphrase' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text"
+                                            <input class="form-control" type="password"
                                                    name="api_secret_passphrase_production"
                                                    value="{$config_hipay.account.production.api_secret_passphrase_production}">
                                         </div>
@@ -206,7 +206,7 @@
                                             {l s='Api password' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text" name="api_password_sandbox"
+                                            <input class="form-control" type="password" name="api_password_sandbox"
                                                    value="{$config_hipay.account.sandbox.api_password_sandbox}">
                                         </div>
                                     </div>
@@ -226,7 +226,7 @@
                                             {l s='Api TokenJS Password/Public Key ' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text"
+                                            <input class="form-control" type="password"
                                                    name="api_tokenjs_password_publickey_sandbox"
                                                    value="{$config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox}">
                                         </div>
@@ -237,7 +237,7 @@
                                             {l s='Secret passphrase' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-6">
-                                            <input class="form-control" type="text" name="api_secret_passphrase_sandbox"
+                                            <input class="form-control" type="password" name="api_secret_passphrase_sandbox"
                                                    value="{$config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
                                         </div>
                                     </div>
