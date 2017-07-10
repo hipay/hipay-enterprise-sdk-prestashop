@@ -36,7 +36,7 @@
                                     <td>
                                         <select name="hipay_map_{$cat["id_category"]}">
                                             {if !isset($mappedCategories[$cat["id_category"]])}
-                                                <option value="">{l s='-- Select category" mod="hipay_enterprise' mod='hipay_enterprise'}</option>
+                                                <option value="">{l s='-- Select category' mod='hipay_enterprise'}</option>
                                             {/if}
                                             {foreach $hipayCategories as $hpcat}
                                                 <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}
