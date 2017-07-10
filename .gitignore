@@ -8,3 +8,4 @@ prestashop.sh
 composer.lock
 /nbproject/
 .php_cs.cache
+.idea/
