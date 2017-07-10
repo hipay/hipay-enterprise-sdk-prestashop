@@ -66,7 +66,11 @@ class HipayMapper
     {
         return Carrier::getCarriers(
             $this->context->language->id,
-            true
+            true,
+            false,
+            false,
+            null,
+            Carrier::ALL_CARRIERS
         );
     }
 
