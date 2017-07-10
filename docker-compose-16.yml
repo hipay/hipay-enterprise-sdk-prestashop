@@ -14,8 +14,8 @@ prestashop16:
     - smtp
     - mysql
   env_file:
-    - ./conf/env_file/env
-    - ./conf/env_file/env16
+    - ./conf/env_file/development/env
+    - ./conf/env_file/development/env16
   volumes:
     - ./web16:/var/www/html
     - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
