@@ -1,5 +1,5 @@
-{capture name=path}{l s='HiPay payment.' mod='hipay_tpp'}{/capture}
-<h2>{l s='Order summary' mod='hipay_tpp'}</h2>
+{capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
+<h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
 
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
@@ -26,7 +26,7 @@
                         <div class="alert alert-danger">
                             <p>There is 1 error</p>
                             <ol>
-                                <li>{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_tpp'}</li>
+                                <li>{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_enterprise'}</li>
                             </ol>
                         </div>
                     {/if}

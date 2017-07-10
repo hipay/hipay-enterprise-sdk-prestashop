@@ -3,7 +3,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <i class="icon-credit-card"></i>
-                {l s='Hipay Refund' mod='hipay_tpp'}
+                {l s='Hipay Refund' mod='hipay_enterprise'}
             </div>
             <div class="well hidden-print">
                 <a style="position: relative; top: -200px;" id="hipay"></a>
@@ -16,7 +16,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <i class="icon-credit-card"></i>
-                {l s='Hipay Capture' mod='hipay_tpp'}
+                {l s='Hipay Capture' mod='hipay_enterprise'}
             </div>
             <div class="well hidden-print">
                 {include file='../admin/partial/capture.partial.tpl'}
