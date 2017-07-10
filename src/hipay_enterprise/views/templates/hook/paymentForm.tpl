@@ -1,3 +1,14 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
 <div class="card-js ">
     <input id="card-number" class="card-number my-custom-class" name="card-number">
     <input id="the-card-name-id" class="name" name="card-holders-name" placeholder="Name on card">

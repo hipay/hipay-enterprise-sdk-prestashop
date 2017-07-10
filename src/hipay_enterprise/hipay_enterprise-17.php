@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,6 +8,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__) . '/classes/helper/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__) . '/classes/helper/tools/hipayCCToken.php');
 
@@ -68,9 +68,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hipayExternalPaymentOption($params)
     {
-        $address = new Address(intval($params['cart']->id_address_delivery));
-        $country = new Country(intval($address->id_country));
-        $currency = new Currency(intval($params['cart']->id_currency));
+        $address = new Address((int)$params['cart']->id_address_delivery);
+        $country = new Country((int)$address->id_country);
+        $currency = new Currency((int)$params['cart']->id_currency);
 
         // get activated card for customer currency and country
         $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(

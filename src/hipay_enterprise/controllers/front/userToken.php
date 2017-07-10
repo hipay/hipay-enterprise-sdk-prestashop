@@ -8,6 +8,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayCCToken.php');
 
 class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontController

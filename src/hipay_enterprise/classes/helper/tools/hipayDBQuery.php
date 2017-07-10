@@ -8,9 +8,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-//TODO : ON DUPLICATE KEYS ONLY MYSQL OR MYSQL-LIKE COMPLIANT => SET COMPATIBILITY WITH OTHER DATABASE
-// https://stackoverflow.com/questions/15161578/sql-query-with-on-duplicate-key-update-clarification-needed
-// https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql
 
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 

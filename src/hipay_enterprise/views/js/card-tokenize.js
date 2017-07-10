@@ -1,11 +1,18 @@
+/**
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.wallet@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
 });
 
 $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
-
-    e.preventDefault();
-    e.stopPropagation();
 
     var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='credit_card']").is(':checked');
 

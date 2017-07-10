@@ -8,6 +8,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }

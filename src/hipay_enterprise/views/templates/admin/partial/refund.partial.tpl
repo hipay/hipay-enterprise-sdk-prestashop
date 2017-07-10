@@ -1,3 +1,15 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
+
 {if $errorHipayRefund }
     {if $errorHipayRefund == "ok"}
         <p class="alert alert-success">{l s='Request successfully sent'}</p>

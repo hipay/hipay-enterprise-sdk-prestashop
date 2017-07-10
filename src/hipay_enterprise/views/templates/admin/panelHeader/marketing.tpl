@@ -9,6 +9,7 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
+
 <div class="row" id="hipay-header">
     <div class="col-xs-12 col-sm-12 col-md-6 text-center">
         <img src="{$module_dir|escape:'html':'UTF-8'}/views/img/logo.png" id="payment-logo"/>

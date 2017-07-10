@@ -1,3 +1,13 @@
+/**
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.wallet@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 //Subscriber supplied variables for snare// Snare operation to perform
 var io_operation = 'ioBegin';
 // io_bbout_element_id should refer to the hidden field in your form that contains the blackbox

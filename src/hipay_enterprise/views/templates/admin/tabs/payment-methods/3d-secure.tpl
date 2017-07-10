@@ -1,3 +1,14 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
 <h3><i class="icon icon-credit-card"></i> {l s='3-D secure configurations' mod='hipay_enterprise'}</h3>
 
 <div role="tabpanel">
