@@ -1026,7 +1026,9 @@ class Hipay_enterprise extends PaymentModule
             $keySaved = array(
                 "activated",
                 "currencies",
-                "countries"
+                "countries",
+                "minAmount",
+                "maxAmount"
             );
 
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
@@ -1089,7 +1091,9 @@ class Hipay_enterprise extends PaymentModule
             $keySaved = array(
                 "activated",
                 "currencies",
-                "countries"
+                "countries",
+                "minAmount",
+                "maxAmount"
             );
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
@@ -1269,7 +1273,8 @@ class Hipay_enterprise extends PaymentModule
                         $currency->iso_code,
                         $settings["currencies"]
                     )) &&
-                $orderTotal >= $settings["minAmount"]
+                $orderTotal >= $settings["minAmount"]["EUR"]
+                && ($orderTotal <= $settings["maxAmount"]["EUR"] || !$settings["maxAmount"]["EUR"])
             ) {
                 if ($paymentMethodType == "local_payment") {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE

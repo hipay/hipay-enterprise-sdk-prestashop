@@ -48,6 +48,24 @@
                         <!-- SWITCH MODE END -->
                         <div class="row">
                             <div class="form-group">
+                                <label class="control-label col-lg-3">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
+                                <div class="col-lg-1">
+                                    <input type="text" name="{$creditCard@key}_minAmount[EUR]" value="{$creditCard.minAmount.EUR}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-lg-3">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
+                                <div class="col-lg-1">
+                                    <input type="text" name="{$creditCard@key}_maxAmount[EUR]" value="{$creditCard.maxAmount.EUR}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="form-group">
                                 <label class="control-label col-lg-3">{l s='Currencies' mod='hipay_enterprise'}</label>
                                 <div class="col-lg-9">
                                     {foreach $limitedCurrencies as $currency }
@@ -79,7 +97,7 @@
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
                                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
-                                            class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
+                                        class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
                                 </button>
                                 <button type="submit" class="btn btn-default btn btn-default pull-right"
                                         name="creditCardSubmit">

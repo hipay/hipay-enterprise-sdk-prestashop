@@ -17,7 +17,8 @@
     "forceHpayment": 0,
     "forceBasket": 0,
     "forceHpaymentOnElectronicSignature": 0,
-    "minAmount": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
     "logo": "giropay.png",
     "additionalFields": {}
   }

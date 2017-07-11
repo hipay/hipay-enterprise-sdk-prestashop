@@ -17,7 +17,8 @@
     "forceHpayment": 0,
     "forceBasket": 0,
     "forceHpaymentOnElectronicSignature": 1,
-    "minAmount": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
     "logo": "sdd.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\SEPADirectDebitPaymentMethod",

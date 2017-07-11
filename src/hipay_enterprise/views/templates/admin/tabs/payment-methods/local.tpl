@@ -47,6 +47,24 @@
                         </div>
                         <!-- SWITCH MODE END -->
                         <br/>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-lg-3">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
+                                <div class="col-lg-1">
+                                    <input type="text" name="{$localPayment@key}_minAmount[EUR]" value="{$localPayment.minAmount.EUR}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-lg-3">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
+                                <div class="col-lg-1">
+                                    <input type="text" name="{$localPayment@key}_maxAmount[EUR]" value="{$localPayment.maxAmount.EUR}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
                         {if $localPayment["currencySelectorReadOnly"]}
                             <div class="row">
                                 <div class="form-group">

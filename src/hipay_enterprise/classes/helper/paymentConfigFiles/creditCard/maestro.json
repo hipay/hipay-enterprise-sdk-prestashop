@@ -8,7 +8,8 @@
     "currencies": [
       "EUR"
     ],
-    "minAmount": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
     "countries": [
       "GB",
       "FR"
