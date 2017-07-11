@@ -573,13 +573,9 @@ class Hipay_enterprise extends PaymentModule
         $mappedCarriers = $this->mapper->getMappedCarriers($this->context->shop->id);
 
         $source = array(
-            "source" => "CMS",
-            "brand" => "prestashop",
             "brand_version" => _PS_VERSION_,
             "integration_version" => $this->version,
         );
-
-        $source = Tools::jsonEncode($source);
 
         $this->context->smarty->assign(
             array(

@@ -143,10 +143,12 @@ class AdminHiPayCaptureController extends ModuleAdminController
 
             if ($capture_type == 'complete') {
                 $params["amount"] = $stillToCapture;
+                $params["order"] = $order->id;
                 $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
             } elseif ($capture_type == 'partial') {
                 $params["amount"] = $capture_amount;
+                $params["order"] = $order->id;
                 $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleCapture($params);
             }
