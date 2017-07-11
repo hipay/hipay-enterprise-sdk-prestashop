@@ -86,10 +86,10 @@ class CartFormatter extends ApiFormatterAbstract
         $tax_rate = $product["rate"];
         $discount_description = "";
         $product_description = $product["description_short"];
-        $delivery_method = "";
-        $delivery_company = "";
-        $delivery_delay = "";
-        $delivery_number = "";
+        $delivery_method = null;
+        $delivery_company = null;
+        $delivery_delay = null;
+        $delivery_number = null;
         $product_category = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
         $shop_id = null;
 
