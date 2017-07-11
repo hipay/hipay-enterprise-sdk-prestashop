@@ -58,7 +58,10 @@
                                                    name="{$localPayment@key}_currencies[]"/>
                                         {else}
                                             <p>{$currency}
-                                                : {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}</p>
+                                                {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}
+                                                <input type="hidden" value="{$currency}"
+                                                       name="{$localPayment@key}_currencies[]"/>
+                                            </p>
                                         {/if}
                                     {/foreach}
                                 </div>
@@ -110,7 +113,7 @@
                         <div class="row">
                             <div class="col-md-12 col-xs-12">
                                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
-                                            class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
+                                        class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
                                 </button>
                                 <button type="submit" class="btn btn-default btn btn-default pull-right"
                                         name="localPaymentSubmit">
@@ -127,7 +130,7 @@
 
 <script>
     {foreach $config_hipay.payment.local_payment as $localPayment}
-    {if !$localPayment["countrySelectorReadOnly"]}
+        {if !$localPayment["countrySelectorReadOnly"]}
     var local_{$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
         showFilterInputs: false,
         moveOnSelect: false,
@@ -135,6 +138,6 @@
         selectedListLabel: '{l s='Authorized countries' mod='hipay_enterprise'}',
         infoText: false
     });
-    {/if}
+        {/if}
     {/foreach}
 </script>
