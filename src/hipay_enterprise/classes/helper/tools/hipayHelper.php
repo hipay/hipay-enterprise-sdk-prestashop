@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2017 HiPay
  *
@@ -9,6 +8,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 class HipayHelper
 {
 
@@ -130,7 +130,7 @@ class HipayHelper
         }
 
         // lowercase
-        $text = strtolower($text);
+        $text = Tools::strtolower($text);
 
         // remove unwanted characters
         $text = preg_replace('#[^-\w]+#',
