@@ -112,6 +112,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'savedCC' => $savedCC,
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates/hook',
+                            'activatedCreditCard' => Tools::jsonEncode(array_keys($activatedCreditCard)),
                             'action' => $this->context->link->getModuleLink(
                                 $this->name,
                                 'redirect',
