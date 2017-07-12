@@ -86,9 +86,9 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on") {
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
-                "order" => $this->order, "captureRefundFee" => $this->captureRefundFee);
-
+                "order" => $this->order, "captureRefundFee" => $this->captureRefundFee, "operation" => $this->operation);
             foreach ($this->cart->getProducts() as $item) {
+                
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]]
                     > 0
                 ) {
@@ -97,7 +97,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                     $params["products"][] = array("item" => $item, "quantity" => $item["cart_quantity"]);
                 }
             }
-
+            
             $cart = new CartMaintenanceFormatter(
                 $this->module,
                 $params
@@ -108,28 +108,6 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             $maintenance->amount = 0;
 
             foreach ($maintenance->basket->getAllItems() as $item) {
-                if ($item->getType() == "good") {
-                    //save capture items and quantity in prestashop
-                    $captureData = array(
-                        "ps_order_id" => $this->order->id,
-                        "ps_product_id" => str_replace(
-                            'good_',
-                            '',
-                            $item->getProductReference()
-                        ),
-                        "type" => $this->operation,
-                        "quantity" => $item->getQuantity(),
-                        "amount" => Tools::ps_round(
-                            $item->getTotalAmount(),
-                            2
-                        ));
-                    $this->db->setCaptureOrRefundOrder($captureData);
-                } elseif ($item->getType() == "fee") {
-                    HipayOrderMessage::captureOrRefundFeesMessage(
-                        $this->order->id,
-                        $this->operation
-                    );
-                }
                 $maintenance->amount += $item->getTotalAmount();
             }
 
