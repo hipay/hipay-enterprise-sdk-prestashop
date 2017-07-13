@@ -38,7 +38,7 @@
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </p>
     {/if}
-    <form enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal col-lg-4 col-lg-offset-4"
+    <form id="{$localPaymentName}" enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal col-lg-4 col-lg-offset-4"
           method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             <h2 class="page-subheading">{l s='Pay with %s' sprintf=$methodName mod='hipay_enterprise'}</h2>
@@ -61,12 +61,16 @@
 
     </form>
     <script>
-        $("#pay-button").click(function (e) {
+        $("#{$localPaymentName}").submit(function (e) {
             // prevent form from being submitted 
             e.preventDefault();
             e.stopPropagation();
             
+            console.log(hiPayInputControl.checkControl('{$localPaymentName}'));
             
+            if (hiPayInputControl.checkControl('{$localPaymentName}')) {
+                this.submit();
+            }
             
         });
     </script>

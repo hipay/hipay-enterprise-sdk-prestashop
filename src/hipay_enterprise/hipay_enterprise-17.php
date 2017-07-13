@@ -8,7 +8,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/classes/helper/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
 
@@ -80,151 +79,158 @@ class HipayEnterpriseNew extends Hipay_enterprise
         );
 
         $paymentOptions = array();
+        try {
 
-        if (!empty($activatedCreditCard)) {
-            //displaying different forms depending of the operating mode chosen in the BO configuration
-            switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
-                case "hosted_page":
-                    $newOption        = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("pay by card"))
-                        ->setAction(
-                            $this->context->link->getModuleLink(
-                                $this->name,
-                                'redirect',
-                                array(),
-                                true
+            if (!empty($activatedCreditCard)) {
+                //displaying different forms depending of the operating mode chosen in the BO configuration
+                switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
+                    case "hosted_page":
+                        $newOption        = new PaymentOption();
+                        $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setAction(
+                                $this->context->link->getModuleLink(
+                                    $this->name,
+                                    'redirect',
+                                    array(),
+                                    true
+                                )
+                        );
+                        $paymentOptions[] = $newOption;
+                        break;
+                    case "api":
+                        // set credit card for one click
+                        $this->ccToken    = new HipayCCToken($this);
+                        $savedCC          = $this->ccToken->getSavedCC($params['cart']->id_customer);
+
+                        $this->context->smarty->assign(
+                            array(
+                                'module_dir' => $this->_path,
+                                'this_path_ssl' => Tools::getShopDomainSsl(
+                                    true,
+                                    true
+                                ).__PS_BASE_URI__.'modules/'.$this->name.'/',
+                                'savedCC' => $savedCC,
+                                'activatedCreditCard' => Tools::jsonEncode(array_keys($activatedCreditCard)),
+                                'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates/hook',
+                                'action' => $this->context->link->getModuleLink(
+                                    $this->name,
+                                    'redirect',
+                                    array(),
+                                    true
+                                ),
                             )
-                    );
-                    $paymentOptions[] = $newOption;
-                    break;
-                case "api":
-                    // set credit card for one click
-                    $this->ccToken    = new HipayCCToken($this);
-                    $savedCC          = $this->ccToken->getSavedCC($params['cart']->id_customer);
+                        );
 
-                    $this->context->smarty->assign(
-                        array(
-                            'module_dir' => $this->_path,
-                            'this_path_ssl' => Tools::getShopDomainSsl(
-                                true,
-                                true
-                            ).__PS_BASE_URI__.'modules/'.$this->name.'/',
-                            'savedCC' => $savedCC,
-                            'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates/hook',
-                            'action' => $this->context->link->getModuleLink(
-                                $this->name,
-                                'redirect',
-                                array(),
-                                true
-                            ),
-                        )
-                    );
+                        $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
+                        $newOption   = new PaymentOption();
+                        $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setModuleName("credit_card")
+                            ->setForm($paymentForm);
 
-                    $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
-                    $newOption   = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("pay by card"))
-                        ->setModuleName("credit_card")
-                        ->setForm($paymentForm);
+                        $paymentOptions[] = $newOption;
 
-                    $paymentOptions[] = $newOption;
-
-                    break;
-                case "iframe":
-                    $newOption        = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("pay by card"))
-                        ->setAction(
-                            $this->context->link->getModuleLink(
-                                $this->name,
-                                'redirect',
-                                array(),
-                                true
-                            )
-                    );
-                    $paymentOptions[] = $newOption;
-                    break;
-                default:
-                    break;
+                        break;
+                    case "iframe":
+                        $newOption        = new PaymentOption();
+                        $newOption->setCallToActionText($this->l("pay by card"))
+                            ->setAction(
+                                $this->context->link->getModuleLink(
+                                    $this->name,
+                                    'redirect',
+                                    array(),
+                                    true
+                                )
+                        );
+                        $paymentOptions[] = $newOption;
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
 
 
-        // get activated local payment for customer currency and country
-        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
-            "local_payment",
-            $country,
-            $currency,
-            $params['cart']->getOrderTotal()
-        );
-
-        if (!empty($activatedLocalPayment)) {
-            $this->context->smarty->assign(
-                array(
-                    'module_dir' => $this->_path,
-                    'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates',
-                    'methodFields' => array()
-                )
+            // get activated local payment for customer currency and country
+            $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
+                "local_payment",
+                $country,
+                $currency,
+                $params['cart']->getOrderTotal()
             );
 
-            $i = 0;
-            foreach ($activatedLocalPayment as $name => $localpayment) {
-                $newOption = new PaymentOption();
-
+            if (!empty($activatedLocalPayment)) {
                 $this->context->smarty->assign(
                     array(
-                        'action' => $this->context->link->getModuleLink(
-                            $this->name,
-                            'redirectlocal',
-                            array("method" => $name),
-                            true
-                        ),
+                        'module_dir' => $this->_path,
+                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates',
+                        'methodFields' => array()
                     )
                 );
-                if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])
-                    || ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"] !== 'api'
-                    || ($localpayment["forceHpaymentOnElectronicSignature"]
-                    && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]))
-                ) {
+
+                $i = 0;
+                foreach ($activatedLocalPayment as $name => $localpayment) {
+                    $newOption = new PaymentOption();
+
                     $this->context->smarty->assign(
                         array(
-                            'methodFields' => array()
+                            'action' => $this->context->link->getModuleLink(
+                                $this->name,
+                                'redirectlocal',
+                                array("method" => $name),
+                                true
+                            ),
+                            'localPaymentName' => $name
                         )
                     );
-                } else {
-                    $this->context->smarty->assign(
-                        array(
-                            'methodFields' => $this->hipayConfigTool->getConfigHipay(
-                            )["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
+                    if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])
+                        || ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]
+                        !== 'api' || ($localpayment["forceHpaymentOnElectronicSignature"]
+                        && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]))
+                    ) {
+                        $this->context->smarty->assign(
+                            array(
+                                'methodFields' => array()
+                            )
+                        );
+                    } else {
+                        $this->context->smarty->assign(
+                            array(
+                                'methodFields' => $this->hipayConfigTool->getConfigHipay(
+                                )["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
+                            )
+                        );
+                    }
+                    $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/paymentLocalForm17.tpl');
+
+                    $newOption->setCallToActionText($this->l("pay by")." ".$localpayment["displayName"])
+                        ->setAction(
+                            $this->context->link->getModuleLink(
+                                $this->name,
+                                'redirectlocal',
+                                array("method" => $name),
+                                true
+                            )
                         )
-                    );
+                        ->setModuleName('local_payment_hipay')
+                        ->setForm($paymentForm);
+
+                    // if no credit card, we force ioBB input to be displayed
+                    if ($i == 0 && empty($activatedCreditCard)) {
+                        $ioBB = '<input id="ioBB" type="hidden" name="ioBB">';
+                        $newOption->setAdditionalInformation($ioBB);
+                    }
+
+                    $paymentOptions[] = $newOption;
+                    $i++;
                 }
-                $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/paymentLocalForm17.tpl');
-
-                $newOption->setCallToActionText($this->l("pay by")." ".$localpayment["displayName"])
-                    ->setAction(
-                        $this->context->link->getModuleLink(
-                            $this->name,
-                            'redirectlocal',
-                            array("method" => $name),
-                            true
-                        )
-                    )
-                    ->setModuleName($this->name)
-                    ->setForm($paymentForm);
-
-                // if no credit card, we force ioBB input to be displayed
-                if ($i == 0 && empty($activatedCreditCard)) {
-                    $ioBB = '<input id="ioBB" type="hidden" name="ioBB">';
-                    $newOption->setAdditionalInformation($ioBB);
-                }
-
-                $paymentOptions[] = $newOption;
-                $i++;
             }
-        }
 
-        return $paymentOptions;
+            return $paymentOptions;
+        } catch (Exception $exc) {
+            $this->logs->errorLogsHipay($exc->getTraceAsString());
+            $this->logs->errorLogsHipay($exc->getMessage());
+        }
     }
 
     /**
@@ -258,6 +264,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $this->context->controller->registerJavascript(
                 'card-tokenize',
                 'modules/'.$this->name.'/views/js/card-tokenize.js'
+            );
+            $this->context->controller->registerJavascript(
+                'input-form-control',
+                'modules/'.$this->name.'/views/js/form-input-control.js',
+                array('position'=> 'head')
             );
             $this->context->controller->registerJavascript(
                 'device-fingerprint',

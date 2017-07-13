@@ -131,6 +131,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
                             'methodName' => $this->module->hipayConfigTool->getConfigHipay(
                             )["payment"]["local_payment"][$method]["displayName"],
+                            'localPaymentName' => $method,
                             'methodFields' => $this->module->hipayConfigTool->getConfigHipay(
                             )["payment"]["local_payment"][$method]["additionalFields"]["formFields"]
                         )
@@ -163,11 +164,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
     public function setMedia()
     {
         parent::setMedia();
-        $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js'));
         $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
-        $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/card-js.min.css'));
-        $this->context->controller->addJS(
-            array(_MODULE_DIR_ . 'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
-        );
+        $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/form-input-control.js'));
+        $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/hipay-enterprise.css'));
     }
 }

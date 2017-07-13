@@ -24,12 +24,14 @@
 
     <input type="hidden" name="localSubmit"/>
     <script>
-        var inputControl = {literal}{}{/literal};
-        {foreach $methodFields as $name => $field}
-            {if isset($field.controlType)}
-                inputControl['{$name}'] = '{$field.controlType}';
-            {/if}
-        {/foreach}
-        console.log(inputControl);
+        (function () {
+            {foreach $methodFields as $name => $field}
+                {if isset($field.controlType)}
+                hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}' , {if isset($field.required)}{$field.required}{else}false{/if});
+                {/if}
+            {/foreach}
+            console.log(hiPayInputControl);
+        })();
+
     </script>
 {/if}

@@ -5,3 +5,10 @@
     margin-bottom: 15px;
 }
 
+.error-input-hp{
+    outline : .1875rem solid #ff4c4c;
+}
+
+.error-text-hp{
+    color :#ff4c4c;
+}
