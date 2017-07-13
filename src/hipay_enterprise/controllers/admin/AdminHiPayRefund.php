@@ -42,6 +42,9 @@ class AdminHiPayRefundController extends ModuleAdminController
             }
             ShopUrl::cacheMainDomainForShop((int)$order->id_shop);
             $transactionReference = $this->db->getTransactionReference($order->id);
+            $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
+            $params = array("method" => $paymentProduct);
+
         }
 
         // First check
@@ -136,10 +139,14 @@ class AdminHiPayRefundController extends ModuleAdminController
             }
 
             if ($refund_type == 'complete') {
-                $params = array("amount" => $refundableAmount, "transaction_reference" => $transactionReference);
+                $params["amount"] = $refundableAmount;
+                $params["order"] = $order->id;
+                $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleRefund($params);
             } elseif ($refund_type == 'partial') {
-                $params = array("amount" => $refund_amount, "transaction_reference" => $transactionReference);
+                $params["amount"] = $refund_amount;
+                $params["order"] = $order->id;
+                $params["transaction_reference"] = $transactionReference;
                 $this->apiHandler->handleRefund($params);
             }
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
@@ -164,8 +171,14 @@ class AdminHiPayRefundController extends ModuleAdminController
                 $params = array("refundItems" => $refundItems,
                     "order" => $order->id, "transaction_reference" => $transactionReference,
                     "capture_refund_fee" => Tools::getValue('hipay_refund_fee'));
+                $params["refundItems"] = $refundItems;
+                $params["order"] = $order->id;
+                $params["transaction_reference"] = $transactionReference;
+                $params["capture_refund_fee"] = Tools::getValue('hipay_refund_fee');
             } else {
-                $params = array("refundItems" => "full", "order" => $order->id, "transaction_reference" => $transactionReference);
+                $params["refundItems"] = "full";
+                $params["order"] = $order->id;
+                $params["transaction_reference"] = $transactionReference;
             }
 
             $this->apiHandler->handleRefund($params);

@@ -9,7 +9,7 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
+require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayHelper.php');
 
 class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontController
 {
@@ -19,20 +19,20 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
      */
     public function postProcess()
     {
-        $this->display_column_left = false;
+        $this->display_column_left  = false;
         $this->display_column_right = false;
         parent::initContent();
 
         $context = Context::getContext();
 
-        if (!(bool)$this->module->hipayConfigTool->getConfigHipay(
-        )["payment"]["global"]["regenerate_cart_on_decline"]
-        ) {
-            HipayHelper::unsetCart();
-        }
+        $this->context->smarty->assign(
+            array(
+                'status_error' => Tools::getValue('status_error')
+            )
+        );
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/exception17.tpl'
-            : 'paymentReturn/exception.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/exception17.tpl'
+                    : 'paymentReturn/exception.tpl');
 
         $this->setTemplate($path);
     }

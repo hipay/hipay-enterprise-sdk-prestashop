@@ -14,7 +14,7 @@ require_once(dirname(__FILE__) . '/hipayDBQuery.php');
 
 class HipayMapper
 {
-    const PS_CAT_LEVEL_DEPTH = 1;
+    const PS_CAT_LEVEL_DEPTH = 2;
     const HIPAY_CAT_MAPPING = 'category';
     const HIPAY_CARRIER_MAPPING = 'carrier';
 
@@ -125,7 +125,7 @@ class HipayMapper
             return (int)$hipayCatId["hp_cat_id"];
         }
 
-        return null;
+        return 1;
     }
 
     public function getMappedHipayCarrierFromPSId($PSId)

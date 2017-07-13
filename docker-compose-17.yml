@@ -13,8 +13,8 @@ prestashop17:
     - smtp
     - mysql
   env_file:
-    - ./conf/env_file/env
-    - ./conf/env_file/env17
+    - ./conf/env_file/development/env
+    - ./conf/env_file/development/env17
   volumes:
     - ./web17:/var/www/html
     - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise

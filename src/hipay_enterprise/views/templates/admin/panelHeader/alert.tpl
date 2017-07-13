@@ -16,7 +16,7 @@
         <ul class="list-unstyled">
             {foreach from=$form_errors item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-            {/foreach}
+                {/foreach}
         </ul>
     </div>
 {/if}
@@ -27,7 +27,7 @@
         <ul class="list-unstyled">
             {foreach from=$form_infos item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-            {/foreach}
+                {/foreach}
         </ul>
     </div>
 {/if}
@@ -38,7 +38,25 @@
         <ul class="list-unstyled">
             {foreach from=$form_successes item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
-            {/foreach}
+                {/foreach}
         </ul>
+    </div>
+{/if}
+
+{if $config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_username_sandbox) || empty($config_hipay.account.sandbox.api_password_sandbox) || empty($config_hipay.account.sandbox.api_secret_passphrase_sandbox) )}
+    <div class="alert alert-danger">
+        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
+        <p>
+            {l s='You\'re on test mode but your sanbox credentials are not filled' mod='hipay_enterprise'}
+        </p>
+    </div>
+{/if}
+
+{if !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.production.api_username_production) || empty($config_hipay.account.production.api_password_production) || empty($config_hipay.account.production.api_secret_passphrase_production) )}
+    <div class="alert alert-danger">
+        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
+        <p>
+            {l s='You\'re on live mode but your production credentials are not filled' mod='hipay_enterprise'}
+        </p>
     </div>
 {/if}

@@ -145,7 +145,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             );
         } else {
             if (_PS_VERSION_ >= '1.7') {
-                Tools::redirect('index.php?controller=order');
+                $redirectUrl = $context->link->getModuleLink(
+                            $this->module->name,
+                            'exception',
+                            array('status_error' => 405),
+                            true
+                        );
+                Tools::redirect($redirectUrl);
             }
             $context->smarty->assign(
                 array(
@@ -226,7 +232,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             );
         } else {
             if (_PS_VERSION_ >= '1.7') {
-                Tools::redirect('index.php?controller=order');
+                $redirectUrl = $context->link->getModuleLink(
+                            $this->module->name,
+                            'exception',
+                            array('status_error' => 404),
+                            true
+                        );
+                Tools::redirect($redirectUrl);
             }
             $context->smarty->assign(
                 array(

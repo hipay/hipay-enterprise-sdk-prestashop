@@ -13,6 +13,21 @@
 {block name="content"}
     <h2>{l s='Payment Summary' mod='hipay_enterprise'}</h2>
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
+    {if $status_error == 404}
+        <div class="alert alert-danger">
+            <p>There is 1 error</p>
+            <ol>
+                <li>{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}</li>
+            </ol>
+        </div>
+    {else}
+        <div class="alert alert-danger">
+            <p>There is 1 error</p>
+            <ol>
+                <li>{l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}</li>
+            </ol>
+        </div>
+    {/if} 
     <p class="warning">
         {l s='We noticed a problem with your order. Please contact our ' mod='hipay_enterprise'}
         <strong><a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='customer support' mod='hipay_enterprise'}</a></strong>.

@@ -9,26 +9,29 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/../ApiFormatterInterface.php');
-require_once(dirname(__FILE__) . '/../../tools/hipayMapper.php');
+require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/../ApiFormatterInterface.php');
+require_once(dirname(__FILE__).'/../../tools/hipayMapper.php');
+require_once(dirname(__FILE__).'/../../tools/hipayDBQuery.php');
 
 class CartMaintenanceFormatter implements ApiFormatterInterface
 {
+
     public function __construct(
-        $module,
-        $params
-    ) {
-        $this->module = $module;
-        $this->context = Context::getContext();
-        $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
-        $this->products = $params["products"];
-        $this->discounts = $params["discounts"];
-        $this->order = $params["order"];
+    $module, $params
+    )
+    {
+        $this->module           = $module;
+        $this->context          = Context::getContext();
+        $this->configHipay      = $this->module->hipayConfigTool->getConfigHipay();
+        $this->products         = $params["products"];
+        $this->discounts        = $params["discounts"];
+        $this->order            = $params["order"];
+        $this->operation        = $params["operation"];
         $this->captureRefundFee = $params["captureRefundFee"];
-        $this->mapper = new HipayMapper($module);
-        $this->totalItem = 0;
-        // $this->db = new HipayDBQuery($module);
+        $this->mapper           = new HipayMapper($module);
+        $this->totalItem        = 0;
+        $this->db               = new HipayDBQuery($module);
     }
 
     /**
@@ -80,51 +83,50 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
     private function getGoodItem(
-        $product,
-        $qty
-    ) {
-        $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
+    $product, $qty
+    )
+    {
+        $item                       = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $european_article_numbering = $product["ean13"];
-        $product_reference = "good_" . $product["id_product"];
-        $type = "good";
-        $name = $product["name"];
-        $quantity = $product["cart_quantity"];
+        $product_reference          = HipayHelper::getProductRef($product);
+        $type                       = "good";
+        $name                       = $product["name"];
+        $quantity                   = $product["cart_quantity"];
 
         $this->totalItem += $quantity;
 
-        $discount = -1 * Tools::ps_round(
-                ($product["price_without_reduction"]
-                    * $product["cart_quantity"]) - ($product["price_with_reduction"]
-                    * $product["cart_quantity"]),
+        $discount     = -1 * Tools::ps_round(
+                ($product["price_without_reduction"] * $product["cart_quantity"])
+                - ($product["price_with_reduction"] * $product["cart_quantity"]),
                 2
-            );
-        $total_amount = Tools::ps_round(
-            $product["total_wt"],
-            2
-        );
-        $unit_price = Tools::ps_round(
-            (($total_amount - $discount) / $quantity),
-            3
-        );
-        $discount = Tools::ps_round(
-            ($discount * $qty) / $quantity,
-            3
         );
         $total_amount = Tools::ps_round(
-            ($total_amount * $qty) / $quantity,
-            3
+                $product["total_wt"],
+                2
+        );
+        $unit_price   = Tools::ps_round(
+                (($total_amount - $discount) / $quantity),
+                3
+        );
+        $discount     = Tools::ps_round(
+                ($discount * $qty) / $quantity,
+                3
+        );
+        $total_amount = Tools::ps_round(
+                ($total_amount * $qty) / $quantity,
+                3
         );
 
 
-        $tax_rate = $product["rate"];
+        $tax_rate             = $product["rate"];
         $discount_description = "";
-        $product_description = "";
-        $delivery_method = "";
-        $delivery_company = "";
-        $delivery_delay = "";
-        $delivery_number = "";
-        $product_category = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
-        $shop_id = null;
+        $product_description  = "";
+        $delivery_method      = "";
+        $delivery_company     = "";
+        $delivery_delay       = "";
+        $delivery_number      = "";
+        $product_category     = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
+        $shop_id              = null;
 
         $item->__constructItem(
             $european_article_numbering,
@@ -146,6 +148,16 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $shop_id
         );
 
+        //save capture items and quantity in prestashop
+        $captureData = array(
+            "hp_ps_order_id" => $this->order->id,
+            "hp_ps_product_id" => $product["id_product"],
+            "type" => $this->operation,
+            "quantity" => $item->getQuantity(),
+            "amount" => Tools::ps_round($item->getTotalAmount(),2)
+            );
+        $this->db->setCaptureOrRefundOrder($captureData);
+
         return $item;
     }
 
@@ -155,45 +167,49 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     private function getDiscountItem($totalQty)
     {
-        $product_reference = "";
-        $name = "";
-        $unit_price = 0;
+        $product_reference    = "";
+        $name                 = "";
+        $unit_price           = 0;
         $discount_description = "";
-        $total_amount = 0;
+        $total_amount         = 0;
 
         foreach ($this->discounts as $disc) {
-            $product_reference .= "discount_" . $disc["id_cart_rule"] . "/";
-            $name .= $disc["name"] . "/";
+            $product_reference[] = HipayHelper::getDiscountRef($disc);
+            $name[] = $disc["name"];
             $unit_price += -1 * Tools::ps_round(
                     $disc["value_real"],
                     3
-                );
+            );
             $tax_rate = 0.00;
             $discount = 0.00;
-            $discount_description .= $disc["description"] . "/";
+            $discount_description[] = $disc["description"];
             $total_amount += -1 * Tools::ps_round(
                     $disc["value_real"],
                     3
-                );
+            );
         }
 
-        $unit_price = Tools::ps_round(
-            ($unit_price * $totalQty) / $this->totalItem,
-            3
+        $unit_price   = Tools::ps_round(
+                ($unit_price * $totalQty) / $this->totalItem,
+                3
         );
         $total_amount = Tools::ps_round(
-            ($total_amount * $totalQty) / $this->totalItem,
-            3
+                ($total_amount * $totalQty) / $this->totalItem,
+                3
         );
 
+        $product_reference = join("/", $product_reference);
+        $name = join("/", $name);
+        $discount_description = join("/", $discount_description);
+
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeDiscount(
-            $product_reference,
-            $name,
-            $unit_price,
-            $tax_rate,
-            $discount,
-            $discount_description,
-            $total_amount
+                $product_reference,
+                $name,
+                $unit_price,
+                $tax_rate,
+                $discount,
+                $discount_description,
+                $total_amount
         );
         // forced category
         $item->setProductCategory(1);
@@ -207,24 +223,26 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     private function getFeesItem()
     {
-        $carrier = new Carrier($this->order->id_carrier);
-        $delivery = new Address($this->order->id_address_delivery);
-        $product_reference = "fees_" . $carrier->id_reference;
-        $name = $carrier->name;
-        $unit_price = (float)$this->order->total_shipping;
-        $tax_rate = $carrier->getTaxesRate($delivery);
-        $discount = 0.00;
-        $total_amount = (float)$this->order->total_shipping;
-        $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
-            $product_reference,
-            $name,
-            $unit_price,
-            $tax_rate,
-            $discount,
-            $total_amount
+        $carrier           = new Carrier($this->order->id_carrier);
+        $delivery          = new Address($this->order->id_address_delivery);
+        $product_reference = HipayHelper::getCarrierRef($carrier);
+        $name              = $carrier->name;
+        $unit_price        = (float) $this->order->total_shipping;
+        $tax_rate          = $carrier->getTaxesRate($delivery);
+        $discount          = 0.00;
+        $total_amount      = (float) $this->order->total_shipping;
+        $item              = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
+                $product_reference,
+                $name,
+                $unit_price,
+                $tax_rate,
+                $discount,
+                $total_amount
         );
         // forced category
         $item->setProductCategory(1);
+
+        HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,$this->operation);
 
         return $item;
     }

@@ -16,7 +16,8 @@
     "forceHpayment": 0,
     "forceBasket": 1,
     "forceHpaymentOnElectronicSignature": 0,
-    "minAmount": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
     "logo": "klarna.png",
     "additionalFields": {}
   }

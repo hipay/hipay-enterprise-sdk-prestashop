@@ -2,13 +2,14 @@
   "name": "visa",
   "config": {
     "displayName": "Visa",
-    "activated": 0,
+    "activated": 1,
     "canRefund": 1,
     "canManualCapture": 1,
     "currencies": [
       "EUR"
     ],
-    "minAmount": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
     "countries": [
       "GB",
       "FR"

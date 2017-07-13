@@ -16,6 +16,12 @@
     {include file='./panelHeader/marketing.tpl'}
     <!-- MARKETING END -->
 </div>
+<div class="panel">
+    <!-- MARKETING START -->
+    {* include file technicals.tpl *}
+    {include file='./panelHeader/technicals.tpl'}
+    <!-- MARKETING END -->
+</div>
 <!-- ALERTS START -->
 {* include file alerts.tpl *}
 {include file='./panelHeader/alert.tpl'}
@@ -24,29 +30,29 @@
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation"
             class=" {if ((isset($active_tab) == false) || ($active_tab == 'account_form'))} active{/if}"><a
-                    href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">
-                <span class="icon icon-cogs"></span> {l s='Account informations' mod='hipay_enterprise'}</a>
+                href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">
+                <span class="icon icon-cogs"></span> {l s='Module settings' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'payment_form'))} active{/if}"><a
-                    href="#payment_form" aria-controls="payment_form" role="tab" data-toggle="tab">
+                href="#payment_form" aria-controls="payment_form" role="tab" data-toggle="tab">
                 <span class="icon icon-money"></span> {l s='Payment methods' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'fraud_form'))} active{/if}"><a href="#fraud"
-                                                                                                         aria-controls="fraud"
-                                                                                                         role="tab"
-                                                                                                         data-toggle="tab">
+                                                                                                     aria-controls="fraud"
+                                                                                                     role="tab"
+                                                                                                     data-toggle="tab">
                 <span class="icon icon-exclamation"></span> {l s='Fraud' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}"><a
-                    href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
+                href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
                 <span class="icon icon-copy"></span> {l s='Category Mapping' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}"><a
-                    href="#carrier-mapping" aria-controls="carrier-mapping" role="tab" data-toggle="tab">
+                href="#carrier-mapping" aria-controls="carrier-mapping" role="tab" data-toggle="tab">
                 <span class="icon icon-copy"></span> {l s='Carrier Mapping' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"><a href="#faq" aria-controls="faq" role="tab" data-toggle="tab">
@@ -88,21 +94,6 @@
         </div>
         <div role="tabpanel" class="tab-pane" id="logs">
             {include file='./tabs/logs.tpl'}
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel">
-            <div class="panel-heading">
-                <i class="icon-credit-card"></i>
-                Hipay technical details
-            </div>
-            <div class="well hidden-print">
-                <p>source : {$source}</p>
-                <p>IP Address : {$ipaddr}</p>
-                <p>Callback url : {$this_callback}</p>
-            </div>
         </div>
     </div>
 </div>

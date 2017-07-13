@@ -242,9 +242,9 @@ class HipayNotification
     private function updateOrderStatus($newState)
     {
         $return = true;
-        $this->addOrderMessage();
 
         if ($this->orderExist) {
+            $this->addOrderMessage();
             if ((int)$this->order->getCurrentState() != (int)$newState && !$this->controleIfStatushistoryExist(
                     _PS_OS_PAYMENT_,
                     $newState,

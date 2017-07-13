@@ -103,7 +103,7 @@ class Apihandler
                     $params,
                     false
                 );
-                var_dump($params);
+            //    var_dump($params);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME:
