@@ -17,8 +17,7 @@
     "forceHpayment": 0,
     "forceBasket": 0,
     "forceHpaymentOnElectronicSignature": 1,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": 0,
     "logo": "sdd.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\SEPADirectDebitPaymentMethod",
@@ -44,7 +43,8 @@
         },
         "iban": {
           "label": "International Bank Account Number (IBAN)",
-          "type": "text"
+          "type": "text",
+          "controlType" : "iban"
         },
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",

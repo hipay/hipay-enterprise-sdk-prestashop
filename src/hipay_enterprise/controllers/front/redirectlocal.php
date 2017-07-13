@@ -129,6 +129,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                                 Cart::BOTH
                             ),
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                            'methodName' => $this->module->hipayConfigTool->getConfigHipay(
+                            )["payment"]["local_payment"][$method]["displayName"],
                             'methodFields' => $this->module->hipayConfigTool->getConfigHipay(
                             )["payment"]["local_payment"][$method]["additionalFields"]["formFields"]
                         )

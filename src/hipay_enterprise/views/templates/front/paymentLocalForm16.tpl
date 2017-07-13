@@ -38,39 +38,36 @@
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </p>
     {/if}
-    <form enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal"
+    <form enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal col-lg-4 col-lg-offset-4"
           method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
+            <h2 class="page-subheading">{l s='Pay with %s' sprintf=$methodName mod='hipay_enterprise'}</h2>
             <div class="control-group">
-                <label class="control-label"
-                       style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Order' mod='hipay_enterprise'}
-                    :&nbsp;</label>
-                <div class="controls" style="float: left; font-size: 13px; font-weight: bold;">
-                    #{$cart_id}<span id="cartIdMessage"></span>
-                    <input type="hidden" class="input-medium" name="cartId" id="cartId" value="{$cart_id}">
-                </div>
+                <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
                 <div style="clear: both;"></div>
             </div>
             <br/>
-            <div class="control-group">
-                <label class="control-label"
-                       style="float: left; margin: 0 0px 0 0; font-size: 15px; font-weight: bold;">{l s='Amount' mod='hipay_enterprise'}
-                    :&nbsp;</label>
-                <div class="controls" style="float: left; font-weight:bold; color:#072959;font-size:15px;">
-                    {$amount} {$currency->iso_code}
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-            <br/>
+            {assign "psVersion" "16"}
             {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
+            <p class="cart_navigation clearfix">
+                <button id="pay-button" type="submit" name="processCarrier"
+                        class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
+                    <span>
+                        {l s='Pay' mod='hipay_enterprise'}
+                    </span>
+                </button>
+            </p>
         </div>
-        <p class="cart_navigation clearfix">
-            <button id="pay-button" type="submit" name="processCarrier"
-                    class="button btn btn-default standard-checkout button-medium" style="">
-                <span>
-                    {l s='Pay' mod='hipay_enterprise'}
-                </span>
-            </button>
-        </p>
+
     </form>
+    <script>
+        $("#pay-button").click(function (e) {
+            // prevent form from being submitted 
+            e.preventDefault();
+            e.stopPropagation();
+            
+            
+            
+        });
+    </script>
 {/if}
