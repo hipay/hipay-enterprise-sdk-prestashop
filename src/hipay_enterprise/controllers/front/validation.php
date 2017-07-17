@@ -21,6 +21,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
      */
     public function postProcess()
     {
+
         HipayHelper::unsetCart();
 
         $cartId = Tools::getValue('orderId');

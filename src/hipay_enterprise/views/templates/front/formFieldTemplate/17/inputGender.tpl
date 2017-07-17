@@ -9,7 +9,7 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-<label>{$field["label"]}</label>
+<label class="{if isset($field.required) && $field.required}required{/if}" >{$field["label"]}</label>
 
 <select id="{$localPaymentName}-{$name}" class="form-control" {if isset($field.required) && $field.required}required{/if} name="{$name}">
     <option value="1">{l s='Mr' mod='hipay_enterprise'}</option>
