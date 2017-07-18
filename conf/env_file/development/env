@@ -25,5 +25,5 @@ MYSQL_PASSWORD=admin
 #====================================================
 # Specific configuration for production
 #=====================================================
-HIPAY_INSTALL_AUTO=0
+HIPAY_INSTALL_AUTO=1
 ENVIRONMENT=development
