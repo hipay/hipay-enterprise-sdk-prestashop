@@ -8,31 +8,30 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/hipayDBQuery.php');
-require_once(dirname(__FILE__) . '/hipayOrderMessage.php');
+require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/hipayOrderMessage.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
 class HipayNotification
 {
     const TRANSACTION_REF_CAPTURE_SUFFIX = "capture";
-    const TRANSACTION_REF_REFUND_SUFFIX = "refund";
+    const TRANSACTION_REF_REFUND_SUFFIX  = "refund";
 
     protected $transaction;
     protected $cart;
     protected $orderExist = false;
-    protected $order = null;
+    protected $order      = null;
 
     public function __construct(
-        $moduleInstance,
-        $data
-    ) {
-        $this->module = $moduleInstance;
-        $this->log = $this->module->getLogs();
+    $moduleInstance, $data
+    )
+    {
+        $this->module  = $moduleInstance;
+        $this->log     = $this->module->getLogs();
         $this->context = Context::getContext();
-        $this->db = new HipayDBQuery($this->module);
+        $this->db      = new HipayDBQuery($this->module);
 
         $this->transaction = (new HiPay\Fullservice\Gateway\Mapper\TransactionMapper($data))->getModelObjectMapped();
         $this->log->callbackLogs("###### Mapped Transaction #####");
@@ -62,20 +61,20 @@ class HipayNotification
             die('Cart empty');
         }
 
-        $this->log->callbackLogs('---------- Boutique N°' . $this->cart->id_shop);
-        $this->log->callbackLogs('---------- panier exist ID = ' . $this->cart->id);
+        $this->log->callbackLogs('---------- Boutique N°'.$this->cart->id_shop);
+        $this->log->callbackLogs('---------- panier exist ID = '.$this->cart->id);
 
         if ($this->cart->orderExists()) {
             // il existe une commande associée à ce panier
             $this->orderExist = true;
             // init de l'id de commande
-            $idOrder = Order::getOrderByCartId($this->cart->id);
+            $idOrder          = Order::getOrderByCartId($this->cart->id);
             if ($idOrder) {
-                $this->order = new Order((int)$idOrder);
+                $this->order = new Order((int) $idOrder);
                 $this->log->callbackLogs('---------- objOrder initialisé');
             }
-            $this->log->callbackLogs('---------- order_exist = ' . $this->orderExist);
-            $this->log->callbackLogs('---------- id_order = ' . $idOrder);
+            $this->log->callbackLogs('---------- order_exist = '.$this->orderExist);
+            $this->log->callbackLogs('---------- id_order = '.$idOrder);
         }
     }
 
@@ -113,15 +112,15 @@ class HipayNotification
                 case TransactionStatus::DENIED:
                 case TransactionStatus::REFUSED:
                     if (!$this->controleIfStatushistoryExist(
-                        _PS_OS_PAYMENT_,
-                        Configuration::get(
-                            'HIPAY_OS_DENIED',
-                            null,
-                            null,
-                            1
-                        ),
-                        true
-                    )
+                            _PS_OS_PAYMENT_,
+                            Configuration::get(
+                                'HIPAY_OS_DENIED',
+                                null,
+                                null,
+                                1
+                            ),
+                                true
+                        )
                     ) {
                         $this->updateOrderStatus(
                             Configuration::get(
@@ -176,10 +175,10 @@ class HipayNotification
                     $orderState = _PS_OS_PAYMENT_;
                     if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
                         $orderState = Configuration::get(
-                            'HIPAY_OS_PARTIALLY_CAPTURED',
-                            null,
-                            null,
-                            1
+                                'HIPAY_OS_PARTIALLY_CAPTURED',
+                                null,
+                                null,
+                                1
                         );
                     }
                     if ($this->updateOrderStatus($orderState)) {
@@ -188,13 +187,13 @@ class HipayNotification
                     break;
                 case TransactionStatus::PARTIALLY_CAPTURED: //119
                     if ($this->updateOrderStatus(
-                        Configuration::get(
-                            'HIPAY_OS_PARTIALLY_CAPTURED',
-                            null,
-                            null,
-                            1
+                            Configuration::get(
+                                'HIPAY_OS_PARTIALLY_CAPTURED',
+                                null,
+                                null,
+                                1
+                            )
                         )
-                    )
                     ) {
                         $this->captureOrder();
                     }
@@ -245,7 +244,7 @@ class HipayNotification
 
         if ($this->orderExist) {
             $this->addOrderMessage();
-            if ((int)$this->order->getCurrentState() != (int)$newState && !$this->controleIfStatushistoryExist(
+            if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(
                     _PS_OS_PAYMENT_,
                     $newState,
                     true
@@ -264,8 +263,8 @@ class HipayNotification
                 && $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()
             ) {
                 $this->log->callbackLogs(
-                    '--------------- captured_amount (' . $this->transaction->getCapturedAmount(
-                    ) . ') is < than authorized_amount (' . $this->transaction->getAuthorizedAmount() . ')'
+                    '--------------- captured_amount ('.$this->transaction->getCapturedAmount(
+                    ).') is < than authorized_amount ('.$this->transaction->getAuthorizedAmount().')'
                 );
                 $return = true;
             }
@@ -286,15 +285,15 @@ class HipayNotification
             $message = HipayOrderMessage::formatOrderData($this->transaction);
 
             // init context
-            Context::getContext()->cart = new Cart((int)$this->cart->id);
-            $address = new Address((int)Context::getContext()->cart->id_address_invoice);
-            Context::getContext()->country = new Country((int)$address->id_country);
-            Context::getContext()->customer = new Customer((int)Context::getContext()->cart->id_customer);
-            Context::getContext()->language = new Language((int)Context::getContext()->cart->id_lang);
-            Context::getContext()->currency = new Currency((int)Context::getContext()->cart->id_currency);
-            $customer = new Customer((int)Context::getContext()->cart->id_customer);
-            $shop_id = $this->cart->id_shop;
-            $shop = new Shop($shop_id);
+            Context::getContext()->cart     = new Cart((int) $this->cart->id);
+            $address                        = new Address((int) Context::getContext()->cart->id_address_invoice);
+            Context::getContext()->country  = new Country((int) $address->id_country);
+            Context::getContext()->customer = new Customer((int) Context::getContext()->cart->id_customer);
+            Context::getContext()->language = new Language((int) Context::getContext()->cart->id_lang);
+            Context::getContext()->currency = new Currency((int) Context::getContext()->cart->id_currency);
+            $customer                       = new Customer((int) Context::getContext()->cart->id_customer);
+            $shop_id                        = $this->cart->id_shop;
+            $shop                           = new Shop($shop_id);
             Shop::setContext(
                 Shop::CONTEXT_SHOP,
                 $this->cart->id_shop
@@ -304,21 +303,21 @@ class HipayNotification
                 $this->module->validateOrder(
                     Context::getContext()->cart->id,
                     $state,
-                    (float)$this->transaction->getAuthorizedAmount(),
-                    $this->module->displayName . ' via ' . Tools::ucfirst($this->transaction->getPaymentProduct()),
-                    $message,
-                    array(),
-                    Context::getContext()->cart->id_currency,
-                    false,
-                    $customer->secure_key,
-                    $shop
+                    (float) $this->transaction->getAuthorizedAmount(),
+                    $this->module->displayName.' via '.Tools::ucfirst($this->transaction->getPaymentProduct()),
+                                                                      $message,
+                                                                      array(),
+                                                                      Context::getContext()->cart->id_currency,
+                                                                      false,
+                                                                      $customer->secure_key,
+                                                                      $shop
                 );
                 $this->order = new Order($this->module->currentOrder);
 
                 return true;
             } catch (Exception $e) {
-                $this->log->errorLogsHipay($e->getCode() . ' : ' . $e->getMessage());
-                $this->log->callbackLogs($e->getCode() . ' : ' . $e->getMessage());
+                $this->log->errorLogsHipay($e->getCode().' : '.$e->getMessage());
+                $this->log->callbackLogs($e->getCode().' : '.$e->getMessage());
                 return false;
             }
         }
@@ -331,25 +330,25 @@ class HipayNotification
     private function createOrderPayment($refund = false)
     {
         if ($this->orderExist) {
-            $amount = $this->getRealCapturedAmount($refund);
-            $payment_method = HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX . " " . (string)ucwords(
+            $amount                 = $this->getRealCapturedAmount($refund);
+            $payment_method         = HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX." ".(string) ucwords(
                     $this->transaction->getPaymentProduct()
-                );
+            );
             $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
-            $currency = new Currency($this->order->id_currency);
-            $payment_date = date("Y-m-d H:i:s");
-            $order_invoice = null;
+            $currency               = new Currency($this->order->id_currency);
+            $payment_date           = date("Y-m-d H:i:s");
+            $order_invoice          = null;
 
             if ($this->order && Validate::isLoadedObject($this->order)) {
                 // Add order payment
                 if ($this->order->addOrderPayment(
-                    $amount,
-                    $payment_method,
-                    $payment_transaction_id,
-                    $currency,
-                    $payment_date,
-                    $order_invoice
-                )
+                        $amount,
+                        $payment_method,
+                        $payment_transaction_id,
+                        $currency,
+                        $payment_date,
+                        $order_invoice
+                    )
                 ) {
                     // LOG
                     $this->log->callbackLogs('--------------- Order payment add with success');
@@ -420,12 +419,12 @@ class HipayNotification
                 $this->log->refundLogs('--------------- Create Order Payment');
                 $this->createOrderPayment(true);
 
-                $this->log->refundLogs('--------------- refundOrder: ' . $this->transaction->getRefundedAmount());
+                $this->log->refundLogs('--------------- refundOrder: '.$this->transaction->getRefundedAmount());
 
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
                     $this->log->refundLogs(
-                        '--------------- refundOrder: ' . Configuration::get(
+                        '--------------- refundOrder: '.Configuration::get(
                             'HIPAY_OS_REFUNDED',
                             null,
                             null,
@@ -442,7 +441,7 @@ class HipayNotification
                     );
                 } else {
                     $this->log->refundLogs(
-                        '--------------- refundOrder: ' . Configuration::get(
+                        '--------------- refundOrder: '.Configuration::get(
                             'HIPAY_OS_REFUNDED_PARTIALLY',
                             null,
                             null,
@@ -471,7 +470,7 @@ class HipayNotification
      */
     private function changeOrderStatus($newState)
     {
-        $orderHistory = new OrderHistory();
+        $orderHistory           = new OrderHistory();
         $orderHistory->id_order = $this->order->id;
         $orderHistory->changeIdOrderState(
             $newState,
@@ -500,20 +499,19 @@ class HipayNotification
      * @return boolean
      */
     private function controleIfStatushistoryExist(
-        $paymentStatus,
-        $orderState,
-        $forceCtrl = false
-    ) {
+    $paymentStatus, $orderState, $forceCtrl = false
+    )
+    {
         $this->log->callbackLogs('--------------- controleIfStatushistoryExist ----- ');
 
-        $this->log->callbackLogs('--------------- Status : ' . $orderState);
+        $this->log->callbackLogs('--------------- Status : '.$orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
             $this->log->callbackLogs('--------------- Control Action: TRUE');
             $this->log->callbackLogs('--------------- Status Exist: TRUE');
             return $this->db->checkOrderStatusExist(
-                $paymentStatus,
-                $this->order->id
+                    $paymentStatus,
+                    $this->order->id
             );
         }
 
@@ -526,6 +524,24 @@ class HipayNotification
      */
     private function addOrderMessage()
     {
+
+        $data = array(
+            "order_id" => $this->order->id,
+            "transaction_ref" => $this->transaction->getTransactionReference(),
+            "state" => $this->transaction->getState(),
+            "status" => $this->transaction->getStatus(),
+            "message" => $this->transaction->getMessage(),
+            "amount" => $this->transaction->getAuthorizedAmount(),
+            "captured_amount" => $this->transaction->getCapturedAmount(),
+            "refunded_amount" => $this->transaction->getRefundedAmount(),
+            "payment_product" => $this->transaction->getPaymentProduct(),
+            "payment_start" => $this->transaction->getDateCreated(),
+            "payment_authorized" => $this->transaction->getDateAuthorized(),
+            "authorization_code" => $this->transaction->getAuthorizationCode(),
+            "basket" => $this->transaction->getBasket()
+        );
+
+        $this->db->setHipayTransaction($data);
         HipayOrderMessage::orderMessage(
             $this->order->id,
             $this->transaction
@@ -547,7 +563,7 @@ class HipayNotification
             $amount = $this->transaction->getRefundedAmount();
         }
 
-        return $this->transaction->getTransactionReference() . "-" . $amount . '-' . $suffix;
+        return $this->transaction->getTransactionReference()."-".$amount.'-'.$suffix;
     }
 
     /**
@@ -560,7 +576,7 @@ class HipayNotification
 
         if ($refund) {
             $amount = -1 * ($this->order->getTotalPaid() - ($this->transaction->getCapturedAmount()
-                        - $this->transaction->getRefundedAmount()));
+                - $this->transaction->getRefundedAmount()));
         }
 
         return $amount;

@@ -1583,6 +1583,7 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper->createTable();
         $this->db->createOrderRefundCaptureTable();
         $this->db->createCCTokenTable();
+        $this->db->createHipayTransactionTable();
         return true;
     }
 
