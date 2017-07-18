@@ -61,7 +61,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"]
             : "";
 
-        if (!HipayHelper::checkSignature(
+        if (HipayHelper::checkSignature(
             $signature,
             $this->module->hipayConfigTool->getConfigHipay(),
             true

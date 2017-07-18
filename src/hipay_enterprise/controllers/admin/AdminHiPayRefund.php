@@ -9,44 +9,15 @@
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../classes/helper/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../controllers/admin/AdminHiPayActions.php');
 
-use HiPay\Fullservice\Enum\Transaction\Operation;
 
-class AdminHiPayRefundController extends ModuleAdminController
+class AdminHiPayRefundController extends AdminHiPayActionsController
 {
-    public function __construct()
-    {
-        $this->module = 'hipay_enterprise';
-        $this->bootstrap = true;
-        $this->context = Context::getContext();
-
-        parent::__construct();
-
-        $this->apiHandler = new ApiHandler(
-            $this->module,
-            $this->context
-        );
-        $this->db = new HipayDBQuery($this->module);
-    }
 
     public function postProcess()
     {
-        $context = Context::getContext();
-
-        if (Tools::isSubmit('id_order') && Tools::getValue('id_order') > 0) {
-            $order = new Order(Tools::getValue('id_order'));
-            if (!Validate::isLoadedObject($order)) {
-                throw new PrestaShopException('Can\'t load Order object');
-            }
-            ShopUrl::cacheMainDomainForShop((int)$order->id_shop);
-            $transactionReference = $this->db->getTransactionReference($order->id);
-            $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
-            $params = array("method" => $paymentProduct);
-
-        }
-
+        parent::postProcess();
         // First check
         if (Tools::isSubmit('hipay_refund_submit')) {
             //refund with no basket
@@ -70,10 +41,11 @@ class AdminHiPayRefundController extends ModuleAdminController
                     'Please enter an amount',
                     'refund'
                 );
+                $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                 Tools::redirectAdmin(
-                    $context->link->getAdminLink(
+                    $this->context->link->getAdminLink(
                         'AdminOrders'
-                    ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                    ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                 );
                 die('');
             }
@@ -82,10 +54,11 @@ class AdminHiPayRefundController extends ModuleAdminController
                     'Please enter an amount greater than zero',
                     'refund'
                 );
+                $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                 Tools::redirectAdmin(
-                    $context->link->getAdminLink(
+                    $this->context->link->getAdminLink(
                         'AdminOrders'
-                    ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                    ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                 );
                 die('');
             }
@@ -95,15 +68,16 @@ class AdminHiPayRefundController extends ModuleAdminController
                     'Please enter an amount',
                     'refund'
                 );
+                $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                 Tools::redirectAdmin(
-                    $context->link->getAdminLink(
+                    $this->context->link->getAdminLink(
                         'AdminOrders'
-                    ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                    ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                 );
                 die('');
             }
             // we can refund only what has been captured
-            $refundableAmount = $order->getTotalPaid();
+            $refundableAmount = $this->order->getTotalPaid();
 
             if (round(
                     $refund_amount,
@@ -117,37 +91,35 @@ class AdminHiPayRefundController extends ModuleAdminController
                     'Amount exceeding authorized amount',
                     'refund'
                 );
+                $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                 Tools::redirectAdmin(
-                    $context->link->getAdminLink(
+                    $this->context->link->getAdminLink(
                         'AdminOrders'
-                    ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                    ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                 );
                 die('');
             }
 
-            if (!$transactionReference) {
+            if (!$this->transactionReference) {
                 $hipay_redirect_status = $this->module->l(
                     'No transaction reference link to this order',
                     'refund'
                 );
+                $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                 Tools::redirectAdmin(
-                    $context->link->getAdminLink(
+                    $this->context->link->getAdminLink(
                         'AdminOrders'
-                    ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                    ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                 );
                 die('');
             }
 
             if ($refund_type == 'complete') {
-                $params["amount"] = $refundableAmount;
-                $params["order"] = $order->id;
-                $params["transaction_reference"] = $transactionReference;
-                $this->apiHandler->handleRefund($params);
+                $this->params["amount"] = $refundableAmount;
+                $this->apiHandler->handleRefund($this->params);
             } elseif ($refund_type == 'partial') {
-                $params["amount"] = $refund_amount;
-                $params["order"] = $order->id;
-                $params["transaction_reference"] = $transactionReference;
-                $this->apiHandler->handleRefund($params);
+                $this->params["amount"] = $refund_amount;
+                $this->apiHandler->handleRefund($this->params);
             }
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
             //refund with basket
@@ -160,34 +132,32 @@ class AdminHiPayRefundController extends ModuleAdminController
                         'Select at least one item to refund',
                         'capture'
                     );
+                    $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     Tools::redirectAdmin(
-                        $context->link->getAdminLink(
+                        $this->context->link->getAdminLink(
                             'AdminOrders'
-                        ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=' . $hipay_redirect_status . '#hipay'
+                        ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
                     );
                     die('');
                 }
 
-                $params = array("refundItems" => $refundItems,
-                    "order" => $order->id, "transaction_reference" => $transactionReference,
+                $this->params = array("refundItems" => $refundItems,
+                    "order" => $this->order->id, "transaction_reference" => $this->transactionReference,
                     "capture_refund_fee" => Tools::getValue('hipay_refund_fee'));
-                $params["refundItems"] = $refundItems;
-                $params["order"] = $order->id;
-                $params["transaction_reference"] = $transactionReference;
-                $params["capture_refund_fee"] = Tools::getValue('hipay_refund_fee');
+                $this->params["refundItems"] = $refundItems;
+                $this->params["capture_refund_fee"] = Tools::getValue('hipay_refund_fee');
             } else {
-                $params["refundItems"] = "full";
-                $params["order"] = $order->id;
-                $params["transaction_reference"] = $transactionReference;
+                $this->params["refundItems"] = "full";
             }
 
-            $this->apiHandler->handleRefund($params);
+            $this->apiHandler->handleRefund($this->params);
         }
 
+        $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
         Tools::redirectAdmin(
-            $context->link->getAdminLink(
+            $this->context->link->getAdminLink(
                 'AdminOrders'
-            ) . '&id_order=' . (int)$order->id . '&vieworder&hipay_err_refund=ok#hipay'
+            ) . '&id_order=' . (int)$this->order->id . '&vieworder#hipay'
         );
     }
 }
