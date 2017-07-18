@@ -270,5 +270,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->context->controller->addJS(
             array(_MODULE_DIR_ . 'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
         );
+        $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/form-input-control.js'));
     }
 }

@@ -9,8 +9,8 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-<form action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post"
-      name="tokenizerForm" id="tokenizerForm" autocomplete="off">
+<form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post"
+      name="tokenizerForm"  autocomplete="off">
     {if $confHipay.payment.global.card_token}
         {if $savedCC}
             <p><strong>{l s='Pay with a saved credit or debit card' mod='hipay_enterprise'}</strong></p>

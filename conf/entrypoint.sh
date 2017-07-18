@@ -15,6 +15,22 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 #       CUSTOMS CONFIGURATIONS
 #===================================#
 if [ ! -f /var/www/html/console/console.php ];then
+    
+
+    
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    cd /var/www/html/modules/hipay_enterprise/ \
+    && composer install --no-dev
+
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    printf "\n${COLOR_SUCCESS}             INSTALLATION SDK JS         ${NC}\n"
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    cd lib/ \
+    && bower install hipay-fullservice-sdk-js
+
+   
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
@@ -23,28 +39,16 @@ if [ ! -f /var/www/html/console/console.php ];then
     && cd console \
     && composer install
 
-    if [ "$HIPAY_INSTALL_AUTO" = "1" ];then
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        cd /var/www/html/modules/hipay_enterprise/ \
-        && composer install --no-dev
+    # Installation  HiPay's module
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    php console.php module:install hipay_enterprise
 
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        printf "\n${COLOR_SUCCESS}             INSTALLATION SDK JS         ${NC}\n"
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        cd lib/ \
-        && bower install hipay-fullservice-sdk-js
 
-        # Installation  HiPay's module
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
-        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        php console.php module:install hipay_enterprise
-
-        chmod -R 777 /var/www/html/modules/hipay_enterprise/logs
-        chmod 666 /var/www/html/modules/hipay_enterprise/logs/index.php
-   fi
+    chmod -R 777 /var/www/html/modules/hipay_enterprise/logs
+    chmod 666 /var/www/html/modules/hipay_enterprise/logs/index.php
+   
    #===================================#
     #            ADD CRON
     #===================================#

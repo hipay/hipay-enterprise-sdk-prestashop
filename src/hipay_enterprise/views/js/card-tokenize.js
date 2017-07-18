@@ -12,7 +12,24 @@ $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
 });
 
-$('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
+function checkPaymentDate() {
+    console.log($(".expiry").val());
+    if ($(".expiry").val() == null || $(".expiry").val() == "") {
+        $(".expiry").addClass("error-input-hp");
+        var pInsert = $('<span>Error : Field is mandatory</span>');
+        $(".expiry").after(pInsert);
+        pInsert.addClass("error-text-hp");
+        return false;
+    }
+    return true;
+}
+
+$("#tokenizerForm").submit(function (e) {
+
+    var form = this;
+    // prevent form from being submitted 
+    e.preventDefault();
+    e.stopPropagation();
 
     var myPaymentMethodSelected = $('.payment-options').find("input[data-module-name='credit_card']").is(':checked');
 
@@ -24,8 +41,15 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
             $('#payment-loader-hp').show();
             $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
 
-            $("#tokenizerForm").submit();
+            form.submit();
             return true; // allow whatever action would normally happen to continue
+        }
+
+        formErrors = !hiPayInputControl.checkControl('cc');
+        formErrors = !checkPaymentDate() || formErrors;
+
+        if (formErrors) {
+            return false;
         }
 
         //set param for Api call
@@ -82,7 +106,7 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                         $('#the-card-name-id').val("");
 
                         //submit the form
-                        $("#tokenizerForm").submit();
+                        form.submit();
 
                         return true;
                     } else {
@@ -103,8 +127,6 @@ $('#payment-confirmation > .ps-shown-by-js > button').click(function (e) {
                     return false;
                 }
         );
-        // prevent form from being submitted 
-        e.preventDefault();
-        e.stopPropagation();
+
     }
 });

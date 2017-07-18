@@ -6,9 +6,14 @@
 }
 
 .error-input-hp{
-    outline : .1875rem solid #ff4c4c;
+    border-color : #ff4c4c!important;
 }
 
 .error-text-hp{
-    color :#ff4c4c;
+    color :#ff4c4c ;
+    font-size: .875rem;
+}
+
+.input-hp{
+    border: 1px solid rgba(0,0,0,.15);
 }
