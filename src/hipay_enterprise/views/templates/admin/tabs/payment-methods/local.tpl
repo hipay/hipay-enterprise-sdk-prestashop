@@ -16,7 +16,7 @@
         {foreach $config_hipay.payment.local_payment as $localPayment}
             <li role="presentation" class=" {if $localPayment@first} active {/if} ">
                 <a href="#{$localPayment@key}" aria-controls="{$localPayment@key}" role="tab"
-                   data-toggle="tab">{l s=$localPayment["displayName"] mod='hipay_enterprise'}</a>
+                   data-toggle="tab">{l s=$localPayment["displayNameBO"] mod='hipay_enterprise'}</a>
             </li>
         {/foreach}
     </ul>
@@ -46,6 +46,15 @@
                             </div>
                         </div>
                         <!-- SWITCH MODE END -->
+                        <br/>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-lg-3">{l s='Display name' mod='hipay_enterprise'}</label>
+                                <div class="col-lg-3">
+                                    <input type="text" name="{$localPayment@key}_displayName" value="{$localPayment.displayName}"/>
+                                </div>
+                            </div>
+                        </div>
                         <br/>
                         <div class="row">
                             <div class="form-group">

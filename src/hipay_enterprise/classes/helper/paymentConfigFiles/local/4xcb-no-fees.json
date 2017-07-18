@@ -1,6 +1,7 @@
 {
   "name": "4xcb-no-fees",
   "config": {
+    "displayNameBO": "4x Carte Bancaire sans frais - Facilypay",
     "displayName": "4x Carte Bancaire sans frais - Facilypay",
     "activated": 0,
     "canRefund": 1,

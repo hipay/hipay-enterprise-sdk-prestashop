@@ -21,7 +21,7 @@
                         />
 
                         <span>
-                            {l s='Pay by credit or debit card' mod='hipay_enterprise' }
+                            {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                             {l s='Minimum amount required in order to pay by credit card:' mod='hipay_enterprise' } {convertPrice price=$min_amount}
                             {if isset($hipay_prod) && (!$hipay_prod)}
                                 <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
@@ -35,7 +35,7 @@
                         <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
                              style="max-width: 70px; max-height: 40px;"
                              alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'}"/>
-                        {l s='Pay by credit or debit card' mod='hipay_enterprise' }
+                        {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                         <span>
 
                             {if isset($hipay_prod) && (!$hipay_prod)}
@@ -60,7 +60,7 @@
                                  style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}"
                                  class=""/>
                             <span>
-                                {l s='Pay by credit or debit card' mod='hipay_enterprise' }
+                                {l s='Pay by ' mod='hipay_enterprise' } {$local_payment.displayName}
                                 {l s='Minimum amount required in order to pay by credit card:' mod='hipay_enterprise' } {convertPrice price=$min_amount}
                                 {if isset($hipay_prod) && (!$hipay_prod)}
                                     <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>

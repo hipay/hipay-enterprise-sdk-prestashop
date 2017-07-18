@@ -1,6 +1,7 @@
 {
   "name": "sdd",
   "config": {
+    "displayNameBO": "SEPA Direct Debit",
     "displayName": "SEPA Direct Debit",
     "activated": 0,
     "canRefund": 1,

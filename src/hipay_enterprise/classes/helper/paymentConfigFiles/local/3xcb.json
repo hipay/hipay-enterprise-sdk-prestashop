@@ -1,6 +1,7 @@
 {
   "name": "3xcb",
   "config": {
+    "displayNameBO": "3x Carte Bancaire - Facilypay",
     "displayName": "3x Carte Bancaire - Facilypay",
     "activated": 0,
     "canRefund": 1,

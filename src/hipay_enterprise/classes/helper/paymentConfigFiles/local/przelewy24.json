@@ -1,6 +1,7 @@
 {
   "name": "przelewy24",
   "config": {
+    "displayNameBO": "Przelewy24",
     "displayName": "Przelewy24",
     "activated": 0,
     "canRefund": 1,

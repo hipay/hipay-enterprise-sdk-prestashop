@@ -221,7 +221,8 @@ class HipayConfig
                     "card_token" => 1,
                     "electronic_signature" => 1,
                     "activate_basket" => 1,
-                    "regenerate_cart_on_decline" => 1
+                    "regenerate_cart_on_decline" => 1,
+                    "ccDisplayName" => "credit or debit card"
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()

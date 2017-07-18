@@ -505,6 +505,11 @@ class HipayDBQuery
         }
     }
 
+    /**
+     * save hipay transaction (notification)
+     * @param type $values
+     * @return type
+     */
     public function setHipayTransaction($values)
     {
         foreach ($values as $key => $value) {
@@ -517,6 +522,11 @@ class HipayDBQuery
         );
     }
 
+    /**
+     * return if  order already captured from hipay transaction
+     * @param type $orderId
+     * @return boolean
+     */
     public function alreadyCaptured($orderId)
     {
         $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_TRANSACTION_TABLE.'` WHERE order_id='.pSQL(
@@ -530,6 +540,11 @@ class HipayDBQuery
         return true;
     }
 
+    /**
+     * return order transaction reference from hipay transaction
+     * @param type $orderId
+     * @return boolean
+     */
     public function getTransactionReference($orderId)
     {
         $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_TRANSACTION_TABLE.'` WHERE order_id='.pSQL(
@@ -544,6 +559,11 @@ class HipayDBQuery
         return false;
     }
 
+    /**
+     * return order payment product from hipay transaction
+     * @param type $orderId
+     * @return boolean
+     */
     public function getPaymentProductFromMessage($orderId)
     {
         $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_TRANSACTION_TABLE.'` WHERE order_id='.pSQL(
@@ -557,6 +577,11 @@ class HipayDBQuery
         return false;
     }
 
+    /**
+     * return order basket from hipay transaction
+     * @param type $orderId
+     * @return boolean
+     */
     public function getOrderBasket($orderId)
     {
         $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_TRANSACTION_TABLE.'` WHERE order_id='.pSQL(

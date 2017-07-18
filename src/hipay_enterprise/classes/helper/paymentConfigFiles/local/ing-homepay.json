@@ -1,6 +1,7 @@
 {
   "name": "ing-homepay",
   "config": {
+    "displayNameBO": "ING Home'Pay",
     "displayName": "ING Home'Pay",
     "activated": 0,
     "canRefund": 1,

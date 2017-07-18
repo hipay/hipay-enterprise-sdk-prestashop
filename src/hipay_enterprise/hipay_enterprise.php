@@ -1031,6 +1031,10 @@ class Hipay_enterprise extends PaymentModule
                 "maxAmount"
             );
 
+            if(Tools::getValue("ccDisplayName")){
+                $accountConfig["global"]["ccDisplayName"] = Tools::getValue("ccDisplayName");
+            }
+
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
@@ -1093,7 +1097,8 @@ class Hipay_enterprise extends PaymentModule
                 "currencies",
                 "countries",
                 "minAmount",
-                "maxAmount"
+                "maxAmount",
+                "displayName"
             );
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {

@@ -1,6 +1,7 @@
 {
   "name": "klarna",
   "config": {
+    "displayNameBO": "Klarna",
     "displayName": "Klarna",
     "activated": 0,
     "canRefund": 1,

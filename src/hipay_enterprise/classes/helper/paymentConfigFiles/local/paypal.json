@@ -1,6 +1,7 @@
 {
   "name": "paypal",
   "config": {
+    "displayNameBO": "Paypal",
     "displayName": "Paypal",
     "activated": 0,
     "canRefund": 1,

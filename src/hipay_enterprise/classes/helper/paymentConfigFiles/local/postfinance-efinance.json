@@ -1,6 +1,7 @@
 {
   "name": "postfinance-efinance",
   "config": {
+    "displayNameBO": "PostFinance E-Finance",
     "displayName": "PostFinance E-Finance",
     "activated": 0,
     "canRefund": 1,
