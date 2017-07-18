@@ -1,6 +1,7 @@
 {
   "name": "sdd",
   "config": {
+    "displayNameBO": "SEPA Direct Debit",
     "displayName": "SEPA Direct Debit",
     "activated": 0,
     "canRefund": 1,
@@ -44,7 +45,8 @@
         },
         "iban": {
           "label": "International Bank Account Number (IBAN)",
-          "type": "text"
+          "type": "text",
+          "controlType" : "iban"
         },
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",

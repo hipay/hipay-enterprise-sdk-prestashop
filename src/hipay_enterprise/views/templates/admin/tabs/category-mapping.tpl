@@ -26,43 +26,43 @@
                             <th>Hipay category</th>
                             </thead>
                             <tbody>
-                            {foreach $psCategories as $cat}
-                                <tr>
-                                    <td>
-                                        <input type="hidden" value="{$cat["id_category"]}"
-                                               name="ps_map_{$cat["id_category"]}"/>
-                                        {$cat["name"]}
-                                    </td>
-                                    <td>
-                                        <select name="hipay_map_{$cat["id_category"]}">
-                                            {if !isset($mappedCategories[$cat["id_category"]])}
-                                                <option value="">{l s='-- Select category' mod='hipay_enterprise'}</option>
-                                            {/if}
-                                            {foreach $hipayCategories as $hpcat}
-                                                <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}
-                                                        value="{$hpcat->getCode()}">{$hpcat->getLocal($lang|upper)}</option>
-                                            {/foreach}
-                                        </select>
-                                    </td>
-                                </tr>
-                            {/foreach}
+                                {foreach $psCategories as $cat}
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" value="{$cat["id_category"]}"
+                                                   name="ps_map_{$cat["id_category"]}"/>
+                                            {$cat["name"]}
+                                        </td>
+                                        <td>
+                                            <select name="hipay_map_{$cat["id_category"]}">
+                                                {if !isset($mappedCategories[$cat["id_category"]])}
+                                                    <option value="">{l s='-- Select category' mod='hipay_enterprise'}</option>
+                                                {/if}
+                                                {foreach $hipayCategories as $hpcat}
+                                                    <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}
+                                                                                                                                                                               value="{$hpcat->getCode()}">{$hpcat->getLocal($lang|upper)}</option>
+                                                {/foreach}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {/foreach}
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-            </div>
-            <div class="panel-footer">
-                <div class="col-md-12 col-xs-12">
-                    <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
+                <div class="panel-footer">
+                    <div class="col-md-12 col-xs-12">
+                        <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
                                 class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
-                    </button>
-                    <button type="submit" class="btn btn-default btn btn-default pull-right"
-                            name="submitCategoryMapping">
-                        <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
-                    </button>
+                        </button>
+                        <button type="submit" class="btn btn-default btn btn-default pull-right"
+                                name="submitCategoryMapping">
+                            <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
+                        </button>
+                    </div>
                 </div>
             </div>
+
         </form>
     </div>
 </div>

@@ -1,6 +1,7 @@
 {
   "name": "giropay",
   "config": {
+    "displayNameBO": "Giropay",
     "displayName": "Giropay",
     "activated": 0,
     "canRefund": 1,

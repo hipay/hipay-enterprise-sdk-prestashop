@@ -66,7 +66,6 @@
             {include file="$hipay_enterprise_tpl_dir/../front/partial/paymentError.tpl"}
             <div class="control-group">
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
-
                 <div style="clear: both;"></div>
             </div>
             <br/>
@@ -108,7 +107,6 @@
         {/if}
 
         $("#pay-button-one-click").click(function (e) {
-            console.log($('input[name=ccTokenHipay]:checked').length);
             // prevent form from being submitted 
             e.preventDefault();
             e.stopPropagation();

@@ -10,17 +10,29 @@
 *
 *}
 <h3><i class="icon icon-credit-card"></i> {l s='Credit card' mod='hipay_enterprise'}</h3>
+<form method="post" class="" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
+    <br/>
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label col-lg-3">{l s='Display name' mod='hipay_enterprise'}</label>
+            <div class="col-lg-3">
+                <input type="text" name="ccDisplayName" value="{$config_hipay.payment.global.ccDisplayName}"/>
+            </div>
+        </div>
+    </div>
+    <br/>
 
-<div role="tabpanel">
-    <ul class="nav nav-tabs" role="tablist">
-        {foreach $config_hipay.payment.credit_card as $creditCard}
-            <li role="presentation" class="{if $creditCard@first} active {/if} ">
-                <a href="#{$creditCard@key}" aria-controls="{$creditCard@key}" role="tab"
-                   data-toggle="tab">{l s=$creditCard["displayName"] mod='hipay_enterprise'}</a>
-            </li>
-        {/foreach}
-    </ul>
-    <form method="post" class="" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            {foreach $config_hipay.payment.credit_card as $creditCard}
+                <li role="presentation" class="{if $creditCard@first} active {/if} ">
+                    <a href="#{$creditCard@key}" aria-controls="{$creditCard@key}" role="tab"
+                       data-toggle="tab">{l s=$creditCard["displayName"] mod='hipay_enterprise'}</a>
+                </li>
+            {/foreach}
+        </ul>
+
+
         <div class="tab-content">
             {foreach $config_hipay.payment.credit_card as $creditCard}
                 <div role="tabpanel" class="tab-pane {if $creditCard@first} active {/if}" id="{$creditCard@key}">
@@ -110,9 +122,9 @@
                 </div>
             {/foreach}
         </div>
-    </form>
-</div>
 
+    </div>
+</form>
 <script>
     {foreach $config_hipay.payment.credit_card as $creditCard}
     var cc_{$creditCard@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$creditCard@key}').bootstrapDualListbox({

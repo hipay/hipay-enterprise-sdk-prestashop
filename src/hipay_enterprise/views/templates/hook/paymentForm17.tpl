@@ -32,9 +32,9 @@
                 </label>
                 <br/>
             {/foreach}
+            <p><strong>{l s='Pay by credit or debit card' mod='hipay_enterprise'}</strong></p>
         {/if}
     {/if}
-    <p><strong>{l s='Pay by credit or debit card' mod='hipay_enterprise'}</strong></p>
     <div id="error-js" style="display:none" class="alert alert-danger">
         <p>There is 1 error</p>
         <ol>

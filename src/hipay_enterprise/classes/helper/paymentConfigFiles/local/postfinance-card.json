@@ -1,6 +1,7 @@
 {
   "name": "postfinance-card",
   "config": {
+    "displayNameBO": "PostFinance Card",
     "displayName": "PostFinance Card",
     "activated": 0,
     "canRefund": 1,

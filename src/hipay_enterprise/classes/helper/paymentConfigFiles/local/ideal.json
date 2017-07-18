@@ -1,6 +1,7 @@
 {
   "name": "ideal",
   "config": {
+    "displayNameBO": "IDEAL",
     "displayName": "IDEAL",
     "activated": 0,
     "canRefund": 1,
@@ -26,7 +27,9 @@
       "formFields": {
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",
-          "type": "text"
+          "type": "text",
+          "required" : true,
+          "controlType" : "bic"
         }
       }
     }

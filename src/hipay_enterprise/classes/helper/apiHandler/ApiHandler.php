@@ -309,7 +309,7 @@ class Apihandler
                 $redirectUrl = $failUrl;
         }
 
-        var_dump($response);
+//        var_dump($response);
 
         Tools::redirect($redirectUrl);
     }

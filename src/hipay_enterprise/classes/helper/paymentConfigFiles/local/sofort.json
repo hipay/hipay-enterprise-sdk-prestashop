@@ -1,6 +1,7 @@
 {
   "name": "sofort-uberweisung",
   "config": {
+    "displayNameBO": "Sofort Überweisung",
     "displayName": "Sofort Überweisung",
     "activated": 0,
     "canRefund": 1,

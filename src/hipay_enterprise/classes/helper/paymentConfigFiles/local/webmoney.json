@@ -1,6 +1,7 @@
 {
   "name": "webmoney-transfert",
   "config": {
+    "displayNameBO": "WebMoney Transfer",
     "displayName": "WebMoney Transfer",
     "activated": 0,
     "canRefund": 1,

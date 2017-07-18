@@ -64,8 +64,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         if (!HipayHelper::checkSignature(
             $signature,
             $this->module->hipayConfigTool->getConfigHipay(),
-            true,
-            $data
+            true
         )
         ) {
             $this->module->getLogs()->errorLogsHipay(

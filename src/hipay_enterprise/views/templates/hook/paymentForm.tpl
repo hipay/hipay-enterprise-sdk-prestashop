@@ -9,17 +9,14 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-<div class="card-js ">
+<div class="card-js " data-icon-colour="#158CBA">
     <input id="card-number" class="card-number my-custom-class" name="card-number">
     <input id="the-card-name-id" class="name" name="card-holders-name" placeholder="Name on card">
     <input id="expiry-month" class="expiry-month" name="expiry-month">
     <input id="expiry-year" class="expiry-year" name="expiry-year">
-    <input id="cvc" class="cvc" name="cvc">
-
+    <input id="cvc" class="cvc" data-toggle="tooltip"
+   title="3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front." name="cvc">
 </div>
-<a href="#" data-toggle="tooltip"
-   title="3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front.">Hover
-    over me</a>
 
 <input id="card-token" type='hidden' name='card-token' value=''/>
 <input id="card-brand" type='hidden' name='card-brand' value=''/>

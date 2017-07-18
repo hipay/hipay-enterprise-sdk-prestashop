@@ -1,6 +1,7 @@
 {
   "name": "yandex",
   "config": {
+    "displayNameBO": "Yandex Money",
     "displayName": "Yandex Money",
     "activated": 0,
     "canRefund": 1,

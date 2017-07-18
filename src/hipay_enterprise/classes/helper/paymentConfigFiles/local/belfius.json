@@ -1,6 +1,7 @@
 {
   "name": "dexia-directnet",
   "config": {
+    "displayNameBO": "Belfius Direct Net",
     "displayName": "Belfius Direct Net",
     "activated": 0,
     "canRefund": 0,

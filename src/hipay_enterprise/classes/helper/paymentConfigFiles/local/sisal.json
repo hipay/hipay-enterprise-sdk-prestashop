@@ -1,6 +1,7 @@
 {
   "name": "sisal",
   "config": {
+    "displayNameBO": "Sisal",
     "displayName": "Sisal",
     "activated": 0,
     "canRefund": 1,
