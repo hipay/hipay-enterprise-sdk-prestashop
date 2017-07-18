@@ -29,64 +29,64 @@
                             <th>Hipay carrier shipping</th>
                             </thead>
                             <tbody>
-                            {foreach $psCarriers as $car}
-                                <tr>
-                                    <td>
-                                        <input type="hidden" value="{$car["id_carrier"]}"
-                                               name="ps_map_{$car["id_carrier"]}"/>
-                                        {$car["name"]}
-                                    </td>
-                                    <td>
-                                        <input type="text"
-                                               value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["preparation_eta"]}{/if}"
-                                               name="ps_map_prep_eta_{$car["id_carrier"]}"/>
-                                    </td>
-                                    <td>
-                                        <input type="text"
-                                               value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["delivery_eta"]}{/if}"
-                                               name="ps_map__delivery_eta_{$car["id_carrier"]}"/>
-                                    </td>
-                                    <td>
-                                        <select name="hipay_map_mode_{$car["id_carrier"]}">
-                                            {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                <option value="">{l s='-- Select carrier mode' mod='hipay_enterprise'}</option>
-                                            {/if}
-                                            {foreach $hipayCarriers["mode"] as $hpcarmode}
-                                                <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if}
-                                                        value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
-                                            {/foreach}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="hipay_map_shipping_{$car["id_carrier"]}">
-                                            {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                <option value="">{l s='-- Select carrier shipping' mod='hipay_enterprise'}</option>
-                                            {/if}
-                                            {foreach $hipayCarriers["shipping"] as $hpcarmode}
-                                                <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if}
-                                                        value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
-                                            {/foreach}
-                                        </select>
-                                    </td>
-                                </tr>
-                            {/foreach}
+                                {foreach $psCarriers as $car}
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" value="{$car["id_carrier"]}"
+                                                   name="ps_map_{$car["id_carrier"]}"/>
+                                            {$car["name"]}
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                   value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["preparation_eta"]}{/if}"
+                                                   name="ps_map_prep_eta_{$car["id_carrier"]}"/>
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                   value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["delivery_eta"]}{/if}"
+                                                   name="ps_map__delivery_eta_{$car["id_carrier"]}"/>
+                                        </td>
+                                        <td>
+                                            <select name="hipay_map_mode_{$car["id_carrier"]}">
+                                                {if !isset($mappedCarriers[$car["id_carrier"]])}
+                                                    <option value="">{l s='-- Select carrier mode' mod='hipay_enterprise'}</option>
+                                                {/if}
+                                                {foreach $hipayCarriers["mode"] as $hpcarmode}
+                                                    <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if}
+                                                                                                                                                                                     value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
+                                                {/foreach}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="hipay_map_shipping_{$car["id_carrier"]}">
+                                                {if !isset($mappedCarriers[$car["id_carrier"]])}
+                                                    <option value="">{l s='-- Select carrier shipping' mod='hipay_enterprise'}</option>
+                                                {/if}
+                                                {foreach $hipayCarriers["shipping"] as $hpcarmode}
+                                                    <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if}
+                                                                                                                                                                                         value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
+                                                {/foreach}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {/foreach}
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-            </div>
-            <div class="panel-footer">
-                <div class="col-md-12 col-xs-12">
-                    <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
+                <div class="panel-footer">
+                    <div class="col-md-12 col-xs-12">
+                        <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
                                 class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
-                    </button>
-                    <button type="submit" class="btn btn-default btn btn-default pull-right"
-                            name="submitCarrierMapping">
-                        <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
-                    </button>
+                        </button>
+                        <button type="submit" class="btn btn-default btn btn-default pull-right"
+                                name="submitCarrierMapping">
+                            <i class="process-icon-save"></i>{l s='Save configuration changes' mod='hipay_enterprise'}
+                        </button>
+                    </div>
                 </div>
             </div>
+
         </form>
     </div>
 </div>

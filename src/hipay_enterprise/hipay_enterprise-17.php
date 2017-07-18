@@ -86,7 +86,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
                     case "hosted_page":
                         $newOption        = new PaymentOption();
-                        $newOption->setCallToActionText($this->l("pay by card"))
+                        $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
                             ->setAction(
                                 $this->context->link->getModuleLink(
                                     $this->name,
@@ -124,7 +124,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                         $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
                         $newOption   = new PaymentOption();
-                        $newOption->setCallToActionText($this->l("pay by card"))
+                        $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
+                            ->setAdditionalInformation("<p>".$this->l("Please prepare your credit card")."</p>")
                             ->setModuleName("credit_card")
                             ->setForm($paymentForm);
 
@@ -133,7 +134,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         break;
                     case "iframe":
                         $newOption        = new PaymentOption();
-                        $newOption->setCallToActionText($this->l("pay by card"))
+                        $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
                             ->setAction(
                                 $this->context->link->getModuleLink(
                                     $this->name,
