@@ -776,54 +776,7 @@ class Hipay_enterprise extends PaymentModule
                 HipayMapper::HIPAY_CARRIER_MAPPING,
                 $mapping
             );
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Save Category Mapping informations send by config page form
-     *
-     * @return : bool
-     * */
-    protected function saveCategoryMappingInformations()
-    {
-        $this->logs->logsHipay('---- >> function saveCategoryMappingInformations');
-
-        try {
-            $psCategories = $this->mapper->getPrestashopCategories();
-
-            $mapping = array();
-
-            foreach ($psCategories as $cat) {
-                $psMapCat = Tools::getValue('ps_map_' . $cat["id_category"]);
-                $hipayMapCat = Tools::getValue('hipay_map_' . $cat["id_category"]);
-
-                if (empty($psMapCat) || empty($hipayMapCat)) {
-                    $this->_errors[] = $this->l("all category mapping fields are required");
-                }
-
-                if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
-                    $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
-                }
-            }
-
-            if (!empty($this->_errors)) {
-                $this->_errors = array(end($this->_errors));
-                return false;
-            }
-
-            $this->mapper->setMapping(
-                HipayMapper::HIPAY_CAT_MAPPING,
-                $mapping
-            );
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('3D secure Settings configuration saved successfully.');
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -931,7 +884,7 @@ class Hipay_enterprise extends PaymentModule
                 $accountConfig
             );
 
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Module settings saved successfully.');
             $this->logs->logsHipay(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
@@ -990,7 +943,7 @@ class Hipay_enterprise extends PaymentModule
                 $accountConfig
             );
 
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Global payment method settings saved successfully.');
             $this->logs->logsHipay(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
@@ -1057,7 +1010,7 @@ class Hipay_enterprise extends PaymentModule
                 $accountConfig
             );
 
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Credit card settings saved successfully.');
             $this->logs->logsHipay(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
@@ -1121,7 +1074,7 @@ class Hipay_enterprise extends PaymentModule
                 $accountConfig
             );
 
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Local payment settings saved successfully.');
             $this->logs->logsHipay(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
@@ -1162,7 +1115,7 @@ class Hipay_enterprise extends PaymentModule
                 $accountConfig
             );
 
-            $this->_successes[] = $this->l('Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Fraud settings saved successfully.');
             $this->logs->logsHipay(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
