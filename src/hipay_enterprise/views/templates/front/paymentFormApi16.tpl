@@ -71,16 +71,18 @@
             <br/>
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
             <br/>
-            <div class="checkbox">
-                <label for="newsletter">
-                    <div class="checker" id="uniform-newsletter">
-                        <span class="">
-                            <input type="checkbox" name="saveTokenHipay" checked>
-                        </span>
-                    </div>
-                    {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
-                </label>
-            </div>
+            {if $confHipay.payment.global.card_token}
+                <div class="checkbox">
+                    <label for="newsletter">
+                        <div class="checker" id="uniform-newsletter">
+                            <span class="">
+                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" checked>
+                            </span>
+                        </div>
+                        {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
+                    </label>
+                </div>
+            {/if}
             <br/>
             <button id="pay-button" type="submit" name="processCarrierHipay"
                     class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
@@ -150,6 +152,10 @@
             if (formErrors) {
                 return false;
             }
+            multi_use = 0;
+            if($("#saveTokenHipay").is(':checked')){
+                multi_use = 1;
+            }
             //set param for Api call
             var params = {
                 card_number: $('#card-number').val(),
@@ -157,8 +163,9 @@
                 card_expiry_month: $('input[name=expiry-month]').val(),
                 card_expiry_year: $('input[name=expiry-year]').val(),
                 card_holder: $('#the-card-name-id').val(),
-                multi_use: '0'
+                multi_use: multi_use
             };
+            
             HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);

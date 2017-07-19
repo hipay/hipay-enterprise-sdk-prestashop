@@ -51,7 +51,10 @@ $("#tokenizerForm").submit(function (e) {
         if (formErrors) {
             return false;
         }
-
+        multi_use = 0;
+        if ($("#saveTokenHipay").is(':checked')) {
+            multi_use = 1;
+        }
         //set param for Api call
         var params = {
             card_number: $('#card-number').val(),
@@ -59,9 +62,8 @@ $("#tokenizerForm").submit(function (e) {
             card_expiry_month: $('input[name=expiry-month]').val(),
             card_expiry_year: $('input[name=expiry-year]').val(),
             card_holder: $('#the-card-name-id').val(),
-            multi_use: '0'
+            multi_use: multi_use
         };
-
         HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
         HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
