@@ -43,7 +43,8 @@ if [ ! -f /var/www/html/console/console.php ];then
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    php console.php module:install hipay_enterprise
+    cd /var/www/html/console/ \
+    && php console.php module:install hipay_enterprise
 
 
     chmod -R 777 /var/www/html/modules/hipay_enterprise/logs

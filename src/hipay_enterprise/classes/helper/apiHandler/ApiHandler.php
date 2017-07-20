@@ -141,6 +141,33 @@ class Apihandler
     }
 
     /**
+     * Accept any challenge
+     *
+     * @param type $params
+     */
+    public function handleAcceptChallenge($params)
+    {
+        $this->handleMaintenance(
+            Operation::ACCEPT_CHALLENGE,
+            $params
+        );
+    }
+
+
+    /**
+     * Accept any challenge
+     *
+     * @param type $params
+     */
+    public function handleDenyChallenge($params)
+    {
+        $this->handleMaintenance(
+            Operation::DENY_CHALLENGE,
+            $params
+        );
+    }
+
+    /**
      *
      * @param type $mode
      * @param type $params
@@ -159,6 +186,19 @@ class Apihandler
                 break;
             case Operation::REFUND:
                 $params["operation"] = Operation::REFUND;
+                ApiCaller::requestMaintenance(
+                    $this->module,
+                    $params
+                );
+                break;
+            case Operation::ACCEPT_CHALLENGE:
+                $params["operation"] = Operation::ACCEPT_CHALLENGE;
+                ApiCaller::requestMaintenance(
+                    $this->module,
+                    $params
+                );
+            case Operation::DENY_CHALLENGE:
+                $params["operation"] = Operation::DENY_CHALLENGE;
                 ApiCaller::requestMaintenance(
                     $this->module,
                     $params

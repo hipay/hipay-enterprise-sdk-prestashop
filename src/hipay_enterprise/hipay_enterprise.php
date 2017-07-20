@@ -159,6 +159,7 @@ class Hipay_enterprise extends PaymentModule
             ($this->_path).'views/css/bootstrap-multiselect.css',
             'all'
         );
+        $this->context->controller->addCSS($this->_path . 'views/css/back.css', 'all');
     }
 
     /**
@@ -309,16 +310,17 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayAdminOrder()
     {
-        $order             = new Order((int) Tools::getValue('id_order'));
-        $shippingCost      = $order->total_shipping;
-        $refundableAmount  = $order->getTotalPaid();
-        $errorHipayCapture = Tools::getValue('hipay_err_capture');
-        $errorHipayRefund  = Tools::getValue('hipay_err_refund');
-        $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
-        $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
-        $manualCapture     = false;
-        $showCapture       = true;
-        $showRefund        = true;
+        $order = new Order((int)Tools::getValue('id_order'));
+        $shippingCost = $order->total_shipping;
+        $refundableAmount = $order->getTotalPaid();
+        $errorHipay = $this->context->cookie->__get('hipay_errors');
+        $messagesHipay = $this->context->cookie->__get('hipay_success');
+        $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
+        $alreadyCaptured = $this->db->alreadyCaptured($order->id);
+        $manualCapture = false;
+        $showCapture = true;
+        $showRefund = true;
+        $showChallenge = false;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
         $orderId           = $order->id;
@@ -398,7 +400,6 @@ class Hipay_enterprise extends PaymentModule
             }
         }
 
-
         if ($order->getCurrentState() == Configuration::get(
                 'HIPAY_OS_AUTHORIZED',
                 null,
@@ -413,6 +414,18 @@ class Hipay_enterprise extends PaymentModule
             )
         ) {
             $showCapture = true;
+        }
+
+        if ($order->current_state == Configuration::get(
+                'HIPAY_OS_CHALLENGED',
+                null,
+                null,
+                1
+            )
+        ) {
+            $showChallenge = true;
+            $showCapture = false;
+            $showRefund = false;
         }
 
         $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
@@ -472,8 +485,8 @@ class Hipay_enterprise extends PaymentModule
                 'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
                 'refundableAmount' => $refundableAmount,
                 'shippingCost' => $shippingCost,
-                'errorHipayCapture' => $errorHipayCapture,
-                'errorHipayRefund' => $errorHipayRefund,
+                'errorHipay' => $errorHipay,
+                'messagesHipay' => $messagesHipay,
                 'stillToCaptureDisplay' => Tools::displayPrice($stillToCapture),
                 'stillToCapture' => $stillToCapture,
                 'alreadyCaptured' => $alreadyCaptured,
@@ -486,6 +499,9 @@ class Hipay_enterprise extends PaymentModule
                 'refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
                 'tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
                 'tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
+                'challengeLink' => $this->context->link->getAdminLink('AdminHiPayChallenge'),
+                'tokenChallenge' => Tools::getAdminTokenLite('AdminHiPayChallenge'),
+                'showChallenge' => $showChallenge,
                 'orderId' => $orderId,
                 'employeeId' => $employeeId,
                 'basket' => $basket,
@@ -498,10 +514,21 @@ class Hipay_enterprise extends PaymentModule
             )
         );
 
+        $this->resetMessagesHipay();
+
         return $this->display(
                 dirname(__FILE__),
                         'views/templates/hook/maintenance.tpl'
         );
+    }
+
+    /**
+     *  Restore error messages in Session or cookie
+     */
+    private function resetMessagesHipay()
+    {
+        $this->context->cookie->__set('hipay_errors','');
+        $this->context->cookie->__set('hipay_success','');
     }
 
     public function installAdminTab()
@@ -509,6 +536,7 @@ class Hipay_enterprise extends PaymentModule
         $class_names = array(
             'AdminHiPayCapture',
             'AdminHiPayRefund',
+            'AdminHiPayChallenge',
             'AdminHiPayConfig',
         );
         return $this->createTabAdmin($class_names);
@@ -537,6 +565,7 @@ class Hipay_enterprise extends PaymentModule
         $class_names = array(
             'AdminHiPayCapture',
             'AdminHiPayRefund',
+            'AdminHiPayChallenge',
             'AdminHiPayConfig',
         );
         foreach ($class_names as $class_name) {
@@ -1285,8 +1314,8 @@ class Hipay_enterprise extends PaymentModule
                     'module_name' => $this->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Contesté (Hipay)",
-                "name_EN" => "Challenged (Hipay)",
+                "name_FR" => "Expiré (Hipay)",
+                "name_EN" => "Expired (Hipay)",
             ),
             "HIPAY_OS_CHALLENGED" => array(
                 "waiting_state_color" => "#4169E1",
@@ -1298,8 +1327,8 @@ class Hipay_enterprise extends PaymentModule
                     'module_name' => $this->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Expiré (Hipay)",
-                "name_EN" => "Expired (Hipay)",
+                "name_FR" => "Contesté (Hipay) ",
+                "name_EN" => "Challenged (Hipay)",
             ),
             "HIPAY_OS_AUTHORIZED" => array(
                 "waiting_state_color" => "LimeGreen",
@@ -1390,8 +1419,9 @@ class Hipay_enterprise extends PaymentModule
                     'invoice' => true,
                     'logable' => false,
                     'module_name' => $this->name,
-                    'send_email' => false,
-                    'paid' => false
+                    'send_email' => true,
+                    'paid' => false,
+                    'template' => 'refund'
                 ),
                 "name_FR" => "Remboursé (Hipay)",
                 "name_EN" => "Refunded (Hipay)",
