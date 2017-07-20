@@ -208,6 +208,7 @@ class HipayConfig
                     "operating_mode" => Apihandler::DIRECTPOST,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
+                    "display_hosted_page" => "redirect",
                     "css_url" => "",
                     "activate_3d_secure" => HipayConfig::THREE_D_S_DISABLED,
                     "3d_secure_rules" => array(

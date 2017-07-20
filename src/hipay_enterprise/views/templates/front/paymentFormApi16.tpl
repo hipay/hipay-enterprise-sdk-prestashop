@@ -71,16 +71,18 @@
             <br/>
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
             <br/>
-            <div class="checkbox">
-                <label for="newsletter">
-                    <div class="checker" id="uniform-newsletter">
-                        <span class="">
-                            <input type="checkbox" name="saveTokenHipay" checked>
-                        </span>
-                    </div>
-                    {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
-                </label>
-            </div>
+            {if $confHipay.payment.global.card_token}
+                <div class="checkbox">
+                    <label for="newsletter">
+                        <div class="checker" id="uniform-newsletter">
+                            <span class="">
+                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" checked>
+                            </span>
+                        </div>
+                        {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
+                    </label>
+                </div>
+            {/if}
             <br/>
             <button id="pay-button" type="submit" name="processCarrierHipay"
                     class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
@@ -105,6 +107,19 @@
         var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
         var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
         {/if}
+
+        function checkPaymentDate() {
+            console.log($(".expiry").val());
+            if ($(".expiry").val() == null || $(".expiry").val() == "") {
+                $(".expiry").addClass("error-input-hp");
+                var pInsert = $('<span>Error : Field is mandatory</span>');
+                $(".expiry").after(pInsert);
+                pInsert.addClass("error-text-hp");
+                return false;
+            }
+            return true;
+        }
+
 
         $("#pay-button-one-click").click(function (e) {
             // prevent form from being submitted 
@@ -131,6 +146,16 @@
         });
 
         $("#pay-button").click(function (e) {
+            formErrors = !hiPayInputControl.checkControl('cc');
+            formErrors = !checkPaymentDate() || formErrors;
+
+            if (formErrors) {
+                return false;
+            }
+            multi_use = 0;
+            if($("#saveTokenHipay").is(':checked')){
+                multi_use = 1;
+            }
             //set param for Api call
             var params = {
                 card_number: $('#card-number').val(),
@@ -138,60 +163,61 @@
                 card_expiry_month: $('input[name=expiry-month]').val(),
                 card_expiry_year: $('input[name=expiry-year]').val(),
                 card_holder: $('#the-card-name-id').val(),
-                multi_use: '0'
+                multi_use: multi_use
             };
+            
             HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
             HiPay.create(params,
-                function (result) {
-                    $('#tokenizerForm').hide();
-                    $('#payment-loader-hp').show();
-                    $("#pay-button-one-click").prop('disabled', true);
-                    $("#pay-button").prop('disabled', true);
+                    function (result) {
+                        $('#tokenizerForm').hide();
+                        $('#payment-loader-hp').show();
+                        $("#pay-button-one-click").prop('disabled', true);
+                        $("#pay-button").prop('disabled', true);
 
-                    // The card has been successfully tokenized
-                    token = result.token;
-                    if (result.hasOwnProperty('domestic_network')) {
-                        brand = result.domestic_network;
-                    } else {
-                        brand = result.brand;
+                        // The card has been successfully tokenized
+                        token = result.token;
+                        if (result.hasOwnProperty('domestic_network')) {
+                            brand = result.domestic_network;
+                        } else {
+                            brand = result.brand;
+                        }
+                        pan = result.pan;
+                        card_expiry_month = result.card_expiry_month;
+                        card_expiry_year = result.card_expiry_year;
+                        card_holder = result.card_holder;
+                        issuer = result.issuer;
+                        country = result.country;
+                        // set tokenization response
+                        $('#card-token').val(token);
+                        $('#card-brand').val(brand);
+                        $('#card-pan').val(pan);
+                        $('#card-holder').val($('#the-card-name-id').val());
+                        $('#card-expiry-month').val(card_expiry_month);
+                        $('#card-expiry-year').val(card_expiry_year);
+                        $('#card-issuer').val(issuer);
+                        $('#card-country').val(country);
+                        // we empty the form so we don't send credit card informations to the server
+                        $('#card-number').val("");
+                        $('#cvc').val("");
+                        $('input[name=expiry-month]').val("");
+                        $('input[name=expiry-year]').val("");
+                        $('#the-card-name-id').val("");
+                        //submit the form
+                        $("#tokenizerForm").submit();
+                        return true;
+                    },
+                    function (errors) {
+                        // An error occurred
+                        $("#error-js").show();
+                        if (typeof errors.message != "undefined") {
+                            $(".error").text("Error: " + errors.message);
+                        } else {
+                            $(".error").text("An error occurred with the request.");
+                        }
+                        return false;
                     }
-                    pan = result.pan;
-                    card_expiry_month = result.card_expiry_month;
-                    card_expiry_year = result.card_expiry_year;
-                    card_holder = result.card_holder;
-                    issuer = result.issuer;
-                    country = result.country;
-                    // set tokenization response
-                    $('#card-token').val(token);
-                    $('#card-brand').val(brand);
-                    $('#card-pan').val(pan);
-                    $('#card-holder').val($('#the-card-name-id').val());
-                    $('#card-expiry-month').val(card_expiry_month);
-                    $('#card-expiry-year').val(card_expiry_year);
-                    $('#card-issuer').val(issuer);
-                    $('#card-country').val(country);
-                    // we empty the form so we don't send credit card informations to the server
-                    $('#card-number').val("");
-                    $('#cvc').val("");
-                    $('input[name=expiry-month]').val("");
-                    $('input[name=expiry-year]').val("");
-                    $('#the-card-name-id').val("");
-                    //submit the form
-                    $("#tokenizerForm").submit();
-                    return true;
-                },
-                function (errors) {
-                    // An error occurred
-                    $("#error-js").show();
-                    if (typeof errors.message != "undefined") {
-                        $(".error").text("Error: " + errors.message);
-                    } else {
-                        $(".error").text("An error occurred with the request.");
-                    }
-                    return false;
-                }
             );
             // prevent form from being submitted 
             e.preventDefault();

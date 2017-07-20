@@ -12,17 +12,24 @@ require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
-class HipayPaymentFormControl
+class HipayFormControl
 {
 
-    public static function checkForm($fields, $data, $module)
+    /**
+     *
+     * @param type $fields
+     * @param type $data
+     * @param type $module
+     * @return type
+     */
+    public static function checkPaymentForm($fields, $data, $module)
     {
         $errors = array();
 
         foreach ($data as $name => $value) {
 
             if (isset($fields[$name]['controlType'])) {
-                HipayPaymentFormControl::typedFormControl($errors,
+                HipayFormControl::typedFormControl($errors,
                                                           $fields[$name]['controlType'],
                                                           $value,
                                                           $name,
@@ -40,17 +47,43 @@ class HipayPaymentFormControl
         return $errors;
     }
 
-    private static function typedFormControl(&$errors, $type, $value, $name, $module)
+    /**
+     *
+     * @param type $url
+     * @return type
+     */
+    public static function checkHttpsUrl($url)
+    {
+        return preg_match('/(https)(:\/\/)(\S*?\.\S*?)([\s)\[\]{},;"\':<]|\.\s|$)/',
+                          $url);
+    }
+
+    /**
+     *
+     * @param type $errors
+     * @param type $type
+     * @param type $value
+     * @param type $name
+     * @param type $module
+     */
+    private static function typedFormControl(&$errors, $type, $value, $name,
+                                             $module)
     {
         switch ($type) {
             case 'iban':
-                if (!HipayPaymentFormControl::isValidIBAN($value)) {
+                if (!HipayFormControl::isValidIBAN($value)) {
                     $errors[$name] = $module->l('Error : This is not a correct IBAN',
-                                                'hipay_enterprise');;
+                                                'hipay_enterprise');
+                    ;
                 }
         }
     }
 
+    /**
+     *
+     * @param type $iban
+     * @return boolean
+     */
     private static function isValidIBAN($iban)
     {
 

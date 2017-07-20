@@ -8,13 +8,12 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayCCToken.php');
+require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayCCToken.php');
 
 class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontController
 {
     public $auth = true;
-    public $ssl = true;
+    public $ssl  = true;
 
     public function __construct()
     {
@@ -28,11 +27,11 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
         parent::initContent();
         $context = Context::getContext();
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/user-token-17.tpl'
-            : 'user-token-16.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/user-token-17.tpl'
+                    : 'user-token-16.tpl');
 
         $savedCC = $this->ccToken->getSavedCC($context->customer->id);
-        if (!$savedCC) {
+        if (!$savedCC && empty($this->success)) {
             $this->warning[] = $this->module->l(
                 'You have no saved credit/debit card.',
                 array(),
@@ -43,9 +42,9 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
             array(
                 'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
                 'this_path_ssl' => Tools::getShopDomainSsl(
-                        true,
-                        true
-                    ) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
+                    true,
+                    true
+                ).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
                 'savedCC' => $savedCC
             )
         );
@@ -58,17 +57,17 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
      */
     public function postProcess()
     {
-        $this->display_column_left = false;
+        $this->display_column_left  = false;
         $this->display_column_right = false;
         parent::initContent();
 
         $context = Context::getContext();
 
-        if (Tools::isSubmit('submitDelToken')) {
+        if (Tools::isSubmit('hipayCCTokenId')) {
             if ($this->ccToken->deleteToken(
-                $context->customer->id,
-                Tools::getValue('hipayCCTokenId')
-            )
+                    $context->customer->id,
+                    Tools::getValue('hipayCCTokenId')
+                )
             ) {
                 $this->success[] = $this->module->l(
                     'Credit card successfully deleted.',
@@ -84,17 +83,17 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
             }
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/user-token-17.tpl'
-            : 'user-token-16.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/user-token-17.tpl'
+                    : 'user-token-16.tpl');
 
         $savedCC = $this->ccToken->getSavedCC($context->customer->id);
 
         $this->context->smarty->assign(
             array(
                 'this_path_ssl' => Tools::getShopDomainSsl(
-                        true,
-                        true
-                    ) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
+                    true,
+                    true
+                ).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
                 'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
                 'savedCC' => $savedCC
             )
@@ -127,5 +126,14 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
         $page['body_classes']['page-customer-account'] = true;
 
         return $page;
+    }
+
+    /**
+     * add JS and CSS in page
+     */
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/user-token.js'));
     }
 }

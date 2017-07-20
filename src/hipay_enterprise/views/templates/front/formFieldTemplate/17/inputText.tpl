@@ -14,5 +14,5 @@
     <label class="{if isset($field.required) && $field.required}required{/if}">
         {$field["label"]}
     </label>
-    <input id="{$localPaymentName}-{$name}" class="form-control" name="{$name}" type="text" value="" {if isset($field.required) && $field.required}required{/if}>
+    <input id="{$localPaymentName}-{$name}" class="form-control input-hp" name="{$name}" type="text" value="" {if isset($field.required) && $field.required}required{/if}>
 </div>

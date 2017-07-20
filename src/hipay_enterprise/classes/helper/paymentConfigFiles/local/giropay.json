@@ -1,26 +1,41 @@
 {
-  "name": "giropay",
-  "config": {
-    "displayNameBO": "Giropay",
-    "displayName": "Giropay",
-    "activated": 0,
-    "canRefund": 1,
-    "canManualCapture": 1,
-    "currencies": [
-      "EUR"
-    ],
-    "countries": [
-      "GB",
-      "FR"
-    ],
-    "countrySelectorReadOnly": 0,
-    "currencySelectorReadOnly": 0,
-    "forceHpayment": 0,
-    "forceBasket": 0,
-    "forceHpaymentOnElectronicSignature": 0,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
-    "logo": "giropay.png",
-    "additionalFields": {}
-  }
+    "name": "giropay",
+    "config": {
+        "displayNameBO": "Giropay",
+        "displayName": "Giropay",
+        "activated": 0,
+        "canRefund": 1,
+        "canManualCapture": 1,
+        "currencies": [
+            "EUR"
+        ],
+        "countries": [
+            "GB",
+            "FR"
+        ],
+        "countrySelectorReadOnly": 0,
+        "currencySelectorReadOnly": 0,
+        "forceHpayment": 0,
+        "forceBasket": 0,
+        "forceHpaymentOnElectronicSignature": 0,
+        "minAmount": {
+            "EUR": 0
+        },
+        "maxAmount": {
+            "EUR": false
+        },
+        "logo": "giropay.png",
+        "additionalFields": {
+            "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",
+            "defaultFieldsValue": {},
+            "formFields": {
+                "issuer_bank_id": {
+                    "label": "Business Identifier Code (BIC)",
+                    "type": "text",
+                    "required": true,
+                    "controlType": "bic"
+                }
+            }
+        }
+    }
 }

@@ -19,10 +19,10 @@ function checkControl(form) {
 
     success = true;
     if (hiPayInputControl.forms[form]) {
+        removeElementsByClass('error-text-hp');
         hiPayInputControl.forms[form].fields.forEach(function (input) {
-            console.log(input);
-            console.log(typeControlCheck(input));
-            success = success && typeControlCheck(input);
+
+            success = typeControlCheck(input) && success;
         })
     }
 
@@ -47,19 +47,21 @@ function Input(field, type, required) {
 }
 
 function typeControlCheck(input) {
-    removeElementsByClass('error-text-hp');
     element = document.getElementById(input.field);
     removeClass(element, 'error-input-hp');
 
     switch (input.type) {
         case 'iban':
             return checkIban(element);
+        case 'creditcardnumber':
+            return checkCCNumber(element);
         default :
             return checkNotEmptyField(element);
     }
 }
 
 function checkNotEmptyField(element) {
+
     if (element.value == null || element.value == "") {
         errorMessage(element, 'Field is mandatory');
         return false;
@@ -81,13 +83,26 @@ function checkIban(element) {
     return true;
 }
 
+function checkCCNumber(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCardNumberValid(element.value)) {
+        errorMessage(element, "This is not a correct credit card number");
+        return false;
+    }
+    return true;
+}
+
 function errorMessage(element, text) {
     addClass(element, 'error-input-hp');
     insertAfter(generateElement("Error : " + text), element);
 }
 
 function generateElement(text) {
-    pInsert = document.createElement('p'); // create new textarea
+    pInsert = document.createElement('span');
     pInsert.textContent = text;
     addClass(pInsert, 'error-text-hp');
 
@@ -192,3 +207,28 @@ var validIBAN = (function () { // use an IIFE
     };
 }
 ());
+
+function isCardNumberValid(value) {
+    // accept only digits, dashes or spaces
+    if (/[^0-9-\s]+/.test(value))
+        return false;
+
+    // The Luhn Algorithm. It's so pretty.
+    var nCheck = 0, nDigit = 0, bEven = false;
+    value = value.replace(/\D/g, "");
+
+    for (var n = value.length - 1; n >= 0; n--) {
+        var cDigit = value.charAt(n),
+                nDigit = parseInt(cDigit, 10);
+
+        if (bEven) {
+            if ((nDigit *= 2) > 9)
+                nDigit -= 9;
+        }
+
+        nCheck += nDigit;
+        bEven = !bEven;
+    }
+
+    return (nCheck % 10) == 0;
+}

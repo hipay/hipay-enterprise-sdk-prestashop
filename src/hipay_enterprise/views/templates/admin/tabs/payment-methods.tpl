@@ -10,14 +10,39 @@
 *
 *}
 <div class="panel">
+    <script type="text/javascript" src="{$module_dir}views/js/bootstrap-multiselect.js"></script>
     <script type="text/javascript" src="{$module_dir}views/js/jquery.bootstrap-duallistbox.min.js"></script>
-    <h3><i class="icon icon-credit-card"></i> {l s='Global settings' mod='hipay_enterprise'}</h3>
 
-    {$global_payment_methods_form}
-
-    {include file='./payment-methods/3d-secure.tpl'}
+    {include file='./payment-methods/global.tpl'}
     {include file='./payment-methods/creditcard.tpl'}
     {include file='./payment-methods/local.tpl'}
 
 </div>
-    
+<script>
+    $('.multiselect-currency').multiselect();
+
+    $('#collapseCC').on('shown.bs.collapse', function () {
+        $("#chevronCC").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
+
+    $('#collapseCC').on('hidden.bs.collapse', function () {
+        $("#chevronCC").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
+
+    $('#collapseLocalPayment').on('shown.bs.collapse', function () {
+        $("#chevronLocal").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
+
+    $('#collapseLocalPayment').on('hidden.bs.collapse', function () {
+        $("#chevronLocal").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
+
+    $('#collapse3ds').on('shown.bs.collapse', function () {
+        $("#chevron3ds").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
+
+    $('#collapse3ds').on('hidden.bs.collapse', function () {
+        $("#chevron3ds").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
+
+</script>

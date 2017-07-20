@@ -261,7 +261,7 @@ class HipayForm extends HipayFormInput
             ),
             array(
                 'hint' => $this->module->l(
-                    'Send cart informations on Hipay API call.',
+                    'Send cart informations on HiPay API call.',
                     'HipayForm'
                 ),
                 'desc' => "<i class='icon icon-warning text-danger'></i> " . $this->module->l(
@@ -374,7 +374,7 @@ class HipayForm extends HipayFormInput
 
         $form['form']['buttons'][] = $this->generateSubmitButton(
             $this->module->l(
-                'Save',
+                'Save configuration changes',
                 'HipayForm'
             ),
             array(
