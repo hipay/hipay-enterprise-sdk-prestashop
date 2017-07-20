@@ -11,6 +11,7 @@
 
 require_once(dirname(__FILE__) . '/hipayFormInput.php');
 require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/../../../translations/HipayStrings.php');
 
 class HipayForm extends HipayFormInput
 {
@@ -19,6 +20,10 @@ class HipayForm extends HipayFormInput
     protected $module = false;
     public $name = false;
     public $configHipay;
+
+    const TYPE_EMAIL_BBC = 'separate_email';
+    const TYPE_EMAIL_SEPARATE = 'separate_email';
+
 
     public function __construct($module_instance)
     {
@@ -317,40 +322,44 @@ class HipayForm extends HipayFormInput
 
         $this->helper->tpl_vars['fields_value'] = $this->getFraudFormValues();
 
-        $form['form']['input'][] = $this->generateInputText(
-            "payment_fraud_email_sender",
-            $this->module->l(
-                'Payment Fraud Email Sender',
-                'HipayForm'
-            )
+        $form['form']['legend'] = array(
+            'title' => $this->module->l('Payment fraud email'),
         );
+
+        $form['form']['input'][] = $this->generateFormNotice();
 
         $form['form']['input'][] = $this->generateInputText(
             "send_payment_fraud_email_copy_to",
             $this->module->l(
-                'Send Payment Fraud Email Copy To',
+                'Copy To',
                 'HipayForm'
+            ),
+            array(
+                'desc' => HipayStrings::DESC_COPY_TO
             )
         );
 
         $form['form']['input'][] = $this->generateInputSelect(
             "send_payment_fraud_email_copy_method",
             $this->module->l(
-                'Send Payment Fraud Email Copy Method',
+                'Copy Method',
                 'HipayForm'
             ),
             array(
+                'desc' => "<ul class='hipay-notice-list'><li><b>Bbc</b> :" .
+                    $this->module->l(HipayStrings::DESC_COPY_METHOD_BBC) .
+                    "</li><li><b>Separate Email</b> :" . $this->module->l(HipayStrings::DESC_COPY_METHOD_SEPARATE) . "</li></ul>",
                 "options" => array(
                     "query" => array(
                         array(
-                            "send_payment_fraud_email_copy_method_id" => "bcc",
+                            "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_BBC,
                             "name" => $this->module->l(
                                 'Bcc',
                                 'HipayForm'
-                            )
+                            ),
                         ),
                         array(
-                            "send_payment_fraud_email_copy_method_id" => "separate_email",
+                            "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_SEPARATE,
                             "name" => $this->module->l(
                                 'Separate email',
                                 'HipayForm'
@@ -358,101 +367,6 @@ class HipayForm extends HipayFormInput
                         ),
                     ),
                     "id" => "send_payment_fraud_email_copy_method_id",
-                    "name" => "name"
-                )
-            )
-        );
-
-        $form['form']['input'][] = $this->generateFormSplit();
-
-        $form['form']['input'][] = $this->generateInputText(
-            "payment_fraud_accept_email_sender",
-            $this->module->l(
-                'Payment Fraud Accept Email Sender',
-                'HipayForm'
-            )
-        );
-
-        $form['form']['input'][] = $this->generateInputText(
-            "send_payment_accept_email_copy_to",
-            $this->module->l(
-                'Send Payment Accept Email Copy To',
-                'HipayForm'
-            )
-        );
-
-        $form['form']['input'][] = $this->generateInputSelect(
-            "send_payment_accept_email_copy_method",
-            $this->module->l(
-                'Send Payment Accept Email Copy Method',
-                'HipayForm'
-            ),
-            array(
-                "options" => array(
-                    "query" => array(
-                        array(
-                            "send_payment_accept_email_copy_method_id" => "bcc",
-                            "name" => $this->module->l(
-                                'Bcc',
-                                'HipayForm'
-                            )
-                        ),
-                        array(
-                            "send_payment_accept_email_copy_method_id" => "separate_email",
-                            "name" => $this->module->l(
-                                'Separate email',
-                                'HipayForm'
-                            )
-                        ),
-                    ),
-                    "id" => "send_payment_accept_email_copy_method_id",
-                    "name" => "name"
-                )
-            )
-        );
-
-
-        $form['form']['input'][] = $this->generateInputText(
-            "payment_fraud_deny_email_sender",
-            $this->module->l(
-                'Payment Fraud Deny Email Sender',
-                'HipayForm'
-            )
-        );
-
-        $form['form']['input'][] = $this->generateInputText(
-            "send_payment_deny_email_copy_to",
-            $this->module->l(
-                'Send Payment Deny Email Copy To',
-                'HipayForm'
-            )
-        );
-
-        $form['form']['input'][] = $this->generateInputSelect(
-            "send_payment_deny_email_copy_method",
-            $this->module->l(
-                'Send Payment Deny Email Copy Method',
-                'HipayForm'
-            ),
-            array(
-                "options" => array(
-                    "query" => array(
-                        array(
-                            "send_payment_deny_email_copy_method_id" => "bcc",
-                            "name" => $this->module->l(
-                                'Bcc',
-                                'HipayForm'
-                            )
-                        ),
-                        array(
-                            "send_payment_deny_email_copy_method_id" => "separate_email",
-                            "name" => $this->module->l(
-                                'Separate email',
-                                'HipayForm'
-                            )
-                        ),
-                    ),
-                    "id" => "send_payment_deny_email_copy_method_id",
                     "name" => "name"
                 )
             )
@@ -473,24 +387,18 @@ class HipayForm extends HipayFormInput
     }
 
     /**
-     * get value for fraud form
+     * Generate Form for Fraud payment
+     *
      * @return type
      */
     public function getFraudFormValues()
     {
-
         // init field
         $values = array(
-            "input_split" => "test",
+            "input_split" => $this->generateHtmlNoticeAdmin(HipayStrings::NOTICE_FRAUD),
             "payment_fraud_email_sender" => "",
             "send_payment_fraud_email_copy_to" => "",
             "send_payment_fraud_email_copy_method" => "",
-            "payment_fraud_accept_email_sender" => "",
-            "send_payment_accept_email_copy_to" => "",
-            "send_payment_accept_email_copy_method" => "",
-            "payment_fraud_deny_email_sender" => "",
-            "send_payment_deny_email_copy_to" => "",
-            "send_payment_deny_email_copy_method" => ""
         );
 
         // get field value from POST request or config (this way the displayed value is always the good one)
@@ -503,5 +411,15 @@ class HipayForm extends HipayFormInput
         }
 
         return $values;
+    }
+
+    /**
+     *  Generate Html content for notice in Admin panels
+     *
+     * @param $content
+     * @return string Html Content
+     */
+    protected function generateHtmlNoticeAdmin($content){
+        return "<div class='notice-hipay-admin alert alert-info'>" . $content . "</div>";
     }
 }

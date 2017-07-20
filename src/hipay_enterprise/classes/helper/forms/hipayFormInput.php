@@ -11,9 +11,24 @@
 
 abstract class HipayFormInput
 {
+    /**
+     * @return array
+     */
+    protected function generateFormNotice()
+    {
+        $params = array('col' => 6, 'offset' => 0, "class" => "alert alert-info");
+
+        return $this->generateInput(
+            'free',
+            'input_split',
+            null,
+            $params
+        );
+    }
+
     protected function generateFormSplit()
     {
-        $params = array('col' => 6, 'offset' => 0, "class" => "");
+        $params = array('col' => 6, 'offset' => 0, "class" => "bloc");
 
         return $this->generateInput(
             'free',
@@ -32,7 +47,7 @@ abstract class HipayFormInput
         $input = array(
             'type' => $type,
             'label' => $label,
-            'name' => $name,
+            'name' => $name
         );
 
         if (is_array($params) === true) {

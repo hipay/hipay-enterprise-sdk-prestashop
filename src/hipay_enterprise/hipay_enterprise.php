@@ -1420,8 +1420,9 @@ class Hipay_enterprise extends PaymentModule
                     'invoice' => true,
                     'logable' => false,
                     'module_name' => $this->name,
-                    'send_email' => false,
-                    'paid' => false
+                    'send_email' => true,
+                    'paid' => false,
+                    'template' => 'refund'
                 ),
                 "name_FR" => "Remboursé (Hipay)",
                 "name_EN" => "Refunded (Hipay)",

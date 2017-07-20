@@ -11,6 +11,7 @@
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/hipayOrderMessage.php');
+require_once(dirname(__FILE__).'/HipayMail.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
@@ -84,7 +85,7 @@ class HipayNotification
     public function processTransaction()
     {
         try {
-            // SQL LOCK
+              // SQL LOCK
             //#################################################################
             $this->db->setSQLLockForCart($this->cart->id);
 
@@ -130,6 +131,9 @@ class HipayNotification
                                 1
                             )
                         );
+
+                        // Notify website admin for a challenged transaction
+                        HipayMail::sendMailPaymentDeny($this->context,$this->module,$this->order);
                     }
                     break;
                 case TransactionStatus::AUTHORIZED_AND_PENDING:
@@ -141,6 +145,8 @@ class HipayNotification
                             1
                         )
                     );
+                    // Notify website admin for a challenged transaction
+                    HipayMail::sendMailPaymentFraud($this->context,$this->module,$this->order);
                     break;
                 case TransactionStatus::AUTHENTICATION_REQUESTED:
                 case TransactionStatus::AUTHORIZATION_REQUESTED:
@@ -477,7 +483,8 @@ class HipayNotification
             $this->order,
             true
         );
-        $orderHistory->add();
+
+        $orderHistory->addWithemail(true);
     }
 
     /**

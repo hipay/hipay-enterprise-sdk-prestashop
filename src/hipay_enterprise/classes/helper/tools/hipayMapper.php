@@ -20,9 +20,9 @@ class HipayMapper
 
     public function __construct($moduleInstance)
     {
+        $this->context = Context::getContext();
         $this->module = $moduleInstance;
         $this->logs = $this->module->getLogs();
-        $this->context = Context::getContext();
         $this->db = new HipayDBQuery($this->module);
     }
 
