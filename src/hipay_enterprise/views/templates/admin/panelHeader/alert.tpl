@@ -60,3 +60,19 @@
         </p>
     </div>
 {/if}
+{if $ps_round_total}
+    <div class="alert alert-danger">
+        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
+        <p>
+            {l s='\'Round on the total\' is activated in prestashop configuration, cart will not be sent and payment method that force cart to be send will be disabled.' mod='hipay_enterprise'}
+        </p>
+    </div>
+{/if}
+{if empty($mappedCarriers) || empty($mappedCategories)}
+    <div class="alert alert-danger">
+        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
+        <p>
+            {l s='You must map your shop category and carrier to hipay category and carrier' mod='hipay_enterprise'}
+        </p>
+    </div>
+{/if}

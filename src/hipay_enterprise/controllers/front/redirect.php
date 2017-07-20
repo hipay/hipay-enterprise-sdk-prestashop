@@ -8,10 +8,9 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/../../classes/helper/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayCCToken.php');
+require_once(dirname(__FILE__).'/../../classes/helper/apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayHelper.php');
+require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayCCToken.php');
 
 class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontController
 {
@@ -22,17 +21,17 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function initContent()
     {
-        $this->display_column_left = false;
+        $this->display_column_left  = false;
         $this->display_column_right = false;
         parent::initContent();
 
-        $context = Context::getContext();
-        $cart = $context->cart;
+        $context          = Context::getContext();
+        $cart             = $context->cart;
         $this->apiHandler = new ApiHandler(
             $this->module,
             $this->context
         );
-        $this->ccToken = new HipayCCToken($this->module);
+        $this->ccToken    = new HipayCCToken($this->module);
 
         if ($cart->id == null) {
             Tools::redirect('index.php?controller=order');
@@ -41,7 +40,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             array(
                 'nbProducts' => $cart->nbProducts(),
                 'cust_currency' => $cart->id_currency,
-                'currencies' => $this->module->getCurrency((int)$cart->id_currency),
+                'currencies' => $this->module->getCurrency((int) $cart->id_currency),
                 'total' => $cart->getOrderTotal(
                     true,
                     Cart::BOTH
@@ -49,10 +48,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 'this_path' => $this->module->getPathUri(),
                 'this_path_bw' => $this->module->getPathUri(),
                 'this_path_ssl' => Tools::getShopDomainSsl(
-                        true,
-                        true
-                    ) . __PS_BASE_URI__ . 'modules/' . $this->module->name . '/',
-                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates/hook'
+                    true,
+                    true
+                ).__PS_BASE_URI__.'modules/'.$this->module->name.'/',
+                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->module->name.'/views/templates/hook'
             )
         );
 
@@ -60,10 +59,20 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         //displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
-            case "hosted_page":
-                $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE);
+            case Apihandler::HOSTEDPAGE:
+                if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
+                    $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE);
+                } else {
+                    $context->smarty->assign(
+                        array(
+                            'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME)
+                        )
+                    );
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
+                                : '16').'paymentFormIframe.tpl';
+                }
                 break;
-            case "api":
+            case Apihandler::DIRECTPOST:
                 // if form is sent
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand')
                     && Tools::getValue('card-pan')
@@ -76,9 +85,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
-                        $cart,
-                        $savedCC,
-                        $context
+                                        $cart,
+                                        $savedCC,
+                                        $context
                     );
                 } else {
                     $context->smarty->assign(
@@ -97,15 +106,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     $path = 'paymentFormApi16.tpl';
                 }
                 break;
-            case "iframe":
-                $context->smarty->assign(
-                    array(
-                        'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME)
-                    )
-                );
-                $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/17'
-                        : '16') . 'paymentFormIframe.tpl';
-                break;
             default:
                 break;
         }
@@ -122,15 +122,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      * @return string
      */
     private function apiSavedCC(
-        $token,
-        $cart,
-        $savedCC,
-        $context
-    ) {
+    $token, $cart, $savedCC, $context
+    )
+    {
         if ($tokenDetails = $this->ccToken->getTokenDetails(
             $cart->id_customer,
             $token
-        )
+            )
         ) {
             $params = array(
                 "deviceFingerprint" => Tools::getValue('ioBB'),
@@ -146,11 +144,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         } else {
             if (_PS_VERSION_ >= '1.7') {
                 $redirectUrl = $context->link->getModuleLink(
-                            $this->module->name,
-                            'exception',
-                            array('status_error' => 405),
-                            true
-                        );
+                    $this->module->name,
+                    'exception',
+                    array('status_error' => 405),
+                    true
+                );
                 Tools::redirect($redirectUrl);
             }
             $context->smarty->assign(
@@ -178,14 +176,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      * @return string
      */
     private function apiNewCC(
-        $cart,
-        $context,
-        $savedCC
-    ) {
-        $delivery = new Address((int)$cart->id_address_delivery);
-        $deliveryCountry = new Country((int)$delivery->id_country);
-        $currency = new Currency((int)$cart->id_currency);
-        $customer = new Customer((int)$cart->id_customer);
+    $cart, $context, $savedCC
+    )
+    {
+        $delivery        = new Address((int) $cart->id_address_delivery);
+        $deliveryCountry = new Country((int) $delivery->id_country);
+        $currency        = new Currency((int) $cart->id_currency);
+        $customer        = new Customer((int) $cart->id_customer);
 
         $creditCard = $this->module->getActivatedPaymentByCountryAndCurrency(
             "credit_card",
@@ -193,16 +190,16 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $currency
         );
         $selectedCC = Tools::strtolower(
-            str_replace(
-                " ",
-                "-",
-                Tools::getValue('card-brand')
-            )
+                str_replace(
+                    " ",
+                    "-",
+                    Tools::getValue('card-brand')
+                )
         );
         if (in_array(
-            $selectedCC,
-            array_keys($creditCard)
-        )) {
+                $selectedCC,
+                array_keys($creditCard)
+            )) {
             $card = array(
                 "token" => Tools::getValue('card-token'),
                 "brand" => $selectedCC,
@@ -233,11 +230,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         } else {
             if (_PS_VERSION_ >= '1.7') {
                 $redirectUrl = $context->link->getModuleLink(
-                            $this->module->name,
-                            'exception',
-                            array('status_error' => 404),
-                            true
-                        );
+                    $this->module->name,
+                    'exception',
+                    array('status_error' => 404),
+                    true
+                );
                 Tools::redirect($redirectUrl);
             }
             $context->smarty->assign(
@@ -263,12 +260,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     public function setMedia()
     {
         parent::setMedia();
-        $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js'));
-        $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
-        $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/card-js.min.css'));
-        $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/hipay-enterprise.css'));
+        $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/card-js.min.js'));
+        $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js'));
+        $this->addCSS(array(_MODULE_DIR_.'hipay_enterprise/views/css/card-js.min.css'));
+        $this->addCSS(array(_MODULE_DIR_.'hipay_enterprise/views/css/hipay-enterprise.css'));
         $this->context->controller->addJS(
-            array(_MODULE_DIR_ . 'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
+            array(_MODULE_DIR_.'hipay_enterprise/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
         );
         $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/form-input-control.js'));
     }

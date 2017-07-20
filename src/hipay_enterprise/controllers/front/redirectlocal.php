@@ -10,7 +10,7 @@
  */
 require_once(dirname(__FILE__).'/../../classes/helper/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayPaymentFormControl.php');
+require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayFormControl.php');
 
 class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontController
 {
@@ -83,10 +83,24 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
         switch ($mode) {
             case Apihandler::HOSTEDPAGE:
-                $this->apiHandler->handleLocalPayment(
-                    Apihandler::HOSTEDPAGE,
-                    $params
-                );
+                if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"]
+                    == "redirect") {
+                    $this->apiHandler->handleLocalPayment(
+                        Apihandler::HOSTEDPAGE,
+                        $params
+                    );
+                } else {
+                    $context->smarty->assign(
+                        array(
+                            'url' => $this->apiHandler->handleLocalPayment(
+                                Apihandler::IFRAME,
+                                $params
+                            )
+                        )
+                    );
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
+                                : '16').'paymentFormIframe.tpl';
+                }
                 break;
             case Apihandler::DIRECTPOST:
                 // if electronic signature is on and payment force hpayment when electronic signature is on  OR form is submit OR there's no additional fields
@@ -121,18 +135,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                     $path = 'paymentLocalForm16.tpl';
                 }
                 break;
-            case Apihandler::IFRAME:
-                $context->smarty->assign(
-                    array(
-                        'url' => $this->apiHandler->handleLocalPayment(
-                            Apihandler::IFRAME,
-                            $params
-                        )
-                    )
-                );
-                $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
-                            : '16').'paymentFormIframe.tpl';
-                break;
             default:
                 break;
         }
@@ -151,7 +153,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 $params[$name] = Tools::getValue($name);
             }
 
-            $errors = HipayPaymentFormControl::checkForm($this->module->hipayConfigTool->getConfigHipay(
+            $errors = HipayFormControl::checkPaymentForm($this->module->hipayConfigTool->getConfigHipay(
                     )["payment"]["local_payment"][$method]["additionalFields"]["formFields"],
                                                          $params,
                                                          $this->module);
