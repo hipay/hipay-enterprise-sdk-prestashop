@@ -22,7 +22,6 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $params
     ) {
         parent::__construct($module);
-
         $this->params = $params;
 
         $this->amount = (isset($params["amount"])) ? $params["amount"]

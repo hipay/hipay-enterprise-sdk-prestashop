@@ -10,29 +10,35 @@
 *
 *}
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="panel">
             <div class="panel-heading">
                 <i class="icon-credit-card"></i>
-                {l s='Hipay Refund' mod='hipay_enterprise'}
+                {l s='Hipay actions' mod='hipay_enterprise'}
             </div>
-            <div class="well hidden-print">
-                <a style="position: relative; top: -200px;" id="hipay"></a>
-                {include file='../admin/partial/refund.partial.tpl'}
+            {if $errorHipay }
+                <p class="alert alert-danger">{$errorHipay}</p>
+            {/if}
+            {if $messagesHipay }
+                <p class="alert alert-success">{$messagesHipay}</p>
+            {/if}
+            <div class="well hidden-print row">
+                {if $showChallenge}
+                    <div class="col-lg-6">
+                        {include file='../admin/actions/panel-challenge.tpl'}
+                    </div>
+                {/if}
+                {if $showCapture && $stillToCapture > 0 && $manualCapture}
+                    <div class="col-lg-6">
+                     {include file='../admin/actions/capture.partial.tpl'}
+                    </div>
+                {/if}
+                {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
+                    <div class="col-lg-6">
+                        {include file='../admin/actions/refund.partial.tpl'}
+                    </div>
+                {/if}
             </div>
-        </div>
-    </div>
-
-    <div class="col-lg-6">
-        <div class="panel">
-            <div class="panel-heading">
-                <i class="icon-credit-card"></i>
-                {l s='Hipay Capture' mod='hipay_enterprise'}
-            </div>
-            <div class="well hidden-print">
-                {include file='../admin/partial/capture.partial.tpl'}
-            </div>
-        </div>
     </div>
 </div>
 

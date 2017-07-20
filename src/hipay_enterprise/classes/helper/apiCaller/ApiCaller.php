@@ -12,6 +12,7 @@
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
+require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 /**
@@ -94,32 +95,39 @@ class ApiCaller
         $moduleInstance,
         $params
     ) {
-        //Create your gateway client
-        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
-        //Set data to send to the API
-        $maintenanceRequest = new MaintenanceFormatter(
-            $moduleInstance,
-            $params
-        );
-        $maintenanceRequestFormatted = $maintenanceRequest->generate();
-        $moduleInstance->getLogs()->requestLogs(
-            print_r(
-                $maintenanceRequestFormatted,
-                true
-            )
-        );
-        var_dump($maintenanceRequestFormatted);
-//        die();
-        //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-        $transaction = $gatewayClient->requestMaintenanceOperation(
-            $params["operation"],
-            $params["transaction_reference"],
-            $maintenanceRequestFormatted->amount,
-            null,
-            $maintenanceRequestFormatted
-        );
+        try {
+            //Create your gateway client
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+            //Set data to send to the API
+            $maintenanceRequest = new MaintenanceFormatter(
+                $moduleInstance,
+                $params
+            );
+            $maintenanceRequestFormatted = $maintenanceRequest->generate();
+            $moduleInstance->getLogs()->requestLogs(
+                print_r(
+                    $maintenanceRequestFormatted,
+                    true
+                )
+            );
 
-        return $transaction;
+            //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
+            $transaction = $gatewayClient->requestMaintenanceOperation(
+                $params["operation"],
+                $params["transaction_reference"],
+                $maintenanceRequestFormatted->amount,
+                null,
+                $maintenanceRequestFormatted
+            );
+
+            return $transaction;
+        } catch (Exception $e){
+            // TODO Revoir le system de log des errors ( Il faut le nom de la méthode, le message et la stack)
+            $moduleInstance->getLogs()->errorLogsHipay('requestMaintenance');
+            $moduleInstance->getLogs()->errorLogsHipay($e->getMessage());
+            throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason [' .
+             $e->getMessage() . ']',$e->getCode() );
+        }
     }
 
     /**

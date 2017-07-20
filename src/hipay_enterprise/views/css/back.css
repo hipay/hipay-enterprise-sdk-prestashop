@@ -1,0 +1,9 @@
+/***********************************/
+/**           ORDER VIEW         **/
+/***********************************/
+#hipay_challenge_form.btn-deny {
+    background-color: #dc5f5c !important;
+}
+#hipay_challenge_form.btn-accept {
+    background-color: #26A65B !important;
+}

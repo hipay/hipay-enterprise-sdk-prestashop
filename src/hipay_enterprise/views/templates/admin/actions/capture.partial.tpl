@@ -9,17 +9,8 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-
-{if $errorHipayCapture }
-    {if $errorHipayCapture == 'ok'}
-        <p class="alert alert-success">{l s='Request successfully sent'}</p>
-    {else}
-        <p class="alert alert-danger">{$errorHipayCapture}</p>
-    {/if}
-{/if}
-{if $showCapture && $stillToCapture > 0 && $manualCapture}
     <fieldset>
-        <legend>{l s='Capture this order' }</legend>
+        <legend>{l s='Manage Capture' }</legend>
         {if $stillToCapture}
             <p class="alert alert-warning">
                 {l s='The order has not been fully captured.'} <br/>
@@ -115,9 +106,3 @@
             </div>
         </form>
     </fieldset>
-{else}
-    <p class="alert alert-warning">
-        {l s='This order has already been fully captured, cannot be captured or waiting authorization for capture'}
-        <br/>
-    </p>
-{/if}

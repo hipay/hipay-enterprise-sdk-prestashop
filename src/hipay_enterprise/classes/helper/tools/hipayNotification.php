@@ -241,7 +241,6 @@ class HipayNotification
     private function updateOrderStatus($newState)
     {
         $return = true;
-
         if ($this->orderExist) {
             $this->addOrderMessage();
             if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(
@@ -314,6 +313,7 @@ class HipayNotification
                 );
                 $this->order = new Order($this->module->currentOrder);
 
+                $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
                 $this->log->errorLogsHipay($e->getCode().' : '.$e->getMessage());

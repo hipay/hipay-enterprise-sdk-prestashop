@@ -10,14 +10,6 @@
 *
 *}
 
-{if $errorHipayRefund }
-    {if $errorHipayRefund == "ok"}
-        <p class="alert alert-success">{l s='Request successfully sent'}</p>
-    {else}
-        <p class="alert alert-danger">{$errorHipayRefund}</p>
-    {/if}
-{/if}
-{if $showRefund && $alreadyCaptured && $refundableAmount > 0}
     <fieldset>
         <legend>{l s='Refund this order' }</legend>
         <p><b>{l s='Amount that can be refunded' } :</b> <span
@@ -113,8 +105,3 @@
             </div>
         </form>
     </fieldset>
-{else}
-    <p class="alert alert-warning">
-        {l s='This order has already been fully refunded, cannot be refunded or waiting authorization for refund'} <br/>
-    </p>
-{/if}
