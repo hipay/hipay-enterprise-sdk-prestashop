@@ -22,7 +22,7 @@
     "maxAmount": {"EUR" :false},
     "logo": "ideal.png",
     "additionalFields": {
-      "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IDealPaymentMethod",
+      "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",
       "defaultFieldsValue": {},
       "formFields": {
         "issuer_bank_id": {
