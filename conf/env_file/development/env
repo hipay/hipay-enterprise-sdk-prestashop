@@ -27,3 +27,8 @@ MYSQL_PASSWORD=admin
 #=====================================================
 HIPAY_INSTALL_AUTO=1
 ENVIRONMENT=development
+
+#====================================================
+# Conf for debugging
+#=====================================================
+XDEBUG_CONFIG=remote_host=172.16.44.35
