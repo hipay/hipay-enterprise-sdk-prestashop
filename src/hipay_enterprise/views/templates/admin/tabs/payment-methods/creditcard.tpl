@@ -101,7 +101,7 @@
                                             <select id="countries_{$creditCard@key}" multiple="multiple" size="10"
                                                     name="{$creditCard@key}_countries[]">
                                                 {foreach $limitedCountries as $country}
-                                                    <option value="{$country@key}" {if $country@key|in_array:$creditCard.countries } selected {/if} >{$country}</option>
+                                                    <option value="{$country@key}" {if !empty($creditCard.countries) && $country@key|in_array:$creditCard.countries } selected {/if} >{$country}</option>
                                                 {/foreach}
                                             </select>
                                         </div>
