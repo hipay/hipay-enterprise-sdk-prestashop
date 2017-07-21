@@ -1,8 +1,8 @@
 {
   "name": "4xcb",
   "config": {
-    "displayNameBO": "4x Carte Bancaire - Facilypay",
-    "displayName": "4x Carte Bancaire - Facilypay",
+    "displayNameBO": "4x Carte Bancaire - Facily Pay",
+    "displayName": "4x Carte Bancaire - Facily Pay",
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
