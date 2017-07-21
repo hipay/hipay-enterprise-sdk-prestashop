@@ -21,7 +21,18 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
      */
     public function postProcess()
     {
+        $paymentProduct = Tools::getValue('pp');
 
+        if($paymentProduct && $paymentProduct == 'credit_card'){
+            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
+        }elseif($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])){
+            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
+        }elseif($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])){
+            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
+        }else{
+            $paymentProduct = "HiPay Enterprise";
+        }
+        
         HipayHelper::unsetCart();
 
         $cartId = Tools::getValue('orderId');
@@ -63,7 +74,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
                 (int)$objCart->id,
                 Configuration::get('HIPAY_OS_PENDING'),
                 (float)$objCart->getOrderTotal(true),
-                $this->module->displayName,
+                $paymentProduct,
                 'Order created by HiPay after success payment.',
                 array(),
                 $context->currency->id,

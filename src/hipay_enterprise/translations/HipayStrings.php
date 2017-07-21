@@ -11,8 +11,13 @@ abstract class HipayStrings {
     const DESC_COPY_TO = "Enter a valid email, during a transaction challenged an email will be sent to this address";
 
     //=========================================//
-    //              FRAU MAILS                 //
+    //              FRAUD MAILS                 //
     //=========================================//
     const SUBJECT_PAYMENT_VALIDATION = 'A payment transaction is awaiting validation for the order %s';
     const SUBJECT_PAYMENT_DENY = 'Refused payment for order %s';
+
+    //=========================================//
+    //              PAYMENT PAGE               //
+    //=========================================//
+    const HOSTED_REDIRECT_MESSAGE = 'You will be redirected to an external payment page';
 }
