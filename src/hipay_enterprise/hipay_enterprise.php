@@ -1518,7 +1518,7 @@ class Hipay_enterprise extends PaymentModule
                 $order_state->id
             );
             @copy(
-                    $this->local_path.'logo.gif',
+                    $this->local_path.'logo-16.png',
                     _PS_ORDER_STATE_IMG_DIR_.(int) $order_state->id.'.gif'
             );
 

@@ -430,7 +430,7 @@ class Apihandler
                 $params["methodDisplayName"],
                 'Order created by HiPay after success payment.',
                 array(),
-                $context->currency->id,
+                $this->context->currency->id,
                 false,
                 $customer->secure_key,
                 $shop
