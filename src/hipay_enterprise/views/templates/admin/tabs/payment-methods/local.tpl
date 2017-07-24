@@ -10,16 +10,15 @@
 *
 *}
 
-<div class="panel" id="fieldset_0">
+<div class="panel hipay-tabs" id="panel-local-payment">
     <div class="form-wrapper">
         <a data-toggle="collapse" href="#collapseLocalPayment" aria-expanded="false" aria-controls="collapseLocalPayment" >
-            <h4><i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_enterprise'}<i id="chevronLocal" class="pull-right chevron icon icon-chevron-down"></i></h4>
-            <hr/>
+            <h3><i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_enterprise'}<i id="chevronLocal" class="pull-right chevron icon icon-chevron-down"></i></h3>
         </a>
         <div class="collapse" id="collapseLocalPayment">
             <div role="tabpanel">
                 <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
-                    <li role="presentation" class="disabled"><a href="#">
+                    <li role="presentation" class="disabled"><a class="credit-card-title" href="#">
                             {l s='Local payment type' mod='hipay_enterprise'}</a>
                     </li>
                     {foreach $config_hipay.payment.local_payment as $localPayment}
@@ -29,15 +28,18 @@
                         </li>
                     {/foreach}
                 </ul>
-                <form method="post" class="" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="local_payment_form">
+                <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="local_payment_form">
                     <div class="tab-content col-md-10">
                         {foreach $config_hipay.payment.local_payment as $localPayment}
                             <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}" id="{$localPayment@key}">
                                 <div class="panel">
-
-                                    <!-- SWITCH MODE START -->
                                     <div class="row">
-                                        <label class="control-label col-lg-3">
+                                        <h4 class="col-lg-4 col-lg-offset-2">
+                                            {l s=$localPayment["displayNameBO"] mod='hipay_enterprise'}
+                                        </h4>
+                                    </div>
+                                    <div class="row">
+                                        <label class="control-label col-lg-2">
                                             {l s='Activated' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-9">
@@ -58,7 +60,7 @@
                                     <br/>
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Display name' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-3">
                                                 <input type="text" name="{$localPayment@key}_displayName" value="{$localPayment.displayName}"/>
                                             </div>
@@ -67,7 +69,7 @@
                                     <br/>
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-1">
                                                 <input type="text" name="{$localPayment@key}_minAmount[EUR]" value="{$localPayment.minAmount.EUR}"/>
                                             </div>
@@ -76,7 +78,7 @@
                                     <br/>
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-1">
                                                 <input type="text" name="{$localPayment@key}_maxAmount[EUR]" value="{$localPayment.maxAmount.EUR}"/>
                                             </div>
@@ -86,7 +88,7 @@
                                     {if $localPayment["currencySelectorReadOnly"]}
                                         <div class="row">
                                             <div class="form-group">
-                                                <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
+                                                <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                                                 {foreach  $localPayment["currencies"] as $currency }
                                                     {if isset($limitedCurrencies[$currency])}
                                                         <p>{$limitedCurrencies[$currency]}</p>
@@ -105,7 +107,7 @@
                                     {else}
                                         <div class="row">
                                             <div class="form-group">
-                                                <label class="control-label col-lg-3">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
+                                                <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                                                 <div class="col-lg-9">
                                                     <select id="multiselect-{$localPayment@key}" name="{$localPayment@key}_currencies[]" multiple="multiple" class="multiselect-currency">
                                                         {foreach $limitedCurrencies as $currency }
@@ -120,9 +122,9 @@
                                     {if $localPayment["countrySelectorReadOnly"]}
                                         <div class="row">
                                             <div class="form-group">
-                                                <label class="control-label col-lg-3">{l s='Activated Countries' mod='hipay_enterprise'}</label>
+                                                <label class="control-label col-lg-2">{l s='Activated Countries' mod='hipay_enterprise'}</label>
                                                 {foreach  $localPayment["countries"] as $country }
-                                                    <p>{$limitedCountries[$country]}</p>
+                                                    <label class="col-lg-2">{$limitedCountries[$country]}</label>
                                                     <input type="hidden" readonly value="{$country}"
                                                            name="{$localPayment@key}_countries[]"/>
                                                 {/foreach}
@@ -131,12 +133,15 @@
                                     {else}
                                         <div class="row">
                                             <div class="form-group">
-                                                <select id="countries_{$localPayment@key}" multiple="multiple" size="10"
-                                                        name="{$localPayment@key}_countries[]">
-                                                    {foreach $limitedCountries as $country}
-                                                        <option value="{$country@key}" {if $country@key|in_array:$localPayment.countries } selected {/if} >{$country}</option>
-                                                    {/foreach}
-                                                </select>
+                                                <label class="control-label col-lg-2">{l s='Countries' mod='hipay_enterprise'}</label>
+                                                <div class="col-lg-6">
+                                                    <select id="countries_{$localPayment@key}" multiple="multiple" size="10"
+                                                            name="{$localPayment@key}_countries[]">
+                                                        {foreach $limitedCountries as $country}
+                                                            <option value="{$country@key}" {if $country@key|in_array:$localPayment.countries } selected {/if} >{$country}</option>
+                                                        {/foreach}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     {/if}

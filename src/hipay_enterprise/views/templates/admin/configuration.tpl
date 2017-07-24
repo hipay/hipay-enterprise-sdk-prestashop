@@ -48,7 +48,7 @@
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'category_form'))} active{/if}"><a
                 href="#category-mapping" aria-controls="category-mapping" role="tab" data-toggle="tab">
-                <span class="icon icon-copy"></span> {l s='Category Mapping' mod='hipay_enterprise'}</a>
+                <span class="icon icon-copy"></span> {l s='Categories Mapping' mod='hipay_enterprise'}</a>
         </li>
         <li role="presentation"
             class=" {if ((isset($active_tab) == true) && ($active_tab == 'carrier_form'))} active{/if}"><a

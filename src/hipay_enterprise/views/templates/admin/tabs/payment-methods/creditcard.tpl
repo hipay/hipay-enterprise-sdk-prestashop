@@ -9,26 +9,31 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-<div class="panel" id="fieldset_0">
+<div class="panel credit-card hipay-tabs" id="panel-credit-card">
     <div class="form-wrapper">
-        <a data-toggle="collapse" href="#collapseCC" aria-expanded="false" aria-controls="collapseCC" >
-            <h4><i class="icon icon-credit-card"></i> {l s='Credit card' mod='hipay_enterprise'} <i id="chevronCC" class="pull-right chevron icon icon-chevron-down"></i></h4>
-            <hr/>
-        </a>
+        <div class="panel-heading">
+            <a data-toggle="collapse" href="#collapseCC" aria-expanded="false" aria-controls="collapseCC" >
+                <i class="icon icon-credit-card"></i> {l s='Credit card' mod='hipay_enterprise'} <i id="chevronCC" class="pull-right chevron icon icon-chevron-down"></i>
+            </a>
+        </div>
         <div class="collapse in" id="collapseCC">
             <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
-                <br/>
-                <div class="form-group">
-                    <label class="control-label col-lg-3">{l s='Display name' mod='hipay_enterprise'}</label>
-                    <div class="col-lg-3">
-                        <input type="text" name="ccDisplayName" value="{$config_hipay.payment.global.ccDisplayName}"/>
+                <div class="panel">
+                    <div class="form-group">
+                        <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
+                            <div class="col-lg-3">
+                                <div class="row">
+                                    <input type="text" name="ccDisplayName" value="{$config_hipay.payment.global.ccDisplayName}"/>
+                                </div>
+                                <p class="help-block ">
+                                    {l s='Display name for payment by credit card on your checkout page.' mod='hipay_enterprise'}
+                                </p>
+                            </div>
                     </div>
                 </div>
-                <br/>
-
                 <div role="tabpanel">
                     <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
-                        <li role="presentation" class="disabled"><a href="#">
+                        <li role="presentation" class="disabled summary"><a class="credit-card-title" href="#">
                                 {l s='Credit card type' mod='hipay_enterprise'}</a>
                         </li>
                         {foreach $config_hipay.payment.credit_card as $creditCard}
@@ -44,9 +49,13 @@
                         {foreach $config_hipay.payment.credit_card as $creditCard}
                             <div role="tabpanel" class="tab-pane {if $creditCard@first} active {/if}" id="{$creditCard@key}">
                                 <div class="panel">
-                                    <!-- SWITCH MODE START -->
                                     <div class="row">
-                                        <label class="control-label col-lg-3">
+                                        <h4 class="col-lg-4 col-lg-offset-2">
+                                            {l s=$creditCard["displayName"] mod='hipay_enterprise'}
+                                        </h4>
+                                    </div>
+                                    <div class="row">
+                                        <label class="control-label col-lg-2">
                                             {l s='Activated' mod='hipay_enterprise'}
                                         </label>
                                         <div class="col-lg-9">
@@ -67,7 +76,7 @@
                                     <!-- SWITCH MODE END -->
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-1">
                                                 <input type="text" name="{$creditCard@key}_minAmount[EUR]" value="{$creditCard.minAmount.EUR}"/>
                                             </div>
@@ -76,7 +85,7 @@
                                     <br/>
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-1">
                                                 <input type="text" name="{$creditCard@key}_maxAmount[EUR]" value="{$creditCard.maxAmount.EUR}"/>
                                             </div>
@@ -85,7 +94,7 @@
                                     <br/>
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="control-label col-lg-3">{l s='Currencies' mod='hipay_enterprise'}</label>
+                                            <label class="control-label col-lg-2">{l s='Currencies' mod='hipay_enterprise'}</label>
                                             <div class="col-lg-9">
                                                 <select id="multiselect-{$creditCard@key}" name="{$creditCard@key}_currencies[]" multiple="multiple" class="multiselect-currency">
                                                     {foreach $limitedCurrencies as $currency }
@@ -98,12 +107,15 @@
 
                                     <div class="row">
                                         <div class="form-group">
-                                            <select id="countries_{$creditCard@key}" multiple="multiple" size="10"
-                                                    name="{$creditCard@key}_countries[]">
-                                                {foreach $limitedCountries as $country}
-                                                    <option value="{$country@key}" {if $country@key|in_array:$creditCard.countries } selected {/if} >{$country}</option>
-                                                {/foreach}
-                                            </select>
+                                            <label class="control-label col-lg-2">{l s='Countries' mod='hipay_enterprise'}</label>
+                                            <div class="col-lg-6">
+                                                <select id="countries_{$creditCard@key}" multiple="multiple" size="10"
+                                                        name="{$creditCard@key}_countries[]">
+                                                    {foreach $limitedCountries as $country}
+                                                        <option value="{$country@key}" {if $country@key|in_array:$creditCard.countries } selected {/if} >{$country}</option>
+                                                    {/foreach}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
