@@ -18,7 +18,7 @@
                         <img src="{$domain|cat:$payment_button|escape:'htmlall':'UTF-8'}"
                              alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'} "
                              style="max-width: 70px; max-height: 40px;"
-                        />
+                             />
 
                         <span>
                             {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
@@ -37,7 +37,9 @@
                              alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'}"/>
                         {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                         <span>
-
+                            {if $configHipay.payment.global.operating_mode != 'api'}
+                                <em>{l s='You will be redirected to an external payment page' mod='hipay_enterprise'}</em>
+                            {/if}
                             {if isset($hipay_prod) && (!$hipay_prod)}
                                 <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                             {/if}
@@ -81,6 +83,9 @@
                                      style="max-width: 70px; max-height: 40px;" alt="{$local_payment.displayName}"/>
                                 {l s='Pay by' mod='hipay_enterprise' } {$local_payment.displayName}
                                 <span>
+                                    {if $configHipay.payment.global.operating_mode != 'api'}
+                                        <em>{l s='You will be redirected to an external payment page' mod='hipay_enterprise'}</em>
+                                    {/if}
                                     {if isset($hipay_prod) && (!$hipay_prod)}
                                         <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
                                     {/if}

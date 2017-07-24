@@ -82,3 +82,35 @@
     transform: rotate(90deg);
 }
 
+#hipay-header .text-branded,
+#hipay-content .text-branded {
+    color: #00aff0;
+}
+
+#hipay-header h4,
+#hipay-content h4 {
+    margin: 2px 0;
+    color: #00aff0;
+    font-size: 1.8em;
+}
+
+#hipay-header h4 {
+    margin: 15px auto;
+}
+
+#payment-logo {
+    max-height: 60px;
+    max-width: 100% !important;
+}
+
+#hipay-content h4 {
+    margin-bottom: 10px;
+}
+
+#hipay-content ul {
+    padding-left: 15px;
+}
+
+#hipay-content .ul-spaced li {
+    margin-bottom: 5px;
+}

@@ -61,11 +61,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case Apihandler::HOSTEDPAGE:
                 if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                    $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE);
+                    $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE, array("method" => "credit_card"));
                 } else {
                     $context->smarty->assign(
                         array(
-                            'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME)
+                            'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME, array("method" => "credit_card"))
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'

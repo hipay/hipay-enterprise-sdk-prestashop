@@ -10,6 +10,7 @@
  */
 require_once(dirname(__FILE__).'/classes/helper/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
+require_once(dirname(__FILE__).'/translations/HipayStrings.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -95,6 +96,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                     true
                                 )
                         );
+                        if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
+                            $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page')."</p>");
+                        }
                         $paymentOptions[] = $newOption;
                         break;
                     case "api":
@@ -125,25 +129,12 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
                         $newOption   = new PaymentOption();
                         $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
-                            ->setAdditionalInformation("<p>".$this->l("Please prepare your credit card")."</p>")
+                            ->setAdditionalInformation("<p>".$this->l('Please prepare your credit card')."</p>")
                             ->setModuleName("credit_card")
                             ->setForm($paymentForm);
 
                         $paymentOptions[] = $newOption;
 
-                        break;
-                    case "iframe":
-                        $newOption        = new PaymentOption();
-                        $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
-                            ->setAction(
-                                $this->context->link->getModuleLink(
-                                    $this->name,
-                                    'redirect',
-                                    array(),
-                                    true
-                                )
-                        );
-                        $paymentOptions[] = $newOption;
                         break;
                     default:
                         break;
@@ -269,7 +260,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $this->context->controller->registerJavascript(
                 'input-form-control',
                 'modules/'.$this->name.'/views/js/form-input-control.js',
-                array('position'=> 'head')
+                array('position' => 'head')
             );
             $this->context->controller->registerJavascript(
                 'device-fingerprint',
