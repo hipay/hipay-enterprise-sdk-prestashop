@@ -12,18 +12,19 @@
 <div class="panel">
     <div role="tabpanel">
         <div class="alert alert-info">
-            {l s='You must map your shop category to hipay category. Category mapping is mandatory for Oney payment method'  mod='hipay_enterprise'}
+            <p>{l s='You must map your shop categories with Hipay categories.' mod='hipay_enterprise'}</p>
+            <p>{l s='Categories mapping are mandatory for Oney payment methods or if you enable the option Customer\'s cart sending.' mod='hipay_enterprise'}</p>
         </div>
         <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}"
               id="category_form">
             <div class="panel" id="fieldset_0">
                 <div class="form-wrapper">
-                    <h3>Category mapping</h3>
+                    <h3>{l s='Categories mapping' mod='hipay_enterprise'}</h3>
                     <div class="form-group">
                         <table class="table">
                             <thead>
-                            <th>Prestashop category</th>
-                            <th>Hipay category</th>
+                            <th>{l s='Prestashop category' mod='hipay_enterprise'}</th>
+                            <th>{l s='HiPay category' mod='hipay_enterprise'}</th>
                             </thead>
                             <tbody>
                                 {foreach $psCategories as $cat}
@@ -36,7 +37,7 @@
                                         <td>
                                             <select name="hipay_map_{$cat["id_category"]}">
                                                 {if !isset($mappedCategories[$cat["id_category"]])}
-                                                    <option value="">{l s='-- Select category' mod='hipay_enterprise'}</option>
+                                                    <option value="">{l s='- Select category - ' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCategories as $hpcat}
                                                     <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}

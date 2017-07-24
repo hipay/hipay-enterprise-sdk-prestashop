@@ -7,3 +7,78 @@
 #hipay_challenge_form.btn-accept {
     background-color: #26A65B !important;
 }
+
+.hipay-tabs #account_form h3,#panel-credit-card  h3,#panel-global-settings h3,#panel-local-payment h3  {
+    font-size:1.5em!important;
+    margin: -15px -15px 15px -16px!important;
+}
+
+.hipay-tabs #account_form h5 {
+    border-bottom: #dddddd solid 1px;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+/***********************************/
+/**           Technical VIEW      **/
+/***********************************/
+#module-informations .technical-information, #module-informations .technicals-requirements {
+    margin-top: 10px;
+}
+#module-informations .alert.alert-warning{
+    margin-right: 10px;
+}
+
+#panel-credit-card .bootstrap-duallistbox-container label,
+#panel-local-payment .bootstrap-duallistbox-container label{
+    text-align: center;
+}
+
+#panel-credit-card .bootstrap-duallistbox-container .info-container,
+#panel-local-payment .bootstrap-duallistbox-container .info-container{
+    display: none;
+}
+
+#panel-credit-card .credit-card-title, #panel-local-payment .credit-card-title {
+    color: #fff;
+    background-color: #363a41;
+}
+
+#panel-credit-card h4,#panel-local-payment h4 {
+    font-size: 2em;
+}
+
+/***********************************/
+/**        FAQ  VIEW              **/
+/***********************************/
+#panel-faq .panel-heading-question a {
+    color: #ffffff;
+}
+
+#panel-faq .panel-heading-question i {
+    color:#f9c940;
+}
+
+#panel-faq .panel-heading-question {
+    background-color: #00acdc;
+}
+
+#panel-faq .panel-heading-question i[class="icon-arrow-circle-o-down"] {
+    float: right;
+}
+
+#panel-faq .panel-heading.panel-heading-question  i {
+    font-size: 1.5em!important;
+    padding: 5px;
+}
+
+#panel-faq .panel-heading-question [data-toggle="collapse"].collapsed i[class="icon-arrow-circle-o-down"] {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
