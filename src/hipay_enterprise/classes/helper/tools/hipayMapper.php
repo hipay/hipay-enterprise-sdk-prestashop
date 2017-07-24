@@ -116,6 +116,11 @@ class HipayMapper
         return $carriers;
     }
 
+    /**
+     *
+     * @param type $PSId
+     * @return int
+     */
     public function getMappedHipayCatFromPSId($PSId)
     {
         $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
@@ -127,6 +132,11 @@ class HipayMapper
         return 1;
     }
 
+    /**
+     *
+     * @param type $PSId
+     * @return type
+     */
     public function getMappedHipayCarrierFromPSId($PSId)
     {
         $hipayCarrier = $this->db->getHipayCarrierFromPSId($PSId);
@@ -232,6 +242,12 @@ class HipayMapper
         );
     }
 
+    /**
+     *
+     * @param type $idCarrierOld
+     * @param type $idCarrierNew
+     * @return boolean
+     */
     public function updateCarrier($idCarrierOld, $idCarrierNew)
     {
         $this->logs->logsHipay('###### updateCarrier');
