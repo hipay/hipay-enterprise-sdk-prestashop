@@ -9,3 +9,5 @@ composer.lock
 /nbproject/
 .php_cs.cache
 .idea/
+gulpfile.ts
+node_modules/

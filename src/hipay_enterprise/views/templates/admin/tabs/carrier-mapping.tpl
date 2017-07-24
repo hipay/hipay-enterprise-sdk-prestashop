@@ -12,21 +12,22 @@
 <div class="panel">
     <div role="tabpanel">
         <div class="alert alert-info">
-            {l s='You must map your shop carrier to hipay carriers category. Carrier mapping is mandatory for Oney payment method'  mod='hipay_enterprise'}
+            <p>{l s='You have to map yours delivery methods with HiPay\'s delivery methods.' mod='hipay_enterprise'}</p>
+            <p>{l s='Delivery methods mapping are mandatory for Oney payment methods or if you enable the option Customer\'s cart sending.' mod='hipay_enterprise'}</p>
         </div>
         <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}"
               id="category_form">
-            <div class="panel" id="fieldset_0">
+            <div class="panel">
                 <div class="form-wrapper">
-                    <h3>Carrier mapping</h3>
+                    <h3>{l s='Delivery method mapping' mod='hipay_enterprise'}</h3>
                     <div class="form-group">
                         <table class="table">
                             <thead>
-                            <th>Prestashop carrier</th>
-                            <th>Order preparation estimate time</th>
-                            <th>Delivery estimate time</th>
-                            <th>Hipay carrier mode</th>
-                            <th>Hipay carrier shipping</th>
+                            <th>{l s='Prestashop delivery method' mod='hipay_enterprise'}</th>
+                            <th>{l s='Order preparation estimate time' mod='hipay_enterprise'}</th>
+                            <th>{l s='Delivery estimate time' mod='hipay_enterprise'}</th>
+                            <th>{l s='Hipay delivery mode' mod='hipay_enterprise'}</th>
+                            <th>{l s='Hipay delivery method' mod='hipay_enterprise'}</th>
                             </thead>
                             <tbody>
                                 {foreach $psCarriers as $car}
@@ -49,7 +50,7 @@
                                         <td>
                                             <select name="hipay_map_mode_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="">{l s='-- Select carrier mode' mod='hipay_enterprise'}</option>
+                                                    <option value="">{l s='- Select carrier mode -' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if}
@@ -60,7 +61,7 @@
                                         <td>
                                             <select name="hipay_map_shipping_{$car["id_carrier"]}">
                                                 {if !isset($mappedCarriers[$car["id_carrier"]])}
-                                                    <option value="">{l s='-- Select carrier shipping' mod='hipay_enterprise'}</option>
+                                                    <option value="">{l s='- Select carrier shipping -' mod='hipay_enterprise'}</option>
                                                 {/if}
                                                 {foreach $hipayCarriers["shipping"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["shipping"] eq  $hpcarmode->getCode()} selected {/if}

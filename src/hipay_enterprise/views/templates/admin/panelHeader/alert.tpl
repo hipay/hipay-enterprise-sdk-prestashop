@@ -43,36 +43,11 @@
     </div>
 {/if}
 
-{if $config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_username_sandbox) || empty($config_hipay.account.sandbox.api_password_sandbox) || empty($config_hipay.account.sandbox.api_secret_passphrase_sandbox) )}
-    <div class="alert alert-danger">
-        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
-        <p>
-            {l s='You\'re on test mode but your sanbox credentials are not filled' mod='hipay_enterprise'}
-        </p>
-    </div>
-{/if}
-
-{if !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.production.api_username_production) || empty($config_hipay.account.production.api_password_production) || empty($config_hipay.account.production.api_secret_passphrase_production) )}
-    <div class="alert alert-danger">
-        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
-        <p>
-            {l s='You\'re on live mode but your production credentials are not filled' mod='hipay_enterprise'}
-        </p>
-    </div>
-{/if}
 {if $ps_round_total}
     <div class="alert alert-danger">
         <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
         <p>
             {l s='\'Round on the total\' is activated in prestashop configuration, cart will not be sent and payment method that force cart to be send will be disabled.' mod='hipay_enterprise'}
-        </p>
-    </div>
-{/if}
-{if empty($mappedCarriers) || empty($mappedCategories)}
-    <div class="alert alert-danger">
-        <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
-        <p>
-            {l s='You must map your shop category and carrier to hipay category and carrier' mod='hipay_enterprise'}
         </p>
     </div>
 {/if}
