@@ -65,10 +65,6 @@ class Hipay_enterprise extends PaymentModule
             $this->currencies_titles[$currency["iso_code"]] = $currency["name"];
         }
 
-        if (!Configuration::get('HIPAY_CONFIG')) {
-            $this->warning = $this->l('Please, do not forget to configure your module');
-        }
-
         //configuration is handle by an helper class
         $this->hipayConfigTool = new HipayConfig($this);
     }
@@ -125,8 +121,8 @@ class Hipay_enterprise extends PaymentModule
         $idCarrierOld = (int) ($params['id_carrier']);
         $idCarrierNew = (int) ($params['carrier']->id);
 
-        $this->mapper->updateCarrier($idCarrierOld, $idCarrierNew);
-
+        $this->mapper->updateCarrier($idCarrierOld,
+                                     $idCarrierNew);
     }
 
     public function hookCustomerAccount()
@@ -622,6 +618,10 @@ class Hipay_enterprise extends PaymentModule
             "brand_version" => _PS_VERSION_,
             "integration_version" => $this->version,
         );
+
+        if (!Configuration::get('PS_SSL_ENABLED')) {
+            $this->_errors[] = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.');
+        }
 
         $this->context->smarty->assign(
             array(
