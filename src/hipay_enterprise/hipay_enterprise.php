@@ -106,6 +106,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('backOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
+        $return &= $this->registerHook('updateCarrier');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header')
                 && $this->registerHook('actionFrontControllerSetMedia');
@@ -116,6 +117,16 @@ class Hipay_enterprise extends PaymentModule
             $return   = $return && $return16;
         }
         return $return;
+    }
+
+    public function hookUpdateCarrier($params)
+    {
+        $this->logs->logsHipay('---- START function hookUpdateCarrier');
+        $idCarrierOld = (int) ($params['id_carrier']);
+        $idCarrierNew = (int) ($params['carrier']->id);
+
+        $this->mapper->updateCarrier($idCarrierOld, $idCarrierNew);
+
     }
 
     public function hookCustomerAccount()
@@ -159,7 +170,8 @@ class Hipay_enterprise extends PaymentModule
             ($this->_path).'views/css/bootstrap-multiselect.css',
             'all'
         );
-        $this->context->controller->addCSS($this->_path . 'views/css/back.css', 'all');
+        $this->context->controller->addCSS($this->_path.'views/css/back.css',
+                                           'all');
     }
 
     /**
@@ -310,17 +322,17 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayAdminOrder()
     {
-        $order = new Order((int)Tools::getValue('id_order'));
-        $shippingCost = $order->total_shipping;
-        $refundableAmount = $order->getTotalPaid();
-        $errorHipay = $this->context->cookie->__get('hipay_errors');
-        $messagesHipay = $this->context->cookie->__get('hipay_success');
-        $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
-        $alreadyCaptured = $this->db->alreadyCaptured($order->id);
-        $manualCapture = false;
-        $showCapture = true;
-        $showRefund = true;
-        $showChallenge = false;
+        $order             = new Order((int) Tools::getValue('id_order'));
+        $shippingCost      = $order->total_shipping;
+        $refundableAmount  = $order->getTotalPaid();
+        $errorHipay        = $this->context->cookie->__get('hipay_errors');
+        $messagesHipay     = $this->context->cookie->__get('hipay_success');
+        $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
+        $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
+        $manualCapture     = false;
+        $showCapture       = true;
+        $showRefund        = true;
+        $showChallenge     = false;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
         $orderId           = $order->id;
@@ -424,8 +436,8 @@ class Hipay_enterprise extends PaymentModule
             )
         ) {
             $showChallenge = true;
-            $showCapture = false;
-            $showRefund = false;
+            $showCapture   = false;
+            $showRefund    = false;
         }
 
         $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
@@ -527,8 +539,10 @@ class Hipay_enterprise extends PaymentModule
      */
     private function resetMessagesHipay()
     {
-        $this->context->cookie->__set('hipay_errors','');
-        $this->context->cookie->__set('hipay_success','');
+        $this->context->cookie->__set('hipay_errors',
+                                      '');
+        $this->context->cookie->__set('hipay_success',
+                                      '');
     }
 
     public function installAdminTab()
@@ -801,7 +815,7 @@ class Hipay_enterprise extends PaymentModule
                 HipayMapper::HIPAY_CARRIER_MAPPING,
                 $mapping
             );
-            $this->_successes[] = $this->l('3D secure Settings configuration saved successfully.');
+            $this->_successes[] = $this->l('Carrier mapping configuration saved successfully.');
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -809,6 +823,45 @@ class Hipay_enterprise extends PaymentModule
             $this->_errors[] = $this->l($e->getMessage());
         }
 
+        return false;
+    }
+
+    /**
+     * Save Category Mapping informations send by config page form
+     *
+     * @return : bool
+     * */
+    protected function saveCategoryMappingInformations()
+    {
+        $this->logs->logsHipay('---- >> function saveCategoryMappingInformations');
+        try {
+            $psCategories = $this->mapper->getPrestashopCategories();
+            $mapping      = array();
+            foreach ($psCategories as $cat) {
+                $psMapCat    = Tools::getValue('ps_map_'.$cat["id_category"]);
+                $hipayMapCat = Tools::getValue('hipay_map_'.$cat["id_category"]);
+                if (empty($psMapCat) || empty($hipayMapCat)) {
+                    $this->_errors[] = $this->l("all category mapping fields are required");
+                }
+                if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
+                    $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
+                }
+            }
+            if (!empty($this->_errors)) {
+                $this->_errors = array(end($this->_errors));
+                return false;
+            }
+            $this->mapper->setMapping(
+                HipayMapper::HIPAY_CAT_MAPPING,
+                $mapping
+            );
+            $this->_successes[] = $this->l('Category mapping configuration saved successfully.');
+            return true;
+        } catch (Exception $e) {
+            // LOGS
+            $this->logs->errorLogsHipay($e->getMessage());
+            $this->_errors[] = $this->l($e->getMessage());
+        }
         return false;
     }
 
@@ -963,9 +1016,9 @@ class Hipay_enterprise extends PaymentModule
                 );
                 $accountConfig["global"][$key] = $fieldValue;
             }
-            $conf3d = $this->save3DSecureInformations();
+            $conf3d                                        = $this->save3DSecureInformations();
             $accountConfig["global"]["activate_3d_secure"] = $conf3d["global"]["activate_3d_secure"];
-            $accountConfig["global"]["3d_secure_rules"] = $conf3d["global"]["3d_secure_rules"];
+            $accountConfig["global"]["3d_secure_rules"]    = $conf3d["global"]["3d_secure_rules"];
 
             //save configuration
             $this->hipayConfigTool->setConfigHiPay(
