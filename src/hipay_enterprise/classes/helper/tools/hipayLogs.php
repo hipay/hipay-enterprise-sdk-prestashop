@@ -23,6 +23,7 @@ class HipayLogs
         // init config hipay
         $this->enable = (isset($enableConf) ? $enableConf : true);
         $this->basePath = '/hipay_enterprise/logs/';
+
     }
 
     /**
