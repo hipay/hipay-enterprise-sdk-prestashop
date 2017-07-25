@@ -326,8 +326,8 @@ class Hipay_enterprise extends PaymentModule
         $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
         $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
         $manualCapture     = false;
-        $showCapture       = true;
-        $showRefund        = true;
+        $showCapture       = false;
+        $showRefund        = false;
         $showChallenge     = false;
         $partiallyCaptured = false;
         $partiallyRefunded = false;
@@ -336,10 +336,13 @@ class Hipay_enterprise extends PaymentModule
         $basket            = $this->db->getOrderBasket($order->id);
         $products          = $order->getProducts();
         $capturedFees      = $this->db->feesAreCaptured($order->id);
+        $amountFees        = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
         $refundedFees      = $this->db->feesAreRefunded($order->id);
         $capturedItems     = $this->db->getCapturedItems($order->id);
         $refundedItems     = $this->db->getRefundedItems($order->id);
         $totallyRefunded   = true;
+        $id_currency       = $order->id_currency;
+
 
         foreach ($order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
@@ -422,6 +425,7 @@ class Hipay_enterprise extends PaymentModule
             )
         ) {
             $showCapture = true;
+            $showRefund = true;
         }
 
         if ($order->current_state == Configuration::get(
@@ -518,7 +522,9 @@ class Hipay_enterprise extends PaymentModule
                 'capturedFees' => $capturedFees,
                 'refundedFees' => $refundedFees,
                 'products' => $products,
-                'totallyRefunded' => $totallyRefunded
+                'totallyRefunded' => $totallyRefunded,
+                'id_currency'      => $id_currency,
+                'amountFees' => $amountFees
             )
         );
 
@@ -620,7 +626,7 @@ class Hipay_enterprise extends PaymentModule
         );
 
         if (!Configuration::get('PS_SSL_ENABLED')) {
-            $this->_errors[] = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.');
+            $this->_technicalErrors = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.');
         }
 
         $this->context->smarty->assign(
@@ -635,6 +641,7 @@ class Hipay_enterprise extends PaymentModule
                 'fraud_form' => $formGenerator->getFraudForm(),
                 'form_errors' => $this->_errors,
                 'form_successes' => $this->_successes,
+                'technicalErrors' => $this->_technicalErrors,
                 'limitedCurrencies' => $this->currencies_titles,
                 'limitedCountries' => $this->countries_titles,
                 'this_callback' => $this->context->link->getModuleLink(

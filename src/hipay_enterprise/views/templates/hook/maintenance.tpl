@@ -24,17 +24,17 @@
             {/if}
             <div class="well hidden-print row">
                 {if $showChallenge}
-                    <div class="col-lg-6">
+                    <div class="col-lg-10 panel">
                         {include file='../admin/actions/panel-challenge.tpl'}
                     </div>
                 {/if}
                 {if $showCapture && $stillToCapture > 0 && $manualCapture}
-                    <div class="col-lg-6">
+                    <div class="col-lg-10 panel">
                      {include file='../admin/actions/capture.partial.tpl'}
                     </div>
                 {/if}
                 {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
-                    <div class="col-lg-6">
+                    <div class="col-lg-10 panel">
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}

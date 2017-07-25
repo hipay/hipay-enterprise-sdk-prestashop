@@ -62,5 +62,14 @@
             </div>
         </div>
         {/if}
+
+        {if !empty($technicalErrors)}
+            <div class="row">
+                <div class="alert alert-danger col-lg-3 col-lg-offset-1">
+                    {$technicalErrors}
+                </div>
+            </div>
+        {/if}
+
     </div>
 </div>
