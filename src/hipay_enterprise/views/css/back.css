@@ -21,6 +21,38 @@
     margin-top: 20px;
 }
 
+.table.table-item-hipay {
+    padding-top: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+}
+
+.table.table-item-hipay thead tr th  {
+    text-align: center;
+    font-weight: 600;
+}
+
+.table.table-item-hipay tbody tr td  {
+    text-align: center;
+}
+
+.table-item-hipay thead th,.table-item-hipay tfoot tr {
+    font-weight: 600;
+    text-align: center;
+}
+
+.table-item-hipay tfoot tr td {
+    padding-top:10px;
+}
+
+.table-item-hipay tfoot tr td {
+    border-top: solid 2px #a0d0eb!important;
+}
+
+.bloc-actions-hipay {
+    padding-top: 50px;
+}
+
 /***********************************/
 /**           Technical VIEW      **/
 /***********************************/
@@ -114,3 +146,5 @@
 #hipay-content .ul-spaced li {
     margin-bottom: 5px;
 }
+
+
