@@ -74,8 +74,8 @@
 }
 
 #panel-credit-card .credit-card-title, #panel-local-payment .credit-card-title {
-    color: #fff;
-    background-color: #363a41;
+    color: #000000;
+    background-color: #dddddd;
 }
 
 #panel-credit-card h4,#panel-local-payment h4 {
@@ -131,7 +131,7 @@
 }
 
 #payment-logo {
-    max-height: 60px;
+    max-height: 150px;
     max-width: 100% !important;
 }
 
