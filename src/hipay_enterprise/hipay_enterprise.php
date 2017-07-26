@@ -122,7 +122,7 @@ class Hipay_enterprise extends PaymentModule
         $idCarrierNew = (int) ($params['carrier']->id);
 
         $this->mapper->updateCarrier($idCarrierOld,
-                                     $idCarrierNew);
+            $idCarrierNew);
     }
 
     public function hookCustomerAccount()
@@ -145,7 +145,7 @@ class Hipay_enterprise extends PaymentModule
 
         return $this->display(
                 dirname(__FILE__),
-                        $path
+                $path
         );
     }
 
@@ -167,7 +167,7 @@ class Hipay_enterprise extends PaymentModule
             'all'
         );
         $this->context->controller->addCSS($this->_path.'views/css/back.css',
-                                           'all');
+            'all');
     }
 
     /**
@@ -211,7 +211,7 @@ class Hipay_enterprise extends PaymentModule
 
         return $this->display(
                 dirname(__FILE__),
-                        'views/templates/hook/payment.tpl'
+                'views/templates/hook/payment.tpl'
         );
     }
 
@@ -307,7 +307,7 @@ class Hipay_enterprise extends PaymentModule
             $this->hipayPaymentReturn($params);
             return $this->display(
                     dirname(__FILE__),
-                            'views/templates/hook/paymentReturn.tpl'
+                    'views/templates/hook/paymentReturn.tpl'
             );
         }
     }
@@ -356,8 +356,7 @@ class Hipay_enterprise extends PaymentModule
                 null,
                 null,
                 1
-            )
-            && !$this->db->getTransactionReference($order->id)
+            ) && !$this->db->getTransactionReference($order->id)
         ) {
             $showMoto    = true;
             $showCapture = false;
@@ -504,6 +503,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->context->smarty->assign(
             array(
+                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
                 'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
                 'refundableAmount' => $refundableAmount,
                 'shippingCost' => $shippingCost,
@@ -543,7 +543,7 @@ class Hipay_enterprise extends PaymentModule
 
         return $this->display(
                 dirname(__FILE__),
-                        'views/templates/hook/maintenance.tpl'
+                'views/templates/hook/maintenance.tpl'
         );
     }
 
@@ -553,9 +553,9 @@ class Hipay_enterprise extends PaymentModule
     private function resetMessagesHipay()
     {
         $this->context->cookie->__set('hipay_errors',
-                                      '');
+            '');
         $this->context->cookie->__set('hipay_success',
-                                      '');
+            '');
     }
 
     public function installAdminTab()
