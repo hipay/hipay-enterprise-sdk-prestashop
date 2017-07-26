@@ -11,11 +11,10 @@
 *}
 
     <fieldset>
-        <legend>{l s='Manage refund' }</legend>
-        <p><b>{l s='Amount that can be refunded' } :</b> <span
-                    class="badge badge-success">{$refundableAmountDisplay}</span></p>
+        <legend>{l s='Refund this order'  mod='hipay_enterprise'}</legend>
+        <p><b>{l s='Amount that can be refunded' mod='hipay_enterprise' } :</b> <span class="badge badge-success">{$refundableAmountDisplay}</span></p>
         <p class="help-block">
-            <sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise'}</p>
+            <sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}</p>
         <form action="{$refundLink}" method="post" id="hipay_refund_form" class="form-horizontal ">
             <input type="hidden" name="id_order" value="{$orderId}"/>
             <input type="hidden" name="id_emp" value="{$employeeId}"/>
@@ -24,14 +23,14 @@
                 <label class="col-lg-4" for="hipay_refund_type">{l s='Refund type'}</label>
                 <select id="hipay_refund_type" name="hipay_refund_type" class="col-lg-3">
                     {if !$partiallyRefunded}
-                        <option value="complete">{l s='Complete'}</option>
+                        <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                     {/if}
-                    <option value="partial">{l s='Partial'}</option>
+                    <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
                 </select>
             </div>
             <div id="block-refund-amount" {if !$partiallyRefunded} style="display:none;" {/if} class="form-group bloc-actions-hipay">
                 {if !$basket}
-                    <label class="control-label " for="hipay_refund_amount">{l s='Refund amount'}</label>
+                    <label class="control-label " for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
                     <input type="text" name="hipay_refund_amount" value="{$refundableAmount}"/>
                 {else}
                     <table class="table table-item-hipay">
@@ -116,7 +115,7 @@
                 {if !$totallyRefunded}
                     <button type="submit" name="{if !$basket}hipay_refund_submit{else}hipay_refund_basket_submit{/if}"
                             class="btn btn-primary pull-right">
-                        {l s='Refund' }
+                        {l s='Refund'  mod='hipay_enterprise'}
                     </button>
                 {/if}
             </div>

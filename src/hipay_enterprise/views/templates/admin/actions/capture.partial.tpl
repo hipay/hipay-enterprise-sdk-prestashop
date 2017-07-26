@@ -13,8 +13,8 @@
         <legend>{l s='Manage Capture' }</legend>
         {if $stillToCapture}
             <p class="alert alert-warning">
-                {l s='The order has not been fully captured.'} <br/>
-                {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.'}
+                {l s='The order has not been fully captured.' mod='hipay_enterprise'} <br/>
+                {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.' mod='hipay_enterprise'}
             </p>
         {/if}
         <div class="row">
@@ -34,15 +34,15 @@
                 <label class="col-lg-4" for="hipay_capture_type">{l s='Capture type'}</label>
                 <select id="hipay_capture_type" name="hipay_capture_type" class="col-lg-3">
                     {if !$partiallyCaptured }
-                        <option value="complete">{l s='Complete'}</option>
+                        <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                     {/if}
-                    <option value="partial">{l s='Partial'}</option>
+                    <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
                 </select>
             </div>
 
             <div id="block-capture-amount" {if !$partiallyCaptured }style="display:none;" {/if} class="bloc-actions-hipay form-group">
                 {if !$basket}
-                    <label class="control-label " for="hipay_capture_amount">{l s='Capture amount'}</label>
+                    <label class="control-label " for="hipay_capture_amount">{l s='Capture amount' mod='hipay_enterprise'}</label>
                     <input type="text" name="hipay_capture_amount" value="{$stillToCapture}"/>
                 {else}
                     <table class="table table-item-hipay">
@@ -126,7 +126,7 @@
             <div class="form-group">
                 <button type="submit" name="{if !$basket}hipay_capture_submit{else}hipay_capture_basket_submit{/if}"
                         class="btn btn-primary pull-right">
-                    {l s='Capture'}
+                    {l s='Capture' mod='hipay_enterprise'}
                 </button>
             </div>
         </form>

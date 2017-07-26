@@ -8,10 +8,9 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
-require_once(dirname(__FILE__) . '/../../tools/hipayConfig.php');
+require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__).'/../../tools/hipayConfig.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 use HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod;
@@ -21,13 +20,13 @@ class CardTokenFormatter extends ApiFormatterAbstract
     private $cardToken;
 
     public function __construct(
-        $module,
-        $params
-    ) {
+    $module, $params
+    )
+    {
         parent::__construct($module);
         $this->cardToken = $params['cardtoken'];
-        $this->oneClick = (isset($params['oneClick']) && $params['oneClick']) ? true
-            : false;
+        $this->oneClick  = (isset($params['oneClick']) && $params['oneClick']) ? true
+                : false;
     }
 
     /**
@@ -49,9 +48,8 @@ class CardTokenFormatter extends ApiFormatterAbstract
      */
     protected function mapRequest(&$cardTokenRequest)
     {
-        $cardTokenRequest->cardtoken = $this->cardToken;
-        $cardTokenRequest->eci = ($this->oneClick) ? ECI::RECURRING_ECOMMERCE
-            : ECI::SECURE_ECOMMERCE;
+        $cardTokenRequest->cardtoken                = $this->cardToken;
+        $cardTokenRequest->eci                      = ECI::SECURE_ECOMMERCE;
         $cardTokenRequest->authentication_indicator = $this->setAuthenticationIndicator();
     }
 
@@ -72,7 +70,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
                             $cartSummary[$rule["field"]],
                             html_entity_decode($rule["operator"]),
-                            $rule["value"]
+                                               $rule["value"]
                         )
                     ) {
                         return 0;
@@ -84,9 +82,9 @@ class CardTokenFormatter extends ApiFormatterAbstract
 
                 foreach ($this->configHipay["payment"]["global"]["3d_secure_rules"] as $rule) {
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
-                            (int)$cartSummary[$rule["field"]],
+                            (int) $cartSummary[$rule["field"]],
                             html_entity_decode($rule["operator"]),
-                            (int)$rule["value"]
+                                               (int) $rule["value"]
                         )
                     ) {
                         return 0;
@@ -108,10 +106,9 @@ class CardTokenFormatter extends ApiFormatterAbstract
      * @return boolean
      */
     private function criteriaMet(
-        $value1,
-        $operator,
-        $value2
-    ) {
+    $value1, $operator, $value2
+    )
+    {
         switch ($operator) {
             case '<':
                 return $value1 < $value2;

@@ -11,6 +11,9 @@
 
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayNotification.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
+require_once(dirname(__FILE__).'/../lib/vendor/autoload.php');
+
+use HiPay\Fullservice\Enum\Transaction\ECI;
 
 class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
 {
@@ -61,10 +64,23 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"]
             : "";
 
+
+        $notificationHandler = new HipayNotification(
+            $this->module,
+            $data
+        );
+
+        $moto = false;
+
+        if($notificationHandler->getEci() == ECI::MOTO){
+            $moto = true;
+        }
+
         if (!HipayHelper::checkSignature(
             $signature,
             $this->module->hipayConfigTool->getConfigHipay(),
-            true
+            true,
+            $moto
         )
         ) {
             $this->module->getLogs()->errorLogsHipay(
@@ -82,11 +98,6 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             die('Bad Callback initiated');
         }
         $this->module->getLogs()->callbackLogs('state exist');
-
-        $notificationHandler = new HipayNotification(
-            $this->module,
-            $data
-        );
 
         $notificationHandler->processTransaction();
 
