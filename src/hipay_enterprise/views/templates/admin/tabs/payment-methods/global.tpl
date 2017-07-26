@@ -99,8 +99,8 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <select name="capture_mode" class="col-lg-2" id="capture_mode">
-                            <option value="manual" {if $config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if} >{l s='Manual' mod='hipay_enterprise'}</option>
                             <option value="automatic" {if $config_hipay.payment.global.capture_mode == "automatic"}selected="selected" {/if} >{l s='Automatic' mod='hipay_enterprise'}</option>
+                            <option value="manual" {if $config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if} >{l s='Manual' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                     <p class="help-block">

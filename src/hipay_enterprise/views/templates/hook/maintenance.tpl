@@ -29,17 +29,18 @@
                     </div>
                 {/if}
                 {if $showChallenge}
-                    <div class="col-lg-6">
+                    <div class="col-lg-12 panel">
                         {include file='../admin/actions/panel-challenge.tpl'}
                     </div>
                 {/if}
                 {if $showCapture && $stillToCapture > 0 && $manualCapture}
-                    <div class="col-lg-6">
-                        {include file='../admin/actions/capture.partial.tpl'}
+
+                    <div class="col-lg-12 panel">
+                     {include file='../admin/actions/capture.partial.tpl'}
                     </div>
                 {/if}
                 {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
-                    <div class="col-lg-6">
+                    <div class="col-lg-12 panel">
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}

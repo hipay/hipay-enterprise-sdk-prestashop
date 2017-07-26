@@ -45,7 +45,7 @@
     <br/>
     {if $confHipay.payment.global.card_token}
         <span class="custom-checkbox">
-            <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" checked>
+            <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
             <span><i class="material-icons checkbox-checked"></i></span>
             <label>{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
         </span>
