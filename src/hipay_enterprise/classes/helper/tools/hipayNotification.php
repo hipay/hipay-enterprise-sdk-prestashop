@@ -45,8 +45,7 @@ class HipayNotification
 
         //  print_r($this->transaction);
         // if cart_id exist or not
-        if ($this->transaction->getOrder() == null || $this->transaction->getOrder()->getId()
-            == null
+        if ($this->transaction->getOrder() == null || $this->transaction->getOrder()->getId() == null
         ) {
             $this->log->errorLogsHipay('Bad Callback initiated, no cart ID found ');
             $this->log->callbackLogs('Bad Callback initiated, no cart ID found ');
@@ -80,12 +79,21 @@ class HipayNotification
     }
 
     /**
+     *
+     * @return type
+     */
+    public function getEci()
+    {
+        return $this->transaction->getEci();
+    }
+
+    /**
      * Process notification
      */
     public function processTransaction()
     {
         try {
-              // SQL LOCK
+            // SQL LOCK
             //#################################################################
             $this->db->setSQLLockForCart($this->cart->id);
 
@@ -133,7 +141,9 @@ class HipayNotification
                         );
 
                         // Notify website admin for a challenged transaction
-                        HipayMail::sendMailPaymentDeny($this->context,$this->module,$this->order);
+                        HipayMail::sendMailPaymentDeny($this->context,
+                                                       $this->module,
+                                                       $this->order);
                     }
                     break;
                 case TransactionStatus::AUTHORIZED_AND_PENDING:
@@ -146,7 +156,9 @@ class HipayNotification
                         )
                     );
                     // Notify website admin for a challenged transaction
-                    HipayMail::sendMailPaymentFraud($this->context,$this->module,$this->order);
+                    HipayMail::sendMailPaymentFraud($this->context,
+                                                    $this->module,
+                                                    $this->order);
                     break;
                 case TransactionStatus::AUTHENTICATION_REQUESTED:
                 case TransactionStatus::AUTHORIZATION_REQUESTED:
@@ -264,8 +276,8 @@ class HipayNotification
             }
             $this->addHipayCaptureMessage();
 
-            if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED
-                && $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()
+            if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED && $this->transaction->getCapturedAmount()
+                < $this->transaction->getAuthorizedAmount()
             ) {
                 $this->log->callbackLogs(
                     '--------------- captured_amount ('.$this->transaction->getCapturedAmount(
@@ -386,8 +398,7 @@ class HipayNotification
             $this->createOrderPayment();
         }
         // set invoice order
-        if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED
-            || $this->transaction->getStatus() == TransactionStatus::CAPTURED
+        if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED || $this->transaction->getStatus() == TransactionStatus::CAPTURED
         ) {
             $this->db->setInvoiceOrder($this->order);
         }
@@ -582,8 +593,7 @@ class HipayNotification
         $amount = $this->transaction->getCapturedAmount() - $this->order->getTotalPaid();
 
         if ($refund) {
-            $amount = -1 * ($this->order->getTotalPaid() - ($this->transaction->getCapturedAmount()
-                - $this->transaction->getRefundedAmount()));
+            $amount = -1 * ($this->order->getTotalPaid() - ($this->transaction->getCapturedAmount() - $this->transaction->getRefundedAmount()));
         }
 
         return $amount;

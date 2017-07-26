@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2017 HiPay
  *
@@ -8,7 +9,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 class HipayHelper
 {
 
@@ -37,10 +37,12 @@ class HipayHelper
      * @return boolean
      */
     public static function checkSignature(
-    $signature, $config, $fromNotification = false
+    $signature, $config, $fromNotification = false, $moto = false
     )
     {
         $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
+                : $config["account"]["production"]["api_secret_passphrase_production"];
+        $passphraseMoto = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
                 : $config["account"]["production"]["api_secret_passphrase_production"];
 
         if (empty($passphrase) && empty($signature)) {
@@ -49,7 +51,7 @@ class HipayHelper
 
         if ($fromNotification) {
             $rawPostData = Tools::file_get_contents("php://input");
-            if ($signature == sha1($rawPostData.$passphrase)) {
+            if ($signature == sha1($rawPostData.$passphrase) || ($moto && $signature == sha1($rawPostData.$passphraseMoto))) {
                 return true;
             }
             return false;
@@ -142,5 +144,20 @@ class HipayHelper
         }
 
         return $text;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public static function getAdminUrl()
+    {
+        $admin       = explode(DIRECTORY_SEPARATOR,
+                               _PS_ADMIN_DIR_);
+        $adminFolder = array_pop((array_slice($admin,
+                                              -1)));
+        $adminUrl    = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder;
+
+        return $adminUrl.'/';
     }
 }

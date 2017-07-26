@@ -1,3 +1,14 @@
+{**
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+*
+* @author    HiPay <support.wallet@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+*
+*}
 <div class="panel  hipay-tabs" id="panel-global-settings">
     <form method="post" class="defaultForm form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
         <div class="form-wrapper">

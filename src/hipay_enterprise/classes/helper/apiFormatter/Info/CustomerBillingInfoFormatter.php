@@ -14,9 +14,9 @@ require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 
 class CustomerBillingInfoFormatter extends ApiFormatterAbstract
 {
-    public function __construct($module)
+    public function __construct($module, $cart = false)
     {
-        parent::__construct($module);
+        parent::__construct($module, $cart);
         // fields only used for customer billing mapping
         $this->invoice = new Address((int)$this->cart->id_address_invoice);
         $this->country = new Country((int)$this->invoice->id_country);

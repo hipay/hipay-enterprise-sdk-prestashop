@@ -1,6 +1,4 @@
 <?php
-
-require_once(dirname(__FILE__) . '/../../../translations/HipayStrings.php');
 /**
  * Helper to send emails for HiPay Module
  *
@@ -10,6 +8,9 @@ require_once(dirname(__FILE__) . '/../../../translations/HipayStrings.php');
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License
  */
+
+require_once(dirname(__FILE__) . '/../../../translations/HipayStrings.php');
+
 class HipayMail
 {
 
