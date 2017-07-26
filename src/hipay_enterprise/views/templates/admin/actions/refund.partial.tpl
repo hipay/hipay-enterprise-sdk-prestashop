@@ -122,3 +122,14 @@
             </div>
         </form>
     </fieldset>
+
+<script>
+    $(document).ready(function () {
+        $("#hipay_refund_form").submit(function() {
+            msgConfirmation = '{l s='Are-you sure to refund for this order ?'}';
+            if (!confirm(msgConfirmation)) {
+                return false;
+            }
+        });
+    });
+</script>
