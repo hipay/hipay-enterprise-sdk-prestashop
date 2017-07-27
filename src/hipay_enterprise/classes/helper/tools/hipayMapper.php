@@ -257,6 +257,7 @@ class HipayMapper
         if ($idCarrierOld != $idCarrierNew && $mappedCarrier != null) {
             $this->logs->logInfos('$mappedCarrier = '.print_r($mappedCarrier,
                                                                true));
+            $row = array();
             $row[] = array(
                 "hp_ps_carrier_id" => pSQL((int) $idCarrierNew),
                 "hp_carrier_mode" => pSQL($mappedCarrier["hp_carrier_mode"]),

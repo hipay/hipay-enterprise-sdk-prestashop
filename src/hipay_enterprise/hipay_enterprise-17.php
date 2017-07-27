@@ -95,7 +95,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                     array(),
                                     true
                                 )
-                        );
+                            );
                         if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
                             $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page')."</p>");
                         }
@@ -110,9 +110,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             array(
                                 'module_dir' => $this->_path,
                                 'this_path_ssl' => Tools::getShopDomainSsl(
-                                    true,
-                                    true
-                                ).__PS_BASE_URI__.'modules/'.$this->name.'/',
+                                        true,
+                                        true
+                                    ).__PS_BASE_URI__.'modules/'.$this->name.'/',
                                 'savedCC' => $savedCC,
                                 'activatedCreditCard' => Tools::jsonEncode(array_keys($activatedCreditCard)),
                                 'confHipay' => $this->hipayConfigTool->getConfigHipay(),
@@ -177,8 +177,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     );
                     if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])
                         || ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]
-                        !== 'api' || ($localpayment["forceHpaymentOnElectronicSignature"]
-                        && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]))
+                            !== 'api' || ($localpayment["forceHpaymentOnElectronicSignature"]
+                                && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]))
                     ) {
                         $this->context->smarty->assign(
                             array(

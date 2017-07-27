@@ -42,6 +42,33 @@ class Apihandler
     }
 
     /**
+     *
+     * @param type $cart
+     */
+    public function handleMoto($cart)
+    {
+        $delivery        = new Address((int) $cart->id_address_delivery);
+        $deliveryCountry = new Country((int) $delivery->id_country);
+        $currency        = new Currency((int) $cart->id_currency);
+
+        $params["method"]      = "credit_card";
+        $params["moto"]        = true;
+        $params["iframe"]      = true;
+        $params["productlist"] = $this->getCreditCardProductList(
+            $deliveryCountry,
+            $currency
+        );
+
+        $this->baseParamsInit($params,
+                              true,
+                              $cart);
+
+        $this->handleHostedPayment($params,
+                                   $cart,
+                                   true);
+    }
+
+    /**
      * handle credit card api call
      * @param type $mode
      * @param type $params
@@ -216,7 +243,7 @@ class Apihandler
      * @param type $creditCard
      */
     private function baseParamsInit(
-    &$params, $creditCard = true
+    &$params, $creditCard = true, $cart = false
     )
     {
         // no basket sent if PS_ROUND_TYPE is ROUND_TOTAL (prestashop config)
@@ -224,14 +251,14 @@ class Apihandler
             $params["basket"]                = null;
             $params["delivery_informations"] = null;
         } elseif ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
-            $params["basket"]                = $this->getCart();
-            $params["delivery_informations"] = $this->getDeliveryInformation();
+            $params["basket"]                = $this->getCart($cart);
+            $params["delivery_informations"] = $this->getDeliveryInformation($cart);
         } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"])
             && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
             && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]
         ) {
-            $params["basket"]                = $this->getCart();
-            $params["delivery_informations"] = $this->getDeliveryInformation();
+            $params["basket"]                = $this->getCart($cart);
+            $params["delivery_informations"] = $this->getDeliveryInformation($cart);
         } else {
             $params["basket"]                = null;
             $params["delivery_informations"] = null;
@@ -242,9 +269,10 @@ class Apihandler
      * return mapped cart
      * @return type
      */
-    private function getCart()
+    private function getCart($cart = false)
     {
-        $cart = new CartFormatter($this->module);
+        $cart = new CartFormatter($this->module,
+                                  $cart);
 
         return $cart->generate();
     }
@@ -253,9 +281,10 @@ class Apihandler
      * return mapped delivery informations
      * @return type
      */
-    private function getDeliveryInformation()
+    private function getDeliveryInformation($cart = false)
     {
-        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module);
+        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module,
+                                                                 $cart);
 
         return $deliveryInformation->generate();
     }
@@ -263,12 +292,14 @@ class Apihandler
     /**
      * call Api to get forwarding URL
      */
-    private function handleHostedPayment($params)
+    private function handleHostedPayment($params, $cart = false, $moto = false)
     {
         Tools::redirect(
             ApiCaller::getHostedPaymentPage(
                 $this->module,
-                $params
+                $params,
+                $cart,
+                $moto
             )
         );
     }
@@ -295,7 +326,6 @@ class Apihandler
         } else {
             $params["methodDisplayName"] = $this->configHipay["payment"]["local_payment"][$params["method"]]["displayName"];
         }
-        
         $response = ApiCaller::requestDirectPost(
                 $this->module,
                 $params
@@ -415,9 +445,9 @@ class Apihandler
         $cart = $this->context->cart;
         if ($cart) {
             $this->db->setSQLLockForCart($cart->id);
-            $customer = new Customer((int)$cart->id_customer);
-            $shopId  = $cart->id_shop;
-            $shop    = new Shop($shopId);
+            $customer = new Customer((int) $cart->id_customer);
+            $shopId   = $cart->id_shop;
+            $shop     = new Shop($shopId);
             // forced shop
             Shop::setContext(
                 Shop::CONTEXT_SHOP,
@@ -426,17 +456,17 @@ class Apihandler
             $this->module->validateOrder(
                 (int) $cart->id,
                 Configuration::get('HIPAY_OS_PENDING'),
-                (float) $cart->getOrderTotal(true),
-                $params["methodDisplayName"],
-                'Order created by HiPay after success payment.',
-                array(),
-                $this->context->currency->id,
-                false,
-                $customer->secure_key,
-                $shop
+                                   (float) $cart->getOrderTotal(true),
+                                                                $params["methodDisplayName"],
+                                                                'Order created by HiPay after success payment.',
+                                                                array(),
+                                                                $this->context->currency->id,
+                                                                false,
+                                                                $customer->secure_key,
+                                                                $shop
             );
             // get order id
-            $orderId = $this->module->currentOrder;
+            $orderId  = $this->module->currentOrder;
             $this->db->releaseSQLLock();
 
             Hook::exec(

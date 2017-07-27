@@ -8,12 +8,11 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
-require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.php');
-require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
-require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
-require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/../apiFormatter/Request/HostedPaymentFormatter.php');
+require_once(dirname(__FILE__).'/../apiFormatter/Request/DirectPostFormatter.php');
+require_once(dirname(__FILE__).'/../apiFormatter/Request/MaintenanceFormatter.php');
+require_once(dirname(__FILE__).'/../exceptions/GatewayException.php');
+require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 /**
  * Handle Hipay Api call
@@ -26,15 +25,17 @@ class ApiCaller
      * @param type $moduleInstance
      * @return type
      */
-    public static function getHostedPaymentPage($moduleInstance, $params)
+    public static function getHostedPaymentPage($moduleInstance, $params, $cart = false, $moto = false)
     {
         // HiPay Gateway
-        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+        $gatewayClient = ApiCaller::createGatewayClient($moduleInstance,
+                                                       $moto);
 
         //Set data to send to the API
         $hostedPaymentFormatter = new HostedPaymentFormatter(
             $moduleInstance,
-            $params
+            $params,
+            $cart
         );
 
         $orderRequest = $hostedPaymentFormatter->generate();
@@ -89,6 +90,7 @@ class ApiCaller
 
             //Set data to send to the API
             $maintenanceFormatter = new MaintenanceFormatter(
+
                 $moduleInstance,
                 $params
             );
@@ -106,7 +108,6 @@ class ApiCaller
             );
 
             return $transaction;
-
         } catch (Exception $e) {
             // TODO Revoir le system de log des errors ( Il faut le nom de la méthode, le message et la stack)
             $moduleInstance->getLogs()->logErrors('requestMaintenance');
@@ -121,20 +122,31 @@ class ApiCaller
      * @param type $moduleInstance
      * @return \HiPay\Fullservice\Gateway\Client\GatewayClient
      */
-    private static function createGatewayClient($moduleInstance)
+    private static function createGatewayClient($moduleInstance, $moto = false)
     {
-        if ($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]) {
-            $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
-                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"],
-                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
-            );
+        $sandbox = $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"];
+
+        if ($moto && !empty($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_username_sandbox"])
+            && !empty($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_password_sandbox"])) {
+
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_username_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_moto_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_password_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_moto_password_production"];
         } else {
-            $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
-                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_username_production"],
-                $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_password_production"],
-                HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION
-            );
+
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_password_production"];
         }
+
+        $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE
+                : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
+
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username,
+                                                                          $password,
+                                                                          $env);
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
