@@ -220,8 +220,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
             return $paymentOptions;
         } catch (Exception $exc) {
-            $this->logs->errorLogsHipay($exc->getTraceAsString());
-            $this->logs->errorLogsHipay($exc->getMessage());
+            $this->logs->logErrors($exc->getTraceAsString());
+            $this->logs->logErrors($exc->getMessage());
         }
     }
 

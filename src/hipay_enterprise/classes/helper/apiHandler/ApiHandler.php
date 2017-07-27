@@ -80,7 +80,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown payment mode");
+                $this->module->getLogs()->logInfos("Unknown payment mode");
         }
     }
 
@@ -114,7 +114,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown payment mode");
+                $this->module->getLogs()->logInfos("Unknown payment mode");
         }
     }
 
@@ -206,7 +206,7 @@ class Apihandler
                 );
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown maintenance operation");
+                $this->module->getLogs()->logInfos("Unknown maintenance operation");
         }
     }
 
@@ -341,14 +341,14 @@ class Apihandler
                 break;
             case TransactionState::DECLINED:
                 $reason      = $response->getReason();
-                $this->module->getLogs()->logsHipay(
+                $this->module->getLogs()->logInfos(
                     'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $failUrl;
                 break;
             case TransactionState::ERROR:
                 $reason      = $response->getReason();
-                $this->module->getLogs()->logsHipay(
+                $this->module->getLogs()->logInfos(
                     'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $exceptionUrl;

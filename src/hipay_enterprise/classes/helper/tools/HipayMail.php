@@ -136,7 +136,7 @@ class HipayMail
             );
 
             if (!$mailSuccess) {
-                $module->getLogs()->errorLogsHipay( 'An error occured during email sending to ' .  $email );
+                $module->getLogs()->logErrors( 'An error occured during email sending to ' .  $email );
             }
         }
     }

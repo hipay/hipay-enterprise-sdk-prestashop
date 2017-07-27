@@ -33,7 +33,7 @@ class HipayDBQuery
      */
     public function createCatMappingTable()
     {
-        $this->logs->logsHipay('Create Hipay categories mapping table');
+        $this->logs->logInfos('Create Hipay categories mapping table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_CAT_MAPPING_TABLE.'`(
                 `hp_ps_cat_id` INT(10) UNSIGNED NOT NULL,
@@ -51,7 +51,7 @@ class HipayDBQuery
      */
     public function createCarrierMappingTable()
     {
-        $this->logs->logsHipay('Create Hipay carrier mapping table');
+        $this->logs->logInfos('Create Hipay carrier mapping table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE.'`(
                 `hp_ps_carrier_id` INT(10) UNSIGNED NOT NULL,
@@ -72,7 +72,7 @@ class HipayDBQuery
      */
     public function createOrderRefundCaptureTable()
     {
-        $this->logs->logsHipay('Create Hipay order refund capture table');
+        $this->logs->logInfos('Create Hipay order refund capture table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -93,7 +93,7 @@ class HipayDBQuery
      */
     public function createCCTokenTable()
     {
-        $this->logs->logsHipay('Create Hipay credit card token table');
+        $this->logs->logInfos('Create Hipay credit card token table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -118,7 +118,7 @@ class HipayDBQuery
      */
     public function createHipayTransactionTable()
     {
-        $this->logs->logsHipay('Create Hipay transaction table');
+        $this->logs->logInfos('Create Hipay transaction table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_TRANSACTION_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -147,7 +147,7 @@ class HipayDBQuery
      */
     public function deleteCatMappingTable()
     {
-        $this->logs->logsHipay('Delete Hipay mapping table');
+        $this->logs->logInfos('Delete Hipay mapping table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_CAT_MAPPING_TABLE.'`';
         return Db::getInstance()->execute($sql);
@@ -159,7 +159,7 @@ class HipayDBQuery
      */
     public function deleteCarrierMappingTable()
     {
-        $this->logs->logsHipay('Delete Hipay carrier mapping table');
+        $this->logs->logInfos('Delete Hipay carrier mapping table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE.'`';
         return Db::getInstance()->execute($sql);
@@ -167,7 +167,7 @@ class HipayDBQuery
 
     public function deleteOrderRefundCaptureTable()
     {
-        $this->logs->logsHipay('Delete Hipay order refund capture table');
+        $this->logs->logInfos('Delete Hipay order refund capture table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`';
         return Db::getInstance()->execute($sql);
@@ -175,7 +175,7 @@ class HipayDBQuery
 
     public function deleteCCTokenTable()
     {
-        $this->logs->logsHipay('Delete credit card table');
+        $this->logs->logInfos('Delete credit card table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`';
         return Db::getInstance()->execute($sql);
@@ -211,13 +211,13 @@ class HipayDBQuery
      */
     public function setSQLLockForCart($cartId)
     {
-        $this->logs->callbackLogs('start LockSQL  for id_cart = '.$cartId);
+        $this->logs->logInfos('start LockSQL  for id_cart = '.$cartId);
 
         $sql = 'begin;';
         $sql .= 'SELECT id_cart FROM '._DB_PREFIX_.'cart WHERE id_cart = '.pSQL((int) $cartId).' FOR UPDATE;';
 
         if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logsHipay('Bad LockSQL initiated, Lock could not be initiated for id_cart = '.$cartId);
+            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_cart = '.$cartId);
             die('Lock not initiated');
         }
     }
@@ -227,11 +227,11 @@ class HipayDBQuery
      */
     public function releaseSQLLock()
     {
-        $this->logs->callbackLogs('release LockSQL');
+        $this->logs->logInfos('release LockSQL');
 
         $sql = 'commit;';
         if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logsHipay('Bad LockSQL initiated ');
+            $this->logs->logInfos('Bad LockSQL initiated ');
         }
     }
 
@@ -383,11 +383,11 @@ class HipayDBQuery
 		FROM `'._DB_PREFIX_.'order_history`
 		WHERE `id_order` = '.pSQL((int) $idOrder).' AND `id_order_state` = '.pSQL((int) $status);
 
-        $this->logs->logsHipay('Check order status exist : '.$sql);
+        $this->logs->logInfos('Check order status exist : '.$sql);
 
         $result = Db::getInstance()->getRow($sql);
 
-        $this->logs->logsHipay(
+        $this->logs->logInfos(
             'Check order status exist : '.print_r(
                 $result,
                 true
@@ -431,7 +431,7 @@ class HipayDBQuery
 
         if (!Db::getInstance()->execute($sql)) {
             //LOG
-            $this->logs->logsHipay("ERROR : updateOrderPayment");
+            $this->logs->logInfos("ERROR : updateOrderPayment");
             return false;
         }
 
@@ -779,8 +779,8 @@ class HipayDBQuery
         try {
             $result = Db::getInstance()->executeS($sql);
         } catch (Exception $exc) {
-            $this->logs->errorLogsHipay($exc->getMessage());
-            $this->logs->errorLogsHipay($exc->getTraceAsString());
+            $this->logs->logErrors($exc->getMessage());
+            $this->logs->logErrors($exc->getTraceAsString());
             return false;
         }
 

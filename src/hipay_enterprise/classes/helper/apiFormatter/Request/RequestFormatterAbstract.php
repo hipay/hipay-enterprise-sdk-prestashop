@@ -63,7 +63,6 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         )['total_tax'];
 
         $order->currency = $this->currency->iso_code;
-        var_dump($this->params);
         $order->accept_url = $this->context->link->getModuleLink(
             $this->module->name,
             'validation',

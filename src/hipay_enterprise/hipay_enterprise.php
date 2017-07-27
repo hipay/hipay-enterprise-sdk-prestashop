@@ -117,7 +117,7 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookUpdateCarrier($params)
     {
-        $this->logs->logsHipay('---- START function hookUpdateCarrier');
+        $this->logs->logInfos('---- START function hookUpdateCarrier');
         $idCarrierOld = (int) ($params['id_carrier']);
         $idCarrierNew = (int) ($params['carrier']->id);
 
@@ -157,7 +157,7 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookBackOfficeHeader($params)
     {
-        $this->logs->logsHipay('---- START function hookDisplayBackOfficeHeader');
+        $this->logs->logInfos('---- START function hookDisplayBackOfficeHeader');
         $this->context->controller->addCSS(
             ($this->_path).'views/css/bootstrap-duallistbox.min.css',
             'all'
@@ -218,9 +218,9 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookDisplayPaymentEU($params)
     {
-        $this->logs->logsHipay('##########################');
-        $this->logs->logsHipay('---- START function hookDisplayPaymentEU');
-        $this->logs->logsHipay('##########################');
+        $this->logs->logInfos('##########################');
+        $this->logs->logInfos('---- START function hookDisplayPaymentEU');
+        $this->logs->logInfos('##########################');
 
         $address    = new Address((int) $params['cart']->id_address_delivery);
         $country    = new Country((int) $address->id_country);
@@ -596,8 +596,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function getContent()
     {
-        $this->logs->logsHipay('##########################');
-        $this->logs->logsHipay('---- START function getContent');
+        $this->logs->logInfos('START function getContent');
 
         $this->postProcess();
 
@@ -607,10 +606,8 @@ class Hipay_enterprise extends PaymentModule
 
         $psCategories    = $this->mapper->getPrestashopCategories();
         $hipayCategories = $this->mapper->getHipayCategories();
-
         $psCarriers    = $this->mapper->getPrestashopCarriers();
         $hipayCarriers = $this->mapper->getHipayCarriers();
-
         $mappedCategories = $this->mapper->getMappedCategories($this->context->shop->id);
         $mappedCarriers   = $this->mapper->getMappedCarriers($this->context->shop->id);
 
@@ -656,34 +653,38 @@ class Hipay_enterprise extends PaymentModule
             )
         );
 
-        $this->logs->logsHipay('---- END function getContent');
-        $this->logs->logsHipay('##########################');
+        $this->logs->logInfos('END function getContent');
 
         return $this->context->smarty->fetch($configuration);
     }
 
     /**
-     * Process HTTP request send by module conifguration page
+     * Process HTTP request send by module confguration page
      */
     protected function postProcess()
     {
-        //$ur_redirection = AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
-        $this->logs->logsHipay('---- >> function postProcess');
-
+        //==================================//
+        //===         LOG VIEW           ===//
+        //==================================//
         if (Tools::isSubmit('logfile')) {
             $logFile = Tools::getValue('logfile');
-            $path    = _PS_MODULE_DIR_.$this->logs->getBasePath().$logFile;
+            $path    = $this->logs->getBasePath().$logFile;
+
             if (!file_exists($path)) {
                 http_response_code(404);
                 die('<h1>File not found</h1>');
+                $this->logs->logErrors("Log File not found $path");
             } else {
                 header('Content-Type: text/plain');
                 $content = Tools::file_get_contents($path);
                 echo $content;
                 die();
             }
+        //==================================//
+        //===         ACCOUNT VIEW       ===//
+        //==================================//
         } elseif (Tools::isSubmit('submitAccount')) {
-            $this->logs->logsHipay('---- >> submitAccount');
+            $this->logs->logInfos('---- >> submitAccount');
 
             $this->saveAccountInformations();
 
@@ -691,50 +692,54 @@ class Hipay_enterprise extends PaymentModule
                 'active_tab',
                 'account_form'
             );
+        //==================================//
+        //===   GLOBAL PAYMENT METHODS   ===//
+        //==================================//
         } elseif (Tools::isSubmit('submitGlobalPaymentMethods')) {
-            $this->logs->logsHipay('---- >> submitGlobalPaymentMethods');
+            $this->logs->logInfos('---- >> submitGlobalPaymentMethods');
             $this->saveGlobalPaymentInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'payment_form'
             );
+
         } elseif (Tools::isSubmit('submit3DSecure')) {
-            $this->logs->logsHipay('---- >> submit3DSecure');
+            $this->logs->logInfos('---- >> submit3DSecure');
             $this->save3DSecureInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('creditCardSubmit')) {
-            $this->logs->logsHipay('---- >> creditCardSubmit');
+            $this->logs->logInfos('---- >> creditCardSubmit');
             $this->saveCreditCardInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('localPaymentSubmit')) {
-            $this->logs->logsHipay('---- >> localPaymentSubmit');
+            $this->logs->logInfos('---- >> localPaymentSubmit');
             $this->saveLocalPaymentInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('fraudSubmit')) {
-            $this->logs->logsHipay('---- >> fraudSubmit');
+            $this->logs->logInfos('---- >> fraudSubmit');
             $this->saveFraudInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'fraud_form'
             );
         } elseif (Tools::isSubmit('submitCategoryMapping')) {
-            $this->logs->logsHipay('---- >> submitCategoryMapping');
+            $this->logs->logInfos('---- >> submitCategoryMapping');
             $this->saveCategoryMappingInformations();
             $this->context->smarty->assign(
                 'active_tab',
                 'category_form'
             );
         } elseif (Tools::isSubmit('submitCarrierMapping')) {
-            $this->logs->logsHipay('---- >> submitCarrierMapping');
+            $this->logs->logInfos('---- >> submitCarrierMapping');
             $this->saveCarrierMappingInformations();
             $this->context->smarty->assign(
                 'active_tab',
@@ -745,7 +750,7 @@ class Hipay_enterprise extends PaymentModule
 
     protected function save3DSecureInformations()
     {
-        $this->logs->logsHipay('---- >> function save3DSecureInformations');
+        $this->logs->logInfos('---- >> function save3DSecureInformations');
 
         try {
             $accountConfig                                 = array(
@@ -767,7 +772,7 @@ class Hipay_enterprise extends PaymentModule
             return $accountConfig;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
     }
@@ -779,7 +784,7 @@ class Hipay_enterprise extends PaymentModule
      * */
     protected function saveCarrierMappingInformations()
     {
-        $this->logs->logsHipay('---- >> function saveCarrierMappingInformations');
+        $this->logs->logInfos('---- >> function saveCarrierMappingInformations');
 
         try {
             $psCarriers = $this->mapper->getPrestashopCarriers();
@@ -819,7 +824,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -833,7 +838,7 @@ class Hipay_enterprise extends PaymentModule
      * */
     protected function saveCategoryMappingInformations()
     {
-        $this->logs->logsHipay('---- >> function saveCategoryMappingInformations');
+        $this->logs->logInfos('---- >> function saveCategoryMappingInformations');
         try {
             $psCategories = $this->mapper->getPrestashopCategories();
             $mapping      = array();
@@ -855,11 +860,12 @@ class Hipay_enterprise extends PaymentModule
                 HipayMapper::HIPAY_CAT_MAPPING,
                 $mapping
             );
+
             $this->_successes[] = $this->l('Category mapping configuration saved successfully.');
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
         return false;
@@ -872,7 +878,7 @@ class Hipay_enterprise extends PaymentModule
      * */
     protected function saveAccountInformations()
     {
-        $this->logs->logsHipay('---- >> function saveAccountInformations');
+        $this->logs->logInfos('---- >> function saveAccountInformations');
 
         try {
             // saving all array "account" in $configHipay
@@ -960,7 +966,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Module settings saved successfully.');
-            $this->logs->logsHipay(
+            $this->logs->logInfos(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
                     true
@@ -969,7 +975,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -983,7 +989,7 @@ class Hipay_enterprise extends PaymentModule
      * */
     protected function saveGlobalPaymentInformations()
     {
-        $this->logs->logsHipay('---- >> function saveGlobalPaymentInformations');
+        $this->logs->logInfos('---- >> function saveGlobalPaymentInformations');
 
         try {
             // saving all array "payemnt" "global" in $configHipay
@@ -1008,7 +1014,7 @@ class Hipay_enterprise extends PaymentModule
                     $fieldValue = Tools::getValue($key);
                 }
 
-                $this->logs->logsHipay(
+                $this->logs->logInfos(
                     $key." => ".print_r(
                         $fieldValue,
                         true
@@ -1027,7 +1033,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Global payment method settings saved successfully.');
-            $this->logs->logsHipay(
+            $this->logs->logInfos(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
                     true
@@ -1036,7 +1042,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1049,7 +1055,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function saveCreditCardInformations()
     {
-        $this->logs->logsHipay('---- >> function saveCreditCardInformations');
+        $this->logs->logInfos('---- >> function saveCreditCardInformations');
 
         try {
             // saving all array "payemnt" "credit_card" in $configHipay
@@ -1094,7 +1100,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Credit card settings saved successfully.');
-            $this->logs->logsHipay(
+            $this->logs->logInfos(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
                     true
@@ -1103,7 +1109,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1116,7 +1122,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function saveLocalPaymentInformations()
     {
-        $this->logs->logsHipay('---- >> function saveLocalPaymentInformations');
+        $this->logs->logInfos('---- >> function saveLocalPaymentInformations');
 
         try {
             // saving all array "payemnt" "local_payment" in $configHipay
@@ -1158,7 +1164,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Local payment settings saved successfully.');
-            $this->logs->logsHipay(
+            $this->logs->logInfos(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
                     true
@@ -1167,7 +1173,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1180,7 +1186,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function saveFraudInformations()
     {
-        $this->logs->logsHipay('---- >> function saveFraudInformations');
+        $this->logs->logInfos('---- >> function saveFraudInformations');
 
         try {
             // saving all array "fraud" in $configHipay
@@ -1199,7 +1205,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Fraud settings saved successfully.');
-            $this->logs->logsHipay(
+            $this->logs->logInfos(
                 print_r(
                     $this->hipayConfigTool->getConfigHipay(),
                     true
@@ -1208,7 +1214,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->errorLogsHipay($e->getMessage());
+            $this->logs->logErrors($e->getMessage());
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1216,61 +1222,40 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * Get the appropriate logs
+     * List log files
+     *
      * @return string
      */
     protected function getLogFiles()
     {
-        // scan log dir
-        $dir            = _PS_MODULE_DIR_.$this->logs->getBasePath();
-        $files          = scandir(
-            $dir,
-            1
-        );
-        // init array files
+        // Scan log dir
+        $directory     = $this->logs->getBasePath();
+        $files          = scandir($directory,1);
+
+        // Init array files
         $error_files    = array();
         $info_files     = array();
         $callback_files = array();
         $request_files  = array();
         $refund_files   = array();
-        // dispatch files
+
+        // List files
         foreach ($files as $file) {
-            if (preg_match(
-                    "/error/i",
-                    $file
-                ) && count($error_files) < 10
-            ) {
+            if (preg_match("/error/i", $file) && count($error_files) < 10) {
                 $error_files[] = $file;
             }
-            if (preg_match(
-                    "/callback/i",
-                    $file
-                ) && count($callback_files) < 10
-            ) {
+            if (preg_match("/callback/i", $file) && count($callback_files) < 10) {
                 $callback_files[] = $file;
             }
-            if (preg_match(
-                    "/infos/i",
-                    $file
-                ) && count($info_files) < 10
-            ) {
+            if (preg_match("/infos/i",$file) && count($info_files) < 10) {
                 $info_files[] = $file;
             }
-            if (preg_match(
-                    "/request/i",
-                    $file
-                ) && count($request_files) < 10
+            if (preg_match("/request/i", $file) && count($request_files) < 10
             ) {
                 $request_files[] = $file;
             }
-            if (preg_match(
-                    "/refund/i",
-                    $file
-                ) && count($refund_files) < 10
-            ) {
-                $refund_files[] = $file;
-            }
         }
+
         return array(
             'error' => $error_files,
             'infos' => $info_files,
@@ -1286,7 +1271,7 @@ class Hipay_enterprise extends PaymentModule
      */
     protected function clearAccountData()
     {
-        $this->logs->logsHipay('---- >> function clearAccountData');
+        $this->logs->logInfos('---- >> function clearAccountData');
         Configuration::deleteByName('HIPAY_CONFIG');
         return true;
     }
@@ -1644,7 +1629,7 @@ if (_PS_VERSION_ >= '1.7') {
     Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayLogs.php');
+require_once(dirname(__FILE__).'/classes/helper/tools/HipayLogs.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayConfig.php');
 require_once(dirname(__FILE__).'/classes/helper/forms/hipayForm.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayMapper.php');

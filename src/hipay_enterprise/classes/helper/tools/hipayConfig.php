@@ -49,14 +49,14 @@ class HipayConfig
      */
     private function updateConfig()
     {
-        $this->module->getLogs()->logsHipay('---- >> function updateConfig << --------');
+        $this->module->getLogs()->logInfos('---- >> function updateConfig << --------');
 
         $configFields = array();
 
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 
-        $this->module->getLogs()->logsHipay(
+        $this->module->getLogs()->logInfos(
             print_r(
                 $configFields,
                 true
@@ -92,7 +92,7 @@ class HipayConfig
         $key,
         $value
     ) {
-        $this->module->getLogs()->logsHipay('---- >> function setConfigHiPay');
+        $this->module->getLogs()->logInfos('---- >> function setConfigHiPay');
         // Use this function only if you have just one variable to update
         // init multistore
         $id_shop = (int)$this->context->shop->id;
@@ -108,7 +108,7 @@ class HipayConfig
             true
         );
 
-        $this->module->getLogs()->logsHipay(
+        $this->module->getLogs()->logInfos(
             print_r(
                 $confHipay,
                 true
@@ -170,7 +170,7 @@ class HipayConfig
      */
     private function insertConfigHiPay()
     {
-        $this->module->getLogs()->logsHipay('---- >> function insertConfigHiPay');
+        $this->module->getLogs()->logInfos('---- >> function insertConfigHiPay');
 
         $configFields = array(
             "account" => array(
@@ -249,7 +249,7 @@ class HipayConfig
      * */
     private function setAllConfigHiPay($arrayHipay = null)
     {
-        $this->module->getLogs()->logsHipay('---- >> function setAllConfigHiPay');
+        $this->module->getLogs()->logInfos('---- >> function setAllConfigHiPay');
         // use this function if you have a few variables to update
         if ($arrayHipay != null) {
             $for_json_hipay = $arrayHipay;
@@ -261,7 +261,7 @@ class HipayConfig
         $id_shop = (int)$this->context->shop->id;
         $id_shop_group = (int)Shop::getContextShopGroupID();
         // the config is stacked in JSON
-        $this->module->getLogs()->logsHipay(
+        $this->module->getLogs()->logInfos(
             print_r(
                 Tools::jsonEncode($for_json_hipay),
                 true

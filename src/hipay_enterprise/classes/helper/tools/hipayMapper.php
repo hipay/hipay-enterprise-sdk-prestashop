@@ -153,7 +153,7 @@ class HipayMapper
     public function createTable()
     {
         if (!$this->db->createCatMappingTable() || !$this->db->createCarrierMappingTable()) {
-            $this->logs->logsHipay('Cannot create Mapping table');
+            $this->logs->logInfos('Cannot create Mapping table');
             die('Module DB Error');
         }
     }
@@ -164,7 +164,7 @@ class HipayMapper
     public function deleteTable()
     {
         if (!$this->db->deleteCatMappingTable() || !$this->db->deleteCarrierMappingTable()) {
-            $this->logs->logsHipay('Cannot delete Mapping table');
+            $this->logs->logInfos('Cannot delete Mapping table');
         }
     }
 
@@ -250,12 +250,12 @@ class HipayMapper
      */
     public function updateCarrier($idCarrierOld, $idCarrierNew)
     {
-        $this->logs->logsHipay('###### updateCarrier');
-        $this->logs->logsHipay('$idCarrierNew = '.$idCarrierNew);
-        $this->logs->logsHipay('$idCarrierOld = '.$idCarrierOld);
+        $this->logs->logInfos('###### updateCarrier');
+        $this->logs->logInfos('$idCarrierNew = '.$idCarrierNew);
+        $this->logs->logInfos('$idCarrierOld = '.$idCarrierOld);
         $mappedCarrier = $this->getMappedHipayCarrierFromPSId($idCarrierOld);
         if ($idCarrierOld != $idCarrierNew && $mappedCarrier != null) {
-            $this->logs->logsHipay('$mappedCarrier = '.print_r($mappedCarrier,
+            $this->logs->logInfos('$mappedCarrier = '.print_r($mappedCarrier,
                                                                true));
             $row[] = array(
                 "hp_ps_carrier_id" => pSQL((int) $idCarrierNew),
