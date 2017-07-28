@@ -14,9 +14,9 @@ require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
 {
 
-    public function __construct($module)
+    public function __construct($module, $cart = false)
     {
-        parent::__construct($module);
+        parent::__construct($module, $cart);
 
         spl_autoload_register(array($this, 'autoloadCustomData'));
     }
@@ -101,7 +101,8 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
     public function autoloadCustomData($class_name)
     {
         //PS 1.6 fix 
-        if (in_array($class_name,array('HipayEnterpriseHelperCustomData'))) {
+        if (in_array($class_name,
+                     array('HipayEnterpriseHelperCustomData'))) {
             require_once dirname(__FILE__).'/../../'.$class_name.'.php';
         }
     }

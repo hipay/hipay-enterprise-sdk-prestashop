@@ -86,7 +86,7 @@ class HipayFormControl
     private static function isValidIBAN($iban)
     {
 
-        $iban      = strtolower($iban);
+        $iban      = Tools::strtolower($iban);
         $Countries = array(
             'al' => 28, 'ad' => 24, 'at' => 20, 'az' => 28, 'bh' => 22, 'be' => 16,
             'ba' => 20, 'br' => 29, 'bg' => 22, 'cr' => 21, 'hr' => 21, 'cy' => 28,
@@ -115,20 +115,20 @@ class HipayFormControl
             return false;
         }
 
-        if (!isset($Countries[substr($iban,
+        if (!isset($Countries[Tools::substr($iban,
                                      0,
                                      2)])) {
             return false;
         }
 
-        if (strlen($iban) != $Countries[substr($iban,
+        if (Tools::strlen($iban) != $Countries[Tools::substr($iban,
                                                0,
                                                2)]) {
             return false;
         }
 
-        $MovedChar      = substr($iban,
-                                 4).substr($iban,
+        $MovedChar      = Tools::substr($iban,
+                                 4).Tools::substr($iban,
                                            0,
                                            4);
         $MovedCharArray = str_split($MovedChar);
@@ -152,13 +152,13 @@ class HipayFormControl
         $mod  = "";
 
         do {
-            $a   = (int) $mod.substr($x,
+            $a   = (int) $mod.Tools::substr($x,
                                      0,
                                      $take);
-            $x   = substr($x,
+            $x   = Tools::substr($x,
                           $take);
             $mod = $a % $y;
-        } while (strlen($x));
+        } while (Tools::strlen($x));
 
         return (int) $mod == 1;
     }
