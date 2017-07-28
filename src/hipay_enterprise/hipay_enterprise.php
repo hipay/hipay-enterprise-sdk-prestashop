@@ -676,8 +676,6 @@ class Hipay_enterprise extends PaymentModule
             )
         );
 
-        $this->logs->logInfos('END function getContent');
-
         return $this->context->smarty->fetch($configuration);
     }
 
