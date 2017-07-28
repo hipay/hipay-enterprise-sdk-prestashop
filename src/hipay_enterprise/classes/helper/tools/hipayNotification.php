@@ -429,8 +429,8 @@ class HipayNotification
 
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
-                    $this->log->refundLogs(
-                        'refundOrder: '.Configuration::get(
+                    $this->log->logInfos(
+                        '# RefundOrder: '.Configuration::get(
                             'HIPAY_OS_REFUNDED',
                             null,
                             null,
@@ -446,8 +446,8 @@ class HipayNotification
                         )
                     );
                 } else {
-                    $this->log->refundLogs(
-                        'refundOrder: '.Configuration::get(
+                    $this->log->logInfos(
+                        '# RefundOrder: '.Configuration::get(
                             'HIPAY_OS_REFUNDED_PARTIALLY',
                             null,
                             null,

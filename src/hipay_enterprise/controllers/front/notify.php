@@ -11,7 +11,6 @@
 
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayNotification.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
-require_once(dirname(__FILE__).'/../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 

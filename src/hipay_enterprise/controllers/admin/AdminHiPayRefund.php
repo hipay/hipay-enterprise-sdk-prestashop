@@ -20,6 +20,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
         parent::postProcess();
         // First check
         if (Tools::isSubmit('hipay_refund_submit')) {
+            $this->module->getLogs()->logInfos('# Refund Capture without basket order ID {$this->order->id}');
             //refund with no basket
             if (Tools::isSubmit('hipay_refund_type')) {
                 $refund_type = Tools::getValue('hipay_refund_type');
@@ -105,7 +106,10 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     'No transaction reference link to this order',
                     'refund'
                 );
+
+                $this->module->getLogs()->logInfos('# Refund errors Message {$hipay_redirect_status} ');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
+
                 Tools::redirectAdmin(
                     $this->context->link->getAdminLink(
                         'AdminOrders'
@@ -122,6 +126,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $this->apiHandler->handleRefund($this->params);
             }
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
+            $this->module->getLogs()->logInfos('# Refund Capture with basket order ID {$this->order->id}');
             //refund with basket
             if (Tools::getValue('hipay_refund_type') == "partial") {
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
@@ -132,6 +137,8 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                         'Select at least one item to refund',
                         'capture'
                     );
+
+                    $this->module->getLogs()->logInfos('# Refund errors Message {$hipay_redirect_status} ');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     Tools::redirectAdmin(
                         $this->context->link->getAdminLink(
@@ -153,6 +160,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             $this->apiHandler->handleRefund($this->params);
         }
 
+        $this->module->getLogs()->logInfos('# Refund Capture success');
         $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(

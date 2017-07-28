@@ -19,6 +19,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
         parent::postProcess();
         // First check
         if (Tools::isSubmit('hipay_capture_submit')) {
+            $this->module->getLogs()->logInfos('# Manual Capture without basket order ID {$this->order->id}');
             //capture with no basket
             if (Tools::isSubmit('hipay_capture_type')) {
                 $capture_type = Tools::getValue('hipay_capture_type');
@@ -125,6 +126,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->apiHandler->handleCapture($this->params);
             }
         } elseif ((Tools::isSubmit('hipay_capture_basket_submit'))) {
+            $this->module->getLogs()->logInfos('# Manual Capture with basket');
             //capture with basket
             if (Tools::getValue('hipay_capture_type') == "partial") {
                 $refundItems = (!Tools::getValue('hipaycapture')) ? array() : Tools::getValue('hipaycapture');
@@ -153,6 +155,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             $this->apiHandler->handleCapture($this->params);
         }
 
+        $this->module->getLogs()->logInfos('# Manual Capture success');
         $this->context->cookie->__set('hipay_success', $this->module->l('Capture has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(
