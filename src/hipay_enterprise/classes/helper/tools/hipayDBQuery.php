@@ -51,7 +51,7 @@ class HipayDBQuery
      */
     public function createCarrierMappingTable()
     {
-        $this->logs->logInfos('Create Hipay carrier mapping table');
+        $this->logs->logInfos('# Create Hipay carrier mapping table');
 
         $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE.'`(
                 `hp_ps_carrier_id` INT(10) UNSIGNED NOT NULL,
@@ -211,7 +211,7 @@ class HipayDBQuery
      */
     public function setSQLLockForCart($cartId)
     {
-        $this->logs->logInfos('start LockSQL  for id_cart = '.$cartId);
+        $this->logs->logInfos('# Start LockSQL  for id_cart = '.$cartId);
 
         $sql = 'begin;';
         $sql .= 'SELECT id_cart FROM '._DB_PREFIX_.'cart WHERE id_cart = '.pSQL((int) $cartId).' FOR UPDATE;';
@@ -227,7 +227,7 @@ class HipayDBQuery
      */
     public function releaseSQLLock()
     {
-        $this->logs->logInfos('release LockSQL');
+        $this->logs->logInfos('# Commit LockSQL');
 
         $sql = 'commit;';
         if (!Db::getInstance()->execute($sql)) {
@@ -383,12 +383,12 @@ class HipayDBQuery
 		FROM `'._DB_PREFIX_.'order_history`
 		WHERE `id_order` = '.pSQL((int) $idOrder).' AND `id_order_state` = '.pSQL((int) $status);
 
-        $this->logs->logInfos('Check order status exist : '.$sql);
+        $this->logs->logInfos('# Check order status exist : '.$sql);
 
         $result = Db::getInstance()->getRow($sql);
 
         $this->logs->logInfos(
-            'Check order status exist : '.print_r(
+            '# Check order status exist : '.print_r(
                 $result,
                 true
             )

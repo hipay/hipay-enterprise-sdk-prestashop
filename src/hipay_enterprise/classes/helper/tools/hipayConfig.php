@@ -40,7 +40,7 @@ class HipayConfig
             $this->initConfigHiPay();
         }
 
-        $this->updateConfig();
+        //$this->updateConfig();
         return $this->configHipay;
     }
 
@@ -49,19 +49,10 @@ class HipayConfig
      */
     private function updateConfig()
     {
-        $this->module->getLogs()->logInfos('---- >> function updateConfig << --------');
-
         $configFields = array();
 
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
-
-        $this->module->getLogs()->logInfos(
-            print_r(
-                $configFields,
-                true
-            )
-        );
 
         // we update only new payment method
         $localkeys = array_diff(
@@ -71,6 +62,18 @@ class HipayConfig
         $cckeys = array_diff(
             array_keys($configFields["payment"]["credit_card"]),
             array_keys($this->configHipay["payment"]["credit_card"])
+        );
+
+        $this->module->getLogs()->logInfos("# Update Config");
+        $this->module->getLogs()->logInfos(
+            print_r(
+                $localkeys,
+                true
+            ) .
+            print_r(
+                $cckeys,
+                true
+            )
         );
 
         foreach ($cckeys as $key) {
@@ -88,15 +91,13 @@ class HipayConfig
      * @param: mixed $value
      * @return : bool
      * */
-    public function setConfigHiPay(
-        $key,
-        $value
-    ) {
-        $this->module->getLogs()->logInfos('---- >> function setConfigHiPay');
+    public function setConfigHiPay($key, $value)
+    {
         // Use this function only if you have just one variable to update
         // init multistore
         $id_shop = (int)$this->context->shop->id;
         $id_shop_group = (int)Shop::getContextShopGroupID();
+
         // the config is stacked in JSON
         $confHipay = Tools::jsonDecode(
             Configuration::get(
@@ -170,8 +171,6 @@ class HipayConfig
      */
     private function insertConfigHiPay()
     {
-        $this->module->getLogs()->logInfos('---- >> function insertConfigHiPay');
-
         $configFields = array(
             "account" => array(
                 "global" => array(
@@ -249,7 +248,6 @@ class HipayConfig
      * */
     private function setAllConfigHiPay($arrayHipay = null)
     {
-        $this->module->getLogs()->logInfos('---- >> function setAllConfigHiPay');
         // use this function if you have a few variables to update
         if ($arrayHipay != null) {
             $for_json_hipay = $arrayHipay;
@@ -329,6 +327,7 @@ class HipayConfig
                 $file
             ) == 1
         ) {
+            $this->module->getLogs()->logInfos("# addPaymentConfig from "  . $this->jsonFilesPath . $folderName . $file);
             $json = Tools::jsonDecode(
                 Tools::file_get_contents($this->jsonFilesPath . $folderName . $file),
                 true

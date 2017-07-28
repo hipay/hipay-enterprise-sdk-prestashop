@@ -16,7 +16,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 {
 
     /**
-     * display payment form API/Iframe/HostedPage(PS16)
+     * Display payment form API/Iframe/HostedPage(PS16)
+     *
      * @return type
      */
     public function initContent()
@@ -31,11 +32,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $this->module,
             $this->context
         );
-        $this->ccToken    = new HipayCCToken($this->module);
 
         if ($cart->id == null) {
+            $this->module->getLogs()->logErrors("# Cart ID is null in initContent");
             Tools::redirect('index.php?controller=order');
         }
+        $this->module->getLogs()->logInfos("# Redirect init CART ID" . $context->cart->id);
+
+        $this->ccToken    = new HipayCCToken($this->module);
         $context->smarty->assign(
             array(
                 'nbProducts' => $cart->nbProducts(),
@@ -57,7 +61,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $savedCC = $this->ccToken->getSavedCC($cart->id_customer);
 
-        //displaying different forms depending of the operating mode chosen in the BO configuration
+        //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case Apihandler::HOSTEDPAGE:
                 if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
@@ -121,9 +125,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      * @param type $context
      * @return string
      */
-    private function apiSavedCC(
-    $token, $cart, $savedCC, $context
-    )
+    private function apiSavedCC($token, $cart, $savedCC, $context)
     {
         if ($tokenDetails = $this->ccToken->getTokenDetails(
             $cart->id_customer,
@@ -255,7 +257,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     }
 
     /**
-     * add JS and CSS in page
+     * Add JS and CSS in checkout page
      */
     public function setMedia()
     {

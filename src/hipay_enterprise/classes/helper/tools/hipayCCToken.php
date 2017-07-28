@@ -26,15 +26,12 @@ class HipayCCToken
      * @param int $customerId
      * @param array $card
      */
-    public function saveCCToken(
-        $customerId,
-        $card
-    ) {
-        if (!$this->tokenExist(
-            $customerId,
-            $card["token"]
-        )
+    public function saveCCToken($customerId, $card)
+    {
+
+        if (!$this->tokenExist($customerId, $card["token"])
         ) {
+            $this->module->getLogs()->logsInfos("# SaveCCToken for customer ID $customerId");
             $card = array_merge(
                 array("customer_id" => $customerId),
                 $card

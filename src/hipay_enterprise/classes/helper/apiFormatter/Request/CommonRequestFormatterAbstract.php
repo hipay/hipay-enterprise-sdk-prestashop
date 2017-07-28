@@ -34,22 +34,25 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "integration_version" => $this->module->version,
         );
 
+        $this->module->getLogs()->logInfos('# Process Custom Request source');
         $request->source = Tools::jsonEncode($source);
     }
 
-    protected function setCustomData(
-    &$request, $cart, $params
-    )
+    /**
+     * @param $request
+     * @param $cart
+     * @param $params
+     */
+    protected function setCustomData(&$request, $cart, $params)
     {
+        $this->module->getLogs()->logInfos('# Process Custom Data Hipay ');
         $cartSummary = $cart->getSummaryDetails();
 
         $customer = new Customer($cartSummary["delivery"]->id_customer);
         $group    = new Group($customer->id_default_group);
-        $iframe   = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe")
-                ? 1 : 0;
+        $iframe   = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe") ? 1 : 0;
 
         $paymentCode = "hipay_hosted";
-
         if (isset($this->params["method"])) {
             $paymentCode = $this->params["method"];
         }
@@ -60,12 +63,15 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "payment_code" => $paymentCode,
             "display_iframe" => $iframe,
         );
+
+
         // Add custom data for transaction request
         if (file_exists(dirname(__FILE__).'/../../HipayEnterpriseHelperCustomData.php')) {
             if (class_exists(
                     'HipayEnterpriseHelperCustomData',
                     true
                 )) {
+                $this->module->getLogs()->logInfos('## Process Custom Data from Custom Files : HipayEnterpriseHelperCustomData');
                 $customDataHelper = new HipayEnterpriseHelperCustomData();
                 if (method_exists(
                         $customDataHelper,
@@ -87,6 +93,11 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         $request->custom_data = Tools::jsonEncode($customDataHipay);
     }
 
+    /**
+     * AutoloadCustomData
+     *
+     * @param $class_name
+     */
     public function autoloadCustomData($class_name)
     {
         //PS 1.6 fix 

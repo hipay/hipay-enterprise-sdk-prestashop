@@ -13,6 +13,8 @@ require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 
 class Hipay_enterpriseDeclineModuleFrontController extends ModuleFrontController
 {
+    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/decline17.tpl';
+    const PATH_TEMPLATE_PS_16 =  'paymentReturn/decline.tpl';
 
     /**
      * @see FrontController::postProcess()
@@ -23,17 +25,15 @@ class Hipay_enterpriseDeclineModuleFrontController extends ModuleFrontController
         $this->display_column_right = false;
         parent::initContent();
 
-        $context = Context::getContext();
-
         if (!(bool)$this->module->hipayConfigTool->getConfigHipay(
         )["payment"]["global"]["regenerate_cart_on_decline"]
         ) {
             HipayHelper::unsetCart();
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/decline17.tpl'
-            : 'paymentReturn/decline.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
 
+        $this->module->getLogs()->logInfos("# Decline payment : Your order has been declined");
         $this->setTemplate($path);
     }
 }

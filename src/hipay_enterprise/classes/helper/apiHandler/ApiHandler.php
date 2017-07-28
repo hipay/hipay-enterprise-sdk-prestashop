@@ -42,16 +42,14 @@ class Apihandler
     }
 
     /**
-     * handle credit card api call
+     * Handle credit card api call
+     *
      * @param type $mode
      * @param type $params
      */
-    public function handleCreditCard(
-    $mode = Apihandler::HOSTEDPAGE, $params = array()
-    )
+    public function handleCreditCard($mode = Apihandler::HOSTEDPAGE, $params = array())
     {
         $this->baseParamsInit($params);
-
         $cart            = $this->context->cart;
         $delivery        = new Address((int) $cart->id_address_delivery);
         $deliveryCountry = new Country((int) $delivery->id_country);
@@ -80,7 +78,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logInfos("Unknown payment mode");
+                $this->module->getLogs()->logInfos("# Unknown payment mode $mode");
         }
     }
 
@@ -114,7 +112,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logInfos("Unknown payment mode");
+                $this->module->getLogs()->logInfos("# Unknown payment mode :  $mode");
         }
     }
 
@@ -206,7 +204,7 @@ class Apihandler
                 );
                 break;
             default:
-                $this->module->getLogs()->logInfos("Unknown maintenance operation");
+                $this->module->getLogs()->logInfos("# Unknown maintenance operation");
         }
     }
 
@@ -215,8 +213,7 @@ class Apihandler
      * @param type $params
      * @param type $creditCard
      */
-    private function baseParamsInit(
-    &$params, $creditCard = true
+    private function baseParamsInit(&$params, $creditCard = true
     )
     {
         // no basket sent if PS_ROUND_TYPE is ROUND_TOTAL (prestashop config)
@@ -274,7 +271,8 @@ class Apihandler
     }
 
     /**
-     * return iframe URL
+     * Return  iframe URL
+     *
      * @return string
      */
     private function handleIframe($params)
@@ -388,9 +386,7 @@ class Apihandler
      * @param type $creditCard
      * @return mixte
      */
-    private function getPaymentMethod(
-    $params, $creditCard = true
-    )
+    private function getPaymentMethod($params, $creditCard = true)
     {
         if ($creditCard) {
             $paymentMethod = new CardTokenFormatter(
@@ -410,10 +406,9 @@ class Apihandler
     private function validateOrder($params)
     {
         // SQL LOCK
-        //#################################################################
-
         $cart = $this->context->cart;
         if ($cart) {
+            $this->module->getLogs()->logInfos("# Validate order for cart $cart->id");
             $this->db->setSQLLockForCart($cart->id);
             $customer = new Customer((int)$cart->id_customer);
             $shopId  = $cart->id_shop;

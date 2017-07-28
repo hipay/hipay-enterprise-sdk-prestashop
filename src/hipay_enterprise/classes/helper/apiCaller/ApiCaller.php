@@ -41,7 +41,8 @@ class ApiCaller
         $moduleInstance->getLogs()->logRequest($orderRequest);
 
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-        $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest->generate());
+        $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest);
+        $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage ". $orderRequest->orderid);
 
         return $transaction->getForwardUrl();
     }
@@ -109,7 +110,6 @@ class ApiCaller
 
         } catch (Exception $e) {
             // TODO Revoir le system de log des errors ( Il faut le nom de la méthode, le message et la stack)
-            $moduleInstance->getLogs()->logErrors('requestMaintenance');
             $moduleInstance->getLogs()->logErrors($e->getMessage());
             throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason [' .
                 $e->getMessage() . ']', $e->getCode());

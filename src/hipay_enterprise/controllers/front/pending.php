@@ -13,6 +13,8 @@ require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
 
 class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
 {
+    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/pending17.tpl';
+    const PATH_TEMPLATE_PS_16 =  'paymentReturn/pending.tpl';
 
     /**
      * @see FrontController::postProcess()
@@ -23,13 +25,10 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         $this->display_column_right = false;
         parent::initContent();
 
-        $context = Context::getContext();
-
         HipayHelper::unsetCart();
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . '/views/templates/front/paymentReturn/pending17.tpl'
-            : 'paymentReturn/pending.tpl');
-
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' . $this->module->name . self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
+        $this->module->getLogs()->logInfos("# Pending payment");
         $this->setTemplate($path);
     }
 }

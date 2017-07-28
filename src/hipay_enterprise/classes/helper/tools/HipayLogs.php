@@ -178,7 +178,7 @@ class HipayLogs
     /**
      * Get execution context
      *
-     * @return
+     * @return Execution
      */
     protected function getExecutionContext()
     {
