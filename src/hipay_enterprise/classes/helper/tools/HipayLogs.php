@@ -45,6 +45,17 @@ class HipayLogs
     }
 
     /**
+     *  Log exception
+     *
+     * @param GatewayException
+     */
+    public function logException(Exception $exception)
+    {
+        $this->logErrors($exception->getMessage());
+        $this->logErrors($exception->getTraceAsString());
+    }
+
+    /**
      *  Log error
      *
      * @param $msg
@@ -123,22 +134,22 @@ class HipayLogs
     {
         switch ($type) {
             case self::LOG_HIPAY_ERROR:
-                $filename = 'error.log';
+                $filename = 'error';
                 break;
             case self::LOG_HIPAY_INFOS:
-                $filename = 'infos.log';
+                $filename = 'infos';
                 break;
             case self::LOG_HIPAY_CALLBACK:
-                $filename = 'callback.log';
+                $filename = 'callback';
                 break;
             case self::LOG_HIPAY_REQUEST:
-                $filename = 'request.log';
+                $filename = 'request';
                 break;
             default:
-                $filename = 'infos.log';
+                $filename = 'infos';
                 break;
         }
-        return $this->basePath . date('Y-m-d') . '-' . 'hipay' . '-' . $filename;
+        return $this->basePath . date('Y-m-d') . '-' . 'hipay' . '-' . $filename . '.log';
     }
 
 

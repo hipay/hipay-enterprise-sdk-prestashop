@@ -110,8 +110,7 @@ class ApiCaller
 
             return $transaction;
         } catch (Exception $e) {
-            // TODO Revoir le system de log des errors ( Il faut le nom de la méthode, le message et la stack)
-            $moduleInstance->getLogs()->logErrors($e->getMessage());
+            $moduleInstance->getLogs()->logErrors($e);
             throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason [' .
                 $e->getMessage() . ']', $e->getCode());
         }

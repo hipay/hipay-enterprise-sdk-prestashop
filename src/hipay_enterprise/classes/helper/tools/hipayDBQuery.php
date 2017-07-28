@@ -779,8 +779,7 @@ class HipayDBQuery
         try {
             $result = Db::getInstance()->executeS($sql);
         } catch (Exception $exc) {
-            $this->logs->logErrors($exc->getMessage());
-            $this->logs->logErrors($exc->getTraceAsString());
+            $this->logs->logException($exc);
             return false;
         }
 

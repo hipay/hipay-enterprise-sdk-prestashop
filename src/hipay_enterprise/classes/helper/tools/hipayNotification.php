@@ -325,8 +325,7 @@ class HipayNotification
                 $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
-                $this->log->logErrors($e->getCode().' : '.$e->getMessage());
-                $this->log->logInfos($e->getCode().' : '.$e->getMessage());
+                $this->log->logException($e->getCode().' : '.$e->getMessage());
                 return false;
             }
         }
