@@ -11,7 +11,6 @@
 
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayNotification.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
-require_once(dirname(__FILE__).'/../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 
@@ -24,54 +23,32 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         if ($this->module->active == false) {
+            $this->module->getLogs()->logErrors('Notify : postProcess => Module Disable');
             die;
         }
 
-        $postData = (array)$_POST;
-        $data = array();
-        foreach ($postData as $key => $value) {
-            $data[$key] = $value;
-        }
-        //LOG
-        $this->module->getLogs()->callbackLogs('##########################################');
-        $this->module->getLogs()->callbackLogs('##########################################');
-        $this->module->getLogs()->callbackLogs('CALLBACK HANDLING START');
-        $this->module->getLogs()->callbackLogs(
-            print_r(
-                $data,
-                true
-            )
-        );
+        $params = $_POST;
+        $transactionReference = $params["transaction_reference"];
 
-        //   print_r($data);
-        // if state and status exist or not
-        if (!isset($data['state']) && !isset($data['status'])) {
-            $this->module->getLogs()->errorLogsHipay(
-                $this->module->l(
-                    'Bad Callback initiated',
-                    'hipay'
-                )
-            );
-            $this->module->getLogs()->callbackLogs(
-                $this->module->l(
-                    'Bad Callback initiated',
-                    'hipay'
-                )
-            );
+        // Process log from notification
+        $this->module->getLogs()->logCallback($params);
+
+        // Check if status is present in Post Data
+        if (!isset($params['state']) && !isset($params['status'])) {
+            $this->module->getLogs()->logErrors('Notify : Status not exist in Post DATA');
             die();
         }
 
+        // Check Notification signature
         $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"]
             : "";
 
-
         $notificationHandler = new HipayNotification(
             $this->module,
-            $data
+            $params
         );
 
         $moto = false;
-
         if($notificationHandler->getEci() == ECI::MOTO){
             $moto = true;
         }
@@ -83,24 +60,11 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $moto
         )
         ) {
-            $this->module->getLogs()->errorLogsHipay(
-                $this->module->l(
-                    'Bad Callback initiated - signature',
-                    'hipay'
-                )
-            );
-            $this->module->getLogs()->callbackLogs(
-                $this->module->l(
-                    'Bad Callback initiated',
-                    'hipay'
-                )
-            );
-            die('Bad Callback initiated');
+            $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
+            die('Bad Callback initiated - signature');
         }
-        $this->module->getLogs()->callbackLogs('state exist');
 
         $notificationHandler->processTransaction();
-
         die();
     }
 }

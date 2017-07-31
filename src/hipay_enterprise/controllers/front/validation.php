@@ -21,7 +21,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
      */
     public function postProcess()
     {
-        $paymentProduct = Tools::getValue('pp');
+        $paymentProduct = Tools::getValue('product');
 
         if($paymentProduct && $paymentProduct == 'credit_card'){
             $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];

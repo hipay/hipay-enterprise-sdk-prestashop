@@ -81,7 +81,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
             $accept_url    = $this->context->link->getModuleLink(
                 $this->module->name,
                 'validation',
-                array("pp" => $this->params["method"]),
+                array("product" => $this->params["method"]),
                 true
             );
             $decline_url   = $this->context->link->getModuleLink(

@@ -49,14 +49,5 @@
                 {/foreach}
             </div>
         </div>
-        <div class="col-md-4 col-xs-4">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-warning">Refund Logs</a>
-                {foreach from=$logs['refund'] item=select}
-                    <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
-                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
-                {/foreach}
-            </div>
-        </div>
     </div>
 </div>
