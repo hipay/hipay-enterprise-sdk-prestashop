@@ -218,7 +218,7 @@ class HipayConfig
                         )
                     ),
                     "capture_mode" => "automatic",
-                    "card_token" => 1,
+                    "card_token" => 0,
                     "electronic_signature" => 1,
                     "activate_basket" => 1,
                     "log_infos" => 1,
