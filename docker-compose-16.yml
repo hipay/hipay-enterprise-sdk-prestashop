@@ -1,8 +1,8 @@
-#mysql:
-#  env_file:
-#    - ./conf/env_file/development/env
-#  volumes:
-#    - ./data/:/var/lib/mysql
+mysql:
+  env_file:
+    - ./conf/env_file/development/env
+  volumes:
+    - ./data/:/var/lib/mysql
 prestashop16:
   container_name: hipay-enterprise-shop-ps16
   dockerfile: ./conf/docker/Dockerfile16
