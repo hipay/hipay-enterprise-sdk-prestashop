@@ -3,7 +3,7 @@ machine:
     - docker
 test:
   pre:
-      - ./prestashop.sh init
+      - ./prestashop.sh init-stage
   override:
     - sleep 500
     - curl --retry 10 --retry-delay 20 -v http://localhost:8086
