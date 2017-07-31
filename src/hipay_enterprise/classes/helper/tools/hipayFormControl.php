@@ -30,16 +30,16 @@ class HipayFormControl
 
             if (isset($fields[$name]['controlType'])) {
                 HipayFormControl::typedFormControl($errors,
-                                                          $fields[$name]['controlType'],
-                                                          $value,
-                                                          $name,
-                                                          $module);
+                    $fields[$name]['controlType'],
+                    $value,
+                    $name,
+                    $module);
             }
 
             if (isset($fields[$name]['required']) && $fields[$name]['required']) {
                 if (empty($value)) {
                     $errors[$name] = $module->l('Error : Field is mandatory',
-                                                'hipay_enterprise');
+                        'hipay_enterprise');
                 }
             }
         }
@@ -55,7 +55,7 @@ class HipayFormControl
     public static function checkHttpsUrl($url)
     {
         return preg_match('/(https)(:\/\/)(\S*?\.\S*?)([\s)\[\]{},;"\':<]|\.\s|$)/',
-                          $url);
+            $url);
     }
 
     /**
@@ -66,17 +66,53 @@ class HipayFormControl
      * @param type $name
      * @param type $module
      */
-    private static function typedFormControl(&$errors, $type, $value, $name,
-                                             $module)
+    private static function typedFormControl(&$errors, $type, $value, $name, $module)
     {
         switch ($type) {
             case 'iban':
                 if (!HipayFormControl::isValidIBAN($value)) {
                     $errors[$name] = $module->l('Error : This is not a correct IBAN',
-                                                'hipay_enterprise');
+                        'hipay_enterprise');
                     ;
                 }
+                break;
+            case 'cpf':
+                if (!HipayFormControl::isValidCPF($value)) {
+                    $errors[$name] = $module->l('Error : This is not a correct CPF',
+                        'hipay_enterprise');
+                    ;
+                }
+                break;
+            case 'curp-cpn':
+                if (!HipayFormControl::isValidCPNCURP($value)) {
+                    $errors[$name] = $module->l('Error : This is not a correct CURP/CPN',
+                        'hipay_enterprise');
+                    ;
+                }
+                break;
         }
+    }
+
+    /**
+     *
+     * @param type $value
+     * @return type
+     */
+    private static function isValidCPF($value)
+    {
+        return preg_match("/(\d{2}[.]?\d{3}[.]?\d{3}[\/]?\d{4}[-]?\d{2})|(\d{3}[.]?\d{3}[.]?\d{3}[-]?\d{2})$/",
+            $value);
+    }
+
+    /**
+     * 
+     * @param type $value
+     * @return type
+     */
+    private static function isValidCPNCURP($value)
+    {
+        return preg_match("/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/",
+            $value);
     }
 
     /**
@@ -117,21 +153,21 @@ class HipayFormControl
         }
 
         if (!isset($Countries[Tools::substr($iban,
-                                     0,
-                                     2)])) {
+                    0,
+                    2)])) {
             return false;
         }
 
         if (Tools::strlen($iban) != $Countries[Tools::substr($iban,
-                                               0,
-                                               2)]) {
+                0,
+                2)]) {
             return false;
         }
 
         $MovedChar      = Tools::substr($iban,
-                                 4).Tools::substr($iban,
-                                           0,
-                                           4);
+                4).Tools::substr($iban,
+                0,
+                4);
         $MovedCharArray = str_split($MovedChar);
         $NewString      = "";
 
@@ -144,7 +180,7 @@ class HipayFormControl
         }
         if (function_exists("bcmod")) {
             return bcmod($NewString,
-                         '97') == 1;
+                    '97') == 1;
         }
 
         $x    = $NewString;
@@ -154,10 +190,10 @@ class HipayFormControl
 
         do {
             $a   = (int) $mod.Tools::substr($x,
-                                     0,
-                                     $take);
+                    0,
+                    $take);
             $x   = Tools::substr($x,
-                          $take);
+                    $take);
             $mod = $a % $y;
         } while (Tools::strlen($x));
 

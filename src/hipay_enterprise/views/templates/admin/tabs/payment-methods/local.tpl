@@ -91,15 +91,15 @@
                                                 <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                                                 {foreach  $localPayment["currencies"] as $currency }
                                                     {if isset($limitedCurrencies[$currency])}
-                                                        <p>{$limitedCurrencies[$currency]}</p>
+                                                        <label>{$limitedCurrencies[$currency]}</label>
                                                         <input type="hidden" value="{$currency}"
                                                                name="{$localPayment@key}_currencies[]"/>
                                                     {else}
-                                                        <p>{$currency}
+                                                        <label>{$currency}
                                                             {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}
-                                                            <input type="hidden" value="{$currency}"
-                                                                   name="{$localPayment@key}_currencies[]"/>
-                                                        </p>
+                                                        </label>
+                                                        <input type="hidden" value="{$currency}"
+                                                               name="{$localPayment@key}_currencies[]"/>
                                                     {/if}
                                                 {/foreach}
                                             </div>
@@ -124,9 +124,17 @@
                                             <div class="form-group">
                                                 <label class="control-label col-lg-2">{l s='Activated Countries' mod='hipay_enterprise'}</label>
                                                 {foreach  $localPayment["countries"] as $country }
-                                                    <label class="col-lg-2">{$limitedCountries[$country]}</label>
-                                                    <input type="hidden" readonly value="{$country}"
-                                                           name="{$localPayment@key}_countries[]"/>
+                                                    {if isset($limitedCountries[$country])}
+                                                        <label class="col-lg-2">{$limitedCountries[$country]}</label>
+                                                        <input type="hidden" readonly value="{$country}"
+                                                               name="{$localPayment@key}_countries[]"/>
+                                                    {else}
+                                                        <label>{$country}
+                                                            {l s='This country is not activated in your prestashop shop' mod='hipay_enterprise'}
+                                                        </label>
+                                                        <input type="hidden" value="{$country}"
+                                                               name="{$localPayment@key}_countries[]"/>
+                                                    {/if}
                                                 {/foreach}
                                             </div>
                                         </div>
@@ -138,7 +146,7 @@
                                                     <select id="countries_{$localPayment@key}" multiple="multiple" size="10"
                                                             name="{$localPayment@key}_countries[]">
                                                         {foreach $limitedCountries as $country}
-                                                           <option value="{$country@key}" {if !empty($localPayment.countries) && $country@key|in_array:$localPayment.countries } selected {/if} >{$country}</option>
+                                                            <option value="{$country@key}" {if !empty($localPayment.countries) && $country@key|in_array:$localPayment.countries } selected {/if} >{$country}</option>
                                                         {/foreach}
                                                     </select>
                                                 </div>

@@ -14,14 +14,17 @@ hiPayInputControl.checkControl = checkControl;
 hiPayInputControl.addInput = addInput;
 hiPayInputControl.forms = [];
 
-
+/**
+ * 
+ * @param {type} form
+ * @returns {success|Boolean}
+ */
 function checkControl(form) {
 
     success = true;
     if (hiPayInputControl.forms[form]) {
         removeElementsByClass('error-text-hp');
         hiPayInputControl.forms[form].fields.forEach(function (input) {
-
             success = typeControlCheck(input) && success;
         })
     }
@@ -29,6 +32,14 @@ function checkControl(form) {
     return success;
 }
 
+/**
+ * 
+ * @param {type} form
+ * @param {type} field
+ * @param {type} type
+ * @param {type} required
+ * @returns {undefined}
+ */
 function addInput(form, field, type, required) {
     if (!hiPayInputControl.forms[form]) {
         hiPayInputControl.forms[form] = new Form();
@@ -36,16 +47,32 @@ function addInput(form, field, type, required) {
     hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
 }
 
+/**
+ * 
+ * @returns {Form}
+ */
 function Form() {
     this.fields = [];
 }
 
+/**
+ * 
+ * @param {type} field
+ * @param {type} type
+ * @param {type} required
+ * @returns {Input}
+ */
 function Input(field, type, required) {
     this.field = field;
     this.type = type;
     this.required = required;
 }
 
+/**
+ * 
+ * @param {type} input
+ * @returns {Boolean}
+ */
 function typeControlCheck(input) {
     element = document.getElementById(input.field);
     removeClass(element, 'error-input-hp');
@@ -55,11 +82,20 @@ function typeControlCheck(input) {
             return checkIban(element);
         case 'creditcardnumber':
             return checkCCNumber(element);
+        case 'cpf':
+            return checkCPF(element);
+        case 'curp-cpn':
+            return checkCPNCURP(element);
         default :
             return checkNotEmptyField(element);
     }
 }
 
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
 function checkNotEmptyField(element) {
 
     if (element.value == null || element.value == "") {
@@ -70,6 +106,11 @@ function checkNotEmptyField(element) {
     return true;
 }
 
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
 function checkIban(element) {
 
     if (!checkNotEmptyField(element)) {
@@ -83,6 +124,11 @@ function checkIban(element) {
     return true;
 }
 
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
 function checkCCNumber(element) {
 
     if (!checkNotEmptyField(element)) {
@@ -96,11 +142,58 @@ function checkCCNumber(element) {
     return true;
 }
 
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkCPF(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCPFValid(element.value)) {
+        errorMessage(element, "This is not a correct CPF");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkCPNCURP(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCPNCURPValid(element.value)) {
+        errorMessage(element, "This is not a correct CPN/CURP");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 
+ * @param {type} element
+ * @param {type} text
+ * @returns {undefined}
+ */
 function errorMessage(element, text) {
     addClass(element, 'error-input-hp');
     insertAfter(generateElement("Error : " + text), element);
 }
 
+/**
+ * 
+ * @param {type} text
+ * @returns {pInsert|Element}
+ */
 function generateElement(text) {
     pInsert = document.createElement('span');
     pInsert.textContent = text;
@@ -109,8 +202,12 @@ function generateElement(text) {
     return pInsert;
 }
 
-
-// create function, it expects 2 values.
+/**
+ * 
+ * @param {type} newElement
+ * @param {type} targetElement
+ * @returns {undefined}
+ */
 function insertAfter(newElement, targetElement) {
     // target is what you want it to go after. Look for this elements parent.
     var parent = targetElement.parentNode;
@@ -125,6 +222,11 @@ function insertAfter(newElement, targetElement) {
     }
 }
 
+/**
+ * 
+ * @param {type} className
+ * @returns {undefined}
+ */
 function removeElementsByClass(className) {
     var elements = document.getElementsByClassName(className);
     while (elements.length > 0) {
@@ -132,6 +234,12 @@ function removeElementsByClass(className) {
     }
 }
 
+/**
+ * 
+ * @param {type} el
+ * @param {type} className
+ * @returns {Boolean}
+ */
 function hasClass(el, className) {
     if (el.classList)
         return el.classList.contains(className)
@@ -139,6 +247,12 @@ function hasClass(el, className) {
         return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))
 }
 
+/**
+ * 
+ * @param {type} el
+ * @param {type} className
+ * @returns {undefined}
+ */
 function addClass(el, className) {
     if (el.classList)
         el.classList.add(className)
@@ -146,6 +260,12 @@ function addClass(el, className) {
         el.className += " " + className
 }
 
+/**
+ * 
+ * @param {type} el
+ * @param {type} className
+ * @returns {undefined}
+ */
 function removeClass(el, className) {
     if (el.classList)
         el.classList.remove(className)
@@ -208,6 +328,11 @@ var validIBAN = (function () { // use an IIFE
 }
 ());
 
+/**
+ * 
+ * @param {type} value
+ * @returns {Boolean}
+ */
 function isCardNumberValid(value) {
     // accept only digits, dashes or spaces
     if (/[^0-9-\s]+/.test(value))
@@ -231,4 +356,22 @@ function isCardNumberValid(value) {
     }
 
     return (nCheck % 10) == 0;
+}
+
+/**
+ * 
+ * @param {type} value
+ * @returns {unresolved}
+ */
+function isCPFValid(value) {
+    return value.match(/(\d{2}[.]?\d{3}[.]?\d{3}[\/]?\d{4}[-]?\d{2})|(\d{3}[.]?\d{3}[.]?\d{3}[-]?\d{2})$/);
+}
+
+/**
+ * 
+ * @param {type} value
+ * @returns {unresolved}
+ */
+function isCPNCURPValid(value) {
+    return value.match(/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/);
 }

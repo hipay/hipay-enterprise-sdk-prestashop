@@ -1,0 +1,36 @@
+{
+  "name": "bbva-bancomer",
+  "config": {
+    "displayNameBO": "BBVA Bancomer",
+    "displayName": "BBVA Bancomer",
+    "activated": 0,
+    "canRefund": 0,
+    "canManualCapture": 0,
+    "currencies": [
+      "MXN"
+    ],
+    "countries": [
+      "MX"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "forceHpayment": 0,
+    "forceBasket": 0,
+    "forceHpaymentOnElectronicSignature": 0,
+    "minAmount": {"EUR" :0},
+    "maxAmount": {"EUR" :false},
+    "logo": "aura.png",
+    "additionalFields": {
+      "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\AstropayPaymentMethod",
+      "defaultFieldsValue": {},
+      "formFields": {
+        "national_identification_number": {
+          "label": "CURP/CPN",
+          "type": "text",
+          "required" : true,
+          "controlType" : "curp-cpn"
+        }
+      }
+    }
+  }
+}
