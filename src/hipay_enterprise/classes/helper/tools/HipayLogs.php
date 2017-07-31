@@ -72,9 +72,10 @@ class HipayLogs
      */
     public function logInfos($msg)
     {
-        if ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
+        //TODO Rebrancher
+        ///if ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
             $this->writeLogs(self::LOG_HIPAY_INFOS, $msg);
-        }
+       // }
     }
 
     /**

@@ -40,7 +40,7 @@ class HipayConfig
             $this->initConfigHiPay();
         }
 
-        //$this->updateConfig();
+        $this->updateConfig();
         return $this->configHipay;
     }
 
@@ -170,6 +170,7 @@ class HipayConfig
      * @return : bool
      */
     private function insertConfigHiPay()
+
     {
         $configFields = array(
             "account" => array(
