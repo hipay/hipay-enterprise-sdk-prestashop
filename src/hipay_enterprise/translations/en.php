@@ -17,6 +17,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_edd17fcd44ef5daf5553004
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_af93ad8305c42de0e9989ec121e96f4d'] = 'Local payment settings saved successfully.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2619ca57838110e4a58d37cdaeab443e'] = 'Fraud settings saved successfully.	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7fe'] = 'Payment fraud email';
+$_MODULE['<{hipay_enterprise}prestashop>hipayforminput_7328fddefd53de471baeb6e2b764f78a'] = 'email@domain.com';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Enabled';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_b9f5c797ebbf55adccdd8539a65a0241'] = 'Disabled';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfig_4d1f6f5436ec3e2310a76621e43d4c60'] = 'Update failed, try again.';
@@ -287,14 +288,6 @@ $_MODULE['<{hipay_enterprise}prestashop>pending17_0e6fd9532c268028a19082bdadecc0
 $_MODULE['<{hipay_enterprise}prestashop>pending17_24deaba66b4e5ccfdbe61d763a755118'] = 'Once it is approved it will be available in your';
 $_MODULE['<{hipay_enterprise}prestashop>pending17_6348d16e8e545de71d29ac6a1c20f517'] = 'order history	';
 $_MODULE['<{hipay_enterprise}prestashop>pending17_6110e3692a789bcff0870b04b13a06bb'] = 'Back to home';
-$_MODULE['<{hipay_enterprise}prestashop>validation_c15aa73e3fc896d9e1365e5065bcd22b'] = 'HiPay payment.';
-$_MODULE['<{hipay_enterprise}prestashop>validation_0ca2b5535330f021917c16883385ed15'] = 'Payment Summary';
-$_MODULE['<{hipay_enterprise}prestashop>validation_4009bf03bd168f366b57ef8683ce785b'] = 'Payment done';
-$_MODULE['<{hipay_enterprise}prestashop>validation_74715440eb57b8db89d8ef53037b0989'] = 'Thank you! Once your payment has been processed, the order will be processed.';
-$_MODULE['<{hipay_enterprise}prestashop>validation17_0ca2b5535330f021917c16883385ed15'] = 'Payment Summary';
-$_MODULE['<{hipay_enterprise}prestashop>validation17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'HiPay payment.';
-$_MODULE['<{hipay_enterprise}prestashop>validation17_4009bf03bd168f366b57ef8683ce785b'] = 'Payment done';
-$_MODULE['<{hipay_enterprise}prestashop>validation17_74715440eb57b8db89d8ef53037b0989'] = 'Thank you! Once your payment has been processed, the order will be processed.';
 $_MODULE['<{hipay_enterprise}prestashop>maintenance_bebe59b8b52e1699f79c24e6fbc6d669'] = 'Hipay actions';
 $_MODULE['<{hipay_enterprise}prestashop>my-account-16_8cfac2e9c1b41846c3ff63095426f75b'] = 'One click management';
 $_MODULE['<{hipay_enterprise}prestashop>my-account-16_e79f545fd93ed1aab5c175a7af2e9c73'] = 'Manage saved credit/debit card';
@@ -310,11 +303,3 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentform17_819082ec950ec311b53ac810fb
 $_MODULE['<{hipay_enterprise}prestashop>paymentform17_95c99cc6506cbbf43fe1209282517db7'] = 'Pay by credit or debit card';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform17_001452862788e21bf55a8b4f16e028c2'] = 'Save credit card (One click payment)';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform17_cddcf1bdadaa3a50e049409f5addb89b'] = 'This credit card type or the order currency is not supported. Please choose a other payment method.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_bddd470742bc2329733e489ed05a8ba1'] = 'Your order is complete.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_b2f40690858b404ed10e62bdf422c704'] = 'Amount';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_63d5049791d9d79d86e9a108b0a999ca'] = 'Reference';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_19c419a8a4f1cd621853376a930a2e24'] = 'An email has been sent with this information.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_ca7e41a658753c87973936d7ce2429a8'] = 'If you have questions, comments or concerns, please contact our';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_cd430c2eb4b87fb3b49320bd21af074e'] = 'expert customer support team.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_f301b6890eb0ba1b5d2c9c77e5886f2a'] = 'Your order has not been accepted.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentreturn_caa4088f1d295cf8ce8e358eb975ab32'] = 'Please, try to order again.';
