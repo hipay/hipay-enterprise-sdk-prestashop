@@ -13,6 +13,7 @@ class HipayHelper
 {
 
     /**
+     *
      * empty customer cart
      * @return boolean
      */

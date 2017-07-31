@@ -71,9 +71,7 @@ class HipayFormControl
         switch ($type) {
             case 'iban':
                 if (!HipayFormControl::isValidIBAN($value)) {
-                    $errors[$name] = $module->l('Error : This is not a correct IBAN',
-                        'hipay_enterprise');
-                    ;
+                    $errors[$name] = $module->l('Error : This is not a correct IBAN', 'hipay_enterprise');
                 }
                 break;
             case 'cpf':

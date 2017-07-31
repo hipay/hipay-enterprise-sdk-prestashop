@@ -31,16 +31,20 @@ class AdminHiPayChallengeController extends AdminHiPayActionsController
     {
         parent::postProcess();
         if (Tools::isSubmit('btn-challenge')) {
+            $this->module->getLogs()->logInfos('# Challenge from Back-Office order id' . $this->order->id);
             $action = Tools::getValue('btn-challenge');
             try {
                 switch ($action) {
                     case $this::ACCEPT_CHALLENGE:
+                        $this->module->getLogs()->logInfos('# Challenge from Back-Office Accept');
                         $this->acceptChallenge();
                         break;
                     case $this::DENY_CHALLENGE:
+                        $this->module->getLogs()->logInfos('# Challenge from Back-Office Deny');
                         $this->denyChallenge();
                 }
             } catch (GatewayException $e) {
+                $this->module->getLogs()->logErrors('# Errors Challenge from Back-Office reason :  ' . $e->getMessage());
                 $this->context->cookie->__set('hipay_errors', $e->getMessage());
                 Tools::redirectAdmin(
                     $this->context->link->getAdminLink(
@@ -50,6 +54,7 @@ class AdminHiPayChallengeController extends AdminHiPayActionsController
             }
         }
 
+        $this->module->getLogs()->logInfos('# Challenge success');
         $this->context->cookie->__set('hipay_success', $this->module->l('The challenge has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(

@@ -78,7 +78,6 @@ class Apihandler
     )
     {
         $this->baseParamsInit($params);
-
         $cart            = $this->context->cart;
         $delivery        = new Address((int) $cart->id_address_delivery);
         $deliveryCountry = new Country((int) $delivery->id_country);
@@ -107,7 +106,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown payment mode");
+                $this->module->getLogs()->logInfos("# Unknown payment mode $mode");
         }
     }
 
@@ -141,7 +140,7 @@ class Apihandler
                 $this->handleHostedPayment($params);
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown payment mode");
+                $this->module->getLogs()->logInfos("# Unknown payment mode");
         }
     }
 
@@ -233,7 +232,7 @@ class Apihandler
                 );
                 break;
             default:
-                $this->module->getLogs()->logsHipay("Unknown maintenance operation");
+                $this->module->getLogs()->logInfos("# Unknown maintenance operation");
         }
     }
 
@@ -305,7 +304,8 @@ class Apihandler
     }
 
     /**
-     * return iframe URL
+     * Return  iframe URL
+     *
      * @return string
      */
     private function handleIframe($params)
@@ -371,14 +371,14 @@ class Apihandler
                 break;
             case TransactionState::DECLINED:
                 $reason      = $response->getReason();
-                $this->module->getLogs()->logsHipay(
+                $this->module->getLogs()->logInfos(
                     'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $failUrl;
                 break;
             case TransactionState::ERROR:
                 $reason      = $response->getReason();
-                $this->module->getLogs()->logsHipay(
+                $this->module->getLogs()->logInfos(
                     'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $exceptionUrl;
@@ -444,6 +444,7 @@ class Apihandler
 
         $cart = $this->context->cart;
         if ($cart) {
+            $this->module->getLogs()->logInfos("# Validate order for cart $cart->id");
             $this->db->setSQLLockForCart($cart->id);
             $customer = new Customer((int) $cart->id_customer);
             $shopId   = $cart->id_shop;

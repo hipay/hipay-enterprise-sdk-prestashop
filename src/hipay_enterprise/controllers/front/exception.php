@@ -13,6 +13,9 @@ require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayHelper.php');
 
 class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontController
 {
+    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/exception17.tpl';
+    const PATH_TEMPLATE_PS_16 =  'paymentReturn/exception.tpl';
+
 
     /**
      * @see FrontController::postProcess()
@@ -23,17 +26,14 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
         $this->display_column_right = false;
         parent::initContent();
 
-        $context = Context::getContext();
-
         $this->context->smarty->assign(
             array(
                 'status_error' => Tools::getValue('status_error')
             )
         );
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentReturn/exception17.tpl'
-                    : 'paymentReturn/exception.tpl');
-
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name. self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
+        $this->module->getLogs()->logInfos("# Exception payment");
         $this->setTemplate($path);
     }
 }

@@ -21,10 +21,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $moduleInstance,
         $params
     ) {
-        parent::__construct(
-            $moduleInstance,
-            $params
-        );
+        parent::__construct($moduleInstance, $params);
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];

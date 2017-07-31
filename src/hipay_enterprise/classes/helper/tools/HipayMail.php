@@ -137,7 +137,9 @@ class HipayMail
             );
 
             if (!$mailSuccess) {
-                $module->getLogs()->errorLogsHipay( 'An error occured during email sending to ' .  $email );
+                $module->getLogs()->logErrors( 'An error occured during email sending to ' .  $email );
+            } else {
+                $module->log->logInfos("# Send Mail Payment deny to $email with $template");
             }
         }
     }

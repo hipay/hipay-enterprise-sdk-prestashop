@@ -158,8 +158,7 @@
                     </span>
                 </div>
             </div>
-            <!-- SWITCH MODE END -->        
-
+            <!-- SWITCH MODE END -->
 
             <!-- SWITCH MODE START -->
             <div class="form-group">
@@ -210,7 +209,29 @@
                     </span>
                 </div>
             </div>
-            <!-- SWITCH MODE END -->      
+            <!-- SWITCH MODE END -->
+            <div class="form-group">
+                <label class="control-label col-lg-3">
+                    <span class="label-tooltip"
+                          data-toggle="tooltip"
+                          data-html="true"
+                          title=""
+                          data-original-title="{l s='Logs infos' mod='hipay_enterprise'}">
+                        {l s='Logs infos' mod='hipay_enterprise'}
+                    </span>
+                </label>
+                <div class="col-lg-9">
+                    <span class="switch prestashop-switch fixed-width-lg">
+                        <input type="radio" name="log_infos" id="log_infos_switchmode_on" value="1"
+                               {if $config_hipay.payment.global.log_infos }checked="checked"{/if}>
+                        <label for="log_infos_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                        <input type="radio" name="log_infos" id="log_infos_switchmode_off" value="0"
+                               {if $config_hipay.payment.global.log_infos == false}checked="checked"{/if}>
+                        <label for="log_infos_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                        <a class="slide-button btn"></a>
+                    </span>
+                </div>
+            </div>
 
             <div class="form-group">
                 <label class="control-label col-lg-3">
