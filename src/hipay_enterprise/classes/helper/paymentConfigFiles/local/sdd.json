@@ -50,7 +50,9 @@
         },
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",
-          "type": "text"
+          "type": "text",
+          "required" : true,
+          "controlType" : "bic"
         }
       }
     }
