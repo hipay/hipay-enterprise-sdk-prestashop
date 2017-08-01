@@ -25,7 +25,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
     )
     {
         parent::__construct($moduleInstance,
-                            $cart);
+            $cart);
         $this->params = $params;
         $this->moto   = (isset($params["moto"]) && $params["moto"]) ? true : false;
     }
@@ -123,6 +123,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->cid                  = (int) $this->customer->id;
         $order->ipaddr               = $_SERVER ['REMOTE_ADDR'];
         $order->language             = $this->getLanguageCode($this->context->language->iso_code);
+        $order->http_user_agent      = $_SERVER ['HTTP_USER_AGENT'];
         $order->basket               = $this->params["basket"];
         $order->delivery_information = $this->params["delivery_informations"];
     }
@@ -178,7 +179,8 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerBillingInfo()
     {
-        $billingInfo = new CustomerBillingInfoFormatter($this->module, $this->cart);
+        $billingInfo = new CustomerBillingInfoFormatter($this->module,
+            $this->cart);
 
         return $billingInfo->generate();
     }
@@ -189,7 +191,8 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerShippingInfo()
     {
-        $billingInfo = new CustomerShippingInfoFormatter($this->module, $this->cart);
+        $billingInfo = new CustomerShippingInfoFormatter($this->module,
+            $this->cart);
 
         return $billingInfo->generate();
     }

@@ -58,7 +58,7 @@
 <script>
 
     var activatedCreditCard = {$activatedCreditCard nofilter};
-    var activatedCreditCardError = '{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}';
+    var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
     {if $confHipay.account.global.sandbox_mode}
     var api_tokenjs_mode = 'stage';
     var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
