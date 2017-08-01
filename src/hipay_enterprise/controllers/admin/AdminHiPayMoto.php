@@ -64,12 +64,21 @@ class AdminHiPayMotoController extends ModuleAdminController
             if (!Validate::isLoadedObject($this->order)) {
                 throw new PrestaShopException('Can\'t load Order object');
             }
+
+            $token = Tools::getValue('hipaytoken');
+
+            // check requesty integrity
+            if ($token != HipayHelper::getHipayAdminToken('AdminOrders',
+                    $this->order->id)) {
+                throw new PrestaShopException('Can\'t load Order object');
+            }
+
             ShopUrl::cacheMainDomainForShop((int) $this->order->id_shop);
 
             switch (Tools::getValue('hipaystatus')) {
                 case 'valid' :
                     $this->context->cookie->__set('hipay_success',
-                                                  $this->module->l('The payment has been processed'));
+                        $this->module->l('The payment has been processed'));
 
                     if ($this->order->getCurrentState() == Configuration::get(
                             'HIPAY_OS_MOTO_PENDING',
@@ -81,9 +90,12 @@ class AdminHiPayMotoController extends ModuleAdminController
                         $orderHistory           = new OrderHistory();
                         $orderHistory->id_order = $this->order->id;
                         $orderHistory->changeIdOrderState(
-                            Configuration::get('HIPAY_OS_PENDING',null,null,1),
-                                $this->order,
-                                true
+                            Configuration::get('HIPAY_OS_PENDING',
+                                null,
+                                null,
+                                1),
+                            $this->order,
+                            true
                         );
 
                         $orderHistory->addWithemail(true);
@@ -92,19 +104,19 @@ class AdminHiPayMotoController extends ModuleAdminController
                     break;
                 case 'decline' :
                     $this->context->cookie->__set('hipay_errors',
-                                                  $this->module->l('The payment has been declined'));
+                        $this->module->l('The payment has been declined'));
                     break;
                 case 'pending' :
                     $this->context->cookie->__set('hipay_errors',
-                                                  $this->module->l('The payment is pending'));
+                        $this->module->l('The payment is pending'));
                     break;
                 case 'exception' :
                     $this->context->cookie->__set('hipay_errors',
-                                                  $this->module->l('There was an error with your payment'));
+                        $this->module->l('There was an error with your payment'));
                     break;
                 case 'cancel' :
                     $this->context->cookie->__set('hipay_errors',
-                                                  $this->module->l('The payment has been canceled'));
+                        $this->module->l('The payment has been canceled'));
                     break;
             }
         }

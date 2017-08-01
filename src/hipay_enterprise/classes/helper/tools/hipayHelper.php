@@ -22,8 +22,8 @@ class HipayHelper
         $context                    = Context::getContext();
         $cart                       = new Cart($context->cookie->id_cart);
         unset($context->cookie->id_cart,
-              $cart,
-              $context->cookie->checkedTOS);
+            $cart,
+            $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
         $context->cookie->update();
@@ -41,7 +41,7 @@ class HipayHelper
     $signature, $config, $fromNotification = false, $moto = false
     )
     {
-        $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
+        $passphrase     = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
                 : $config["account"]["production"]["api_secret_passphrase_production"];
         $passphraseMoto = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
                 : $config["account"]["production"]["api_secret_passphrase_production"];
@@ -118,18 +118,18 @@ class HipayHelper
     {
         // replace non letter or digits by -
         $text = preg_replace('#[^\\pL\d]+#u',
-                             '-',
-                             $text);
+            '-',
+            $text);
 
         // trim
         $text = trim($text,
-                     '-');
+            '-');
 
         // transliterate
         if (function_exists('iconv')) {
             $text = iconv('utf-8',
-                          'us-ascii//TRANSLIT',
-                          $text);
+                'us-ascii//TRANSLIT',
+                $text);
         }
 
         // lowercase
@@ -137,8 +137,8 @@ class HipayHelper
 
         // remove unwanted characters
         $text = preg_replace('#[^-\w]+#',
-                             '',
-                             $text);
+            '',
+            $text);
 
         if (empty($text)) {
             return 'n-a';
@@ -153,12 +153,37 @@ class HipayHelper
      */
     public static function getAdminUrl()
     {
-        $admin       = explode(DIRECTORY_SEPARATOR,
-                               _PS_ADMIN_DIR_);
-        $adminFolder = array_pop((array_slice($admin,
-                                              -1)));
-        $adminUrl    = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder;
+        if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+            $admin       = explode(DIRECTORY_SEPARATOR,
+                _PS_ADMIN_DIR_);
+            $adminFolder = array_pop((array_slice($admin,
+                    -1)));
+            $adminUrl    = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder.'/';
+        } else {
+            $adminUrl = '';
+        }
+        return $adminUrl;
+    }
 
-        return $adminUrl.'/';
+    /**
+     * Generate unique token
+     * @param type $cartId
+     * @param type $page
+     * @return type
+     */
+    public static function getHipayToken($cartId, $page = 'validation.php')
+    {
+        return md5(Tools::getToken($page).$cartId);
+    }
+
+    /**
+     * Generate unique admin token
+     * @param type $cartId
+     * @param type $page
+     * @return type
+     */
+    public static function getHipayAdminToken($tab, $orderID)
+    {
+        return md5(Tools::getAdminTokenLite($tab).$orderID);
     }
 }
