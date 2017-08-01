@@ -26,7 +26,7 @@ class HipayConfig
     {
         $this->context       = Context::getContext();
         $this->module        = $module_instance;
-        $this->jsonFilesPath = _PS_ROOT_DIR_._MODULE_DIR_.$this->module->name."/classes/helper/paymentConfigFiles/";
+        $this->jsonFilesPath = dirname(__FILE__)."/../paymentConfigFiles/";
     }
 
     /**

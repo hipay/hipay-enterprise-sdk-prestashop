@@ -661,7 +661,9 @@ class Hipay_enterprise extends PaymentModule
                     $this->name,
                     'notify',
                     array(),
-                    true
+                    true,
+                    null,
+                    (int)Configuration::get('PS_SHOP_DEFAULT')
                 ),
                 'ipaddr' => $_SERVER ['REMOTE_ADDR'],
                 'psCategories' => $psCategories,
