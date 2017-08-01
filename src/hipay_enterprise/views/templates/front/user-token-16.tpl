@@ -72,3 +72,14 @@
         </a>
     </li>
 </ul>
+{if $savedCC }
+    <script>
+        $(".delTokenForm").submit(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (confirm("{l s='Are you sure to delete this card ?' mod='hipay_enterprise'}")) {
+                this.submit();
+            }
+        });
+    </script>
+{/if}
