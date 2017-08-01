@@ -38,7 +38,7 @@
                         {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                         <span>
                             {if $configHipay.payment.global.operating_mode != 'api'}
-                                <em>{l s='You will be redirected to an external payment page' mod='hipay_enterprise'}</em>
+                                <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                             {/if}
                             {if isset($hipay_prod) && (!$hipay_prod)}
                                 <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
@@ -84,7 +84,7 @@
                                 {l s='Pay by' mod='hipay_enterprise' } {$local_payment.displayName}
                                 <span>
                                     {if $configHipay.payment.global.operating_mode != 'api'}
-                                        <em>{l s='You will be redirected to an external payment page' mod='hipay_enterprise'}</em>
+                                        <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                                     {/if}
                                     {if isset($hipay_prod) && (!$hipay_prod)}
                                         <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>

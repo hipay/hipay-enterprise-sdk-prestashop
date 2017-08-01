@@ -1,11 +1,8 @@
 .hipay-form-17 {
     margin: 0 auto;
     margin-top: 15px;
+    width: 275px;
     margin-bottom: 15px;
-}
-
-.hipay-form-17 input, select{
-    background-color: #FDFDFD !important;
 }
 
 .error-input-hp{
