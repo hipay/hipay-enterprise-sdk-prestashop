@@ -1,7 +1,8 @@
 .hipay-form-17 {
-    margin: 0 auto;
     margin-top: 15px;
     margin-bottom: 15px;
+    margin-left: 2.875rem;
+
 }
 
 .hipay-form-17 input, .hipay-form-17 select{
@@ -19,4 +20,8 @@
 
 .input-hp{
     border: 1px solid rgba(0,0,0,.15);
+}
+
+.card-img{
+    margin-bottom: 1.05em;
 }

@@ -71,7 +71,7 @@
             <br/>
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
             <br/>
-            {if $confHipay.payment.global.card_token}
+            {if $confHipay.payment.global.card_token && !$is_guest}
                 <div class="checkbox">
                     <label for="newsletter">
                         <div class="checker" id="uniform-newsletter">

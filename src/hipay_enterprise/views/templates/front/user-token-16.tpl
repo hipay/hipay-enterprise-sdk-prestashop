@@ -25,10 +25,10 @@
         <table id="order-list" class="table table-bordered footab default footable-loaded footable">
             <thead>
                 <tr>
-                    <th>{l s='Card number' mod='hipay_enterprise'}</th>
-                    <th>{l s='Card owner' mod='hipay_enterprise'}</th>
-                    <th>{l s='Expiration date' mod='hipay_enterprise'}</th>
-                    <th>{l s='Action' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card number' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card owner' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Expiration date' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Actions' mod='hipay_enterprise'}</th>
                 </tr>
             </thead>
             <tbody>

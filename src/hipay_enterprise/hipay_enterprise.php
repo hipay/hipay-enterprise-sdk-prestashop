@@ -48,6 +48,7 @@ class Hipay_enterprise extends PaymentModule
         // init query object
         $this->db = new HipayDBQuery($this);
 
+        $this->token = new HipayCCToken($this);
 
         parent::__construct();
 
@@ -102,6 +103,8 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
         $return &= $this->registerHook('updateCarrier');
+        $return &= $this->registerHook('actionAdminDeleteBefore');
+        $return &= $this->registerHook('actionAdminBulKDeleteBefore');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
             $return   = $return && $return17;
@@ -110,6 +113,32 @@ class Hipay_enterprise extends PaymentModule
             $return   = $return && $return16;
         }
         return $return;
+    }
+
+    /**
+     * Delete customer.
+     *
+     * @param $value
+     */
+    public function hookActionAdminDeleteBefore($value)
+    {
+        if (Tools::getValue('id_customer')) {
+            $this->token->deleteAllToken(Tools::getValue('id_customer'));
+        }
+    }
+
+    /**
+     * Bulk customer delete.
+     *
+     * @param $value
+     */
+    public function hookActionAdminBulKDeleteBefore($value)
+    {
+        if (Tools::getValue('customerBox')) {
+            foreach(Tools::getValue('customerBox') as $customerId){
+                $this->token->deleteAllToken($customerId);
+            }
+        }
     }
 
     public function hookUpdateCarrier($params)
@@ -1661,4 +1690,5 @@ require_once(dirname(__FILE__).'/classes/helper/tools/hipayConfig.php');
 require_once(dirname(__FILE__).'/classes/helper/forms/hipayForm.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayMapper.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayFormControl.php');

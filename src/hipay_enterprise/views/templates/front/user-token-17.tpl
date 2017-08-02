@@ -21,10 +21,10 @@
         <table class="table table-striped table-bordered hidden-sm-down">
             <thead class="thead-default">
                 <tr>
-                    <th>{l s='Card number' mod='hipay_enterprise'}</th>
-                    <th>{l s='Card owner' mod='hipay_enterprise'}</th>
-                    <th>{l s='Expiration date' mod='hipay_enterprise'}</th>
-                    <th>{l s='Action' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card number' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card owner' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Expiration date' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Actions' mod='hipay_enterprise'}</th>
                 </tr>
             </thead>
             <tbody>

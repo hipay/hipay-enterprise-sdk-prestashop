@@ -25,8 +25,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
     {
         parent::__construct($module);
         $this->cardToken = $params['cardtoken'];
-        $this->oneClick  = (isset($params['oneClick']) && $params['oneClick']) ? true
-                : false;
+        $this->oneClick  = (isset($params['oneClick']) && $params['oneClick']) ? true : false;
     }
 
     /**
@@ -49,7 +48,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
     protected function mapRequest(&$cardTokenRequest)
     {
         $cardTokenRequest->cardtoken                = $this->cardToken;
-        $cardTokenRequest->eci                      = ECI::SECURE_ECOMMERCE;
+        $cardTokenRequest->eci                      = ($this->oneClick) ? ECI::RECURRING_ECOMMERCE : ECI::SECURE_ECOMMERCE;
         $cardTokenRequest->authentication_indicator = $this->setAuthenticationIndicator();
     }
 
@@ -70,7 +69,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
                             $cartSummary[$rule["field"]],
                             html_entity_decode($rule["operator"]),
-                                               $rule["value"]
+                            $rule["value"]
                         )
                     ) {
                         return 0;
@@ -84,7 +83,7 @@ class CardTokenFormatter extends ApiFormatterAbstract
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
                             (int) $cartSummary[$rule["field"]],
                             html_entity_decode($rule["operator"]),
-                                               (int) $rule["value"]
+                            (int) $rule["value"]
                         )
                     ) {
                         return 0;
