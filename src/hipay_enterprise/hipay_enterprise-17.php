@@ -14,6 +14,8 @@ require_once(dirname(__FILE__).'/translations/HipayStrings.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
+
+
 class HipayEnterpriseNew extends Hipay_enterprise
 {
 
@@ -68,6 +70,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hipayExternalPaymentOption($params)
     {
+        $this->logs->logErrors("hipayExternalPaymentOption");
         $address  = new Address((int) $params['cart']->id_address_delivery);
         $country  = new Country((int) $address->id_country);
         $currency = new Currency((int) $params['cart']->id_currency);
@@ -79,7 +82,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $country,
             $currency
         );
-
         $paymentOptions = array();
         try {
 

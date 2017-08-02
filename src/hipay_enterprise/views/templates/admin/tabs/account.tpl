@@ -28,7 +28,7 @@
                                 <input type="radio" name="sandbox_mode" id="account_switchmode_off" value="0"
                                        {if $config_hipay.account.global.sandbox_mode == false}checked="checked"{/if}>
                                 <label for="account_switchmode_off">{l s='Live' mod='hipay_enterprise'}</label>
-                                <a class="slide-button btn"></a>
+                                <a class="slide-button btn production-switch"></a>
                             </span>
                             <p class="help-block">
                                 {l s='When in test mode, payment cards are not really charged. Enable this options for testing purposes only.' mod='hipay_enterprise'}
