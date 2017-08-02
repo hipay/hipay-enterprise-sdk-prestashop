@@ -31,7 +31,7 @@ class HipayCCToken
 
         if (!$this->tokenExist($customerId, $card["token"])
         ) {
-            $this->module->getLogs()->logsInfos("# SaveCCToken for customer ID $customerId");
+            $this->module->getLogs()->logInfos("# SaveCCToken for customer ID $customerId");
             $card = array_merge(
                 array("customer_id" => $customerId),
                 $card
