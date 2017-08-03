@@ -19,7 +19,8 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
 {
     public function __construct(
         $module,
-        $params
+        $params,
+        $maintenanceData
     ) {
         parent::__construct($module);
         $this->params = $params;
@@ -37,6 +38,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->db = new HipayDBQuery($module);
         $this->cart = ($this->order) ? new Cart($this->order->id_cart)
             : false;
+        $this->maintenanceData = $maintenanceData;
     }
 
     /**
@@ -100,7 +102,8 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             
             $cart = new CartMaintenanceFormatter(
                 $this->module,
-                $params
+                $params,
+                $this->maintenanceData
             );
 
             $maintenance->basket = $cart->generate();

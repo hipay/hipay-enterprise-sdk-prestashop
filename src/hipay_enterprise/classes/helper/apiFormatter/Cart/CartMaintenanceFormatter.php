@@ -17,7 +17,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
 {
 
     public function __construct(
-    $module, $params
+    $module, $params, $maintenanceData
     )
     {
         $this->module           = $module;
@@ -31,6 +31,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->mapper           = new HipayMapper($module);
         $this->totalItem        = 0;
         $this->db               = new HipayDBQuery($module);
+        $this->maintenanceData = $maintenanceData;
     }
 
     /**
@@ -155,7 +156,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             "amount" => Tools::ps_round($item->getTotalAmount(),
                 2)
         );
-        $this->db->setCaptureOrRefundOrder($captureData);
+        $this->maintenanceData->addItem($captureData);
 
         return $item;
     }
