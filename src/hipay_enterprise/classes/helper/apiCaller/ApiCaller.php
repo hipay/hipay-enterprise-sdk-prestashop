@@ -107,7 +107,8 @@ class ApiCaller
                 null,
                 $maintenanceRequest
             );
-
+//            var_dump($transaction);
+//            die();
             return $transaction;
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logErrors($e);

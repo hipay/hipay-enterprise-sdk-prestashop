@@ -76,6 +76,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         HipayOrderMessage::captureOrRefundAttemptMessage(
             $this->operation,
             $this->order->id,
+            $this->order->id_customer,
             ($transactionAttempt["attempt"] + 1),
             $transactionAttempt["message_id"]
         );

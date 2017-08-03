@@ -56,10 +56,17 @@ class HipayNotification
             die('Cart empty');
         }
 
+        // forced shop
+        Shop::setContext(
+            Shop::CONTEXT_SHOP,
+            $this->cart->id_shop
+        );
+        
         if ($this->cart->orderExists()) {
             // il existe une commande associée à ce panier
             $this->orderExist = true;
             // init de l'id de commande
+            // can't use Order::getOrderByCartId 'cause
             $idOrder          = Order::getOrderByCartId($this->cart->id);
             if ($idOrder) {
                 $this->order = new Order((int) $idOrder);
@@ -493,6 +500,7 @@ class HipayNotification
     {
         HipayOrderMessage::captureMessage(
             $this->order->id,
+            $this->order->id_customer,
             $this->transaction
         );
     }
@@ -527,7 +535,6 @@ class HipayNotification
      */
     private function addOrderMessage()
     {
-
         $data = array(
             "order_id" => $this->order->id,
             "transaction_ref" => $this->transaction->getTransactionReference(),
@@ -547,6 +554,7 @@ class HipayNotification
         $this->db->setHipayTransaction($data);
         HipayOrderMessage::orderMessage(
             $this->order->id,
+            $this->order->id_customer,
             $this->transaction
         );
     }

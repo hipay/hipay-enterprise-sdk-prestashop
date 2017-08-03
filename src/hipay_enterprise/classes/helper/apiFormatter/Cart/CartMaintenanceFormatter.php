@@ -8,7 +8,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../ApiFormatterInterface.php');
 require_once(dirname(__FILE__).'/../../tools/hipayMapper.php');
@@ -96,8 +95,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->totalItem += $quantity;
 
         $discount     = -1 * Tools::ps_round(
-                ($product["price_without_reduction"] * $product["cart_quantity"])
-                - ($product["price_with_reduction"] * $product["cart_quantity"]),
+                ($product["price_without_reduction"] * $product["cart_quantity"]) - ($product["price_with_reduction"] * $product["cart_quantity"]),
                 2
         );
         $total_amount = Tools::ps_round(
@@ -154,8 +152,9 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             "hp_ps_product_id" => $product["id_product"],
             "type" => $this->operation,
             "quantity" => $item->getQuantity(),
-            "amount" => Tools::ps_round($item->getTotalAmount(),2)
-            );
+            "amount" => Tools::ps_round($item->getTotalAmount(),
+                2)
+        );
         $this->db->setCaptureOrRefundOrder($captureData);
 
         return $item;
@@ -174,14 +173,14 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $total_amount         = 0;
 
         foreach ($this->discounts as $disc) {
-            $product_reference[] = HipayHelper::getDiscountRef($disc);
-            $name[] = $disc["name"];
+            $product_reference[]    = HipayHelper::getDiscountRef($disc);
+            $name[]                 = $disc["name"];
             $unit_price += -1 * Tools::ps_round(
                     $disc["value_real"],
                     3
             );
-            $tax_rate = 0.00;
-            $discount = 0.00;
+            $tax_rate               = 0.00;
+            $discount               = 0.00;
             $discount_description[] = $disc["description"];
             $total_amount += -1 * Tools::ps_round(
                     $disc["value_real"],
@@ -198,9 +197,12 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
                 3
         );
 
-        $product_reference = join("/", $product_reference);
-        $name = join("/", $name);
-        $discount_description = join("/", $discount_description);
+        $product_reference    = join("/",
+            $product_reference);
+        $name                 = join("/",
+            $name);
+        $discount_description = join("/",
+            $discount_description);
 
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeDiscount(
                 $product_reference,
@@ -242,7 +244,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         // forced category
         $item->setProductCategory(1);
 
-        HipayOrderMessage::captureOrRefundFeesMessage($this->order->id,$this->operation);
+        HipayOrderMessage::captureOrRefundFeesMessage(
+            $this->order->id,
+            $this->order->id_customer,
+            $this->operation
+        );
 
         return $item;
     }

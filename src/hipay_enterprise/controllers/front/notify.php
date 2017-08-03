@@ -26,10 +26,8 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $this->module->getLogs()->logErrors('Notify : postProcess => Module Disable');
             die;
         }
-
         $params = $_POST;
         $transactionReference = $params["transaction_reference"];
-
         // Process log from notification
         $this->module->getLogs()->logCallback($params);
 
@@ -63,7 +61,6 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
             die('Bad Callback initiated - signature');
         }
-
         $notificationHandler->processTransaction();
         die();
     }
