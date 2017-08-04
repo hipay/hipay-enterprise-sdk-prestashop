@@ -1,6 +1,10 @@
 {
   "name": "banco-do-brasil",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Banco do brazil",
     "displayName": "Banco do brazil",
     "activated": 0,

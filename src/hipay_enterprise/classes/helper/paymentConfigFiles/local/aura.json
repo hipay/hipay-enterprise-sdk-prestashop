@@ -1,6 +1,10 @@
 {
   "name": "aura",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Aura",
     "displayName": "Aura",
     "activated": 0,

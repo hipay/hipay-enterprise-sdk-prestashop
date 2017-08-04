@@ -1,6 +1,10 @@
 {
   "name": "banamex",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Banamex",
     "displayName": "Banamex",
     "activated": 0,

@@ -1,6 +1,10 @@
 {
   "name": "caixa",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Caïxa",
     "displayName": "Caïxa",
     "activated": 0,

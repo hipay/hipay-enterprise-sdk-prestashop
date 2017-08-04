@@ -1,6 +1,10 @@
 {
   "name": "bbva-bancomer",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "BBVA Bancomer",
     "displayName": "BBVA Bancomer",
     "activated": 0,
