@@ -181,24 +181,24 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $name[]                 = $disc["name"];
             $unit_price += -1 * Tools::ps_round(
                     $disc["value_real"],
-                    3
+                    2
             );
             $tax_rate               = 0.00;
             $discount               = 0.00;
             $discount_description[] = $disc["description"];
             $total_amount += -1 * Tools::ps_round(
                     $disc["value_real"],
-                    3
+                    2
             );
         }
 
         $unit_price   = Tools::ps_round(
                 ($unit_price * $totalQty) / $this->totalItem,
-                3
+                2
         );
         $total_amount = Tools::ps_round(
                 ($total_amount * $totalQty) / $this->totalItem,
-                3
+                2
         );
 
         $product_reference    = join("/",
