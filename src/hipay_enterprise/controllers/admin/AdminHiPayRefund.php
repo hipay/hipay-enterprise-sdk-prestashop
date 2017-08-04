@@ -154,6 +154,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $this->params["refundItems"] = $refundItems;
                 $this->params["capture_refund_fee"] = Tools::getValue('hipay_refund_fee');
             } else {
+                $this->params["capture_refund_fee"] = true;
                 $this->params["refundItems"] = "full";
             }
 

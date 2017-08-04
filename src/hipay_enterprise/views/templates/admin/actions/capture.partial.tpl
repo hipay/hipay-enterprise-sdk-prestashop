@@ -119,6 +119,30 @@
                                     {/if}
                                 </td>
                             </tr>
+                            {foreach $discounts as $discount}
+                                <tr>
+                                    <td></td>
+                                    <td>{l s='Discount'} {$discount.name}</td>
+                                    <td>
+                                         <span>
+                                             {displayPrice price=$discount.value currency=$id_currency}
+                                        <span>
+                                    </td>
+                                    {*
+                                    <td>
+                                        {if $shippingCost > 0 }
+                                            {if !$capturedFees}
+                                                <input type="checkbox" name="hipay_capture_fee"> {l s='Capture fee(s)'}
+                                            {else}
+                                                <span class="badge badge-success">Captured</span>
+                                            {/if}
+                                        {else}
+                                            {displayPrice price=0 currency=$id_currency}
+                                        {/if}
+                                    </td>
+                                    *}
+                                </tr>
+                            {/foreach}
                         </tfoot>
                     </table>
                 {/if}

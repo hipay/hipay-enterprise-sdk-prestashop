@@ -150,6 +150,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->params["refundItems"] = $refundItems;
                 $this->params["capture_refund_fee"] = Tools::getValue('hipay_capture_fee');
             } else {
+                $this->params["capture_refund_fee"] = true;
                 $this->params["refundItems"] = "full";
             }
             $this->apiHandler->handleCapture($this->params);

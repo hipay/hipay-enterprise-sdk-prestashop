@@ -11,7 +11,8 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-ini_set('display_errors', 1);
+ini_set('display_errors',
+    1);
 error_reporting(E_ALL);
 
 class Hipay_enterprise extends PaymentModule
@@ -137,7 +138,7 @@ class Hipay_enterprise extends PaymentModule
     public function hookActionAdminBulKDeleteBefore($value)
     {
         if (Tools::getValue('customerBox')) {
-            foreach(Tools::getValue('customerBox') as $customerId){
+            foreach (Tools::getValue('customerBox') as $customerId) {
                 $this->token->deleteAllToken($customerId);
             }
         }
@@ -365,6 +366,7 @@ class Hipay_enterprise extends PaymentModule
         $employeeId        = $this->context->employee->id;
         $basket            = $this->db->getOrderBasket($order->id);
         $products          = $order->getProducts();
+        $discounts         = $order->getCartRules();
         $capturedFees      = $this->db->feesAreCaptured($order->id);
         $amountFees        = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
         $refundedFees      = $this->db->feesAreRefunded($order->id);
@@ -563,6 +565,7 @@ class Hipay_enterprise extends PaymentModule
                 'capturedFees' => $capturedFees,
                 'refundedFees' => $refundedFees,
                 'products' => $products,
+                'discounts' => $discounts,
                 'totallyRefunded' => $totallyRefunded,
                 'showMoto' => $showMoto,
                 'cartId' => $cart->id,
