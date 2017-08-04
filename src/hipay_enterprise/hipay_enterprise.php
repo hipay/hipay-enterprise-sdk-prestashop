@@ -373,7 +373,6 @@ class Hipay_enterprise extends PaymentModule
         $totallyRefunded   = true;
         $id_currency       = $order->id_currency;
 
-
         foreach ($order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
                 >= $product["product_quantity"]);
@@ -1674,7 +1673,7 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-        //  $this->db->deleteOrderRefundCaptureTable();
+//        $this->db->deleteOrderRefundCaptureTable();
         $this->db->deleteCCTokenTable();
         return true;
     }

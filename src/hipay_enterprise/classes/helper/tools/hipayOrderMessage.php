@@ -112,47 +112,6 @@ class HipayOrderMessage
     }
 
     /**
-     * wrtie or update number of refund or capture request
-     * @param type $type
-     * @param type $orderId
-     * @param type $attempt
-     * @param type $messageId
-     */
-    public static function captureOrRefundAttemptMessage(
-    $type, $orderId, $customerId, $attempt, $messageId = false
-    )
-    {
-        $data = Tools::jsonEncode(array($type."_attempt" => $attempt));
-        if (!$messageId) {
-            HipayOrderMessage::addMessage(
-                $orderId,
-                $customerId,
-                $data
-            );
-        } else {
-            $updatedMsg          = new Message($messageId);
-            $updatedMsg->message = $data;
-            $updatedMsg->save();
-        }
-    }
-
-    /**
-     * write message when fees are refunded or captured
-     * @param type $orderId
-     */
-    public static function captureOrRefundFeesMessage(
-    $orderId, $customerId, $type
-    )
-    {
-        $data = Tools::jsonEncode(array("fees_".$type => 1));
-        HipayOrderMessage::addMessage(
-            $orderId,
-            $customerId,
-            $data
-        );
-    }
-
-    /**
      * generic function to add prestashop order message
      * @param type $orderId
      * @param type $data

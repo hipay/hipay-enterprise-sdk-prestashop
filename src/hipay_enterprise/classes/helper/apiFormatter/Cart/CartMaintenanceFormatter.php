@@ -20,18 +20,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     $module, $params, $maintenanceData
     )
     {
-        $this->module           = $module;
-        $this->context          = Context::getContext();
-        $this->configHipay      = $this->module->hipayConfigTool->getConfigHipay();
-        $this->products         = $params["products"];
-        $this->discounts        = $params["discounts"];
-        $this->order            = $params["order"];
-        $this->operation        = $params["operation"];
-        $this->captureRefundFee = $params["captureRefundFee"];
-        $this->mapper           = new HipayMapper($module);
-        $this->totalItem        = 0;
-        $this->db               = new HipayDBQuery($module);
-        $this->maintenanceData = $maintenanceData;
+        $this->module             = $module;
+        $this->context            = Context::getContext();
+        $this->configHipay        = $this->module->hipayConfigTool->getConfigHipay();
+        $this->products           = $params["products"];
+        $this->discounts          = $params["discounts"];
+        $this->order              = $params["order"];
+        $this->operation          = $params["operation"];
+        $this->captureRefundFee   = $params["captureRefundFee"];
+        $this->transactionAttempt = $params["transactionAttempt"];
+        $this->mapper             = new HipayMapper($module);
+        $this->totalItem          = 0;
+        $this->db                 = new HipayDBQuery($module);
+        $this->maintenanceData    = $maintenanceData;
     }
 
     /**
@@ -151,7 +152,9 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $captureData = array(
             "hp_ps_order_id" => $this->order->id,
             "hp_ps_product_id" => $product["id_product"],
-            "type" => $this->operation,
+            "operation" => $this->operation,
+            "type" => 'good',
+            "attempt_number" => $this->transactionAttempt + 1,
             "quantity" => $item->getQuantity(),
             "amount" => Tools::ps_round($item->getTotalAmount(),
                 2)
@@ -245,11 +248,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         // forced category
         $item->setProductCategory(1);
 
-        HipayOrderMessage::captureOrRefundFeesMessage(
-            $this->order->id,
-            $this->order->id_customer,
-            $this->operation
+
+
+        //save capture items and quantity in prestashop
+        $captureData = array(
+            "hp_ps_order_id" => $this->order->id,
+            "hp_ps_product_id" => 0,
+            "operation" => $this->operation,
+            "type" => 'fees',
+            "attempt_number" => $this->transactionAttempt + 1,
+            "quantity" => 1,
+            "amount" => $total_amount
         );
+        $this->maintenanceData->addItem($captureData);
 
         return $item;
     }

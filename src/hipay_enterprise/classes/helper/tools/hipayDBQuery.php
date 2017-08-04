@@ -78,7 +78,9 @@ class HipayDBQuery
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `hp_ps_order_id` INT(10) UNSIGNED NOT NULL,
                 `hp_ps_product_id` INT(10) UNSIGNED NOT NULL,
+                `operation` VARCHAR(255)  NOT NULL,
                 `type` VARCHAR(255)  NOT NULL,
+                `attempt_number` INT(10) UNSIGNED NOT NULL,
                 `quantity` INT(10) UNSIGNED NOT NULL,
                 `amount` DECIMAL(5,2) UNSIGNED NOT NULL,
                 PRIMARY KEY (`hp_id`)
@@ -642,16 +644,14 @@ class HipayDBQuery
     /**
      * get capture or refund saved data (basket)
      * @param type $orderId
-     * @param type $type
+     * @param type $operation
      * @return type
      */
-    private function getCapturedOrRefundedItems(
-    $orderId, $type
-    )
+    private function getCapturedOrRefundedItems($orderId, $operation)
     {
-        $sql = 'SELECT `hp_ps_product_id`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
+        $sql = 'SELECT `hp_ps_product_id`, `operation`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
-                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `type` = "'.pSQL($type).'"'.
+                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.pSQL($operation).'" AND `type` = "good"'.
             ' GROUP BY `hp_ps_product_id`';
 
         $result          = Db::getInstance()->executeS($sql);
@@ -663,68 +663,65 @@ class HipayDBQuery
     }
 
     /**
-     * get number of capture or refund request and message id containing this information
+     * get number of capture or refund attempt
      * @param type $type
      * @param type $orderId
      * @return type
      */
-    public function getCaptureOrRefundAttempt(
-    $type, $orderId
-    )
+    public function getNbOperationAttempt($operation, $orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order='.pSQL(
-                (int) $orderId
-            ).' AND message LIKE \'%"'.pSQL($type).'_attempt":%\' LIMIT 1;';
+        $sql = 'SELECT `attempt_number`
+                FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
+                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.pSQL($operation).'" ORDER BY `attempt_number` DESC';
 
-        $result = Db::getInstance()->executeS($sql);
-        if (!empty($result)) {
-            $message = Tools::jsonDecode(
-                    $result[0]["message"],
-                    true
-            );
-            return array("message_id" => $result[0]["id_message"], "attempt" => (int) $message[$type."_attempt"]);
+        $result = Db::getInstance()->getRow($sql);
+        if (isset($result['attempt_number'])) {
+            return (int) $result['attempt_number'];
         }
-        return array("message_id" => false, "attempt" => 0);
+        return 0;
     }
 
+
     /**
-     * get if is set fees captured message
+     *
      * @param type $orderId
-     * @return boolean
      */
     public function feesAreCaptured($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order='.pSQL(
-                (int) $orderId
-            ).' AND message LIKE \'%"fees_capture":1%\' LIMIT 1;';
-
-        $result = Db::getInstance()->executeS($sql);
-
-        if (!empty($result)) {
-            return true;
-        }
-
-        return false;
+        return $this->feesAreMaintained($orderId,
+            'capture');
     }
 
     /**
-     * get if is set fees refunded message
+     *
      * @param type $orderId
-     * @return boolean
      */
     public function feesAreRefunded($orderId)
     {
-        $sql = 'SELECT * FROM `'._DB_PREFIX_.'message` WHERE id_order='.pSQL(
-                (int) $orderId
-            ).' AND message LIKE \'%"fees_refund":1%\' LIMIT 1;';
+        return $this->feesAreMaintained($orderId,
+            'refund');
+    }
 
+    /**
+     *
+     * @param type $orderId
+     * @param type $operation
+     * @return boolean
+     */
+    private function feesAreMaintained($orderId, $operation)
+    {
+        $sql    = 'SELECT *
+                FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
+                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.$operation.'" AND `type` = "fees"';
         $result = Db::getInstance()->executeS($sql);
+        
         if (!empty($result)) {
             return true;
         }
 
         return false;
     }
+
 
     /**
      * check if token exist for this customer

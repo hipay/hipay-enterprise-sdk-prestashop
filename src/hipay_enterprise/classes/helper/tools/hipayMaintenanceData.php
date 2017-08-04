@@ -56,4 +56,9 @@ class HipayMaintenanceData
             }
         }
     }
+
+    public function getNbOperationAttempt($type, $orderId)
+    {
+        return $this->db->getNbOperationAttempt($type, $orderId);
+    }
 }
