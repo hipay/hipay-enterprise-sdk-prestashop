@@ -147,4 +147,7 @@
     margin-bottom: 5px;
 }
 
-
+.production-switch{
+    border: solid 1px #279CBB!important;
+    background-color: #2eacce!important;
+}

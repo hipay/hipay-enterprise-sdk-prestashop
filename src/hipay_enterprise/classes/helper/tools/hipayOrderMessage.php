@@ -22,12 +22,13 @@ class HipayOrderMessage
      * @param type $transaction
      */
     public static function orderMessage(
-    $orderId, $transaction
+    $orderId, $customerId, $transaction
     )
     {
         $data = HipayOrderMessage::formatOrderData($transaction);
         HipayOrderMessage::addMessage(
             $orderId,
+            $customerId,
             $data
         );
     }
@@ -68,12 +69,11 @@ class HipayOrderMessage
      * @param type $transaction
      */
     public static function captureMessage(
-    $orderId, $transaction
+    $orderId, $customerId, $transaction
     )
     {
-        $amount    = ($transaction->getStatus() == TransactionStatus::AUTHORIZED
-                    ? '0.00' : (($transaction->getCapturedAmount() != null) ? $transaction->getCapturedAmount()
-                        : '0.00'));
+        $amount    = ($transaction->getStatus() == TransactionStatus::AUTHORIZED ? '0.00' : (($transaction->getCapturedAmount()
+                != null) ? $transaction->getCapturedAmount() : '0.00'));
         $messages  = Message::getMessagesByOrderId(
                 $orderId,
                 true
@@ -104,49 +104,11 @@ class HipayOrderMessage
             if (Validate::isCleanHtml($data)) {
                 HipayOrderMessage::addMessage(
                     $orderId,
+                    $customerId,
                     $data
                 );
             }
         }
-    }
-
-    /**
-     * wrtie or update number of refund or capture request
-     * @param type $type
-     * @param type $orderId
-     * @param type $attempt
-     * @param type $messageId
-     */
-    public static function captureOrRefundAttemptMessage(
-    $type, $orderId, $attempt, $messageId = false
-    )
-    {
-        $data = Tools::jsonEncode(array($type."_attempt" => $attempt));
-        if (!$messageId) {
-            HipayOrderMessage::addMessage(
-                $orderId,
-                $data
-            );
-        } else {
-            $updatedMsg          = new Message($messageId);
-            $updatedMsg->message = $data;
-            $updatedMsg->save();
-        }
-    }
-
-    /**
-     * write message when fees are refunded or captured
-     * @param type $orderId
-     */
-    public static function captureOrRefundFeesMessage(
-    $orderId, $type
-    )
-    {
-        $data = Tools::jsonEncode(array("fees_".$type => 1));
-        HipayOrderMessage::addMessage(
-            $orderId,
-            $data
-        );
     }
 
     /**
@@ -155,13 +117,52 @@ class HipayOrderMessage
      * @param type $data
      */
     private static function addMessage(
-    $orderId, $data
+    $orderId, $customerId, $data
     )
     {
-        $message           = new Message();
-        $message->message  = $data;
-        $message->id_order = (int) $orderId;
-        $message->private  = 1;
-        $message->add();
+        if (_PS_VERSION_ < '1.7.1') {
+            $message           = new Message();
+            $message->message  = $data;
+            $message->id_order = (int) $orderId;
+            $message->private  = 1;
+
+            $message->add();
+        } else {
+            $customer           = new Customer($customerId);
+            $order = new Order($orderId);
+            $shop = new Shop($order->id_shop);
+            $context = Context::getContext();
+            Shop::setContext(
+                Shop::CONTEXT_SHOP,
+                 $order->id_shop
+            );
+            //Force context shop otherwise we get duplicate customer thread
+            $context->shop = $shop;
+            //check if a thread already exist
+            $id_customer_thread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email,
+                    $orderId);
+            if (!$id_customer_thread) {
+                $customer_thread              = new CustomerThread();
+                $customer_thread->id_contact  = 0;
+                $customer_thread->id_lang     = 1;
+                $customer_thread->id_customer = (int) $customerId;
+                $customer_thread->id_order    = (int) $orderId;
+                $customer_thread->status      = 'open';
+                $customer_thread->token       = Tools::passwdGen(12);
+                $customer_thread->id_shop     = (int) $context->shop->id;
+                $customer_thread->id_lang     = (int) $context->language->id;
+                $customer_thread->email       = $customer->email;
+
+                $customer_thread->add();
+            } else {
+                $customer_thread = new CustomerThread((int) $id_customer_thread);
+            }
+
+            $customer_message                     = new CustomerMessage();
+            $customer_message->id_customer_thread = $customer_thread->id;
+            $customer_message->message            = $data;
+            $customer_message->private            = 1;
+            $customer_message->add();
+        }
     }
 }

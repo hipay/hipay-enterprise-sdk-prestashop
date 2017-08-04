@@ -14,6 +14,8 @@ require_once(dirname(__FILE__).'/translations/HipayStrings.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
+
+
 class HipayEnterpriseNew extends Hipay_enterprise
 {
 
@@ -68,9 +70,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hipayExternalPaymentOption($params)
     {
+        $this->logs->logErrors("hipayExternalPaymentOption");
         $address  = new Address((int) $params['cart']->id_address_delivery);
         $country  = new Country((int) $address->id_country);
         $currency = new Currency((int) $params['cart']->id_currency);
+        $customer = new Customer((int) $params['cart']->id_customer);
 
         // get activated card for customer currency and country
         $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(
@@ -78,7 +82,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $country,
             $currency
         );
-
         $paymentOptions = array();
         try {
 
@@ -97,7 +100,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 )
                             );
                         if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                            $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page')."</p>");
+                            $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page. Please do not refresh the page during the process')."</p>");
                         }
                         $paymentOptions[] = $newOption;
                         break;
@@ -117,6 +120,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 'activatedCreditCard' => Tools::jsonEncode(array_keys($activatedCreditCard)),
                                 'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                                 'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates/hook',
+                                'is_guest' => $customer->is_guest,
                                 'action' => $this->context->link->getModuleLink(
                                     $this->name,
                                     'redirect',

@@ -12,6 +12,7 @@ require_once(dirname(__FILE__).'/../apiFormatter/Request/HostedPaymentFormatter.
 require_once(dirname(__FILE__).'/../apiFormatter/Request/DirectPostFormatter.php');
 require_once(dirname(__FILE__).'/../apiFormatter/Request/MaintenanceFormatter.php');
 require_once(dirname(__FILE__).'/../exceptions/GatewayException.php');
+require_once(dirname(__FILE__).'/../tools/hipayMaintenanceData.php');
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 /**
@@ -29,7 +30,7 @@ class ApiCaller
     {
         // HiPay Gateway
         $gatewayClient = ApiCaller::createGatewayClient($moduleInstance,
-                                                       $moto);
+                $moto);
 
         //Set data to send to the API
         $hostedPaymentFormatter = new HostedPaymentFormatter(
@@ -43,7 +44,7 @@ class ApiCaller
 
         //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
         $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest);
-        $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage ". $orderRequest->orderid);
+        $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage ".$orderRequest->orderid);
 
         return $transaction->getForwardUrl();
     }
@@ -89,11 +90,14 @@ class ApiCaller
             //Create your gateway client
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
 
+            //Manage maintenance data local storage
+            $maintenanceData = new HipayMaintenanceData($moduleInstance);
+
             //Set data to send to the API
             $maintenanceFormatter = new MaintenanceFormatter(
-
                 $moduleInstance,
-                $params
+                $params,
+                $maintenanceData
             );
 
             $maintenanceRequest = $maintenanceFormatter->generate();
@@ -107,12 +111,14 @@ class ApiCaller
                 null,
                 $maintenanceRequest
             );
-
+            // save maintenance data in db
+            $maintenanceData->saveData();
             return $transaction;
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logErrors($e);
-            throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason [' .
-                $e->getMessage() . ']', $e->getCode());
+            throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason ['.
+            $e->getMessage().']',
+            $e->getCode());
         }
     }
 
@@ -140,12 +146,11 @@ class ApiCaller
                     : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_password_production"];
         }
 
-        $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE
-                : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
+        $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
 
         $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username,
-                                                                          $password,
-                                                                          $env);
+            $password,
+            $env);
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);

@@ -21,15 +21,22 @@
                 </ol>
             </div>
             {foreach $savedCC as $cc}
-                <label>
-                    <span class="custom-radio">
-                        <input type="radio" name="ccTokenHipay" value="{$cc.token}"/>
-                        <span></span>
-                    </span>
-                    {$cc.pan} <img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> <br/>
-                    {l s='Expiration date'} : {"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}<br/>
-                    {$cc.card_holder}
-                </label>
+                <div class="form-group row">
+                    <div class="col-md-1 col-lg-1 col-xs-1 col-sm-1">
+                        <span class="custom-radio">
+                            <input type="radio" name="ccTokenHipay" value="{$cc.token}"/>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
+                        <div class="row">
+                            <span class="hipay-img col-md-2 col-xs-3"><img class="card-img" src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
+                            <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>  
+                            <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'} : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
+                            <span class="hipay-card-holder col-md-10 col-xs-9">{$cc.card_holder}</span>
+                        </div>
+                    </div>
+                </div>
                 <br/>
             {/foreach}
             <p><strong>{l s='Pay by credit or debit card' mod='hipay_enterprise'}</strong></p>
@@ -43,7 +50,7 @@
     </div>
     {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
     <br/>
-    {if $confHipay.payment.global.card_token}
+    {if $confHipay.payment.global.card_token && !$is_guest }
         <span class="custom-checkbox">
             <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
             <span><i class="material-icons checkbox-checked"></i></span>

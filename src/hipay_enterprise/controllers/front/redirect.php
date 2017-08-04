@@ -28,6 +28,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $context          = Context::getContext();
         $cart             = $context->cart;
+        $customer         = new Customer((int) $cart->id_customer);
         $this->apiHandler = new ApiHandler(
             $this->module,
             $this->context
@@ -37,9 +38,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $this->module->getLogs()->logErrors("# Cart ID is null in initContent");
             Tools::redirect('index.php?controller=order');
         }
-        $this->module->getLogs()->logInfos("# Redirect init CART ID" . $context->cart->id);
+        $this->module->getLogs()->logInfos("# Redirect init CART ID".$context->cart->id);
 
-        $this->ccToken    = new HipayCCToken($this->module);
+        $this->ccToken = new HipayCCToken($this->module);
         $context->smarty->assign(
             array(
                 'nbProducts' => $cart->nbProducts(),
@@ -65,21 +66,21 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
             case Apihandler::HOSTEDPAGE:
                 if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                    $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE, array("method" => "credit_card"));
+                    $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE,
+                        array("method" => "credit_card"));
                 } else {
                     $context->smarty->assign(
                         array(
-                            'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME, array("method" => "credit_card"))
+                            'url' => $this->apiHandler->handleCreditCard(Apihandler::IFRAME,
+                                array("method" => "credit_card"))
                         )
                     );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
-                                : '16').'paymentFormIframe.tpl';
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17' : '16').'paymentFormIframe.tpl';
                 }
                 break;
             case Apihandler::DIRECTPOST:
                 // if form is sent
-                if (Tools::getValue('card-token') && Tools::getValue('card-brand')
-                    && Tools::getValue('card-pan')
+                if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')
                 ) {
                     $path = $this->apiNewCC(
                         $cart,
@@ -89,9 +90,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
-                                        $cart,
-                                        $savedCC,
-                                        $context
+                        $cart,
+                        $savedCC,
+                        $context
                     );
                 } else {
                     $context->smarty->assign(
@@ -100,6 +101,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             'status_error_oc' => '200',
                             'cart_id' => $cart->id,
                             'savedCC' => $savedCC,
+                            'is_guest' => $customer->is_guest,
                             'amount' => $cart->getOrderTotal(
                                 true,
                                 Cart::BOTH

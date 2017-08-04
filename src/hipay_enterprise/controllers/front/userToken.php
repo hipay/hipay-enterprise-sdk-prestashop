@@ -127,13 +127,4 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
 
         return $page;
     }
-
-    /**
-     * add JS and CSS in page
-     */
-    public function setMedia()
-    {
-        parent::setMedia();
-        $this->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/user-token.js'));
-    }
 }

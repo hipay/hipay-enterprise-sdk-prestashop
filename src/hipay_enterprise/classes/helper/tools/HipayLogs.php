@@ -11,18 +11,15 @@
  */
 class HipayLogs
 {
-    const LOG_HIPAY_ERROR = 0;
-    const LOG_HIPAY_INFOS = 1;
-    const LOG_HIPAY_REQUEST = 2;
+    const LOG_HIPAY_ERROR    = 0;
+    const LOG_HIPAY_INFOS    = 1;
+    const LOG_HIPAY_REQUEST  = 2;
     const LOG_HIPAY_CALLBACK = 3;
-
     const DEBUG_KEYS_MASK = '****';
 
     public $enable = true;
     private $basePath;
-
     private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc');
-
 
     /**
      * HipayLogs constructor.
@@ -33,12 +30,12 @@ class HipayLogs
     public function __construct($module_instance, $enableConf = true)
     {
         $this->context = Context::getContext();
-        $this->module = $module_instance;
+        $this->module  = $module_instance;
 
         // Init base path for logs
-        $this->basePath = _PS_ROOT_DIR_ . '/app/logs/';
+        $this->basePath = _PS_ROOT_DIR_.'/app/logs/';
         if (!file_exists($this->basePath)) {
-            $this->basePath = _PS_ROOT_DIR_ . '/log/';
+            $this->basePath = _PS_ROOT_DIR_.'/log/';
         }
 
         $this->enable = (isset($enableConf) ? $enableConf : true);
@@ -62,7 +59,8 @@ class HipayLogs
      */
     public function logErrors($msg)
     {
-        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext() . ':' . $msg);
+        $this->writeLogs(self::LOG_HIPAY_ERROR,
+            $this->getExecutionContext().':'.$msg);
     }
 
     /**
@@ -72,10 +70,10 @@ class HipayLogs
      */
     public function logInfos($msg)
     {
-        //TODO Rebrancher
-        ///if ( $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
-            $this->writeLogs(self::LOG_HIPAY_INFOS, $msg);
-       // }
+        if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
+            $this->writeLogs(self::LOG_HIPAY_INFOS,
+                $msg);
+        }
     }
 
     /**
@@ -85,9 +83,10 @@ class HipayLogs
      */
     public function logCallback($transaction)
     {
-        $this->writeLogs(self::LOG_HIPAY_CALLBACK, print_r(
-            $this->filterDebugData($this->to_array($transaction)),
-            true
+        $this->writeLogs(self::LOG_HIPAY_CALLBACK,
+            print_r(
+                $this->filterDebugData($this->to_array($transaction)),
+                true
         ));
     }
 
@@ -98,9 +97,10 @@ class HipayLogs
      */
     public function logRequest($request)
     {
-        $this->writeLogs(self::LOG_HIPAY_REQUEST, print_r(
-            $this->filterDebugData($this->to_array($request)),
-            true
+        $this->writeLogs(self::LOG_HIPAY_REQUEST,
+            print_r(
+                $this->filterDebugData($this->to_array($request)),
+                true
         ));
     }
 
@@ -124,7 +124,9 @@ class HipayLogs
     private function writeLogs($type, $message)
     {
         $formatted_message = date('Y/m/d - H:i:s').': '.$message."\r\n";
-        return file_put_contents($this->getFilename($type), $formatted_message, FILE_APPEND);
+        return file_put_contents($this->getFilename($type),
+            $formatted_message,
+            FILE_APPEND);
     }
 
     /**
@@ -151,9 +153,8 @@ class HipayLogs
                 $filename = 'infos';
                 break;
         }
-        return $this->basePath . date('Y-m-d') . '-' . 'hipay' . '-' . $filename . '.log';
+        return $this->basePath.date('Y-m-d').'-'.'hipay'.'-'.$filename.'.log';
     }
-
 
     /**
      * Recursive filter data for privacy data
@@ -163,17 +164,18 @@ class HipayLogs
      */
     protected function filterDebugData(array $debugData)
     {
-        $debugReplacePrivateDataKeys = array_map('strtolower', $this->privateDataKeys);
+        $debugReplacePrivateDataKeys = array_map('strtolower',
+            $this->privateDataKeys);
 
         foreach (array_keys($debugData) as $key) {
-            if (in_array(strtolower($key), $debugReplacePrivateDataKeys)) {
+            if (in_array(strtolower($key),
+                    $debugReplacePrivateDataKeys)) {
                 $debugData[$key] = self::DEBUG_KEYS_MASK;
             } elseif (is_array($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($debugData[$key]);
             } elseif (is_object($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($this->to_array($debugData[$key]));
             }
-
         }
         return $debugData;
     }
@@ -184,7 +186,8 @@ class HipayLogs
      * @param $object
      * @return array
      */
-    function to_array($object) {
+    function to_array($object)
+    {
         return (array) $object;
     }
 
@@ -197,7 +200,7 @@ class HipayLogs
     {
         $debug = debug_backtrace();
         if (isset($debug[2])) {
-            return $debug[2]['class'] . ':' . $debug[2]['function'];
+            return $debug[2]['class'].':'.$debug[2]['function'];
         }
         return null;
     }

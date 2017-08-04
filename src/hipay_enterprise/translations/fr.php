@@ -207,7 +207,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_b7d2f0f194257c6728603e5
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_99938b17c91170dfb0c2f3f8bc9f2a85'] = 'Payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_95c99cc6506cbbf43fe1209282517db7'] = 'Payer par carte de crédit ou de débit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
-$_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte (paiement Oneclick)';
+$_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement Oneclick)';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est est en cours de traitement. Merci de patienter';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi16_df9ad474d8aa4ff487717e3b7f1ae570'] = 'Vous devez choisir une des cartes sauvegardées';
 $_MODULE['<{hipay_enterprise}prestashop>paymentlocalform16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';

@@ -21,10 +21,10 @@
         <table class="table table-striped table-bordered hidden-sm-down">
             <thead class="thead-default">
                 <tr>
-                    <th>{l s='Card number' mod='hipay_enterprise'}</th>
-                    <th>{l s='Card owner' mod='hipay_enterprise'}</th>
-                    <th>{l s='Expiration date' mod='hipay_enterprise'}</th>
-                    <th>{l s='Action' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card number' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Card owner' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Expiration date' mod='hipay_enterprise'}</th>
+                    <th class="text-xs-center" >{l s='Actions' mod='hipay_enterprise'}</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +49,22 @@
                 {/foreach}
             </tbody>
         </table>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', formListenerToken, false);
+
+            function formListenerToken() {
+                $(".delTokenForm").submit(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm("{l s='Are you sure to delete this card ?' mod='hipay_enterprise'}")) {
+                        this.submit();
+                    }
+                });
+
+            }
+        </script>
     {/if}
 {/block}
 
