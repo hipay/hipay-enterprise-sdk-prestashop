@@ -1,6 +1,10 @@
 {
   "name": "boleto-bancario",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Boleto bancario",
     "displayName": "Boleto bancario",
     "activated": 0,

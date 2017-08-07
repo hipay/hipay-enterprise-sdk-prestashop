@@ -123,6 +123,47 @@ class HipayConfig
     }
 
     /**
+     * update config if there's a new json uploaded
+     */
+    public function updateConfig()
+    {
+        $configFields = array();
+
+        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
+        $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
+
+        // we update only new payment method
+        $localkeys = array_diff(
+            array_keys($configFields["payment"]["local_payment"]),
+            array_keys($this->configHipay["payment"]["local_payment"])
+        );
+        $cckeys = array_diff(
+            array_keys($configFields["payment"]["credit_card"]),
+            array_keys($this->configHipay["payment"]["credit_card"])
+        );
+
+        $this->module->getLogs()->logInfos("# Update Config");
+        $this->module->getLogs()->logInfos(
+            print_r(
+                $localkeys,
+                true
+            ) .
+            print_r(
+                $cckeys,
+                true
+            )
+        );
+
+        foreach ($cckeys as $key) {
+            $this->configHipay["payment"]["credit_card"][$key] = $configFields["payment"]["credit_card"][$key];
+        }
+
+        foreach ($localkeys as $key) {
+            $this->configHipay["payment"]["local_payment"][$key] = $configFields["payment"]["local_payment"][$key];
+        }
+    }
+
+    /**
      * init module configuration
      * @return : bool
      */

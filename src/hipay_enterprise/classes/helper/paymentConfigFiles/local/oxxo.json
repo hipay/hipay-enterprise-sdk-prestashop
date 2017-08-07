@@ -1,6 +1,10 @@
 {
   "name": "oxxo",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Oxxo",
     "displayName": "Oxxo",
     "activated": 0,

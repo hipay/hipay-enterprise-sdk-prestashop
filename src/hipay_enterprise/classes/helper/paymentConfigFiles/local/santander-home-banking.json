@@ -1,6 +1,10 @@
 {
   "name": "santander-home-banking",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Santander HomeBanking",
     "displayName": "Santander HomeBanking",
     "activated": 0,
