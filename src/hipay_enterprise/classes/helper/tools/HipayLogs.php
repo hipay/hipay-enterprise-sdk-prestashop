@@ -19,7 +19,13 @@ class HipayLogs
 
     public $enable = true;
     private $basePath;
-    private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc');
+    private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc','api_password_sandbox',
+        'api_tokenjs_username_sandbox','api_tokenjs_password_publickey_sandbox','api_secret_passphrase_sandbox',
+        'api_password_production','api_tokenjs_username_production',
+        'api_tokenjs_password_publickey_production', 'api_secret_passphrase_production','api_moto_username_production',
+        'api_moto_password_production','api_moto_secret_passphrase_production');
+
+
 
     /**
      * HipayLogs constructor.
@@ -71,8 +77,17 @@ class HipayLogs
     public function logInfos($msg)
     {
         if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
-            $this->writeLogs(self::LOG_HIPAY_INFOS,
-                $msg);
+            if (is_array($msg)) {
+                $this->writeLogs(self::LOG_HIPAY_INFOS,
+                    print_r(
+                        $this->filterDebugData($msg),
+                        true
+                    ));
+            }else {
+                $this->writeLogs(self::LOG_HIPAY_INFOS,
+                    $msg);
+            }
+
         }
     }
 
@@ -168,8 +183,7 @@ class HipayLogs
             $this->privateDataKeys);
 
         foreach (array_keys($debugData) as $key) {
-            if (in_array(strtolower($key),
-                    $debugReplacePrivateDataKeys)) {
+            if (in_array(strtolower($key), $debugReplacePrivateDataKeys)) {
                 $debugData[$key] = self::DEBUG_KEYS_MASK;
             } elseif (is_array($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($debugData[$key]);

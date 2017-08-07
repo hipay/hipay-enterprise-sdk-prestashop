@@ -1009,12 +1009,8 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Module settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(),
-                    true
-                )
-            );
+            $this->logs->logInfos($this->hipayConfigTool->getConfigHipay());
+
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -1143,12 +1139,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             $this->_successes[] = $this->l('Credit card settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(),
-                    true
-                )
-            );
+            $this->logs->logInfos($this->hipayConfigTool->getConfigHipay());
             return true;
         } catch (Exception $e) {
             // LOGS

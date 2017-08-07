@@ -66,13 +66,6 @@ class HipayConfig
                 true
         );
 
-        $this->module->getLogs()->logInfos(
-            print_r(
-                $confHipay,
-                true
-            )
-        );
-
         $confHipay[$key] = $value;
         //$confHipay = array_replace_recursive($confHipay,$value);
         if (Configuration::updateValue(
