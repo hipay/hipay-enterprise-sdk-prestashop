@@ -12,8 +12,8 @@
         "countries": [
             "DE"
         ],
-        "countrySelectorReadOnly": 0,
-        "currencySelectorReadOnly": 0,
+        "countrySelectorReadOnly": 1,
+        "currencySelectorReadOnly": 1,
         "forceHpayment": 0,
         "forceBasket": 0,
         "forceHpaymentOnElectronicSignature": 0,
