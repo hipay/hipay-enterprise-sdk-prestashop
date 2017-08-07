@@ -622,7 +622,7 @@ class HipayDBQuery
      */
     public function getCapturedItems($orderId)
     {
-        return $this->getCapturedOrRefundedItems(
+        return $this->getMaintainedItems(
                 $orderId,
                 "capture"
         );
@@ -635,7 +635,7 @@ class HipayDBQuery
      */
     public function getRefundedItems($orderId)
     {
-        return $this->getCapturedOrRefundedItems(
+        return $this->getMaintainedItems(
                 $orderId,
                 "refund"
         );
@@ -647,7 +647,7 @@ class HipayDBQuery
      * @param type $operation
      * @return type
      */
-    private function getCapturedOrRefundedItems($orderId, $operation)
+    private function getMaintainedItems($orderId, $operation)
     {
         $sql = 'SELECT `hp_ps_product_id`, `operation`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
@@ -688,7 +688,8 @@ class HipayDBQuery
      */
     public function feesAreCaptured($orderId)
     {
-        return $this->feesAreMaintained($orderId,
+        return $this->feesOrDiscountAreMaintained($orderId,
+            'fees',
             'capture');
     }
 
@@ -698,7 +699,30 @@ class HipayDBQuery
      */
     public function feesAreRefunded($orderId)
     {
-        return $this->feesAreMaintained($orderId,
+        return $this->feesOrDiscountAreMaintained($orderId,
+            'fees',
+            'refund');
+    }
+
+    /**
+     *
+     * @param type $orderId
+     */
+    public function discountsAreCaptured($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId,
+            'discount',
+            'capture');
+    }
+
+    /**
+     *
+     * @param type $orderId
+     */
+    public function discountsAreRefunded($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId,
+            'discount',
             'refund');
     }
 
@@ -708,11 +732,11 @@ class HipayDBQuery
      * @param type $operation
      * @return boolean
      */
-    private function feesAreMaintained($orderId, $operation)
+    private function feesOrDiscountAreMaintained($orderId, $type ,$operation)
     {
         $sql    = 'SELECT *
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
-                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.$operation.'" AND `type` = "fees"';
+                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.$operation.'" AND `type` = "'.$type.'"';
         $result = Db::getInstance()->executeS($sql);
         
         if (!empty($result)) {

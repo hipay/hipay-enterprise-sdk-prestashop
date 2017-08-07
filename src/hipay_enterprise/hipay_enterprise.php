@@ -366,21 +366,34 @@ class Hipay_enterprise extends PaymentModule
         $employeeId        = $this->context->employee->id;
         $basket            = $this->db->getOrderBasket($order->id);
         $products          = $order->getProducts();
-        $discounts         = $order->getCartRules();
         $capturedFees      = $this->db->feesAreCaptured($order->id);
-        $amountFees        = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
         $refundedFees      = $this->db->feesAreRefunded($order->id);
+        $capturedDiscounts = $this->db->discountsAreCaptured($order->id);
+        $refundedDiscounts = $this->db->discountsAreRefunded($order->id);
+        $amountFees        = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
         $capturedItems     = $this->db->getCapturedItems($order->id);
         $refundedItems     = $this->db->getRefundedItems($order->id);
         $totallyRefunded   = true;
         $id_currency       = $order->id_currency;
+        $discount          = array();
+        
+        $discounts = $order->getCartRules();
+        if (!empty($discounts)) {
+            foreach ($discounts as $disc) {
+                $discount["name"][] = $disc["name"];
+                $discount["value"]  = (!isset($discount["value"])) ? $disc["value"] : $discount["value"] + $disc["value"];
+            }
+            $discount["name"] = join("/",
+                $discount["name"]);
+        }
+
 
         foreach ($order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
                 >= $product["product_quantity"]);
         }
 
-        if (!$refundedFees) {
+        if (!$refundedFees || !$refundedDiscounts) {
             $totallyRefunded = false;
         }
 
@@ -411,7 +424,7 @@ class Hipay_enterprise extends PaymentModule
                 null,
                 null,
                 1
-            ) || !empty($refundedItems) || $refundedFees || $partiallyCaptured
+            ) || !empty($refundedItems) || $refundedFees || $partiallyCaptured || $refundedDiscounts
         ) {
             $partiallyRefunded = true;
         }
@@ -564,8 +577,10 @@ class Hipay_enterprise extends PaymentModule
                 'refundedItems' => $refundedItems,
                 'capturedFees' => $capturedFees,
                 'refundedFees' => $refundedFees,
+                'capturedDiscounts' => $capturedDiscounts,
+                'refundedDiscounts' => $refundedDiscounts,
                 'products' => $products,
-                'discounts' => $discounts,
+                'discount' => $discount,
                 'totallyRefunded' => $totallyRefunded,
                 'showMoto' => $showMoto,
                 'cartId' => $cart->id,

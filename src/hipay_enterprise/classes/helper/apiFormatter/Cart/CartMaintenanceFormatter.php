@@ -28,6 +28,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->order              = $params["order"];
         $this->operation          = $params["operation"];
         $this->captureRefundFee   = $params["captureRefundFee"];
+        $this->captureRefundDiscount   = $params["captureRefundDiscount"];
         $this->transactionAttempt = $params["transactionAttempt"];
         $this->mapper             = new HipayMapper($module);
         $this->totalItem          = 0;
@@ -66,7 +67,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         // Discount items
-        if (!empty($this->discounts)) {
+        if ($this->captureRefundDiscount) {
             $item = $this->getDiscountItem($totalQty);
             $cart->addItem($item);
         }
@@ -192,15 +193,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             );
         }
 
-        $unit_price   = Tools::ps_round(
-                ($unit_price * $totalQty) / $this->totalItem,
-                2
-        );
-        $total_amount = Tools::ps_round(
-                ($total_amount * $totalQty) / $this->totalItem,
-                2
-        );
-
         $product_reference    = join("/",
             $product_reference);
         $name                 = join("/",
@@ -219,7 +211,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         );
         // forced category
         $item->setProductCategory(1);
-
+        
+        //save capture items and quantity in prestashop
+        $captureData = array(
+            "hp_ps_order_id" => $this->order->id,
+            "hp_ps_product_id" => 0,
+            "operation" => $this->operation,
+            "type" => 'discount',
+            "attempt_number" => $this->transactionAttempt + 1,
+            "quantity" => 1,
+            "amount" => $total_amount
+        );
+        $this->maintenanceData->addItem($captureData);
+        
         return $item;
     }
 
