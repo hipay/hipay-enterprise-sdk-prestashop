@@ -68,16 +68,20 @@ class HipayHelper
      */
     public static function getProductRef($product)
     {
-        $parentProduct = new Product($product["id_product"]);
-
-        if (!empty($product["reference"]) && $product["reference"] != $parentProduct->reference) {
-            $reference = $product["reference"];
-        } else if (!empty($product["reference"])) {
-            $reference = $product["reference"]."-".HipayHelper::slugify($product["attributes_small"]);
+        if (!empty($product["reference"])) {
+            if (isset($product["attributes_small"])) {
+                // Product with declinaison
+                $reference = $product["reference"] . "-" . HipayHelper::slugify($product["attributes_small"]);
+            } else {
+                // Product simple or virtual
+                $reference = $product["reference"];
+            }
         } else {
-            $reference = $product["id_product"]."-".$product["id_product_attribute"]."-".HipayHelper::slugify($product["name"])."-".HipayHelper::slugify($product["attributes_small"]);
+            $reference = $product["id_product"]."-".$product["id_product_attribute"]."-".HipayHelper::slugify($product["name"]);
+            if (isset($product["attributes_small"])) {
+                $reference .=  "-".  HipayHelper::slugify($product["attributes_small"]);
+            }
         }
-
         return $reference;
     }
 
