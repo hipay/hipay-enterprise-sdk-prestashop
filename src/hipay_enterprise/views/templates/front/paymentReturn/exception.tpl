@@ -12,7 +12,6 @@
 {capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
 
 <h2>{l s='Payment Summary' mod='hipay_enterprise'}</h2>
-
 <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 
 <p class="warning">

@@ -15,17 +15,11 @@
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
     {if $status_error == 404}
         <div class="alert alert-danger">
-            <p>There is 1 error</p>
-            <ol>
-                <li>{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}</li>
-            </ol>
+            {l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}
         </div>
     {else}
         <div class="alert alert-danger">
-            <p>There is 1 error</p>
-            <ol>
-                <li>{l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}</li>
-            </ol>
+            {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </div>
     {/if} 
     <p class="warning">
