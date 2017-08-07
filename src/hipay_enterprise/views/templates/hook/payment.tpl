@@ -16,7 +16,7 @@
                 {if $cart->getOrderTotal() < $min_amount}
                     <a href="#">
                         <img src="{$domain|cat:$payment_button|escape:'htmlall':'UTF-8'}"
-                             alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'} "
+                             alt="{l s='Pay by credit card' mod='hipay_enterprise'} "
                              style="max-width: 70px; max-height: 40px;"
                              />
 
@@ -30,18 +30,18 @@
                     </a>
                 {else}
                     <a href="{$link->getModuleLink('hipay_enterprise', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}"
-                       title="{l s='Pay by credit or debit card' mod='hipay_enterprise' }">
+                       title="{l s='Pay by credit card' mod='hipay_enterprise' }">
 
                         <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
                              style="max-width: 70px; max-height: 40px;"
-                             alt="{l s='Pay by credit or debit card' mod='hipay_enterprise'}"/>
+                             alt="{l s='Pay by credit card' mod='hipay_enterprise'}"/>
                         {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                         <span>
                             {if $configHipay.payment.global.operating_mode != 'api'}
                                 <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                             {/if}
                             {if isset($hipay_prod) && (!$hipay_prod)}
-                                <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>
+                                <em>{l s='(Test mode)' mod='hipay_enterprise'}</em>
                             {/if}
                         </span>
                     </a>

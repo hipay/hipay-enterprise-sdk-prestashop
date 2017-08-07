@@ -273,7 +273,7 @@ class Hipay_enterprise extends PaymentModule
 
         if (!empty($activatedCreditCard)) {
             $paymentOptionsCC[] = array(
-                'cta_text' => $this->l('Pay by credit or debit card'),
+                'cta_text' => $this->l('Pay by credit card'),
                 'logo' => Media::getMediaPath($this->_path.'views/img/amexa200.png'),
                 'action' => $this->context->link->getModuleLink(
                     $this->name,

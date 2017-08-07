@@ -26,7 +26,7 @@
         <div class="order_carrier_content box">
             {if $confHipay.payment.global.card_token}
                 {if $savedCC}
-                    <h2 class="page-subheading">{l s='Pay with a saved credit or debit card' mod='hipay_enterprise'}</h2>
+                    <h2 class="page-subheading">{l s='Pay with a saved credit card' mod='hipay_enterprise'}</h2>
                     <div id="error-js-oc" style="display:none" class="alert alert-danger">
                         <p>There is 1 error</p>
                         <ol>
@@ -62,7 +62,7 @@
                 {/if}
             {/if}
 
-            <h2 class="page-subheading">{l s='Pay by credit or debit card' mod='hipay_enterprise'}</h2>
+            <h2 class="page-subheading">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
             {include file="$hipay_enterprise_tpl_dir/../front/partial/paymentError.tpl"}
             <div class="control-group">
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
@@ -112,7 +112,7 @@
             console.log($(".expiry").val());
             if ($(".expiry").val() == null || $(".expiry").val() == "") {
                 $(".expiry").addClass("error-input-hp");
-                var pInsert = $('<span>Error : Field is mandatory</span>');
+                var pInsert = $('<span>Field is mandatory</span>');
                 $(".expiry").after(pInsert);
                 pInsert.addClass("error-text-hp");
                 return false;
@@ -122,7 +122,7 @@
 
 
         $("#pay-button-one-click").click(function (e) {
-            // prevent form from being submitted 
+            // prevent form from being submitted
             e.preventDefault();
             e.stopPropagation();
 
@@ -165,7 +165,7 @@
                 card_holder: $('#the-card-name-id').val(),
                 multi_use: multi_use
             };
-            
+
             HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
             HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
@@ -219,7 +219,7 @@
                         return false;
                     }
             );
-            // prevent form from being submitted 
+            // prevent form from being submitted
             e.preventDefault();
             e.stopPropagation();
         });

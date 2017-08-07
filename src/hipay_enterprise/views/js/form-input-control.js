@@ -186,7 +186,7 @@ function checkCPNCURP(element) {
  */
 function errorMessage(element, text) {
     addClass(element, 'error-input-hp');
-    insertAfter(generateElement("Error : " + text), element);
+    insertAfter(generateElement(text), element);
 }
 
 /**

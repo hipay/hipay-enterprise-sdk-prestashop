@@ -133,7 +133,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
                         $newOption   = new PaymentOption();
                         $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
-                            ->setAdditionalInformation("<p>".$this->l('Please prepare your credit card')."</p>")
+                            ->setAdditionalInformation("")
                             ->setModuleName("credit_card")
                             ->setForm($paymentForm);
 

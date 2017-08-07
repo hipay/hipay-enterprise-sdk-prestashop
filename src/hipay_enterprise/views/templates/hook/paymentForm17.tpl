@@ -13,9 +13,9 @@
       name="tokenizerForm"  autocomplete="off">
     {if $confHipay.payment.global.card_token}
         {if $savedCC}
-            <p><strong>{l s='Pay with a saved credit or debit card' mod='hipay_enterprise'}</strong></p>
+            <p><strong>{l s='Pay with a saved credit card' mod='hipay_enterprise'}</strong></p>
             <div id="error-js-oc" style="display:none" class="alert alert-danger">
-                <p>There is 1 error</p>
+                <span>There is 1 error</span>
                 <ol>
                     <li class="error-oc"></li>
                 </ol>
@@ -31,7 +31,7 @@
                     <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
                         <div class="row">
                             <span class="hipay-img col-md-2 col-xs-3"><img class="card-img" src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
-                            <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>  
+                            <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>
                             <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'} : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
                             <span class="hipay-card-holder col-md-10 col-xs-9">{$cc.card_holder}</span>
                         </div>
@@ -39,11 +39,11 @@
                 </div>
                 <br/>
             {/foreach}
-            <p><strong>{l s='Pay by credit or debit card' mod='hipay_enterprise'}</strong></p>
+            <p><strong>{l s='Pay by credit card' mod='hipay_enterprise'}</strong></p>
         {/if}
     {/if}
     <div id="error-js" style="display:none" class="alert alert-danger">
-        <p>There is 1 error</p>
+        <span>{l s='An error has occurred' mod='hipay_enterprise'}</span>
         <ol>
             <li class="error"></li>
         </ol>
@@ -58,10 +58,10 @@
         </span>
     {/if}
 </form>
-<p id="payment-loader-hp" style='text-align: center; display:none;'>
-    <strong>{l s='Your payment is being processed. Please wait.'}</strong> <br/>
-    <img src="{$this_path_ssl}/views/img/loading.gif">
-</p>
+<div id="payment-loader-hp" style='text-align: center; display:none;'>
+    <div><strong>{l s='Your payment is being processed. Please wait.'}</strong></div>
+    <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
+</div>
 <script>
 
     var activatedCreditCard = {$activatedCreditCard nofilter};
