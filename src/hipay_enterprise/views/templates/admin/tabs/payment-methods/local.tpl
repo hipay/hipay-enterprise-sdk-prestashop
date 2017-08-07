@@ -96,7 +96,7 @@
                                                                name="{$localPayment@key}_currencies[]"/>
                                                     {else}
                                                         <label>{$currency}
-                                                            {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}
+                                                            {l s='This currency is not activated in your prestashop shop or for the HiPay Enterprise module' mod='hipay_enterprise'}
                                                         </label>
                                                         <input type="hidden" value="{$currency}"
                                                                name="{$localPayment@key}_currencies[]"/>
