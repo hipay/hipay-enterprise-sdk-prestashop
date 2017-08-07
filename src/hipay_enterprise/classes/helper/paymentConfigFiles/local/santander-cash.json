@@ -1,6 +1,10 @@
 {
   "name": "santander-cash",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Santander Cash",
     "displayName": "Santander Cash",
     "activated": 0,

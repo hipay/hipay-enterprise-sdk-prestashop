@@ -1,6 +1,10 @@
 {
   "name": "itau",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Itau",
     "displayName": "Itau",
     "activated": 0,

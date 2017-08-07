@@ -1,6 +1,10 @@
 {
   "name": "bradesco",
   "config": {
+    "group": {
+      "code": "astropay",
+      "label": "Astropay"
+    },
     "displayNameBO": "Bradesco",
     "displayName": "Bradesco",
     "activated": 0,

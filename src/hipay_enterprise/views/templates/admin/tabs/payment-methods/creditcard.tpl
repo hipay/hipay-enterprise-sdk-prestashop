@@ -33,9 +33,7 @@
                 </div>
                 <div role="tabpanel">
                     <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
-                        <li role="presentation" class="disabled summary"><a class="credit-card-title" href="#">
-                                {l s='Credit card type' mod='hipay_enterprise'}</a>
-                        </li>
+                        <li role="presentation" class="disabled summary credit-card-title"></li>
                         {foreach $config_hipay.payment.credit_card as $creditCard}
                             <li role="presentation" class="{if $creditCard@first} active {/if} ">
                                 <a href="#{$creditCard@key}" aria-controls="{$creditCard@key}" role="tab"
