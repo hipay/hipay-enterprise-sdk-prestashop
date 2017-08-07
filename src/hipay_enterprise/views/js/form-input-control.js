@@ -80,6 +80,8 @@ function typeControlCheck(input) {
     switch (input.type) {
         case 'iban':
             return checkIban(element);
+        case 'bic':
+            return checkBic(element);
         case 'creditcardnumber':
             return checkCCNumber(element);
         case 'cpf':
@@ -119,6 +121,24 @@ function checkIban(element) {
 
     if (!validIBAN(element.value)) {
         errorMessage(element, "This is not a correct IBAN");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * 
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkBic(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!validBic(element.value)) {
+        errorMessage(element, "This is not a correct BIC");
         return false;
     }
     return true;
@@ -374,4 +394,10 @@ function isCPFValid(value) {
  */
 function isCPNCURPValid(value) {
     return value.match(/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/);
+}
+
+function validBic(value){
+    console.log(value);
+    console.log(value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/));
+    return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
 }
