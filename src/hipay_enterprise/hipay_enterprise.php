@@ -347,37 +347,37 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayAdminOrder()
     {
-        $order             = new Order((int) Tools::getValue('id_order'));
-        $cart              = new Cart($order->id_cart);
-        $shippingCost      = $order->total_shipping;
-        $refundableAmount  = $order->getTotalPaid();
-        $errorHipay        = $this->context->cookie->__get('hipay_errors');
-        $messagesHipay     = $this->context->cookie->__get('hipay_success');
-        $stillToCapture    = $order->total_paid_tax_incl - $refundableAmount;
-        $alreadyCaptured   = $this->db->alreadyCaptured($order->id);
-        $manualCapture     = false;
-        $showCapture       = false;
-        $showRefund        = false;
-        $showChallenge     = false;
-        $showMoto          = false;
-        $partiallyCaptured = false;
-        $partiallyRefunded = false;
-        $orderId           = $order->id;
-        $employeeId        = $this->context->employee->id;
-        $basket            = $this->db->getOrderBasket($order->id);
-        $products          = $order->getProducts();
-        $capturedFees      = $this->db->feesAreCaptured($order->id);
-        $refundedFees      = $this->db->feesAreRefunded($order->id);
-        $capturedDiscounts = $this->db->discountsAreCaptured($order->id);
-        $refundedDiscounts = $this->db->discountsAreRefunded($order->id);
-        $amountFees        = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
-        $capturedItems     = $this->db->getCapturedItems($order->id);
-        $refundedItems     = $this->db->getRefundedItems($order->id);
-        $totallyRefunded   = true;
-        $id_currency       = $order->id_currency;
-        $discount          = array();
-        
-        $discounts = $order->getCartRules();
+        $order                 = new Order((int) Tools::getValue('id_order'));
+        $cart                  = new Cart($order->id_cart);
+        $shippingCost          = $order->total_shipping;
+        $refundableAmount      = $order->getTotalPaid();
+        $errorHipay            = $this->context->cookie->__get('hipay_errors');
+        $messagesHipay         = $this->context->cookie->__get('hipay_success');
+        $stillToCapture        = $order->total_paid_tax_incl - $refundableAmount;
+        $alreadyCaptured       = $this->db->alreadyCaptured($order->id);
+        $manualCapture         = false;
+        $showCapture           = false;
+        $showRefund            = false;
+        $showChallenge         = false;
+        $showMoto              = false;
+        $partiallyCaptured     = false;
+        $partiallyRefunded     = false;
+        $orderId               = $order->id;
+        $employeeId            = $this->context->employee->id;
+        $basket                = $this->db->getOrderBasket($order->id);
+        $products              = $order->getProducts();
+        $capturedFees          = $this->db->feesAreCaptured($order->id);
+        $refundedFees          = $this->db->feesAreRefunded($order->id);
+        $capturedDiscounts     = $this->db->discountsAreCaptured($order->id);
+        $refundedDiscounts     = $this->db->discountsAreRefunded($order->id);
+        $amountFees            = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
+        $capturedItems         = $this->db->getCapturedItems($order->id);
+        $refundedItems         = $this->db->getRefundedItems($order->id);
+        $totallyRefunded       = true;
+        $id_currency           = $order->id_currency;
+        $discount              = array();
+        $catpureOrRefundFromBo = $this->db->captureOrRefundFromBO($order->id);
+        $discounts             = $order->getCartRules();
         if (!empty($discounts)) {
             foreach ($discounts as $disc) {
                 $discount["name"][] = $disc["name"];
@@ -543,6 +543,11 @@ class Hipay_enterprise extends PaymentModule
                 1
             )
         ) {
+            $showCapture = false;
+        }
+        
+        if($catpureOrRefundFromBo){
+            $showRefund = false;
             $showCapture = false;
         }
 

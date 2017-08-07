@@ -624,7 +624,8 @@ class HipayDBQuery
     {
         return $this->getMaintainedItems(
                 $orderId,
-                "capture"
+                "capture",
+                "good"
         );
     }
 
@@ -637,8 +638,28 @@ class HipayDBQuery
     {
         return $this->getMaintainedItems(
                 $orderId,
-                "refund"
+                "refund",
+                "good"
         );
+    }
+
+    /**
+     * return true if a capture or refund have been executed from TPP BO
+     * @param type $orderId
+     * @return type
+     */
+    public function captureOrRefundFromBO($orderId)
+    {
+        $item = $this->getMaintainedItems(
+            $orderId,
+            "BO_TPP",
+            "BO"
+        );
+        if (empty($item)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -647,11 +668,11 @@ class HipayDBQuery
      * @param type $operation
      * @return type
      */
-    private function getMaintainedItems($orderId, $operation)
+    private function getMaintainedItems($orderId, $operation, $type)
     {
         $sql = 'SELECT `hp_ps_product_id`, `operation`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
-                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.pSQL($operation).'" AND `type` = "good"'.
+                WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.pSQL($operation).'" AND `type` = "'.pSQL($type).'"'.
             ' GROUP BY `hp_ps_product_id`';
 
         $result          = Db::getInstance()->executeS($sql);
@@ -681,7 +702,6 @@ class HipayDBQuery
         return 0;
     }
 
-
     /**
      *
      * @param type $orderId
@@ -689,8 +709,8 @@ class HipayDBQuery
     public function feesAreCaptured($orderId)
     {
         return $this->feesOrDiscountAreMaintained($orderId,
-            'fees',
-            'capture');
+                'fees',
+                'capture');
     }
 
     /**
@@ -700,8 +720,8 @@ class HipayDBQuery
     public function feesAreRefunded($orderId)
     {
         return $this->feesOrDiscountAreMaintained($orderId,
-            'fees',
-            'refund');
+                'fees',
+                'refund');
     }
 
     /**
@@ -711,8 +731,8 @@ class HipayDBQuery
     public function discountsAreCaptured($orderId)
     {
         return $this->feesOrDiscountAreMaintained($orderId,
-            'discount',
-            'capture');
+                'discount',
+                'capture');
     }
 
     /**
@@ -722,8 +742,8 @@ class HipayDBQuery
     public function discountsAreRefunded($orderId)
     {
         return $this->feesOrDiscountAreMaintained($orderId,
-            'discount',
-            'refund');
+                'discount',
+                'refund');
     }
 
     /**
@@ -732,20 +752,19 @@ class HipayDBQuery
      * @param type $operation
      * @return boolean
      */
-    private function feesOrDiscountAreMaintained($orderId, $type ,$operation)
+    private function feesOrDiscountAreMaintained($orderId, $type, $operation)
     {
         $sql    = 'SELECT *
                 FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`
                 WHERE `hp_ps_order_id` = '.pSQL((int) $orderId).' AND `operation` = "'.$operation.'" AND `type` = "'.$type.'"';
         $result = Db::getInstance()->executeS($sql);
-        
+
         if (!empty($result)) {
             return true;
         }
 
         return false;
     }
-
 
     /**
      * check if token exist for this customer
