@@ -319,7 +319,7 @@ class HipayNotification
                     Context::getContext()->cart->id,
                     $state,
                     (float) $this->transaction->getAuthorizedAmount(),
-                    $this->module->displayName.' via '.Tools::ucfirst($this->transaction->getPaymentProduct()),
+                    Tools::ucfirst($this->transaction->getPaymentProduct()),
                                                                       $message,
                                                                       array(),
                                                                       Context::getContext()->cart->id_currency,

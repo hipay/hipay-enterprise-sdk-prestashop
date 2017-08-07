@@ -49,16 +49,20 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             Tools::redirect($redirectUrl);
         }
 
+        // If Gateway send payment product in redirection card brand
+        $cardBrand = Tools::getValue('cardbrand');
         $paymentProduct = Tools::getValue('product');
 
-        if ($paymentProduct && $paymentProduct == 'credit_card') {
-            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
-        } elseif ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
-            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
-        } elseif ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
-            $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
+        if (!$cardBrand) {
+            if ($paymentProduct && $paymentProduct == 'credit_card') {
+                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
+            } else if ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
+                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
+            } elseif ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
+                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
+            }
         } else {
-            $paymentProduct = "HiPay Enterprise";
+            $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));
         }
 
         HipayHelper::unsetCart();
