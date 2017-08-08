@@ -57,6 +57,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             _MODULE_DIR_.$this->name.'/views/js/card-js.min.js',
             'all'
         );
+
         $this->context->controller->addJS(array(_MODULE_DIR_.$this->name.'/views/js/devicefingerprint.js'));
         $this->context->controller->addJS(
             array(_MODULE_DIR_.$this->name.'/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')

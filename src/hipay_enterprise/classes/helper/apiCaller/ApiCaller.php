@@ -90,7 +90,6 @@ class ApiCaller
 
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
-            HipayHelper::redirectToErrorPage(Context::getContext(),$moduleInstance);
             throw new GatewayException('An error occured during request requestDirectPost. Please Retry later. Reason ['.
                 $e->getMessage().']',
                 $e->getCode(),

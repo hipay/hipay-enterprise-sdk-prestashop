@@ -198,6 +198,11 @@ class Hipay_enterprise extends PaymentModule
         );
         $this->context->controller->addCSS($this->_path.'views/css/back.css',
             'all');
+
+        $this->context->controller->addJS(
+            $this->_path  . '/views/js/form-input-control.js',
+            'all'
+        );
     }
 
     /**
@@ -706,6 +711,7 @@ class Hipay_enterprise extends PaymentModule
                 'form_successes' => $this->_successes,
                 'technicalErrors' => $this->_technicalErrors,
                 'limitedCurrencies' => $this->currencies_titles,
+                'default_currency' => Configuration::get('PS_SHOP_DEFAULT'),
                 'limitedCountries' => $this->countries_titles,
                 'this_callback' => $this->context->link->getModuleLink(
                     $this->name,
