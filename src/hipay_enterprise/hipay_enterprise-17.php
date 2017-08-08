@@ -65,14 +65,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
     }
 
     /**
-     * Display payment forms
+     * Display payment forms (PS17)
+     *
      * @param type $params
      * @return PaymentOption
      */
     public function hipayExternalPaymentOption($params)
     {
-        $this->logs->logErrors("hipayExternalPaymentOption");
-        $address  = new Address((int) $params['cart']->id_address_delivery);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country  = new Country((int) $address->id_country);
         $currency = new Currency((int) $params['cart']->id_currency);
         $customer = new Customer((int) $params['cart']->id_customer);
@@ -81,7 +83,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
         $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(
             "credit_card",
             $country,
-            $currency
+            $currency,
+            $params['cart']->getOrderTotal()
         );
         $paymentOptions = array();
         try {

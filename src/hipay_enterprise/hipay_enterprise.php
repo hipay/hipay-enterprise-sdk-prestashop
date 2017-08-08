@@ -207,12 +207,15 @@ class Hipay_enterprise extends PaymentModule
 
     /**
      * Handling prestashop hook payment. Adding payment methods (PS16)
+     *
      * @param type $params
      * @return type
      */
     public function hookPayment($params)
     {
-        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -228,7 +231,8 @@ class Hipay_enterprise extends PaymentModule
                 'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency(
                     "credit_card",
                     $country,
-                    $currency
+                    $currency,
+                    $orderTotal
                 ),
                 'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency(
                     "local_payment",
@@ -250,13 +254,17 @@ class Hipay_enterprise extends PaymentModule
         );
     }
 
+    /**
+     *  Adding payment methods (PS16)
+     *
+     * @param $params
+     * @return array
+     */
     public function hookDisplayPaymentEU($params)
     {
-        $this->logs->logInfos('##########################');
-        $this->logs->logInfos('---- START function hookDisplayPaymentEU');
-        $this->logs->logInfos('##########################');
-
-        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -264,7 +272,8 @@ class Hipay_enterprise extends PaymentModule
         $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(
             "credit_card",
             $country,
-            $currency
+            $currency,
+            $orderTotal
         );
 
         $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
