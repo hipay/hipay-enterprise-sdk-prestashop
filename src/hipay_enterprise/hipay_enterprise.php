@@ -1244,7 +1244,6 @@ class Hipay_enterprise extends PaymentModule
             );
             return true;
         } catch (Exception $e) {
-            // LOGS
             $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
@@ -1261,29 +1260,34 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logInfos("# SaveFraudInformations");
 
         try {
-            // saving all array "fraud" in $configHipay
-            $accountConfig = array();
+            if (!Validate::isEmail(Tools::getValue('send_payment_fraud_email_copy_to'))) {
+                $this->_errors[] = $this->trans('The Copy To Email is not valid.', array());
+                return false;
+            } else {
+                // saving all array "fraud" in $configHipay
+                $accountConfig = array();
 
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-            foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
-                $fieldValue          = Tools::getValue($key);
-                $accountConfig[$key] = $fieldValue;
+                //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+                foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
+                    $fieldValue          = Tools::getValue($key);
+                    $accountConfig[$key] = $fieldValue;
+                }
+
+                //save configuration
+                $this->hipayConfigTool->setConfigHiPay(
+                    "fraud",
+                    $accountConfig
+                );
+
+                $this->_successes[] = $this->l('Fraud settings saved successfully.');
+                $this->logs->logInfos(
+                    print_r(
+                        $this->hipayConfigTool->getConfigHipay(),
+                        true
+                    )
+                );
+                return true;
             }
-
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "fraud",
-                $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Fraud settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(),
-                    true
-                )
-            );
-            return true;
         } catch (Exception $e) {
             $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
