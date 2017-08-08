@@ -71,7 +71,14 @@ class HipayFormControl
         switch ($type) {
             case 'iban':
                 if (!HipayFormControl::isValidIBAN($value)) {
-                    $errors[$name] = $module->l('Error : This is not a correct IBAN', 'hipay_enterprise');
+                    $errors[$name] = $module->l('Error : This is not a correct IBAN',
+                        'hipay_enterprise');
+                }
+                break;
+            case 'bic':
+                if (!HipayFormControl::isValidBIC($value)) {
+                    $errors[$name] = $module->l('Error : This is not a correct BIC',
+                        'hipay_enterprise');
                 }
                 break;
             case 'cpf':
@@ -110,6 +117,17 @@ class HipayFormControl
     private static function isValidCPNCURP($value)
     {
         return preg_match("/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/",
+            $value);
+    }
+
+    /**
+     *
+     * @param type $value
+     * @return type
+     */
+    private static function isValidBIC($value)
+    {
+        return preg_match("/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i",
             $value);
     }
 
