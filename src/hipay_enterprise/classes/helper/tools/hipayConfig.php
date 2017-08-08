@@ -214,7 +214,8 @@ class HipayConfig
                     "activate_basket" => 1,
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
-                    "ccDisplayName" => "Credit card"
+                    "ccDisplayName" => "Credit card",
+                    "ccFrontPosition" => 1
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()

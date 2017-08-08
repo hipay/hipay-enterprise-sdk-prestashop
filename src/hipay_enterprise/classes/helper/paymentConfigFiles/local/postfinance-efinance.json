@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "PostFinance E-Finance",
     "displayName": "PostFinance E-Finance",
+    "frontPosition": 22,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

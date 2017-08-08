@@ -30,6 +30,14 @@
                                 </p>
                             </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
+                            <div class="col-lg-3">
+                                <div class="row">
+                                    <input type="text" name="ccFrontPosition" value="{$config_hipay.payment.global.ccFrontPosition}"/>
+                                </div>
+                            </div>
+                    </div>
                 </div>
                 <div role="tabpanel">
                     <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
