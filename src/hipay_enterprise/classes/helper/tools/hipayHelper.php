@@ -190,4 +190,58 @@ class HipayHelper
     {
         return md5(Tools::getAdminTokenLite($tab).$orderID);
     }
+
+    /**
+     *
+     *  Redirect customer in Error page
+     *
+     * @param $context
+     * @param $moduleInstance
+     * @param null $cart
+     * @param null $savedCC
+     * @return string
+     */
+    public static function redirectToErrorPage($context, $moduleInstance,  $cart = null, $savedCC = null)
+    {
+        $redirectUrl404 = $context->link->getModuleLink(
+            $moduleInstance->name,
+            'exception',
+            array('status_error' => 500),
+            true
+        );
+
+        if (_PS_VERSION_ >= '1.7') {
+            Tools::redirect($redirectUrl404);
+        }
+
+        if ($cart) {
+            $context->smarty->assign(
+                array(
+                    'status_error' => '404',
+                    'status_error_oc' => '200',
+                    'cart_id' => $cart->id,
+                    'savedCC' => $savedCC,
+                    'amount' => $cart->getOrderTotal(
+                        true,
+                        Cart::BOTH
+                    ),
+                    'confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay()
+                )
+            );
+        } else {
+            $context->smarty->assign(
+                array(
+                    'status_error' => '404',
+                    'status_error_oc' => '200',
+                    'cart_id' => '',
+                    'savedCC' => $savedCC,
+                    'amount' => '',
+                    'confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay()
+                )
+            );
+        }
+
+        return 'paymentFormApi16.tpl';
+    }
+
 }

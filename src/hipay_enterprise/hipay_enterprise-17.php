@@ -199,7 +199,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     }
                     $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/paymentLocalForm17.tpl');
 
-                    $newOption->setCallToActionText($this->l("pay by")." ".$localpayment["displayName"])
+                    $newOption->setCallToActionText($this->l("Pay by")." ".$localpayment["displayName"])
                         ->setAction(
                             $this->context->link->getModuleLink(
                                 $this->name,
@@ -224,8 +224,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
             return $paymentOptions;
         } catch (Exception $exc) {
-            $this->logs->logErrors($exc->getTraceAsString());
-            $this->logs->logErrors($exc->getMessage());
+            $this->logs->logException($exc);
         }
     }
 

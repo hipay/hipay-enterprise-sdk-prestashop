@@ -174,38 +174,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
 
     /**
-     *  Redirect customer on Error page
-     */
-    private function redirectToErrorPage($context, $cart, $savedCC)
-    {
-        $redirectUrl404 = $context->link->getModuleLink(
-            $this->module->name,
-            'exception',
-            array('status_error' => 500),
-            true
-        );
-
-        if (_PS_VERSION_ >= '1.7') {
-            Tools::redirect($redirectUrl404);
-        }
-
-        $context->smarty->assign(
-            array(
-                'status_error' => '404',
-                'status_error_oc' => '200',
-                'cart_id' => $cart->id,
-                'savedCC' => $savedCC,
-                'amount' => $cart->getOrderTotal(
-                    true,
-                    Cart::BOTH
-                ),
-                'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
-            )
-        );
-        return 'paymentFormApi16.tpl';
-    }
-
-    /**
      * Handle Credit card payment (not one click)
      * @param type $cart
      * @param type $context
@@ -267,10 +235,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 );
             } catch (Exception $e) {
                 $this->module->getLogs()->logException($e);
-                return $this->redirectToErrorPage($context, $cart, $savedCC);
+                return HipayHelper::redirectToErrorPage($context,$this->module, $cart, $savedCC);
             }
         } else {
-            return $this->redirectToErrorPage($context, $cart, $savedCC);
+            return HipayHelper::redirectToErrorPage($context,$this->module,  $cart, $savedCC);
         }
     }
 

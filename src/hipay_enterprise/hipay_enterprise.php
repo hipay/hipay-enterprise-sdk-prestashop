@@ -873,7 +873,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -914,7 +914,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
         return false;
@@ -1014,7 +1014,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1081,7 +1081,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1143,7 +1143,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1207,7 +1207,7 @@ class Hipay_enterprise extends PaymentModule
             return true;
         } catch (Exception $e) {
             // LOGS
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 
@@ -1247,7 +1247,7 @@ class Hipay_enterprise extends PaymentModule
             );
             return true;
         } catch (Exception $e) {
-            $this->logs->logErrors($e->getMessage());
+            $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
 

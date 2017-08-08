@@ -15,6 +15,22 @@
  *
  */
 
-class GatewayException extends Exception {
+class GatewayException extends Exception
+{
+    /**
+     * GatewayException constructor.
+     *
+     * @param string $message
+     * @param int $code
+     * @param Throwable|null $previous
+     * @param $context
+     * @param $moduleInstance
+     */
+    public function __construct($message = "", $code = 0, Throwable $previous = null, $context, $moduleInstance )
+    {
+        parent::__construct($message, $code, $previous);
+        HipayHelper::redirectToErrorPage($context,$moduleInstance);
+    }
+
 
 }
