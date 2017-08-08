@@ -324,10 +324,8 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPaymentReturn($params)
     {
-        if (_PS_VERSION_ >= '1.7') {
-            $hipay17 = new HipayProfessionalNew();
-            $hipay17->hipayPaymentReturnNew($params);
-        } elseif (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+     
+        if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $this->hipayPaymentReturn($params);
             return $this->display(
                     dirname(__FILE__),
