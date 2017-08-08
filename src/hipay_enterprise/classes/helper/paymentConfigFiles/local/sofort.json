@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Sofort Überweisung",
     "displayName": "Sofort Überweisung",
+    "frontPosition": 28,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

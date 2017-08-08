@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Sisal",
     "displayName": "Sisal",
+    "frontPosition": 27,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

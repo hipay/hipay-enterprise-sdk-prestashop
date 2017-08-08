@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "ING Home'Pay",
     "displayName": "ING Home'Pay",
+    "frontPosition": 16,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

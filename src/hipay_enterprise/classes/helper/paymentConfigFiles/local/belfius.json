@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Belfius Direct Net",
     "displayName": "Belfius Direct Net",
+    "frontPosition": 10,
     "activated": 0,
     "canRefund": 0,
     "canManualCapture": 0,

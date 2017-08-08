@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "SEPA Direct Debit",
     "displayName": "SEPA Direct Debit",
+    "frontPosition": 26,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
