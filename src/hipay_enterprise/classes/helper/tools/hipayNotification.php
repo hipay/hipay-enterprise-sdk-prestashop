@@ -61,7 +61,7 @@ class HipayNotification
             Shop::CONTEXT_SHOP,
             $this->cart->id_shop
         );
-        
+
         if ($this->cart->orderExists()) {
             // il existe une commande associée à ce panier
             $this->orderExist = true;
@@ -92,8 +92,8 @@ class HipayNotification
         try {
 
             $this->db->setSQLLockForCart($this->cart->id);
-            $this->log->logInfos("# ProcessTransaction for cart ID : " . $this->cart->id .
-            " and status " . $this->transaction->getStatus());
+            $this->log->logInfos("# ProcessTransaction for cart ID : ".$this->cart->id.
+                " and status ".$this->transaction->getStatus());
 
             switch ($this->transaction->getStatus()) {
                 // Do nothing - Just log the status and skip further processing
@@ -126,7 +126,7 @@ class HipayNotification
                                 null,
                                 1
                             ),
-                                true
+                            true
                         )
                     ) {
                         $this->updateOrderStatus(
@@ -140,8 +140,8 @@ class HipayNotification
 
                         // Notify website admin for a challenged transaction
                         HipayMail::sendMailPaymentDeny($this->context,
-                                                       $this->module,
-                                                       $this->order);
+                            $this->module,
+                            $this->order);
                     }
                     break;
                 case TransactionStatus::AUTHORIZED_AND_PENDING:
@@ -155,8 +155,8 @@ class HipayNotification
                     );
                     // Notify website admin for a challenged transaction
                     HipayMail::sendMailPaymentFraud($this->context,
-                                                    $this->module,
-                                                    $this->order);
+                        $this->module,
+                        $this->order);
                     break;
                 case TransactionStatus::AUTHENTICATION_REQUESTED:
                 case TransactionStatus::AUTHORIZATION_REQUESTED:
@@ -321,12 +321,12 @@ class HipayNotification
                     $state,
                     (float) $this->transaction->getAuthorizedAmount(),
                     Tools::ucfirst($this->transaction->getPaymentProduct()),
-                                                                      $message,
-                                                                      array(),
-                                                                      Context::getContext()->cart->id_currency,
-                                                                      false,
-                                                                      $customer->secure_key,
-                                                                      $shop
+                    $message,
+                    array(),
+                    Context::getContext()->cart->id_currency,
+                    false,
+                    $customer->secure_key,
+                    $shop
                 );
                 $this->order = new Order($this->module->currentOrder);
 
@@ -385,6 +385,22 @@ class HipayNotification
 
         $this->db->deleteOrderPaymentDuplicate($this->order->reference);
 
+
+
+        if ($this->transaction->getOperation() == NULL) {
+            //save capture items and quantity in prestashop
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => 0,
+                "operation" => 'BO_TPP',
+                "type" => 'BO',
+                "quantity" => 1,
+                "amount" => 0
+            );
+
+            $this->db->setCaptureOrRefundOrder($captureData);
+        }
+
         // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
         if ($this->db->countOrderPayment(
                 $this->order->reference,
@@ -413,6 +429,20 @@ class HipayNotification
 
         if ($this->orderExist) {
             $this->addOrderMessage();
+
+            if ($this->transaction->getOperation() == NULL) {
+                //save capture items and quantity in prestashop
+                $captureData = array(
+                    "hp_ps_order_id" => $this->order->id,
+                    "hp_ps_product_id" => 0,
+                    "operation" => 'BO_TPP',
+                    "type" => 'BO',
+                    "quantity" => 1,
+                    "amount" => 0
+                );
+
+                $this->db->setCaptureOrRefundOrder($captureData);
+            }
 
             if ($this->transaction->getStatus() == TransactionStatus::REFUND_REQUESTED) {
                 $this->changeOrderStatus(
@@ -517,7 +547,7 @@ class HipayNotification
     $paymentStatus, $orderState, $forceCtrl = false
     )
     {
-        $this->log->logInfos("# ControleIfStatushistoryExist " . $this->order->id . "Status " . $orderState);
+        $this->log->logInfos("# ControleIfStatushistoryExist ".$this->order->id."Status ".$orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
             $this->log->logInfos("# ControleIfStatushistoryExist Status exist");

@@ -24,14 +24,15 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         parent::__construct($module);
         $this->params = $params;
 
-        $this->amount           = (isset($params["amount"])) ? $params["amount"] : 0.01;
-        $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"] : false;
-        $this->refundItems      = (isset($params["refundItems"])) ? $params["refundItems"] : false;
-        $this->order            = (isset($params["order"])) ? new Order($params["order"]) : false;
-        $this->operation        = (isset($params["operation"])) ? $params["operation"] : false;
-        $this->db               = new HipayDBQuery($module);
-        $this->cart             = ($this->order) ? new Cart($this->order->id_cart) : false;
-        $this->maintenanceData  = $maintenanceData;
+        $this->amount                = (isset($params["amount"])) ? $params["amount"] : 0.01;
+        $this->captureRefundFee      = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"] : false;
+        $this->captureRefundDiscount = (isset($params["capture_refund_discount"])) ? $params["capture_refund_discount"] : false;
+        $this->refundItems           = (isset($params["refundItems"])) ? $params["refundItems"] : false;
+        $this->order                 = (isset($params["order"])) ? new Order($params["order"]) : false;
+        $this->operation             = (isset($params["operation"])) ? $params["operation"] : false;
+        $this->db                    = new HipayDBQuery($module);
+        $this->cart                  = ($this->order) ? new Cart($this->order->id_cart) : false;
+        $this->maintenanceData       = $maintenanceData;
     }
 
     /**
@@ -70,9 +71,10 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
 
         $maintenance->operation_id = $this->order->id.'-'.$this->operation.'-'.($transactionAttempt + 1);
         //if there's a basket
-        if ($this->refundItems || $this->captureRefundFee == "on") {
+        if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
-                "order" => $this->order, "captureRefundFee" => $this->captureRefundFee, "operation" => $this->operation,
+                "order" => $this->order, "captureRefundFee" => $this->captureRefundFee, "captureRefundDiscount" => $this->captureRefundDiscount,
+                "operation" => $this->operation,
                 "transactionAttempt" => $transactionAttempt);
             foreach ($this->cart->getProducts() as $item) {
 

@@ -44,6 +44,9 @@
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}
+                {if  !$showMoto && !$showChallenge && !$showCapture && !$showRefund }
+                    <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
+                {/if}
             </div>
         </div>
     </div>

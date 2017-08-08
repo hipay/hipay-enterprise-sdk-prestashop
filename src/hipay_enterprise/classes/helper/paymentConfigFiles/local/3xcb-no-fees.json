@@ -1,6 +1,10 @@
 {
   "name": "3xcb-no-fees",
   "config": {
+    "group": {
+      "code": "oney",
+      "label": "Oney Facily Pay"
+    },
     "displayNameBO": "3x Carte Bancaire sans frais - Facily Pay",
     "displayName": "3x Carte Bancaire sans frais - Facily Pay",
     "activated": 0,

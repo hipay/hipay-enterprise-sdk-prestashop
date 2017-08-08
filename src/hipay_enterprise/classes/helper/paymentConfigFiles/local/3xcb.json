@@ -1,6 +1,10 @@
 {
   "name": "3xcb",
   "config": {
+    "group": {
+      "code": "oney",
+      "label": "Oney Facily Pay"
+    },
     "displayNameBO": "3x Carte Bancaire - Facily Pay",
     "displayName": "3x Carte Bancaire - Facily Pay",
     "activated": 0,
