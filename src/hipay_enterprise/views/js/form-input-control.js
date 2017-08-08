@@ -12,6 +12,7 @@ var hiPayInputControl = {};
 
 hiPayInputControl.checkControl = checkControl;
 hiPayInputControl.addInput = addInput;
+hiPayInputControl.normalizePrice = normalizePrice;
 hiPayInputControl.forms = [];
 
 /**
@@ -398,4 +399,19 @@ function isCPNCURPValid(value) {
 
 function validBic(value){
     return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
+}
+
+/**
+ *
+ * @param price
+ * @returns {Number|*}
+ */
+function normalizePrice (price) {
+    price = parseFloat(price.replace(/,/g, '.'));
+
+    if (isNaN(price) || price === '') {
+        price = 0;
+    }
+
+    return price;
 }

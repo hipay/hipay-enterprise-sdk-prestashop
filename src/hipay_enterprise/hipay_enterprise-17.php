@@ -56,6 +56,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             _MODULE_DIR_.$this->name.'/views/js/card-js.min.js',
             'all'
         );
+
         $this->context->controller->addJS(array(_MODULE_DIR_.$this->name.'/views/js/devicefingerprint.js'));
         $this->context->controller->addJS(
             array(_MODULE_DIR_.$this->name.'/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
@@ -63,14 +64,17 @@ class HipayEnterpriseNew extends Hipay_enterprise
     }
 
     /**
-     * Display payment forms
+     * Display payment forms (PS17)
+     *
      * @param type $params
      * @return PaymentOption
      */
     public function hipayExternalPaymentOption($params)
     {
-        $this->logs->logErrors("hipayExternalPaymentOption");
-        $address        = new Address((int) $params['cart']->id_address_delivery);
+
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country        = new Country((int) $address->id_country);
         $currency       = new Currency((int) $params['cart']->id_currency);
         $this->customer = new Customer((int) $params['cart']->id_customer);

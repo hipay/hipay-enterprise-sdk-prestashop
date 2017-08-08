@@ -157,7 +157,7 @@
     background-color: #2eacce!important;
 }
 
-.nav-tabs {
+.hipay-enterprise.nav-tabs {
     border: 0;
     padding: .4rem;
     margin-bottom: -20px;
@@ -168,8 +168,8 @@
     color: #000!important;
 }
 
-.nav-tabs .nav-item.open .nav-link, .nav-tabs .nav-item.open .nav-link:focus, .nav-tabs .nav-item.open
-.nav-link:hover, .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs .nav-link.active:hover  {
+.hipay-enterprise.nav-tabs .nav-item.open .nav-link, .hipay-enterprise.nav-tabs .nav-item.open .nav-link:focus, .hipay-enterprise.nav-tabs .nav-item.open
+.nav-link:hover, .hipay-enterprise.nav-tabs .nav-link.active, .hipay-enterprise.nav-tabs .nav-link.active:focus, .hipay-enterprise.nav-tabs .nav-link.active:hover  {
     background-color: rgba(255,255,255,.5);
     color: #fff;
     -webkit-transition: all 2s;
@@ -177,7 +177,7 @@
     border-radius: 3px;
 }
 
-.nav-tabs li a,.nav-stacked li a {
+.hipay-enterprise.nav-tabs li a,.nav-stacked li a {
     color: #FFFFFF!important;
 }
 
@@ -185,21 +185,21 @@
     color: #555!important;
 }
 
-.bootstrap .nav-tabs li.active a, .bootstrap .nav-tabs a:hover, .bootstrap .nav-tabs li.active a:focus {
+.bootstrap .hipay-enterprise.nav-tabs li.active a, .bootstrap .hipay-enterprise.nav-tabs a:hover, .bootstrap .hipay-enterprise.nav-tabs li.active a:focus {
     background-color: rgba(255,255,255,.2);
     color: #FFFFFF;
     -webkit-transition: all 2s;
     transition: all 2s;
 }
 
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active,
+.hipay-enterprise.nav-tabs .nav-item.show .nav-link, .hipay-enterprise.nav-tabs .nav-link.active,
 .nav-stacked .nav-item.show .nav-link, .nav-stacked  .nav-link.active {
     color: #495057;
     background-color: #fff;
     border-color: #ddd #ddd #fff;
 }
 
-.bootstrap .nav-tabs>li.active>a, .bootstrap .nav-tabs>li.active>a:hover, .bootstrap .nav-tabs>li.active>a:focus {
+.bootstrap .hipay-enterprise.nav-tabs>li.active>a, .bootstrap .hipay-enterprise.nav-tabs>li.active>a:hover, .bootstrap .nav-tabs>li.active>a:focus {
     border :0px;
 }
 

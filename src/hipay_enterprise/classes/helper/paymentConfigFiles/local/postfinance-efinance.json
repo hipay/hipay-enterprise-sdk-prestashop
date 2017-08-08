@@ -1,6 +1,10 @@
 {
   "name": "postfinance-efinance",
   "config": {
+    "group": {
+      "code": "postfinance",
+      "label": "PostFinance"
+    },
     "displayNameBO": "PostFinance E-Finance",
     "displayName": "PostFinance E-Finance",
     "frontPosition": 22,

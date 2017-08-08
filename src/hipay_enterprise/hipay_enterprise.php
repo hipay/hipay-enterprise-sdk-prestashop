@@ -198,16 +198,24 @@ class Hipay_enterprise extends PaymentModule
         );
         $this->context->controller->addCSS($this->_path.'views/css/back.css',
             'all');
+
+        $this->context->controller->addJS(
+            $this->_path  . '/views/js/form-input-control.js',
+            'all'
+        );
     }
 
     /**
      * Handling prestashop hook payment. Adding payment methods (PS16)
+     *
      * @param type $params
      * @return type
      */
     public function hookPayment($params)
     {
-        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -239,13 +247,17 @@ class Hipay_enterprise extends PaymentModule
         );
     }
 
+    /**
+     *  Adding payment methods (PS16)
+     *
+     * @param $params
+     * @return array
+     */
     public function hookDisplayPaymentEU($params)
     {
-        $this->logs->logInfos('##########################');
-        $this->logs->logInfos('---- START function hookDisplayPaymentEU');
-        $this->logs->logInfos('##########################');
-
-        $address    = new Address((int) $params['cart']->id_address_delivery);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery ;
+        $address  = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -688,6 +700,7 @@ class Hipay_enterprise extends PaymentModule
                 'form_successes' => $this->_successes,
                 'technicalErrors' => $this->_technicalErrors,
                 'limitedCurrencies' => $this->currencies_titles,
+                'default_currency' => Configuration::get('PS_SHOP_DEFAULT'),
                 'limitedCountries' => $this->countries_titles,
                 'this_callback' => $this->context->link->getModuleLink(
                     $this->name,
@@ -852,17 +865,9 @@ class Hipay_enterprise extends PaymentModule
                 $hipayMapCarOETA     = Tools::getValue('ps_map_prep_eta_'.$car["id_carrier"]);
                 $hipayMapCarDETA     = Tools::getValue('ps_map__delivery_eta_'.$car["id_carrier"]);
 
-                if (empty($psMapCar) || empty($hipayMapCarMode) || empty($hipayMapCarShipping) || empty($hipayMapCarOETA)
-                    || empty($hipayMapCarDETA)
-                ) {
-                    $this->_errors[] = $this->l("all carrier mapping fields are required");
-                }
-
-                //   if ($this->mapper->hipayCarrierExist($hipayMapCar)) {
                 $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode,
                     "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA,
                     "deliveryeta" => $hipayMapCarDETA);
-                //   }
             }
 
             if (!empty($this->_errors)) {
@@ -875,6 +880,7 @@ class Hipay_enterprise extends PaymentModule
                 $mapping
             );
             $this->_successes[] = $this->l('Carrier mapping configuration saved successfully.');
+
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -899,9 +905,7 @@ class Hipay_enterprise extends PaymentModule
             foreach ($psCategories as $cat) {
                 $psMapCat    = Tools::getValue('ps_map_'.$cat["id_category"]);
                 $hipayMapCat = Tools::getValue('hipay_map_'.$cat["id_category"]);
-                if (empty($psMapCat) || empty($hipayMapCat)) {
-                    $this->_errors[] = $this->l("all category mapping fields are required");
-                }
+
                 if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
                     $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
                 }
@@ -910,6 +914,7 @@ class Hipay_enterprise extends PaymentModule
                 $this->_errors = array(end($this->_errors));
                 return false;
             }
+
             $this->mapper->setMapping(
                 HipayMapper::HIPAY_CAT_MAPPING,
                 $mapping
@@ -1215,7 +1220,6 @@ class Hipay_enterprise extends PaymentModule
             );
             return true;
         } catch (Exception $e) {
-            // LOGS
             $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());
         }
@@ -1232,29 +1236,34 @@ class Hipay_enterprise extends PaymentModule
         $this->logs->logInfos("# SaveFraudInformations");
 
         try {
-            // saving all array "fraud" in $configHipay
-            $accountConfig = array();
+            if (!Validate::isEmail(Tools::getValue('send_payment_fraud_email_copy_to'))) {
+                $this->_errors[] = $this->trans('The Copy To Email is not valid.', array());
+                return false;
+            } else {
+                // saving all array "fraud" in $configHipay
+                $accountConfig = array();
 
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-            foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
-                $fieldValue          = Tools::getValue($key);
-                $accountConfig[$key] = $fieldValue;
+                //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+                foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
+                    $fieldValue          = Tools::getValue($key);
+                    $accountConfig[$key] = $fieldValue;
+                }
+
+                //save configuration
+                $this->hipayConfigTool->setConfigHiPay(
+                    "fraud",
+                    $accountConfig
+                );
+
+                $this->_successes[] = $this->l('Fraud settings saved successfully.');
+                $this->logs->logInfos(
+                    print_r(
+                        $this->hipayConfigTool->getConfigHipay(),
+                        true
+                    )
+                );
+                return true;
             }
-
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "fraud",
-                $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Fraud settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(),
-                    true
-                )
-            );
-            return true;
         } catch (Exception $e) {
             $this->logs->logException($e);
             $this->_errors[] = $this->l($e->getMessage());

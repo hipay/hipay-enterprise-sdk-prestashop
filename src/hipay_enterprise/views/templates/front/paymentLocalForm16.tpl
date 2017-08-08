@@ -66,8 +66,6 @@
             e.preventDefault();
             e.stopPropagation();
             
-            console.log(hiPayInputControl.checkControl('{$localPaymentName}'));
-            
             if (hiPayInputControl.checkControl('{$localPaymentName}')) {
                 this.submit();
             }

@@ -83,8 +83,9 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
-                                            <div class="col-lg-1">
-                                                <input type="text" name="{$creditCard@key}_minAmount[EUR]" value="{$creditCard.minAmount.EUR}"/>
+                                            <div class="input-group col-lg-2">
+                                                <input type="text" class="money-type" name="{$creditCard@key}_minAmount[EUR]" value="{$creditCard.minAmount.EUR}"/>
+                                                <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -92,8 +93,9 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
-                                            <div class="col-lg-1">
-                                                <input type="text" name="{$creditCard@key}_maxAmount[EUR]" value="{$creditCard.maxAmount.EUR}"/>
+                                            <div class="input-group col-lg-2">
+                                                <input type="text" class="money-type" name="{$creditCard@key}_maxAmount[EUR]" value="{$creditCard.maxAmount.EUR}"/>
+                                                <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                                             </div>
                                         </div>
                                     </div>

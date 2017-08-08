@@ -49,7 +49,7 @@
                                 {if $groupSummary != $localPayment["group"]["code"] }
                                     <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}" id="{$localPayment["group"]["code"]}">
                                             <div role="tabpanel">
-                                                <ul class="nav nav-tabs" role="tablist">
+                                                <ul class="hipay-enterprise nav nav-tabs" role="tablist">
                                                     {foreach $config_hipay.payment.local_payment as $localPaymentGroup}
                                                         {if 'group'|array_key_exists:$localPaymentGroup}
                                                             {if $localPayment["group"]["code"] == $localPaymentGroup["group"]["code"]}

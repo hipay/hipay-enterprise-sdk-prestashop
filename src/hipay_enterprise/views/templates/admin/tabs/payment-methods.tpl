@@ -19,6 +19,14 @@
 
 </div>
 <script>
+    $(document).ready(function () {
+        $(".money-type").change(function validate() {
+            var inputValue = hiPayInputControl.normalizePrice($(this).val());
+            var parsedValue = truncateDecimals(inputValue, 6);
+            $(this).val(parsedValue);
+        });
+    });
+
     $('.multiselect-currency').multiselect();
 
     $('#collapseCC').on('shown.bs.collapse', function () {
