@@ -245,7 +245,6 @@ class HipayNotification
             // END SQL LOCK
             //#################################################################
         } catch (Exception $ex) {
-            $this->logs->logException($ex);
             $this->db->releaseSQLLock();
         }
     }
@@ -333,7 +332,7 @@ class HipayNotification
                 $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
-                $this->log->logException($e);
+                $this->log->logException($e->getCode().' : '.$e->getMessage());
                 return false;
             }
         }
