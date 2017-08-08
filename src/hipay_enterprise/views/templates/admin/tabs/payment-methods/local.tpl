@@ -73,6 +73,7 @@
                                                                 key=$localPaymentDetail@key first=$localPaymentDetail@first}
                                                             </div>
                                                         {/if}
+                                                    {/if}
                                                 {/foreach}
                                             </div>
                                     </div>
