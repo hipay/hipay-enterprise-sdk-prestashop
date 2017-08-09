@@ -10,6 +10,8 @@
  */
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/hipayMaintenanceData.php');
+require_once(dirname(__FILE__).'/hipayHelper.php');
 require_once(dirname(__FILE__).'/hipayOrderMessage.php');
 require_once(dirname(__FILE__).'/HipayMail.php');
 
@@ -314,12 +316,14 @@ class HipayNotification
                 $this->cart->id_shop
             );
 
+            $paymentProduct = $this->getPaymentProductName();
+
             try {
                 $this->module->validateOrder(
                     Context::getContext()->cart->id,
                     $state,
                     (float) $this->transaction->getAuthorizedAmount(),
-                    Tools::ucfirst($this->transaction->getPaymentProduct()),
+                    $paymentProduct,
                     $message,
                     array(),
                     Context::getContext()->cart->id_currency,
@@ -340,36 +344,77 @@ class HipayNotification
     }
 
     /**
+     *
+     * @return type
+     */
+    private function getPaymentProductName()
+    {
+        $cardBrand = false;
+        if ($this->transaction->getPaymentMethod() != null) {
+            $cardBrand = $this->transaction->getPaymentMethod()->getBrand();
+        }
+        $paymentProduct = $this->transaction->getPaymentProduct();
+
+        return HipayHelper::getPaymentProductName($cardBrand,
+                $paymentProduct,
+                $this->module);
+    }
+
+    /**
      * create order payment line
      */
     private function createOrderPayment($refund = false)
     {
         if ($this->orderExist) {
             $amount                 = $this->getRealCapturedAmount($refund);
-            $payment_method         = HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX." ".(string) ucwords(
-                    $this->transaction->getPaymentProduct()
-            );
+            $paymentProduct         = $this->getPaymentProductName();
             $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
             $currency               = new Currency($this->order->id_currency);
             $payment_date           = date("Y-m-d H:i:s");
-            $order_invoice          = null;
+
+            $invoices = $this->order->getInvoicesCollection();
+            $invoice  = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
 
             if ($this->order && Validate::isLoadedObject($this->order)) {
                 // Add order payment
                 if ($this->order->addOrderPayment(
                         $amount,
-                        $payment_method,
+                        $paymentProduct,
                         $payment_transaction_id,
                         $currency,
                         $payment_date,
-                        $order_invoice
+                        $invoice
                     )
                 ) {
                     $this->log->logInfos("# Order payment created with success {$this->order->id}");
+                    $orderPayment = $this->db->findOrderPayment($this->order->reference,
+                        $payment_transaction_id);
+                    if ($orderPayment) {
+                        $this->setOrderPaymentData($orderPayment);
+                    }
                 }
             } else {
                 $this->log->logErrors('# Error, order exist but the object order not loaded');
             }
+        }
+    }
+
+    /**
+     *
+     * @param type $orderPayment
+     */
+    private function setOrderPaymentData($orderPayment)
+    {
+        try {
+            if ($this->transaction->getPaymentMethod() != null) {
+                $orderPayment->card_number     = $this->transaction->getPaymentMethod()->getPan();
+                $orderPayment->card_brand      = $this->transaction->getPaymentMethod()->getBrand();
+                $orderPayment->card_expiration = $this->transaction->getPaymentMethod()->getCardExpiryMonth().'/'.$this->transaction->getPaymentMethod()->getCardExpiryYear();
+                $orderPayment->card_holder     = $this->transaction->getPaymentMethod()->getCardHolder();
+                $orderPayment->update();
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
         }
     }
 
@@ -384,20 +429,30 @@ class HipayNotification
 
         $this->db->deleteOrderPaymentDuplicate($this->order->reference);
 
-
-
         if ($this->transaction->getOperation() == NULL) {
-            //save capture items and quantity in prestashop
-            $captureData = array(
-                "hp_ps_order_id" => $this->order->id,
-                "hp_ps_product_id" => 0,
-                "operation" => 'BO_TPP',
-                "type" => 'BO',
-                "quantity" => 1,
-                "amount" => 0
-            );
+            try {
+                $maintenanceData    = new HipayMaintenanceData($this->module);
+                // retrieve number of capture or refund request
+                $transactionAttempt = $maintenanceData->getNbOperationAttempt(
+                    'BO_TPP',
+                    $this->order->id
+                );
 
-            $this->db->setCaptureOrRefundOrder($captureData);
+                //save capture items and quantity in prestashop
+                $captureData = array(
+                    "hp_ps_order_id" => $this->order->id,
+                    "hp_ps_product_id" => 0,
+                    "operation" => 'BO_TPP',
+                    "type" => 'BO',
+                    "attempt_number" => $transactionAttempt + 1,
+                    "quantity" => 1,
+                    "amount" => 0
+                );
+
+                $this->db->setCaptureOrRefundOrder($captureData);
+            } catch (Exception $e) {
+                var_dump($e);
+            }
         }
 
         // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
@@ -407,11 +462,6 @@ class HipayNotification
             ) == 0
         ) {
             $this->createOrderPayment();
-        }
-        // set invoice order
-        if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED || $this->transaction->getStatus() == TransactionStatus::CAPTURED
-        ) {
-            $this->db->setInvoiceOrder($this->order);
         }
 
         return true;
@@ -596,15 +646,30 @@ class HipayNotification
      */
     private function setTransactionRefForPrestashop($refund = false)
     {
-        $suffix = HipayNotification::TRANSACTION_REF_CAPTURE_SUFFIX;
-        $amount = $this->transaction->getCapturedAmount();
 
-        if ($refund) {
-            $suffix = HipayNotification::TRANSACTION_REF_REFUND_SUFFIX;
-            $amount = $this->transaction->getRefundedAmount();
+        $ref = $this->transaction->getTransactionReference();
+        try {
+            if ($this->transaction->getOperation() != NULL) {
+                $ref .="-".$this->transaction->getOperation()->getId();
+            } else {
+                $operation          = "BO_TPP";
+                $maintenanceData    = new HipayMaintenanceData($this->module);
+                // retrieve number of capture or refund request
+                $transactionAttempt = $maintenanceData->getNbOperationAttempt(
+                    'BO_TPP',
+                    $this->order->id
+                );
+                $operationId        = HipayHelper::generateOperationId(
+                        $this->order,
+                        $operation,
+                        $transactionAttempt
+                );
+                $ref .="-".$operationId;
+            }
+        } catch (Exception $ex) {
+            var_dump($ex);
         }
-
-        return $this->transaction->getTransactionReference()."-".$amount.'-'.$suffix;
+        return $ref;
     }
 
     /**
