@@ -7,6 +7,7 @@
     },
     "displayNameBO": "BBVA Bancomer",
     "displayName": "BBVA Bancomer",
+    "frontPosition": 9,
     "activated": 0,
     "canRefund": 0,
     "canManualCapture": 0,
@@ -16,14 +17,14 @@
     "countries": [
       "MX"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "forceHpaymentOnElectronicSignature": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
-    "logo": "aura.png",
+    "logo": "bbva.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\AstropayPaymentMethod",
       "defaultFieldsValue": {},

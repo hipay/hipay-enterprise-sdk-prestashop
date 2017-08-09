@@ -38,12 +38,12 @@
                                             {$car["name"]}
                                         </td>
                                         <td>
-                                            <input type="text"
+                                            <input type="text" class="day-type"
                                                    value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["preparation_eta"]}{/if}"
                                                    name="ps_map_prep_eta_{$car["id_carrier"]}"/>
                                         </td>
                                         <td>
-                                            <input type="text"
+                                            <input type="text" class="day-type"
                                                    value="{if isset($mappedCarriers[$car["id_carrier"]])}{$mappedCarriers[$car["id_carrier"]]["delivery_eta"]}{/if}"
                                                    name="ps_map__delivery_eta_{$car["id_carrier"]}"/>
                                         </td>
@@ -54,7 +54,7 @@
                                                 {/if}
                                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if}
-                                                                                                                                                                                     value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
+                                                            value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
                                                 {/foreach}
                                             </select>
                                         </td>
@@ -91,3 +91,12 @@
         </form>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $(".day-type").change(function validate() {
+        var inputValue = hiPayInputControl.normalizePrice($(this).val());
+        var parsedValue = truncateDecimals(inputValue, 2);
+        $(this).val(parsedValue);
+        });
+    });
+</script>

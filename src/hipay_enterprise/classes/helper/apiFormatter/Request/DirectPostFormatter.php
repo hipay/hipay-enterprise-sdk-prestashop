@@ -8,9 +8,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/RequestFormatterAbstract.php');
-require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/RequestFormatterAbstract.php');
+require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
 class DirectPostFormatter extends RequestFormatterAbstract
 {
@@ -18,13 +17,14 @@ class DirectPostFormatter extends RequestFormatterAbstract
     private $deviceFingerprint;
 
     public function __construct(
-        $moduleInstance,
-        $params
-    ) {
-        parent::__construct($moduleInstance, $params);
-        $this->paymentProduct = $params["productlist"];
-        $this->deviceFingerprint = $params["deviceFingerprint"];
-        $this->paymentMethod = $params["paymentmethod"];
+    $moduleInstance, $params
+    )
+    {
+        parent::__construct($moduleInstance,
+            $params);
+        $this->paymentProduct           = $params["productlist"];
+        $this->deviceFingerprint        = $params["deviceFingerprint"];
+        $this->paymentMethod            = $params["paymentmethod"];
     }
 
     /**
@@ -47,8 +47,8 @@ class DirectPostFormatter extends RequestFormatterAbstract
     protected function mapRequest(&$order)
     {
         parent::mapRequest($order);
-        $order->payment_product = $this->paymentProduct;
-        $order->device_fingerprint = $this->deviceFingerprint;
-        $order->paymentMethod = $this->paymentMethod;
+        $order->payment_product          = $this->paymentProduct;
+        $order->device_fingerprint       = $this->deviceFingerprint;
+        $order->paymentMethod            = $this->paymentMethod;
     }
 }

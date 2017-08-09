@@ -3,6 +3,7 @@
     "config": {
         "displayNameBO": "Giropay",
         "displayName": "Giropay",
+        "frontPosition": 14,
         "activated": 0,
         "canRefund": 1,
         "canManualCapture": 1,
@@ -12,11 +13,11 @@
         "countries": [
             "DE"
         ],
+        "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
         "countrySelectorReadOnly": 1,
         "currencySelectorReadOnly": 1,
         "forceHpayment": 0,
         "forceBasket": 0,
-        "forceHpaymentOnElectronicSignature": 0,
         "minAmount": {
             "EUR": 0
         },

@@ -20,15 +20,20 @@
                 <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
                     <li role="presentation" class="disabled credit-card-title"></li>
                     {assign var="groupSummary" value=""}
+                    {assign var="groupSummaryDone" value=""}
                     {foreach $config_hipay.payment.local_payment as $localPayment}
                         {if 'group'|array_key_exists:$localPayment}
                             {assign var="itemInGroup" value="true"}
                             {if $groupSummary != $localPayment["group"]["code"] }
-                                {assign var="groupSummary" value=$localPayment["group"]["code"]}
-                                <li role="presentation" class=" {if $localPayment@first} active {/if} ">
-                                    <a href="#{$localPayment["group"]["code"]}" aria-controls="{$localPayment["group"]["code"]}" role="tab"
-                                       data-toggle="tab">{l s={$localPayment["group"]["label"]} mod='hipay_enterprise'}</a>
-                                </li>
+                                {assign var="arrayGroupSummaryDone"  value=','|explode:$groupSummaryDone}
+                                {if !$localPayment["group"]["code"]|in_array:$arrayGroupSummaryDone}
+                                    {assign var="groupSummary" value=$localPayment["group"]["code"]}
+                                    <li role="presentation" class=" {if $localPayment@first} active {/if} ">
+                                        <a href="#{$localPayment["group"]["code"]}" aria-controls="{$localPayment["group"]["code"]}" role="tab"
+                                           data-toggle="tab">{l s={$localPayment["group"]["label"]} mod='hipay_enterprise'}</a>
+                                    </li>
+                                    {assign var="groupSummaryDone" value="$groupSummaryDone,$groupSummary"}
+                                {/if}
                             {/if}
                         {else}
                             <li role="presentation" class=" {if $localPayment@first} active {/if} ">
@@ -36,47 +41,51 @@
                                    data-toggle="tab">{l s=$localPayment["displayNameBO"] mod='hipay_enterprise'}</a>
                             </li>
                         {/if}
-
                     {/foreach}
                 </ul>
                 <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="local_payment_form">
                     <div class="tab-content col-md-10">
                         {assign var="groupSummary" value=""}
+                        {assign var="groupSummaryDone" value=""}
                         {foreach $config_hipay.payment.local_payment as $localPayment}
                             {assign var="itemInGroup" value=false}
                             {if 'group'|array_key_exists:$localPayment}
                                 {assign var="itemInGroup" value=true}
                                 {if $groupSummary != $localPayment["group"]["code"] }
-                                    <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}" id="{$localPayment["group"]["code"]}">
-                                            <div role="tabpanel">
-                                                <ul class="nav nav-tabs" role="tablist">
-                                                    {foreach $config_hipay.payment.local_payment as $localPaymentGroup}
-                                                        {if 'group'|array_key_exists:$localPaymentGroup}
-                                                            {if $localPayment["group"]["code"] == $localPaymentGroup["group"]["code"]}
-                                                                    {assign var="groupSummary" value=$localPayment["group"]["code"]}
-                                                                    <li role="presentation" class="{if $localPaymentGroup@first} active {/if}">
-                                                                            <a href="#{$localPaymentGroup@key}" aria-controls="{$localPaymentGroup@key}" role="tab"
-                                                                               data-toggle="tab">{l s=$localPaymentGroup["displayNameBO"] mod='hipay_enterprise'}</a>
-                                                                    </li>
+                                    {assign var="arrayGroupSummaryDone"  value=','|explode:$groupSummaryDone}
+                                    {if !$localPayment["group"]["code"]|in_array:$arrayGroupSummaryDone}
+                                        {assign var="groupSummary" value=$localPayment["group"]["code"]}
+                                        {assign var="groupSummaryDone" value="$groupSummaryDone,$groupSummary"}
+                                        <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}" id="{$localPayment["group"]["code"]}">
+                                                <div role="tabpanel">
+                                                    <ul class="hipay-enterprise nav nav-tabs" role="tablist">
+                                                        {foreach $config_hipay.payment.local_payment as $localPaymentGroup}
+                                                            {if 'group'|array_key_exists:$localPaymentGroup}
+                                                                {if $localPayment["group"]["code"] == $localPaymentGroup["group"]["code"]}
+                                                                        {assign var="groupSummary" value=$localPayment["group"]["code"]}
+                                                                        <li role="presentation" class="{if $localPaymentGroup@first} active {/if}">
+                                                                                <a href="#{$localPaymentGroup@key}" aria-controls="{$localPaymentGroup@key}" role="tab"
+                                                                                   data-toggle="tab">{l s=$localPaymentGroup["displayNameBO"] mod='hipay_enterprise'}</a>
+                                                                        </li>
+                                                                {/if}
+                                                            {/if}
+                                                        {/foreach}
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-content">
+                                                    {foreach $config_hipay.payment.local_payment as $localPaymentDetail}
+                                                        {if 'group'|array_key_exists:$localPaymentDetail}
+                                                            {if $localPayment["group"]["code"] == $localPaymentDetail["group"]["code"]}
+                                                                <div role="tabpanel" class="tab-pane {if $localPaymentDetail@first} active {/if}" id="{$localPaymentDetail@key}">
+                                                                    {include file='./detail-local-payment.tpl' method=$localPaymentDetail
+                                                                    key=$localPaymentDetail@key first=$localPaymentDetail@first}
+                                                                </div>
                                                             {/if}
                                                         {/if}
                                                     {/foreach}
-                                                </ul>
-                                            </div>
-                                            <div class="tab-content">
-                                                {foreach $config_hipay.payment.local_payment as $localPaymentDetail}
-                                                    {if 'group'|array_key_exists:$localPaymentDetail}
-                                                        {if $localPayment["group"]["code"] == $localPaymentDetail["group"]["code"]}
-                                                            {assign var="groupSummary" value=$localPayment["group"]["code"]}
-                                                            <div role="tabpanel" class="tab-pane {if $localPaymentDetail@first} active {/if}" id="{$localPaymentDetail@key}">
-                                                                {include file='./detail-local-payment.tpl' method=$localPaymentDetail
-                                                                key=$localPaymentDetail@key first=$localPaymentDetail@first}
-                                                            </div>
-                                                        {/if}
-                                                    {/if}
-                                                {/foreach}
-                                            </div>
-                                    </div>
+                                                </div>
+                                        </div>
+                                    {/if}
                                 {/if}
                             {/if}
 

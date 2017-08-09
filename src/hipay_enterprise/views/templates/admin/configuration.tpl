@@ -27,7 +27,7 @@
 {include file='./panelHeader/alert.tpl'}
 <!-- ALERTS END -->
 <div role="tabpanel">
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="hipay-enterprise nav nav-tabs" role="tablist">
         <li role="presentation"
             class=" {if ((isset($active_tab) == false) || ($active_tab == 'account_form'))} active{/if}"><a
                 href="#account_form" aria-controls="account_form" role="tab" data-toggle="tab">

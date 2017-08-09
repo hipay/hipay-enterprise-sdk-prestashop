@@ -6,29 +6,41 @@
             </h4>
         </div>
         <div class="row">
-            <label class="control-label col-lg-2">
-                {l s='Activated' mod='hipay_enterprise'}
-            </label>
-            <div class="col-lg-9">
-                <span class="switch prestashop-switch fixed-width-lg">
-                    <input type="radio" name="{$key}_activated"
-                           id="{$key}_activated_on" value="1"
-                           {if $method.activated }checked="checked"{/if} >
-                    <label for="{$key}_activated_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                    <input type="radio" name="{$key}_activated"
-                           id="{$key}_activated_off" value="0"
-                           {if $method.activated == false }checked="checked"{/if} >
-                    <label for="{$key}_activated_off">{l s='No' mod='hipay_enterprise'}</label>
-                    <a class="slide-button btn"></a>
-                </span>
+            <div class="form-group">
+                <label class="control-label col-lg-2">
+                    {l s='Activated' mod='hipay_enterprise'}
+                </label>
+                <div class="col-lg-9">
+                    <span class="switch prestashop-switch fixed-width-lg">
+                        <input type="radio" name="{$key}_activated"
+                               id="{$key}_activated_on" value="1"
+                               {if $method.activated }checked="checked"{/if} >
+                        <label for="{$key}_activated_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                        <input type="radio" name="{$key}_activated"
+                               id="{$key}_activated_off" value="0"
+                               {if $method.activated == false }checked="checked"{/if} >
+                        <label for="{$key}_activated_off">{l s='No' mod='hipay_enterprise'}</label>
+                        <a class="slide-button btn"></a>
+                    </span>
+                </div>
             </div>
         </div>
-        <br/>
+        {if "displayName"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-3">
+                        <input type="text" name="{$key}_displayName" value="{$method.displayName}"/>
+                    </div>
+                </div>
+            </div>
+        {/if}
+        {if "minAmount"|in_array:$method.displayConfigurationFields}
         <div class="row">
             <div class="form-group">
-                <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
+                <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
                 <div class="col-lg-3">
-                    <input type="text" name="{$key}_displayName" value="{$method.displayName}"/>
+                    <input type="text" name="{$key}_frontPosition" value="{$method.frontPosition}"/>
                 </div>
             </div>
         </div>
@@ -42,17 +54,38 @@
                 </div>
             </div>
         </div>
-        <br/>
-        <div class="row">
-            <div class="form-group">
-                <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
-                <div class="input-group col-lg-2">
-                    <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"/>
-                    <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+        {/if}
+        {if "maxAmount"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
+                    <div class="input-group col-lg-2">
+                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"/>
+                        <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br/>
+        {/if}
+        {if "electronicSignature"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">
+                        {l s='Enable signature electronic' mod='hipay_enterprise'}
+                    </label>
+                    <div class="input-group col-lg-2">
+                        <span class="switch prestashop-switch fixed-width-lg">
+                            <input type="radio" name="{$key}_electronicSignature" id="electronic_signature_switchmode_on" value="1"
+                                   {if $method.electronicSignature} checked="checked"{/if}>
+                            <label for="electronic_signature_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                            <input type="radio" name="{$key}_electronicSignature" id="electronic_signature_switchmode_off" value="0"
+                                   {if $method.electronicSignature  == false}checked="checked"{/if}>
+                            <label for="electronic_signature_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                            <a class="slide-button btn"></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {/if}
         {if $method["currencySelectorReadOnly"]}
             <div class="row">
                 <div class="form-group">
@@ -60,10 +93,9 @@
                     {foreach  $method["currencies"] as $currency }
                         {if isset($limitedCurrencies[$currency])}
                             <span class="label-value col-lg-2">{$limitedCurrencies[$currency]}</span>
-                            <input type="hidden" value="{$currency}"
-                                   name="{$key}_currencies[]"/>
+                            <input type="hidden" value="{$currency}" name="{$key}_currencies[]"/>
                         {else}
-                            <span class="label-value col-lg-2">{$currency}
+                            <span class="label-value col-lg-3">{$currency}
                                 {l s='This currency is not activated in your prestashop shop' mod='hipay_enterprise'}
                             </span>
                             <input type="hidden" value="{$currency}"

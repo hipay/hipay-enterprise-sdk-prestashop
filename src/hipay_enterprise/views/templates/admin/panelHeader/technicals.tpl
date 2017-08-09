@@ -23,16 +23,16 @@
             <span class="col-lg-12">{l s='Our support team is available for any questions at the following adress : '}<a href="mailto:support.tpp@hipay.com">support.tpp@hipay.com</a></span>
         </div>
         <div  class="row technical-information">
-            <label class="col-lg-2">{l s='HiPay module' mod='hipay_enterprise'}</label><span class="col-lg-10">: {$source['integration_version']}</span>
+            <label class="col-lg-3">{l s='HiPay module' mod='hipay_enterprise'}</label><span class="col-lg-9">: {$source['integration_version']}</span>
         </div>
         <div class="row">
-            <label class="col-lg-2">{l s='Prestashop version' mod='hipay_enterprise'}</label><span class="col-lg-10">: {$source['brand_version']}</span>
+            <label class="col-lg-3">{l s='Prestashop version' mod='hipay_enterprise'}</label><span class="col-lg-9">: {$source['brand_version']}</span>
         </div>
         <div class="row">
-            <label class="col-lg-2">{l s='IP Address' mod='hipay_enterprise'}</label><span class="col-lg-10">: {$ipaddr}</span>
+            <label class="col-lg-3">{l s='IP Address' mod='hipay_enterprise'}</label><span class="col-lg-9">: {$ipaddr}</span>
         </div>
         <div class="row">
-            <label class="col-lg-2">{l s='Callback url' mod='hipay_enterprise'}</label><span class="col-lg-10">: {$this_callback}</span>
+            <label class="col-lg-3">{l s='Callback url' mod='hipay_enterprise'}</label><span class="col-lg-9">: {$this_callback}</span>
         </div>
 
     </div>

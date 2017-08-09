@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Sisal",
     "displayName": "Sisal",
+    "frontPosition": 27,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
@@ -13,11 +14,11 @@
       "GB",
       "FR"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "forceHpaymentOnElectronicSignature": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
     "logo": "sisal.png",

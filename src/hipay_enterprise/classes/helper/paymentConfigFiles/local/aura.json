@@ -7,6 +7,7 @@
     },
     "displayNameBO": "Aura",
     "displayName": "Aura",
+    "frontPosition": 6,
     "activated": 0,
     "canRefund": 0,
     "canManualCapture": 0,
@@ -16,11 +17,11 @@
     "countries": [
       "BR"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "forceHpaymentOnElectronicSignature": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
     "logo": "aura.png",

@@ -136,30 +136,7 @@
                     </span>
                 </div>
             </div>
-            <!-- SWITCH MODE END -->        
-
-
-            <!-- SWITCH MODE START -->
-            <div class="form-group">
-                <label class="control-label col-lg-3">
-                    <span >
-                        {l s='Electronic signature for SEPA Direct Debit' mod='hipay_enterprise'}
-                    </span>
-                </label>
-                <div class="col-lg-9">
-                    <span class="switch prestashop-switch fixed-width-lg">
-                        <input type="radio" name="electronic_signature" id="electronic_signature_switchmode_on" value="1"
-                               {if $config_hipay.payment.global.electronic_signature }checked="checked"{/if}>
-                        <label for="electronic_signature_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                        <input type="radio" name="electronic_signature" id="electronic_signature_switchmode_off" value="0"
-                               {if $config_hipay.payment.global.electronic_signature == false}checked="checked"{/if}>
-                        <label for="electronic_signature_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
-                        <a class="slide-button btn"></a>
-                    </span>
-                </div>
-            </div>
             <!-- SWITCH MODE END -->
-
             <!-- SWITCH MODE START -->
             <div class="form-group">
                 <label class="control-label col-lg-3">

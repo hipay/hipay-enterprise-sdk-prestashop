@@ -7,6 +7,7 @@
     },
     "displayNameBO": "3x Carte Bancaire sans frais - Facily Pay",
     "displayName": "3x Carte Bancaire sans frais - Facily Pay",
+    "frontPosition": 2,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
@@ -16,11 +17,11 @@
     "countries": [
       "FR"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 1,
-    "forceHpaymentOnElectronicSignature": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
     "logo": "oney.png",

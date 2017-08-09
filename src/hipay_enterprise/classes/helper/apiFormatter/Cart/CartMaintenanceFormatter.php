@@ -67,7 +67,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         // Discount items
-        if ($this->captureRefundDiscount) {
+        if ($this->captureRefundDiscount && sizeof($this->discounts) > 0) {
             $item = $this->getDiscountItem($totalQty);
             $cart->addItem($item);
         }

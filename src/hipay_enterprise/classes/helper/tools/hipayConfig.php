@@ -15,8 +15,8 @@ class HipayConfig
     const THREE_D_S_DISABLED           = 0;
     const THREE_D_S_TRY_ENABLE_ALL     = 1;
     const THREE_D_S_TRY_ENABLE_RULES   = 2;
-    const THREE_D_S_FORCE_ENABLE_RULES = 3;
-    const THREE_D_S_FORCE_ENABLE_ALL   = 4;
+    const THREE_D_S_FORCE_ENABLE_ALL   = 3;
+    const THREE_D_S_FORCE_ENABLE_RULES = 4;
 
     private $jsonFilesPath;
     private $context;
@@ -210,11 +210,11 @@ class HipayConfig
                     ),
                     "capture_mode" => "automatic",
                     "card_token" => 0,
-                    "electronic_signature" => 1,
                     "activate_basket" => 1,
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
-                    "ccDisplayName" => "Credit card"
+                    "ccDisplayName" => "Credit card",
+                    "ccFrontPosition" => 1
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()
