@@ -225,7 +225,7 @@ class Hipay_enterprise extends PaymentModule
             array(
                 'domain' => Tools::getShopDomainSSL(true),
                 'module_dir' => $this->_path,
-                'payment_button' => $this->_path.'views/img/amexa200.png',
+                'payment_button' => $this->_path.'views/img/cc.png',
                 'min_amount' => $this->min_amount,
                 'configHipay' => $this->hipayConfigTool->getConfigHipay(),
                 'sortedPaymentProducts' => $this->getSortedActivatedPaymentByCountryAndCurrency(

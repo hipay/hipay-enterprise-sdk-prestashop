@@ -229,7 +229,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'savedCC' => $savedCC,
                             'activatedCreditCard' => Tools::jsonEncode(array_keys($paymentProduct["products"])),
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates/hook',
                             'is_guest' => $this->customer->is_guest,
                             'action' => $this->context->link->getModuleLink(
                                 $this->name,

@@ -48,7 +48,7 @@
             <li class="error"></li>
         </ol>
     </div>
-    {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
+    {include file="$hipay_enterprise_tpl_dir/hook/paymentForm.tpl"}
     <br/>
     {if $confHipay.payment.global.card_token && !$is_guest }
         <span class="custom-checkbox">
