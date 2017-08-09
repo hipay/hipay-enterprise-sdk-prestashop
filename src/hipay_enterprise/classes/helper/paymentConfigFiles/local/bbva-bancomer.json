@@ -7,6 +7,7 @@
     },
     "displayNameBO": "BBVA Bancomer",
     "displayName": "BBVA Bancomer",
+    "frontPosition": 9,
     "activated": 0,
     "canRefund": 0,
     "canManualCapture": 0,

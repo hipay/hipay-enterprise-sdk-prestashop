@@ -38,6 +38,15 @@
         {if "minAmount"|in_array:$method.displayConfigurationFields}
         <div class="row">
             <div class="form-group">
+                <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
+                <div class="col-lg-3">
+                    <input type="text" name="{$key}_frontPosition" value="{$method.frontPosition}"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="form-group">
                 <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
                 <div class="input-group col-lg-2">
                     <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"/>

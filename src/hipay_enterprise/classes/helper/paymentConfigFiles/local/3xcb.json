@@ -7,6 +7,7 @@
     },
     "displayNameBO": "3x Carte Bancaire - Facily Pay",
     "displayName": "3x Carte Bancaire - Facily Pay",
+    "frontPosition": 3,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

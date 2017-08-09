@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Paypal",
     "displayName": "Paypal",
+    "frontPosition": 20,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

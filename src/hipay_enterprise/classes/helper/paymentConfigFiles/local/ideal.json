@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "IDEAL",
     "displayName": "IDEAL",
+    "frontPosition": 15,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

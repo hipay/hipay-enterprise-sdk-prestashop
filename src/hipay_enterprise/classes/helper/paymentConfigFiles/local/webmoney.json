@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "WebMoney Transfer",
     "displayName": "WebMoney Transfer",
+    "frontPosition": 29,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

@@ -398,8 +398,6 @@ function isCPNCURPValid(value) {
 }
 
 function validBic(value){
-    console.log(value);
-    console.log(value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/));
     return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
 }
 

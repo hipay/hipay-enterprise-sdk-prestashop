@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Yandex Money",
     "displayName": "Yandex Money",
+    "frontPosition": 30,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,

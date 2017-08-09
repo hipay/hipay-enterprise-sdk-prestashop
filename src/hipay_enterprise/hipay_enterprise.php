@@ -228,14 +228,7 @@ class Hipay_enterprise extends PaymentModule
                 'payment_button' => $this->_path.'views/img/amexa200.png',
                 'min_amount' => $this->min_amount,
                 'configHipay' => $this->hipayConfigTool->getConfigHipay(),
-                'activated_credit_card' => $this->getActivatedPaymentByCountryAndCurrency(
-                    "credit_card",
-                    $country,
-                    $currency,
-                    $orderTotal
-                ),
-                'activated_local_payment' => $this->getActivatedPaymentByCountryAndCurrency(
-                    "local_payment",
+                'sortedPaymentProducts' => $this->getSortedActivatedPaymentByCountryAndCurrency(
                     $country,
                     $currency,
                     $orderTotal
@@ -269,49 +262,36 @@ class Hipay_enterprise extends PaymentModule
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
 
-        $activatedCreditCard = $this->getActivatedPaymentByCountryAndCurrency(
-            "credit_card",
+        $paymentOptions = array();
+
+        $sortedPaymentProducts = $this->getSortedActivatedPaymentByCountryAndCurrency(
             $country,
             $currency,
             $orderTotal
         );
 
-        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
-            "local_payment",
-            $country,
-            $currency,
-            $orderTotal
-        );
-        $paymentOptions        = array();
-        $paymentOptionsCC      = array();
-        $paymentOptionsLP      = array();
-
-        if (!empty($activatedCreditCard)) {
-            $paymentOptionsCC[] = array(
-                'cta_text' => $this->l('Pay by credit card'),
-                'logo' => Media::getMediaPath($this->_path.'views/img/amexa200.png'),
-                'action' => $this->context->link->getModuleLink(
-                    $this->name,
-                    'redirect',
-                    array(),
-                    true
-                )
-            );
-        }
-
-        if (!empty($activatedLocalPayment)) {
-            foreach ($activatedLocalPayment as $localPayment) {
-                $paymentOptionsLP[] = array(
-                    'cta_text' => $this->l('Pay by').' '.$localPayment['displayName'],
-                    'logo' => Media::getMediaPath($localPayment['payment_button']),
-                    'action' => $localPayment['link']
-                );
+        if (!empty($sortedPaymentProducts)) {
+            foreach ($sortedPaymentProducts as $name => $paymentProduct) {
+                if ($name == "credit_card") {
+                    $paymentOptions[] = array(
+                        'cta_text' => $this->l('Pay by credit card'),
+                        'logo' => Media::getMediaPath($this->_path.'views/img/amexa200.png'),
+                        'action' => $this->context->link->getModuleLink(
+                            $this->name,
+                            'redirect',
+                            array(),
+                            true
+                        )
+                    );
+                } else {
+                    $paymentOptions[] = array(
+                        'cta_text' => $this->l('Pay by').' '.$paymentProduct['displayName'],
+                        'logo' => Media::getMediaPath($paymentProduct['payment_button']),
+                        'action' => $paymentProduct['link']
+                    );
+                }
             }
         }
-        $paymentOptions = array_merge(
-            $paymentOptionsCC,
-            $paymentOptionsLP
-        );
         return $paymentOptions;
     }
 
@@ -564,9 +544,9 @@ class Hipay_enterprise extends PaymentModule
         ) {
             $showCapture = false;
         }
-        
-        if($catpureOrRefundFromBo){
-            $showRefund = false;
+
+        if ($catpureOrRefundFromBo) {
+            $showRefund  = false;
             $showCapture = false;
         }
 
@@ -1149,6 +1129,9 @@ class Hipay_enterprise extends PaymentModule
             if (Tools::getValue("ccDisplayName")) {
                 $accountConfig["global"]["ccDisplayName"] = Tools::getValue("ccDisplayName");
             }
+            if (Tools::getValue("ccFrontPosition")) {
+                $accountConfig["global"]["ccFrontPosition"] = Tools::getValue("ccFrontPosition");
+            }
 
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
@@ -1209,6 +1192,7 @@ class Hipay_enterprise extends PaymentModule
                 "maxAmount",
                 "displayName",
                 "electronicSignature"
+                "frontPosition"
             );
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
@@ -1346,6 +1330,58 @@ class Hipay_enterprise extends PaymentModule
     {
         Configuration::deleteByName('HIPAY_CONFIG');
         return true;
+    }
+
+    /**
+     * Get sorted and filtered available payment methods
+     * @param type $country
+     * @param type $currency
+     * @param type $orderTotal
+     * @return type
+     */
+    
+  
+  
+  ($country, $currency, $orderTotal = 1)
+    {
+        $activatedCreditCard["credit_card"]["frontPosition"] = $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccFrontPosition"];
+        $activatedCreditCard["credit_card"]["products"]      = $this->getActivatedPaymentByCountryAndCurrency(
+            "credit_card",
+            $country,
+            $currency,
+            $orderTotal
+        );
+
+        $activatedLocalPayment = $this->getActivatedPaymentByCountryAndCurrency(
+            "local_payment",
+            $country,
+            $currency,
+            $orderTotal
+        );
+
+        $paymentProducts = array_merge(
+            $activatedCreditCard,
+            $activatedLocalPayment
+        );
+
+        uasort($paymentProducts,
+            array($this, "cmpPaymentProduct"));
+
+        return $paymentProducts;
+    }
+
+    /**
+     * sorting function for payment products
+     * @param type $a
+     * @param type $b
+     * @return int
+     */
+    private function cmpPaymentProduct($a, $b)
+    {
+        if ($a["frontPosition"] == $b["frontPosition"]) {
+            return 0;
+        }
+        return ($a["frontPosition"] < $b["frontPosition"]) ? -1 : 1;
     }
 
     /**

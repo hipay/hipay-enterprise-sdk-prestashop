@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Klarna",
     "displayName": "Klarna",
+    "frontPosition": 18,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
