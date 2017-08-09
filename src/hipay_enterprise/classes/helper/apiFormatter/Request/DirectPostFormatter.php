@@ -25,6 +25,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];
+        $this->authentication_indicator = $params["authentication_indicator"];
     }
 
     /**
@@ -50,5 +51,6 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $order->payment_product = $this->paymentProduct;
         $order->device_fingerprint = $this->deviceFingerprint;
         $order->paymentMethod = $this->paymentMethod;
+        $order->authentication_indicator = $this->authentication_indicator;
     }
 }

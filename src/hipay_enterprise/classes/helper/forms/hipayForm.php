@@ -246,14 +246,6 @@ class HipayForm extends HipayFormInput
 
 
         $form['form']['input'][] = $this->generateSwitchButton(
-            "electronic_signature",
-            $this->module->l(
-                'Activate electronic signature',
-                'HipayForm'
-            )
-        );
-
-        $form['form']['input'][] = $this->generateSwitchButton(
             "activate_basket",
             $this->module->l(
                 'Activate basket',
@@ -295,7 +287,6 @@ class HipayForm extends HipayFormInput
             "css_url" => "",
             "capture_mode" => "",
             "card_token" => "",
-            "electronic_signature" => "",
             "activate_basket" => "",
             "regenerate_cart_on_decline" => ""
         );

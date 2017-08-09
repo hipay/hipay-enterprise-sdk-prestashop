@@ -210,7 +210,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             )
                     );
                     if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                        $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page. Please do not refresh the page during the process')."</p>");
+                        $newOption->setAdditionalInformation("<p>". $params['translation_checkout'] ."</p>");
                     }
                     $paymentOptions[] = $newOption;
                     break;
