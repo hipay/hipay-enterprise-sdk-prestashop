@@ -13,11 +13,12 @@
       "GB",
       "FR"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","electronicSignature","countries"],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "forceHpaymentOnElectronicSignature": 1,
+    "electronicSignature" : 1,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
     "logo": "sdd.png",

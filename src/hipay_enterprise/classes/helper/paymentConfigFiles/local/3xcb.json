@@ -16,11 +16,11 @@
     "countries": [
       "FR"
     ],
+    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 1,
-    "forceHpaymentOnElectronicSignature": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
     "logo": "oney.png",

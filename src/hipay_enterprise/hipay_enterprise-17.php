@@ -104,7 +104,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 )
                             );
                         if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                            $newOption->setAdditionalInformation("<p>".$this->l('You will be redirected to an external payment page. Please do not refresh the page during the process')."</p>");
+                            $newOption->setAdditionalInformation("<p>". $params['translation_checkout'] ."</p>");
                         }
                         $paymentOptions[] = $newOption;
                         break;
@@ -185,8 +185,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     );
                     if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"])
                         || ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]
-                            !== 'api' || ($localpayment["forceHpaymentOnElectronicSignature"]
-                                && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["electronic_signature"]))
+                            !== 'api' || $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["electronicSignature"])
                     ) {
                         $this->context->smarty->assign(
                             array(

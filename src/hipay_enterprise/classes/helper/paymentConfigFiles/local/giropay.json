@@ -12,11 +12,11 @@
         "countries": [
             "DE"
         ],
+        "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
         "countrySelectorReadOnly": 1,
         "currencySelectorReadOnly": 1,
         "forceHpayment": 0,
         "forceBasket": 0,
-        "forceHpaymentOnElectronicSignature": 0,
         "minAmount": {
             "EUR": 0
         },
