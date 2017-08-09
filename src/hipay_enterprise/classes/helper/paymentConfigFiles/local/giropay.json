@@ -3,6 +3,7 @@
     "config": {
         "displayNameBO": "Giropay",
         "displayName": "Giropay",
+        "frontPosition": 14,
         "activated": 0,
         "canRefund": 1,
         "canManualCapture": 1,

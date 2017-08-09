@@ -3,6 +3,7 @@
   "config": {
     "displayNameBO": "Przelewy24",
     "displayName": "Przelewy24",
+    "frontPosition": 23,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
