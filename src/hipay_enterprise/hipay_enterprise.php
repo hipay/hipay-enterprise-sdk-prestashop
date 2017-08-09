@@ -303,7 +303,6 @@ class Hipay_enterprise extends PaymentModule
     public function hookPaymentOptions($params)
     {
         $hipay17 = new HipayEnterpriseNew();
-
         // Fix Bug with translation and bad context ( Hook in an another file)
         $params['translation_checkout'] = $this->l(
             'You will be redirected to an external payment page. Please do not refresh the page during the process');
@@ -670,6 +669,7 @@ class Hipay_enterprise extends PaymentModule
     public function getContent()
     {
         $this->postProcess();
+
         $formGenerator = new HipayForm($this);
 
         $configuration = $this->local_path.'views/templates/admin/configuration.tpl';
@@ -1184,6 +1184,7 @@ class Hipay_enterprise extends PaymentModule
             );
 
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
+
             $keySaved = array(
                 "activated",
                 "currencies",
@@ -1191,14 +1192,17 @@ class Hipay_enterprise extends PaymentModule
                 "minAmount",
                 "maxAmount",
                 "displayName",
-                "electronicSignature"
+                "electronicSignature",
                 "frontPosition"
             );
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
                 foreach ($conf as $key => $value) {
                     //prevent specific fields from being updated
-                    if (in_array($key, $keySaved)) {
+                    if (in_array(
+                            $key,
+                            $keySaved
+                        )) {
                         $fieldValue = Tools::getValue($card."_".$key);
                     } else {
                         $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
@@ -1339,10 +1343,7 @@ class Hipay_enterprise extends PaymentModule
      * @param type $orderTotal
      * @return type
      */
-    
-  
-  
-  ($country, $currency, $orderTotal = 1)
+    public function getSortedActivatedPaymentByCountryAndCurrency($country, $currency, $orderTotal = 1)
     {
         $activatedCreditCard["credit_card"]["frontPosition"] = $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccFrontPosition"];
         $activatedCreditCard["credit_card"]["products"]      = $this->getActivatedPaymentByCountryAndCurrency(
