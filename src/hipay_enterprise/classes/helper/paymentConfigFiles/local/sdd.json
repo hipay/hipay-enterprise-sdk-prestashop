@@ -31,23 +31,32 @@
       "formFields": {
         "gender": {
           "label": "Gender",
-          "type": "gender"
+          "type": "gender",
+          "required" : true,
+          "controlType" : false
         },
         "firstname": {
           "label": "Firstname",
-          "type": "text"
+          "type": "text",
+          "required" : true,
+          "controlType" : false
         },
         "lastname": {
           "label": "Lastname",
-          "type": "text"
+          "type": "text",
+          "required" : true,
+          "controlType" : false
         },
         "bank_name": {
           "label": "Bank Name",
-          "type": "text"
+          "type": "text",
+          "required" : true,
+          "controlType" : false
         },
         "iban": {
           "label": "International Bank Account Number (IBAN)",
           "type": "text",
+          "required" : true,
           "controlType" : "iban"
         },
         "issuer_bank_id": {

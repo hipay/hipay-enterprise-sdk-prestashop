@@ -225,7 +225,7 @@ class Hipay_enterprise extends PaymentModule
             array(
                 'domain' => Tools::getShopDomainSSL(true),
                 'module_dir' => $this->_path,
-                'payment_button' => $this->_path.'views/img/amexa200.png',
+                'payment_button' => $this->_path.'views/img/cc.png',
                 'min_amount' => $this->min_amount,
                 'configHipay' => $this->hipayConfigTool->getConfigHipay(),
                 'sortedPaymentProducts' => $this->getSortedActivatedPaymentByCountryAndCurrency(
@@ -328,10 +328,8 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPaymentReturn($params)
     {
-        if (_PS_VERSION_ >= '1.7') {
-            $hipay17 = new HipayProfessionalNew();
-            $hipay17->hipayPaymentReturnNew($params);
-        } elseif (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
+     
+        if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $this->hipayPaymentReturn($params);
             return $this->display(
                     dirname(__FILE__),

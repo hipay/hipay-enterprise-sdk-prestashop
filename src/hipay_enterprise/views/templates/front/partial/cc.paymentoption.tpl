@@ -2,10 +2,10 @@
     <div class="col-xs-12 col-md-12">
         <p class="payment_module" id="hipay_payment_button">
             <a href="{$link->getModuleLink('hipay_enterprise', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}"
-               title="{l s='Pay by credit card' mod='hipay_enterprise' }">
+               title="{l s='Pay by credit card' mod='hipay_enterprise' }" style="padding-left: 13px;">
 
                 <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
-                     style="max-width: 70px; max-height: 40px;"
+                     style="max-width: 160px;max-height: 50px;"
                      alt="{l s='Pay by credit card' mod='hipay_enterprise'}"/>
                 {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
                 <span>

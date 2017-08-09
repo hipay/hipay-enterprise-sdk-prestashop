@@ -166,7 +166,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
         }
         $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/paymentLocalForm17.tpl');
 
-        $newOption->setCallToActionText($this->l("Pay by")." ".$paymentProduct["displayName"])
+        $newOption->setCallToActionText($this->l('Pay by')." ".$paymentProduct["displayName"])
             ->setAction(
                 $this->context->link->getModuleLink(
                     $this->name,
@@ -200,7 +200,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
                 case "hosted_page":
                     $newOption = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
+                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
                         ->setAction(
                             $this->context->link->getModuleLink(
                                 $this->name,
@@ -229,7 +229,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'savedCC' => $savedCC,
                             'activatedCreditCard' => Tools::jsonEncode(array_keys($paymentProduct["products"])),
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates/hook',
                             'is_guest' => $this->customer->is_guest,
                             'action' => $this->context->link->getModuleLink(
                                 $this->name,
@@ -242,7 +241,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                     $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
                     $newOption   = new PaymentOption();
-                    $newOption->setCallToActionText($this->l("Pay by")." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
+                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
                         ->setAdditionalInformation("")
                         ->setModuleName("credit_card")
                         ->setForm($paymentForm);

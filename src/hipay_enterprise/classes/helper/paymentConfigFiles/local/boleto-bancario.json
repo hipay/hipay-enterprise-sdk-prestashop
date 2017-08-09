@@ -24,7 +24,7 @@
     "forceBasket": 0,
     "minAmount": {"EUR" :0},
     "maxAmount": {"EUR" :false},
-    "logo": "aura.png",
+    "logo": "boleto.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\AstropayPaymentMethod",
       "defaultFieldsValue": {},
