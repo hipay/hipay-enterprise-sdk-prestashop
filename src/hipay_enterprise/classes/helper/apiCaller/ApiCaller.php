@@ -141,7 +141,10 @@ class ApiCaller
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason ['.
             $e->getMessage().']',
-            $e->getCode());
+            $e->getCode(),
+                null,
+                Context::getContext(),
+                $moduleInstance);
         }
     }
 
