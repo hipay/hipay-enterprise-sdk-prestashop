@@ -402,42 +402,18 @@ class HipayDBQuery
         return false;
     }
 
-    /**
-     * update order payment line
-     * @param type $paymentData
-     * @return boolean
-     */
-    public function updateOrderPayment($paymentData)
+    public function findOrderPayment($order_ref, $trans_id)
     {
-        $cardData = "";
+        $payment_id = Db::getInstance()->getValue(
+            'SELECT `id_order_payment` FROM `'._DB_PREFIX_.'order_payment`
+            WHERE `order_reference` = \''.pSQL($order_ref).'\' AND transaction_id = \''.pSQL($trans_id).'\''
+        );
 
-        if ($paymentData['payment_method'] != null) {
-            $cardData = " `card_number` = '".pSQL($paymentData['payment_method']['pan'])."',
-                    `card_brand` = '".pSQL($paymentData['payment_method']['brand'])."',
-                    `card_expiration` = '".pSQL($paymentData['payment_method']['card_expiry_month'])."/".pSQL(
-                    $paymentData['payment_method']['card_expiry_year']
-                )."',
-                    `card_holder` = '".pSQL($paymentData['payment_method']['card_holder'])."' ,";
-        }
-
-        $sql = "
-            UPDATE `"._DB_PREFIX_."order_payment`
-            SET     ".$cardData."
-                    `amount` = '".$paymentData['captured_amount']."'
-                    
-            WHERE 
-                 `transaction_id` = '".$paymentData['transaction_id']."' AND
-                `payment_method` = '".HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX." ".$paymentData["name"]."'
-            AND `order_reference`= '".$paymentData["order_reference"]."';";
-
-
-        if (!Db::getInstance()->execute($sql)) {
-            //LOG
-            $this->logs->logInfos("ERROR : updateOrderPayment");
+        if (!$payment_id) {
             return false;
         }
 
-        return true;
+        return new OrderPayment((int) $payment_id);
     }
 
     /**
@@ -469,41 +445,18 @@ class HipayDBQuery
 
     /**
      * Check if there is a duplicated OrderPayment and remove duplicate from same order ref but with incomplete payment method name
+     * When order is set to Payed order status Prestashop create order payment with remaining amount to pay
+     * we need to erase this line
      * @param type $orderReference
      */
     public function deleteOrderPaymentDuplicate($orderReference)
     {
         // delete
         $where = "payment_method='".HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX."' AND transaction_id='' AND order_reference='".$orderReference."'";
-
         Db::getInstance()->delete(
             'order_payment',
             $where
         );
-    }
-
-    /**
-     * set invoice order
-     * @param Order $order
-     */
-    public function setInvoiceOrder($order)
-    {
-        $sql = 'SELECT `id_order_payment`
-                FROM `'._DB_PREFIX_.'order_payment`
-                WHERE order_reference="'.pSQL($order->reference).' LIMIT 1";';
-
-        $result   = Db::getInstance()->getRow($sql);
-        $idOrderP = isset($result['id_order_payment']) ? $result['id_order_payment'] : false;
-
-        if ($idOrderP) {
-            $where = "`id_order` = ".(int) $order->id;
-            $data  = array("id_order_payment" => (int) $idOrderP);
-            Db::getInstance()->update(
-                'order_invoice_payment',
-                $data,
-                $where
-            );
-        }
     }
 
     /**

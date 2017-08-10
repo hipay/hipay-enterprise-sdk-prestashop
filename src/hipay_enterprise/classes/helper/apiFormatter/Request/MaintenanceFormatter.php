@@ -11,6 +11,7 @@
 require_once(dirname(__FILE__).'/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../Cart/CartMaintenanceFormatter.php');
 require_once(dirname(__FILE__).'/../../tools/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/../../tools/hipayHelper.php');
 require_once(dirname(__FILE__).'/../../tools/hipayOrderMessage.php');
 require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
@@ -62,14 +63,14 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
 
         $maintenance->amount    = $this->amount;
         $maintenance->operation = $this->operation;
-
+        
         // retrieve number of capture or refund request
         $transactionAttempt = $this->maintenanceData->getNbOperationAttempt(
             $this->operation,
             $this->order->id
         );
 
-        $maintenance->operation_id = $this->order->id.'-'.$this->operation.'-'.($transactionAttempt + 1);
+        $maintenance->operation_id = HipayHelper::generateOperationId($this->order, $this->operation, $transactionAttempt);
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
