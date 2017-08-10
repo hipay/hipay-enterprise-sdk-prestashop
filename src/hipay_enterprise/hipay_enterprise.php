@@ -81,7 +81,7 @@ class Hipay_enterprise extends PaymentModule
     protected function getActivatedCurrencies()
     {
         // get currencies
-        return Currency::getCurrenciesByIdShop((int) $this->context->shop->id);
+        return Currency::getCurrencies();
     }
 
     /**
