@@ -223,6 +223,7 @@ class Apihandler
                     $this->module,
                     $params
                 );
+                break;
             case Operation::DENY_CHALLENGE:
                 $params["operation"] = Operation::DENY_CHALLENGE;
                 ApiCaller::requestMaintenance(
