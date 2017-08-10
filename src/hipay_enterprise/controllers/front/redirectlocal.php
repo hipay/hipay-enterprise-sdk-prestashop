@@ -55,6 +55,13 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
         $params["method"]            = $method;
 
+        // set authentication_indicator depending if lectronic signature is on or not
+        if (isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) && $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) {
+            $params["authentication_indicator"] = 1;
+        } else {
+            $params["authentication_indicator"] = 0;
+        }
+
         $context->smarty->assign(
             array(
                 'nbProducts' => $cart->nbProducts(),
@@ -187,13 +194,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 return $path;
             }
         }
-        // set authentication_indicator depending if lectronic signature is on or not
-        if (isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) && $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) {
-            $params["authentication_indicator"] = 1;
-        } else {
-            $params["authentication_indicator"] = 0;
-        }
-
         $this->apiHandler->handleLocalPayment(
             Apihandler::DIRECTPOST,
             $params

@@ -124,7 +124,6 @@ class Apihandler
             $params,
             false
         );
-
         switch ($mode) {
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod(
