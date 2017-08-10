@@ -274,7 +274,6 @@ class HipayNotification
                 $this->changeOrderStatus($newState);
                 $return = true;
             }
-            $this->addHipayCaptureMessage();
 
             if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED && $this->transaction->getCapturedAmount()
                 < $this->transaction->getAuthorizedAmount()
@@ -571,18 +570,6 @@ class HipayNotification
         );
 
         $orderHistory->addWithemail(true);
-    }
-
-    /**
-     * create or update order private message with total captured amount
-     */
-    private function addHipayCaptureMessage()
-    {
-        HipayOrderMessage::captureMessage(
-            $this->order->id,
-            $this->order->id_customer,
-            $this->transaction
-        );
     }
 
     /**
