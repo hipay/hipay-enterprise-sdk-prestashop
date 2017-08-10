@@ -216,7 +216,7 @@
             if($("#capture-fee").is(":checked")){
                 amount = amount + parseFloat($("#capture-fee").data("amount"));
             }
-            if($("#capture-discount").is(":checked")){
+            if($("#capture-discount").val() != null  && $("#capture-discount").is(":checked")){
                 amount = amount - parseFloat($("#capture-discount").data("amount")) ;
             }
             //fixed round errors
@@ -250,7 +250,7 @@
                 return false;
             }
             
-            if(  !$("#capture-discount").is(":checked") && (stillToCapture - parseFloat($("#total-capture-input").val()) <=  parseFloat($("#capture-discount").data("amount")))){
+            if($("#capture-discount").val() != null &&  !$("#capture-discount").is(":checked") && (stillToCapture - parseFloat($("#total-capture-input").val()) <=  parseFloat($("#capture-discount").data("amount")))){
                 displayError('{l s='You must capture discount because next capture amount will be lower than total discount amount.' mod='hipay_enterprise'}');
                 return false;
             }
