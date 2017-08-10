@@ -53,17 +53,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         $cardBrand = Tools::getValue('cardbrand');
         $paymentProduct = Tools::getValue('product');
 
-        if (!$cardBrand) {
-            if ($paymentProduct && $paymentProduct == 'credit_card') {
-                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
-            } else if ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
-                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
-            } elseif ($paymentProduct && isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
-                $paymentProduct = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
-            }
-        } else {
-            $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));
-        }
+        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
 
         HipayHelper::unsetCart();
 

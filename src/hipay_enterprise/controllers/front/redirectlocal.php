@@ -188,7 +188,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             }
         }
         // set authentication_indicator depending if lectronic signature is on or not
-        if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) {
+        if (isset($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) && $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$method]["electronicSignature"]) {
             $params["authentication_indicator"] = 1;
         } else {
             $params["authentication_indicator"] = 0;
