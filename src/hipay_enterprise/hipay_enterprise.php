@@ -22,6 +22,7 @@ class Hipay_enterprise extends PaymentModule
     public $_successes        = array();
     public $min_amount        = 1;
     public $currencies_titles = array();
+    public $moduleCurrencies  = array();
 
     public function __construct()
     {
@@ -63,7 +64,11 @@ class Hipay_enterprise extends PaymentModule
         foreach ($countries as $country) {
             $this->countries_titles[$country["iso_code"]] = $country["name"];
         }
-        $currencies = $this->getCurrency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
+        $moduleCurrencies = $this->getCurrency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
+        foreach ($moduleCurrencies as $cur) {
+            $this->moduleCurrencies[] = $cur["iso_code"];
+        }
+        $currencies = $this->getActivatedCurrencies();
 
         foreach ($currencies as $currency) {
             $this->currencies_titles[$currency["iso_code"]] = $currency["name"];
@@ -71,6 +76,26 @@ class Hipay_enterprise extends PaymentModule
 
         //configuration is handle by an helper class
         $this->hipayConfigTool = new HipayConfig($this);
+    }
+
+    protected function getActivatedCurrencies()
+    {
+        // get currencies
+        return Currency::getCurrenciesByIdShop((int) $this->context->shop->id);
+    }
+
+    /**
+     * Store the currencies list the module should work with
+     * @return boolean
+     */
+    public function setCurrencies($iso)
+    {
+
+        $sql = 'INSERT IGNORE INTO `'._DB_PREFIX_.'module_currency` (`id_module`, `id_shop`, `id_currency`)
+                    SELECT '.(int) $this->id.', "'.(int) $this->context->shop->id.'", `id_currency`
+                    FROM `'._DB_PREFIX_.'currency`
+                    WHERE `deleted` = \'0\' AND `iso_code` = \''.$iso.'\'';
+        return (bool) Db::getInstance()->execute($sql);
     }
 
     public function getLogs()
@@ -200,7 +225,7 @@ class Hipay_enterprise extends PaymentModule
             'all');
 
         $this->context->controller->addJS(
-            $this->_path  . '/views/js/form-input-control.js',
+            $this->_path.'/views/js/form-input-control.js',
             'all'
         );
     }
@@ -213,9 +238,9 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPayment($params)
     {
-        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
-            $params['cart']->id_address_delivery ;
-        $address  = new Address((int) $idAddress);
+        $idAddress  = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery;
+        $address    = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -255,9 +280,9 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayPaymentEU($params)
     {
-        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
-            $params['cart']->id_address_delivery ;
-        $address  = new Address((int) $idAddress);
+        $idAddress  = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+            $params['cart']->id_address_delivery;
+        $address    = new Address((int) $idAddress);
         $country    = new Country((int) $address->id_country);
         $currency   = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
@@ -302,7 +327,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPaymentOptions($params)
     {
-        $hipay17 = new HipayEnterpriseNew();
+        $hipay17                        = new HipayEnterpriseNew();
         // Fix Bug with translation and bad context ( Hook in an another file)
         $params['translation_checkout'] = $this->l(
             'You will be redirected to an external payment page. Please do not refresh the page during the process');
@@ -328,7 +353,7 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPaymentReturn($params)
     {
-     
+
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $this->hipayPaymentReturn($params);
             return $this->display(
@@ -1135,11 +1160,15 @@ class Hipay_enterprise extends PaymentModule
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
                 foreach ($conf as $key => $value) {
-                    if (in_array(
-                            $key,
-                            $keySaved
-                        )) {
+                    if (in_array($key,$keySaved)) {
                         $fieldValue = Tools::getValue($card."_".$key);
+                        if($key == "currencies" ){
+                            foreach(Tools::getValue($card."_".$key) as $currency){
+                                if(!in_array($currency,$this->moduleCurrencies)){
+                                    $this->setCurrencies($currency);
+                                }
+                            }
+                        }
                     } else {
                         $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$card][$key];
                     }
@@ -1240,7 +1269,8 @@ class Hipay_enterprise extends PaymentModule
 
         try {
             if (!Validate::isEmail(Tools::getValue('send_payment_fraud_email_copy_to'))) {
-                $this->_errors[] = $this->trans('The Copy To Email is not valid.', array());
+                $this->_errors[] = $this->trans('The Copy To Email is not valid.',
+                    array());
                 return false;
             } else {
                 // saving all array "fraud" in $configHipay

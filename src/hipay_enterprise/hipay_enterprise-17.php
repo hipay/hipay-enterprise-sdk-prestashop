@@ -25,6 +25,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hipayPaymentOptions($params)
     {
+
         if (!$this->active) {
             return;
         }
@@ -71,15 +72,15 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hipayExternalPaymentOption($params)
     {
-
-        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
-            $params['cart']->id_address_delivery ;
-        $address  = new Address((int) $idAddress);
-        $country        = new Country((int) $address->id_country);
-        $currency       = new Currency((int) $params['cart']->id_currency);
-        $this->customer = new Customer((int) $params['cart']->id_customer);
-
         try {
+            $idAddress      = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+                $params['cart']->id_address_delivery;
+            $address        = new Address((int) $idAddress);
+            $country        = new Country((int) $address->id_country);
+            $currency       = new Currency((int) $params['cart']->id_currency);
+            $this->customer = new Customer((int) $params['cart']->id_customer);
+
+
             $paymentOptions        = array();
             $sortedPaymentProducts = $this->getSortedActivatedPaymentByCountryAndCurrency(
                 $country,
@@ -149,7 +150,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             )
         );
         if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"]) || $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]
-            !== 'api' || ($paymentProduct["electronicSignature"] )
+            !== 'api' || (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"] )
         ) {
             $this->context->smarty->assign(
                 array(
@@ -210,7 +211,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             )
                     );
                     if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
-                        $newOption->setAdditionalInformation("<p>". $params['translation_checkout'] ."</p>");
+                        $newOption->setAdditionalInformation("<p>".$params['translation_checkout']."</p>");
                     }
                     $paymentOptions[] = $newOption;
                     break;
