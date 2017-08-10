@@ -12,6 +12,35 @@
 class HipayHelper
 {
 
+    public static function getPaymentProductName($cardBrand, $paymentProduct, $module)
+    {
+        if (!$cardBrand) {
+            if ($paymentProduct && $paymentProduct == 'credit_card') {
+                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
+            } else if ($paymentProduct && isset($module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
+                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
+            } elseif ($paymentProduct && isset($module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
+                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
+            }
+        } else {
+            $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));
+        }
+
+        return $paymentProduct;
+    }
+
+    /**
+     *
+     * @param type $order
+     * @param type $operation
+     * @param type $maintenanceData
+     * @return type
+     */
+    public static function generateOperationId($order, $operation, $transactionAttempt)
+    {
+        return $order->id.'-'.$operation.'-'.($transactionAttempt + 1);
+    }
+
     /**
      *
      * empty customer cart
@@ -71,7 +100,7 @@ class HipayHelper
         if (!empty($product["reference"])) {
             if (isset($product["attributes_small"])) {
                 // Product with declinaison
-                $reference = $product["reference"] . "-" . HipayHelper::slugify($product["attributes_small"]);
+                $reference = $product["reference"]."-".HipayHelper::slugify($product["attributes_small"]);
             } else {
                 // Product simple or virtual
                 $reference = $product["reference"];
@@ -79,7 +108,7 @@ class HipayHelper
         } else {
             $reference = $product["id_product"]."-".$product["id_product_attribute"]."-".HipayHelper::slugify($product["name"]);
             if (isset($product["attributes_small"])) {
-                $reference .=  "-".  HipayHelper::slugify($product["attributes_small"]);
+                $reference .= "-".HipayHelper::slugify($product["attributes_small"]);
             }
         }
         return $reference;
@@ -201,7 +230,7 @@ class HipayHelper
      * @param null $savedCC
      * @return string
      */
-    public static function redirectToErrorPage($context, $moduleInstance,  $cart = null, $savedCC = null)
+    public static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
     {
         $redirectUrl404 = $context->link->getModuleLink(
             $moduleInstance->name,
@@ -243,5 +272,4 @@ class HipayHelper
 
         return 'paymentFormApi16.tpl';
     }
-
 }

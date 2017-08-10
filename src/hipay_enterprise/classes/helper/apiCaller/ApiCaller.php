@@ -28,8 +28,7 @@ class ApiCaller
      */
     public static function getHostedPaymentPage($moduleInstance, $params, $cart = false, $moto = false)
     {
-        try
-        {
+        try {
             // HiPay Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance,
                     $moto);
@@ -52,11 +51,11 @@ class ApiCaller
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException('An error occured during request requestDirectPost. Please Retry later. Reason ['.
-                $e->getMessage().']',
-                $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance);
+            $e->getMessage().']',
+            $e->getCode(),
+            null,
+            Context::getContext(),
+            $moduleInstance);
         }
     }
 
@@ -68,8 +67,7 @@ class ApiCaller
      */
     public static function requestDirectPost($moduleInstance, $params)
     {
-        try
-        {
+        try {
             // Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
 
@@ -87,18 +85,16 @@ class ApiCaller
             $transaction = $gatewayClient->requestNewOrder($orderRequest);
 
             return $transaction;
-
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException('An error occured during request requestDirectPost. Please Retry later. Reason ['.
-                $e->getMessage().']',
-                $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance);
+            $e->getMessage().']',
+            $e->getCode(),
+            null,
+            Context::getContext(),
+            $moduleInstance);
         }
     }
-
 
     /**
      * Request capture or refund to HiPay API
@@ -125,7 +121,6 @@ class ApiCaller
 
             $maintenanceRequest = $maintenanceFormatter->generate();
             $moduleInstance->getLogs()->logRequest($maintenanceRequest);
-
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $transaction = $gatewayClient->requestMaintenanceOperation(
                 $params["operation"],
@@ -142,9 +137,10 @@ class ApiCaller
             throw new GatewayException('An error occured during request Maintenance. Please Retry later. Reason ['.
             $e->getMessage().']',
             $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance);
+            null,
+            Context::getContext(),
+            $moduleInstance);
+
         }
     }
 

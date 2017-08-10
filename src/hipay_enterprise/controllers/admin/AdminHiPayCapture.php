@@ -133,12 +133,12 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             $this->module->getLogs()->logInfos('# Manual Capture with basket');
             //capture with basket
             if (Tools::getValue('hipay_capture_type') == "partial") {
-                $refundItems    = (!Tools::getValue('hipaycapture')) ? array() : Tools::getValue('hipaycapture');
+                $refundItems       = (!Tools::getValue('hipaycapture')) ? array() : Tools::getValue('hipaycapture');
                 // total captured amount
-                $totalPaid      = $this->order->getTotalPaid();
+                $totalPaid         = $this->order->getTotalPaid();
                 // remaining amount to capture
-                $stillToCapture = $this->order->total_paid_tax_incl - $totalPaid;
-
+                $stillToCapture    = Tools::ps_round($this->order->total_paid_tax_incl - $totalPaid,
+                        2);
                 $capturedDiscounts = $this->db->discountsAreCaptured($this->order->id);
 
                 //check if no items has been sent
@@ -183,12 +183,14 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                         ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
                     );
                     die('');
-                } else if (!$capturedDiscounts && Tools::getValue('hipay_capture_discount') !== "on" && ($stillToCapture
-                    - Tools::getValue('total-capture-input') <= Tools::getValue('capture-discount-amount'))) {
-                    $hipay_redirect_status = $this->module->l(
-                        'You must capture discount because next capture amount will be lower than total discount amount.',
-                        'capture'
-                    );
+                } else if (Tools::getValue('hipay_capture_discount')) {
+                    if (!$capturedDiscounts && Tools::getValue('hipay_capture_discount') !== "on" && ($stillToCapture - Tools::getValue('total-capture-input')
+                        <= Tools::getValue('capture-discount-amount'))) {
+                        $hipay_redirect_status = $this->module->l(
+                            'You must capture discount because next capture amount will be lower than total discount amount.',
+                            'capture'
+                        );
+                    }
                     $this->context->cookie->__set('hipay_errors',
                         $hipay_redirect_status);
                     Tools::redirectAdmin(
