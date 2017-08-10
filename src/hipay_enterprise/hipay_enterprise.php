@@ -395,6 +395,7 @@ class Hipay_enterprise extends PaymentModule
         $capturedItems         = $this->db->getCapturedItems($order->id);
         $refundedItems         = $this->db->getRefundedItems($order->id);
         $totallyRefunded       = true;
+        $totallyCaptured       = true;
         $id_currency           = $order->id_currency;
         $discount              = array();
         $catpureOrRefundFromBo = $this->db->captureOrRefundFromBO($order->id);
@@ -411,6 +412,8 @@ class Hipay_enterprise extends PaymentModule
 
         foreach ($order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
+                >= $product["product_quantity"]);
+            $totallyCaptured &= (isset($capturedItems[$product["product_id"]]) && $capturedItems[$product["product_id"]]["quantity"]
                 >= $product["product_quantity"]);
         }
 
@@ -435,7 +438,7 @@ class Hipay_enterprise extends PaymentModule
                 null,
                 null,
                 1
-            ) || !empty($capturedItems) || $capturedFees
+            ) || !empty($capturedItems) || $capturedFees || $capturedDiscounts
         ) {
             $partiallyCaptured = true;
         }
@@ -445,7 +448,7 @@ class Hipay_enterprise extends PaymentModule
                 null,
                 null,
                 1
-            ) || !empty($refundedItems) || $refundedFees || $partiallyCaptured || $refundedDiscounts
+            ) || !empty($refundedItems) || $refundedFees || !$totallyCaptured || $refundedDiscounts
         ) {
             $partiallyRefunded = true;
         }
@@ -1160,11 +1163,13 @@ class Hipay_enterprise extends PaymentModule
 
             foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
                 foreach ($conf as $key => $value) {
-                    if (in_array($key,$keySaved)) {
+                    if (in_array($key,
+                            $keySaved)) {
                         $fieldValue = Tools::getValue($card."_".$key);
-                        if($key == "currencies" ){
-                            foreach(Tools::getValue($card."_".$key) as $currency){
-                                if(!in_array($currency,$this->moduleCurrencies)){
+                        if ($key == "currencies") {
+                            foreach (Tools::getValue($card."_".$key) as $currency) {
+                                if (!in_array($currency,
+                                        $this->moduleCurrencies)) {
                                     $this->setCurrencies($currency);
                                 }
                             }
