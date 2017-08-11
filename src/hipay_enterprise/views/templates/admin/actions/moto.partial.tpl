@@ -11,7 +11,7 @@
 *}
 
 <fieldset>
-    <legend>{l s='Manual order payment (MO/TO)' }</legend>
+    <legend>{l s='Manual order payment (MO/TO)' mod='hipay_enterprise'}</legend>
     {if ( $config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_moto_username_sandbox) || empty($config_hipay.account.sandbox.api_moto_password_sandbox)) )}
         <p class="alert alert-warning">
             {l s='Your Sandbox MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>

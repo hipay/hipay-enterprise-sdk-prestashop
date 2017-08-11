@@ -20,7 +20,7 @@
             <span class="col-lg-12">{l s='To help you in your plateform and module configuration, you cand find the module documentation on our developper portal at the following adress : ' mod='hipay_enterprise'}        <a href='https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop/'>https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop/</a></span>
         </div>
         <div class="row">
-            <span class="col-lg-12">{l s='Our support team is available for any questions at the following adress : '}<a href="mailto:support.tpp@hipay.com">support.tpp@hipay.com</a></span>
+            <span class="col-lg-12">{l s='Our support team is available for any questions at the following adress: ' mod='hipay_enterprise'}<a href="mailto:support.tpp@hipay.com">support.tpp@hipay.com</a></span>
         </div>
         <div  class="row technical-information">
             <label class="col-lg-3">{l s='HiPay module' mod='hipay_enterprise'}</label><span class="col-lg-9">: {$source['integration_version']}</span>
