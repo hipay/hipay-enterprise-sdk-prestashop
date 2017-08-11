@@ -1,13 +1,16 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
@@ -21,6 +24,11 @@ use HiPay\Fullservice\Enum\Transaction\Operation;
 
 /**
  * Handle Hipay Api call
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class Apihandler
 {
@@ -131,7 +139,6 @@ class Apihandler
                     $params,
                     false
                 );
-                //    var_dump($params);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME:
@@ -386,8 +393,6 @@ class Apihandler
             default:
                 $redirectUrl = $failUrl;
         }
-
-//        var_dump($response);
 
         Tools::redirect($redirectUrl);
     }

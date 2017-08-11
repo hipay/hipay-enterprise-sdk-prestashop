@@ -1,12 +1,14 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
 require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
@@ -14,6 +16,15 @@ require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../../tools/hipayMapper.php');
 require_once(dirname(__FILE__) . '/../../tools/hipayHelper.php');
 
+/**
+ *
+ * Cart for payment request formatter
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class CartFormatter extends ApiFormatterAbstract
 {
 

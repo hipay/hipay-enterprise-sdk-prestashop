@@ -8,6 +8,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/hipayMaintenanceData.php');
@@ -17,6 +18,14 @@ require_once(dirname(__FILE__).'/HipayMail.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
+/**
+ * Handle notification from TPP
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class HipayNotification
 {
     const TRANSACTION_REF_CAPTURE_SUFFIX = "capture";
@@ -65,8 +74,6 @@ class HipayNotification
         );
 
         if ($this->cart->orderExists()) {
-            // il existe une commande associée à ce panier
-            $this->orderExist = true;
             // init de l'id de commande
             // can't use Order::getOrderByCartId 'cause
             $idOrder          = Order::getOrderByCartId($this->cart->id);
@@ -259,7 +266,7 @@ class HipayNotification
     private function updateOrderStatus($newState)
     {
         $return = true;
-        if ($this->orderExist) {
+        if ($this->cart->orderExists()) {
             $this->addOrderMessage();
             if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(
                     _PS_OS_PAYMENT_,
@@ -297,7 +304,7 @@ class HipayNotification
      */
     private function registerOrder($state)
     {
-        if (!$this->orderExist) {
+        if (!$this->cart->orderExists()) {
             $message = HipayOrderMessage::formatOrderData($this->transaction);
 
             // init context
@@ -364,7 +371,7 @@ class HipayNotification
      */
     private function createOrderPayment($refund = false)
     {
-        if ($this->orderExist) {
+        if ($this->cart->orderExists()) {
             $amount                 = $this->getRealCapturedAmount($refund);
             $paymentProduct         = $this->getPaymentProductName();
             $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
@@ -450,7 +457,7 @@ class HipayNotification
 
                 $this->db->setCaptureOrRefundOrder($captureData);
             } catch (Exception $e) {
-                var_dump($e);
+                $this->log->logException($e);
             }
         }
 
@@ -475,7 +482,7 @@ class HipayNotification
     {
         $this->log->logInfos("# Refund Order {$this->order->reference} with refund amount {$this->transaction->getRefundedAmount()}");
 
-        if ($this->orderExist) {
+        if ($this->cart->orderExists()) {
             $this->addOrderMessage();
 
             if ($this->transaction->getOperation() == NULL) {
@@ -654,7 +661,7 @@ class HipayNotification
                 $ref .="-".$operationId;
             }
         } catch (Exception $ex) {
-            var_dump($ex);
+            $this->log->logException($ex);
         }
         return $ref;
     }
