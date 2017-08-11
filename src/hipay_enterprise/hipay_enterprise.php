@@ -572,8 +572,7 @@ class Hipay_enterprise extends PaymentModule
         }
 
         if ($catpureOrRefundFromBo) {
-            $showRefund  = false;
-            $showCapture = false;
+            $basket = false;
         }
 
         $refundRequestedOS = ($order->getCurrentState() ==  Configuration::get('HIPAY_OS_REFUND_REQUESTED',null,null,1))?true:false;
