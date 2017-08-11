@@ -146,7 +146,6 @@
                                     <td></td>
                                 </tr>
                             {/if }
-                            </tr>
                             <tr>
                                 <td></td>
                                 <td>{l s='Total' mod='hipay_enterprise'} </td>

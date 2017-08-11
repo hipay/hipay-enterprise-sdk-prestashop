@@ -14,8 +14,6 @@ use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
 class HipayOrderMessage
 {
-    const HIPAY_CAPTURE_TAG = "HIPAY_CAPTURE";
-
     /**
      * write notification order message
      * @param type $orderId
@@ -61,54 +59,6 @@ class HipayOrderMessage
         }
 
         return "Something went wrong";
-    }
-
-    /**
-     * write or update capture order message
-     * @param type $orderId
-     * @param type $transaction
-     */
-    public static function captureMessage(
-    $orderId, $customerId, $transaction
-    )
-    {
-        $amount    = ($transaction->getStatus() == TransactionStatus::AUTHORIZED ? '0.00' : (($transaction->getCapturedAmount()
-                != null) ? $transaction->getCapturedAmount() : '0.00'));
-        $messages  = Message::getMessagesByOrderId(
-                $orderId,
-                true
-        );
-        $createNew = true;
-        if (count($messages)) {
-            foreach ($messages as $message) {
-                $line = $message['message'];
-                if (HipayOrderMessage::HIPAY_CAPTURE_TAG === "" || strpos(
-                        $line,
-                        HipayOrderMessage::HIPAY_CAPTURE_TAG
-                    ) === 0
-                ) {
-                    $createNew           = false;
-                    $updatedMsg          = new Message($message['id_message']);
-                    $updatedMsg->message = HipayOrderMessage::HIPAY_CAPTURE_TAG.' - '.$amount;
-                    $updatedMsg->save();
-                    break;
-                }
-            }
-        }
-        if ($createNew) {
-            $data = HipayOrderMessage::HIPAY_CAPTURE_TAG.' : '.$amount;
-            $data = strip_tags(
-                $data,
-                '<br>'
-            );
-            if (Validate::isCleanHtml($data)) {
-                HipayOrderMessage::addMessage(
-                    $orderId,
-                    $customerId,
-                    $data
-                );
-            }
-        }
     }
 
     /**

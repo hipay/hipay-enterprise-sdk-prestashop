@@ -9,7 +9,7 @@
 * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
 *
 *}
-<div id="error-js" style="display:none" class="alert alert-danger">
+<div id="error-js" {if $status_error =='200'}style="display:none"{/if} class="alert alert-danger">
     <span>{l s='An error has occurred' mod='hipay_enterprise'}</span>
     <ol>
 {if $status_error=='200'}

@@ -124,7 +124,6 @@ class Apihandler
             $params,
             false
         );
-
         switch ($mode) {
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod(
@@ -224,6 +223,7 @@ class Apihandler
                     $this->module,
                     $params
                 );
+                break;
             case Operation::DENY_CHALLENGE:
                 $params["operation"] = Operation::DENY_CHALLENGE;
                 ApiCaller::requestMaintenance(
