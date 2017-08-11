@@ -42,11 +42,10 @@ class ApiCaller
 
             $orderRequest = $hostedPaymentFormatter->generate();
             $moduleInstance->getLogs()->logRequest($orderRequest);
-
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest);
             $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage ".$orderRequest->orderid);
-
+            
             return $transaction->getForwardUrl();
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);

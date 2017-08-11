@@ -8,23 +8,22 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/RequestFormatterAbstract.php');
-require_once(dirname(__FILE__) . '/../../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__).'/RequestFormatterAbstract.php');
+require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 
 class HostedPaymentFormatter extends RequestFormatterAbstract
 {
+
     public function __construct(
-        $moduleInstance,
-        $params,
-        $cart = false
-    ) {
+    $moduleInstance, $params, $cart = false
+    )
+    {
         parent::__construct(
             $moduleInstance,
             $params,
             $cart
         );
-        $this->iframe = $params["iframe"];
+        $this->iframe      = $params["iframe"];
         $this->productList = $params["productlist"];
     }
 
@@ -48,11 +47,16 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
     protected function mapRequest(&$order)
     {
         parent::mapRequest($order);
-        
-        $order->template = ($this->configHipay["payment"]["global"]["display_hosted_page"] !== "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
-        $order->css = $this->configHipay["payment"]["global"]["css_url"];
-        $order->display_selector = $this->configHipay["payment"]["global"]["display_card_selector"];
-        $order->payment_product_list = $this->productList;
+
+        if(!$this->moto) {
+            $order->template = ($this->configHipay["payment"]["global"]["display_hosted_page"] !== "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"]
+                    : "iframe-js";
+        }else{
+            $order->template = "basic-js";
+        }
+        $order->css                           = $this->configHipay["payment"]["global"]["css_url"];
+        $order->display_selector              = $this->configHipay["payment"]["global"]["display_card_selector"];
+        $order->payment_product_list          = $this->productList;
         $order->payment_product_category_list = '';
     }
 }

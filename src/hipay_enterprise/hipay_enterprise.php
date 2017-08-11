@@ -383,6 +383,7 @@ class Hipay_enterprise extends PaymentModule
         $showMoto              = false;
         $partiallyCaptured     = false;
         $partiallyRefunded     = false;
+        $refundRequestedOS   = false;
         $orderId               = $order->id;
         $employeeId            = $this->context->employee->id;
         $basket                = $this->db->getOrderBasket($order->id);
@@ -575,6 +576,8 @@ class Hipay_enterprise extends PaymentModule
             $showCapture = false;
         }
 
+        $refundRequestedOS = ($order->getCurrentState() ==  Configuration::get('HIPAY_OS_REFUND_REQUESTED',null,null,1))?true:false;
+
         $this->context->smarty->assign(
             array(
                 'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
@@ -614,7 +617,8 @@ class Hipay_enterprise extends PaymentModule
                 'showMoto' => $showMoto,
                 'cartId' => $cart->id,
                 'id_currency' => $id_currency,
-                'amountFees' => $amountFees
+                'amountFees' => $amountFees,
+                'refundRequestedOS' => $refundRequestedOS
             )
         );
 

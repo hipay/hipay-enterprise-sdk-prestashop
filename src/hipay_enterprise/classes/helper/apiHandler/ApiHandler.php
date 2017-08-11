@@ -51,21 +51,22 @@ class Apihandler
         $deliveryCountry = new Country((int) $delivery->id_country);
         $currency        = new Currency((int) $cart->id_currency);
 
-        $params["method"]      = "credit_card";
-        $params["moto"]        = true;
-        $params["iframe"]      = true;
-        $params["productlist"] = $this->getCreditCardProductList(
+        $params["method"]                   = "credit_card";
+        $params["moto"]                     = true;
+        $params["iframe"]                   = false;
+        $params["authentication_indicator"] = 0;
+        $params["productlist"]              = $this->getCreditCardProductList(
             $deliveryCountry,
             $currency
         );
 
         $this->baseParamsInit($params,
-                              true,
-                              $cart);
+            true,
+            $cart);
 
         $this->handleHostedPayment($params,
-                                   $cart,
-                                   true);
+            $cart,
+            true);
     }
 
     /**
@@ -87,7 +88,7 @@ class Apihandler
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
                 $this->handleDirectOrder($params,
-                                         true);
+                    true);
                 break;
             case Apihandler::IFRAME:
                 $params["iframe"]         = true;
@@ -252,8 +253,7 @@ class Apihandler
         } elseif ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
             $params["basket"]                = $this->getCart($cart);
             $params["delivery_informations"] = $this->getDeliveryInformation($cart);
-        } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"])
-            && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
+        } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"]) && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
             && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]
         ) {
             $params["basket"]                = $this->getCart($cart);
@@ -271,7 +271,7 @@ class Apihandler
     private function getCart($cart = false)
     {
         $cart = new CartFormatter($this->module,
-                                  $cart);
+            $cart);
 
         return $cart->generate();
     }
@@ -283,7 +283,7 @@ class Apihandler
     private function getDeliveryInformation($cart = false)
     {
         $deliveryInformation = new DeliveryShippingInfoFormatter($this->module,
-                                                                 $cart);
+            $cart);
 
         return $deliveryInformation->generate();
     }
@@ -457,14 +457,14 @@ class Apihandler
             $this->module->validateOrder(
                 (int) $cart->id,
                 Configuration::get('HIPAY_OS_PENDING'),
-                                   (float) $cart->getOrderTotal(true),
-                                                                $params["methodDisplayName"],
-                                                                'Order created by HiPay after success payment.',
-                                                                array(),
-                                                                $this->context->currency->id,
-                                                                false,
-                                                                $customer->secure_key,
-                                                                $shop
+                (float) $cart->getOrderTotal(true),
+                $params["methodDisplayName"],
+                'Order created by HiPay after success payment.',
+                array(),
+                $this->context->currency->id,
+                false,
+                $customer->secure_key,
+                $shop
             );
             // get order id
             $orderId  = $this->module->currentOrder;
