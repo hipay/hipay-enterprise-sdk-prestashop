@@ -32,9 +32,9 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
-                            <div class="col-lg-3">
+                            <div class="col-lg-1" style='width:45px;'>
                                 <div class="row">
-                                    <input type="text" name="ccFrontPosition" value="{$config_hipay.payment.global.ccFrontPosition}"/>
+                                    <input type="text" class="money-type" name="ccFrontPosition" value="{$config_hipay.payment.global.ccFrontPosition}"/>
                                 </div>
                             </div>
                     </div>

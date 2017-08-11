@@ -89,7 +89,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     )
     {
         $item                       = new HiPay\Fullservice\Gateway\Model\Cart\Item();
-        $european_article_numbering = $product["ean13"];
+        $european_article_numbering = null;
+        if (isset($product["ean13"]) && $product["ean13"] != "0") {
+            $european_article_numbering = $product["ean13"];
+        }
         $product_reference          = HipayHelper::getProductRef($product);
         $type                       = "good";
         $name                       = $product["name"];

@@ -131,9 +131,9 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
             $this->module->getLogs()->logInfos('# Refund Capture with basket order ID {$this->order->id}');
             // we can refund only what has been captured
-            $refundableAmount = $this->order->getTotalPaid();
+            $refundableAmount  = $this->order->getTotalPaid();
             $refundedDiscounts = $this->db->discountsAreRefunded($this->order->id);
-            
+
             //refund with basket
             if (Tools::getValue('hipay_refund_type') == "partial") {
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
@@ -180,20 +180,22 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                         ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
                     );
                     die('');
-                } else if (!$refundedDiscounts && Tools::getValue('hipay_refund_discount') !== "on" && ($refundableAmount
-                    - Tools::getValue('total-refund-input') <= Tools::getValue('capture-refund-amount'))) {
-                    $hipay_redirect_status = $this->module->l(
-                        'You must refund discount because next refund amount will be lower than total discount amount.',
-                        'capture'
-                    );
-                    $this->context->cookie->__set('hipay_errors',
-                        $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink(
-                            'AdminOrders'
-                        ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
-                    );
-                    die('');
+                } else if (Tools::getValue('hipay_refund_discount')) {
+                    if (!$refundedDiscounts && Tools::getValue('hipay_refund_discount') !== "on" && ($refundableAmount - Tools::getValue('total-refund-input')
+                        <= Tools::getValue('capture-refund-amount'))) {
+                        $hipay_redirect_status = $this->module->l(
+                            'You must refund discount because next refund amount will be lower than total discount amount.',
+                            'capture'
+                        );
+                        $this->context->cookie->__set('hipay_errors',
+                            $hipay_redirect_status);
+                        Tools::redirectAdmin(
+                            $this->context->link->getAdminLink(
+                                'AdminOrders'
+                            ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
+                        );
+                        die('');
+                    }
                 }
 
                 $this->params                            = array("refundItems" => $refundItems,

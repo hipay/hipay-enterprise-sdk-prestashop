@@ -130,6 +130,7 @@
                                 </td>
                                 <td></td>
                             </tr>
+                        {/if }
                             <tr>
                                 <td></td>
                                 <td>{l s='Total' mod='hipay_enterprise'} </td>
@@ -140,7 +141,6 @@
                                     <input type="hidden" id="total-refund-input" name="total-refund-input" value="0.00"/> 
                                 </td>
                             </tr>
-                        {/if }
                         </tfoot>
                     </table>
                 {/if}
