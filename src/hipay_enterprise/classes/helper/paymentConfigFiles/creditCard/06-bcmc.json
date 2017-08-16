@@ -3,7 +3,7 @@
   "config": {
     "displayName": "Bancontact / Mister Cash",
     "activated": 1,
-    "canRefund": 1,
+    "canRefund": 0,
     "canManualCapture": 1,
     "currencies": [
       "EUR"
