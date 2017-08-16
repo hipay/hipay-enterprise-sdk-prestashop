@@ -4,6 +4,7 @@ web17/
 src/hipay_enterprise/lib/vendor/
 src/hipay_enterprise/lib/bower_components/
 src/hipay_enterprise/logs/*.txt
+src/hipay_enterprise/config_fr.xml
 prestashop.sh
 composer.lock
 /nbproject/
