@@ -192,7 +192,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_3aa43f82fc2f41e3036679584f63fe4f'
 $_MODULE['<{hipay_enterprise}prestashop>global_72664dc0959f3b0c04891f8c7046a9f3'] = 'Api';
 $_MODULE['<{hipay_enterprise}prestashop>global_055806d28952fd80057bfb78dee6ecc4'] = 'Page hébergée';
 $_MODULE['<{hipay_enterprise}prestashop>global_ed992bd29f64ae96010e382ebd002060'] = 'Le client remplira ses informations bancaires directement sur les commerçants';
-$_MODULE['<{hipay_enterprise}prestashop>global_418b4f1f03f8e037491b7da2493ca717'] = 'Essayez avec cette orthographe : The customer is redirected to a secure payment page hosted by HiPay. Le client est redirigé vers une page de paiement sécurisée hébergée par HiPay.';
+$_MODULE['<{hipay_enterprise}prestashop>global_418b4f1f03f8e037491b7da2493ca717'] = 'The customer is redirected to a secure payment page hosted by HiPay. Le client est redirigé vers une page de paiement sécurisée hébergée par HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>global_e4a113b3a517f62528bd2258c1ebd09d'] = 'Afficher la page hébergée';
 $_MODULE['<{hipay_enterprise}prestashop>global_4202ef115ebede37eb22297113f5fb32'] = 'Redirection';
 $_MODULE['<{hipay_enterprise}prestashop>global_a025e05161bb17cbab898f0e77b09a2b'] = 'Iframe';

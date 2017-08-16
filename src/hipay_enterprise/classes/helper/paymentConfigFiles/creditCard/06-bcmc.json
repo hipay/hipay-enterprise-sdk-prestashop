@@ -12,6 +12,7 @@
     "maxAmount": {"EUR" :false},
     "countries": [
       "BE"
-    ]
+    ],
+    "recurring": 0
   }
 }
