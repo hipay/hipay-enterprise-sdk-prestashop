@@ -20,7 +20,6 @@
     {else if (  !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_moto_username_production) || empty($config_hipay.account.sandbox.api_moto_password_production)) )}
         <p class="alert alert-warning">
             {l s='Your Production MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>
-            {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.' mod='hipay_enterprise'}
         </p>
     {/if}
     <p>{l s='You\'ll be redirected to HiPay payment page to complete this order payment' mod='hipay_enterprise'}</p>
@@ -28,7 +27,7 @@
         <input type="hidden" name="cart_id" value="{$cartId}"/>
         <button type="submit" name="motoPayment"
                 class="btn btn-primary ">
-            {l s='Pay Moto' mod='hipay_enterprise'}
+            {l s='Pay order MO/TO' mod='hipay_enterprise'}
         </button>
     </form>    
 </fieldset>
