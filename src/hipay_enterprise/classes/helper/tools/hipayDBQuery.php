@@ -221,6 +221,23 @@ class HipayDBQuery
     }
 
     /**
+     * set activated currency for the module
+     * @param type $moduleId
+     * @param type $moduleId
+     * @param type $iso
+     * @return type
+     */
+    public function setCurrencies($moduleId, $shopId, $iso)
+    {
+
+        $sql = 'INSERT IGNORE INTO `'._DB_PREFIX_.'module_currency` (`id_module`, `id_shop`, `id_currency`)
+                    SELECT '.(int) $moduleId.', "'.(int) $shopId.'", `id_currency`
+                    FROM `'._DB_PREFIX_.'currency`
+                    WHERE `deleted` = \'0\' AND `iso_code` = \''.$iso.'\'';
+        return (bool) Db::getInstance()->execute($sql);
+    }
+
+    /**
      * get last cart from user ID
      * @param int $userId
      * @return boolean / Cart

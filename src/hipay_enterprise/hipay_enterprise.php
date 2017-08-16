@@ -10,7 +10,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -77,7 +76,7 @@ class Hipay_enterprise extends PaymentModule
         foreach ($moduleCurrencies as $cur) {
             $this->moduleCurrencies[] = $cur["iso_code"];
         }
-        $currencies = $this->getActivatedCurrencies();
+        $currencies = Currency::getCurrencies();
 
         foreach ($currencies as $currency) {
             $this->currencies_titles[$currency["iso_code"]] = $currency["name"];
@@ -85,26 +84,6 @@ class Hipay_enterprise extends PaymentModule
 
         //configuration is handle by an helper class
         $this->hipayConfigTool = new HipayConfig($this);
-    }
-
-    protected function getActivatedCurrencies()
-    {
-        // get currencies
-        return Currency::getCurrencies();
-    }
-
-    /**
-     * Store the currencies list the module should work with
-     * @return boolean
-     */
-    public function setCurrencies($iso)
-    {
-
-        $sql = 'INSERT IGNORE INTO `'._DB_PREFIX_.'module_currency` (`id_module`, `id_shop`, `id_currency`)
-                    SELECT '.(int) $this->id.', "'.(int) $this->context->shop->id.'", `id_currency`
-                    FROM `'._DB_PREFIX_.'currency`
-                    WHERE `deleted` = \'0\' AND `iso_code` = \''.$iso.'\'';
-        return (bool) Db::getInstance()->execute($sql);
     }
 
     public function getLogs()
@@ -1215,7 +1194,9 @@ class Hipay_enterprise extends PaymentModule
                             foreach (Tools::getValue($card."_".$key) as $currency) {
                                 if (!in_array($currency,
                                         $this->moduleCurrencies)) {
-                                    $this->setCurrencies($currency);
+                                    $this->db->setCurrencies($this->id,
+                                        $this->context->shop->id,
+                                        $currency);
                                 }
                             }
                         }
@@ -1281,6 +1262,16 @@ class Hipay_enterprise extends PaymentModule
                             $keySaved
                         )) {
                         $fieldValue = Tools::getValue($card."_".$key);
+                        if ($key == "currencies") {
+                            foreach (Tools::getValue($card."_".$key) as $currency) {
+                                if (!in_array($currency,
+                                        $this->moduleCurrencies)) {
+                                    $this->db->setCurrencies($this->id,
+                                        $this->context->shop->id,
+                                        $currency);
+                                }
+                            }
+                        }
                     } else {
                         $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
                     }
@@ -1506,7 +1497,7 @@ class Hipay_enterprise extends PaymentModule
         }
         return $activatedPayment;
     }
-    
+
     /**
      *
      * @param type $params

@@ -228,6 +228,7 @@ class HipayNotification
                     break;
                 case TransactionStatus::REFUND_REQUESTED: //124
                 case TransactionStatus::REFUNDED: //125
+                case TransactionStatus::PARTIALLY_REFUNDED: //126
                     $this->refundOrder();
                     break;
                 case TransactionStatus::CHARGED_BACK:
