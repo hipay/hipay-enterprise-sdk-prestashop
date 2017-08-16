@@ -1,17 +1,28 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/../../classes/helper/tools/hipayHelper.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
 
+/**
+ * Class Hipay_enterpriseValidationModuleFrontController
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontController
 {
 
@@ -112,7 +123,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             "type" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]
         );
 
-        $this->db->setOrderCaptureType($captureType);
+        $db->setOrderCaptureType($captureType);
 
         $params = http_build_query(
             array(

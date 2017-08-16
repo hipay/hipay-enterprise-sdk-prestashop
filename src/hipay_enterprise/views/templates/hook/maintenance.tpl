@@ -1,14 +1,14 @@
 {**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
-*}
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
 <div class="row">
     <div class="col-lg-12">
         <div class="panel">
@@ -44,7 +44,7 @@
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}
-                {if  !$showMoto && !$showChallenge && !$showCapture && !$showRefund }
+                {if  !$showMoto && !$showChallenge && !($showCapture && $stillToCapture > 0 && $manualCapture) && !($showRefund && $alreadyCaptured && $refundableAmount > 0) }
                     <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
                     {if $refundRequestedOS }
                         <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>

@@ -1,19 +1,30 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/classes/helper/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
 require_once(dirname(__FILE__).'/translations/HipayStrings.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
+/**
+ * HipayEnterpriseNew
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class HipayEnterpriseNew extends Hipay_enterprise
 {
     private $customer;

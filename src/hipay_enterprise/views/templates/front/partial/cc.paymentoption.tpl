@@ -1,3 +1,14 @@
+{**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
 <div class="row">
     <div class="col-xs-12 col-md-12">
         <p class="payment_module" id="hipay_payment_button">

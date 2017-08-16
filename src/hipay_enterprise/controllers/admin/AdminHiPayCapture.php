@@ -1,15 +1,27 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__).'/../../controllers/admin/AdminHiPayActions.php');
 
+/**
+ * Class AdminHiPayCaptureController
+ *
+ * Manage action for capture transaction
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class AdminHiPayCaptureController extends AdminHiPayActionsController
 {
 
@@ -190,15 +202,15 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                             'You must capture discount because next capture amount will be lower than total discount amount.',
                             'capture'
                         );
+                        $this->context->cookie->__set('hipay_errors',
+                            $hipay_redirect_status);
+                        Tools::redirectAdmin(
+                            $this->context->link->getAdminLink(
+                                'AdminOrders'
+                            ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
+                        );
+                        die('');
                     }
-                    $this->context->cookie->__set('hipay_errors',
-                        $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink(
-                            'AdminOrders'
-                        ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
-                    );
-                    die('');
                 }
 
                 $this->params["refundItems"]             = $refundItems;
@@ -209,12 +221,13 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->params["capture_refund_discount"] = true;
                 $this->params["refundItems"]             = "full";
             }
-            $this->apiHandler->handleCapture($this->params);
+            if ($this->apiHandler->handleCapture($this->params)) {
+                $this->module->getLogs()->logInfos('# Manual Capture success');
+                $this->context->cookie->__set('hipay_success',
+                    $this->module->l('Capture has been validated'));
+            }
         }
 
-        $this->module->getLogs()->logInfos('# Manual Capture success');
-        $this->context->cookie->__set('hipay_success',
-            $this->module->l('Capture has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(
                 'AdminOrders'

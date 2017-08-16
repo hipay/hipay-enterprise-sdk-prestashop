@@ -1,13 +1,16 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/hipayMaintenanceData.php');
@@ -225,6 +228,7 @@ class HipayNotification
                     break;
                 case TransactionStatus::REFUND_REQUESTED: //124
                 case TransactionStatus::REFUNDED: //125
+                case TransactionStatus::PARTIALLY_REFUNDED: //126
                     $this->refundOrder();
                     break;
                 case TransactionStatus::CHARGED_BACK:

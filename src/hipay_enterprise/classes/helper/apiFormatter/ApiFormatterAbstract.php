@@ -39,6 +39,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         $this->store           = (is_null($this->cart)) ? false : new Store((int) $this->cart->id_shop);
         $this->delivery        = (is_null($this->cart)) ? false : new Address((int) $this->cart->id_address_delivery);
         $this->deliveryCountry = (is_null($this->cart)) ? false : new Country((int) $this->delivery->id_country);
+        $this->deliveryState   = (is_null($this->cart)) ? false : new State((int) $this->delivery->id_state);
         $this->currency        = (is_null($this->cart)) ? false : new Currency((int) $this->cart->id_currency);
     }
 
