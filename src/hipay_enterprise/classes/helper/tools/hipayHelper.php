@@ -282,4 +282,15 @@ class HipayHelper
 
         return 'paymentFormApi16.tpl';
     }
+
+    /**
+     * Restore error messages in Session or cookie
+     * 
+     * @param type $context
+     */
+    public static function resetMessagesHipay($context)
+    {
+        $context->cookie->__set('hipay_errors', '');
+        $context->cookie->__set('hipay_success', '');
+    }
 }

@@ -91,6 +91,11 @@ class Hipay_enterprise extends PaymentModule
         return $this->logs;
     }
 
+    public function getLocalPath()
+    {
+        return $this->local_path;
+    }
+
     /**
      * Functions installation HiPay module or uninstall
      */
@@ -642,23 +647,12 @@ class Hipay_enterprise extends PaymentModule
             )
         );
 
-        $this->resetMessagesHipay();
+        HipayHelper::resetMessagesHipay($this->context);
 
         return $this->display(
                 dirname(__FILE__),
                 'views/templates/hook/maintenance.tpl'
         );
-    }
-
-    /**
-     *  Restore error messages in Session or cookie
-     */
-    private function resetMessagesHipay()
-    {
-        $this->context->cookie->__set('hipay_errors',
-            '');
-        $this->context->cookie->__set('hipay_success',
-            '');
     }
 
     public function installAdminTab()
@@ -1567,6 +1561,7 @@ require_once(dirname(__FILE__).'/classes/helper/tools/HipayLogs.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayConfig.php');
 require_once(dirname(__FILE__).'/classes/helper/forms/hipayForm.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayMapper.php');
+require_once(dirname(__FILE__).'/classes/helper/tools/hipayHelper.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayOrderStatus.php');

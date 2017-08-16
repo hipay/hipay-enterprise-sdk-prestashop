@@ -28,24 +28,22 @@ require_once(dirname(__FILE__).'/../../tools/hipayDBQuery.php');
 class CartMaintenanceFormatter implements ApiFormatterInterface
 {
 
-    public function __construct(
-    $module, $params, $maintenanceData
-    )
+    public function __construct($module, $params, $maintenanceData)
     {
-        $this->module             = $module;
-        $this->context            = Context::getContext();
-        $this->configHipay        = $this->module->hipayConfigTool->getConfigHipay();
-        $this->products           = $params["products"];
-        $this->discounts          = $params["discounts"];
-        $this->order              = $params["order"];
-        $this->operation          = $params["operation"];
-        $this->captureRefundFee   = $params["captureRefundFee"];
-        $this->captureRefundDiscount   = $params["captureRefundDiscount"];
-        $this->transactionAttempt = $params["transactionAttempt"];
-        $this->mapper             = new HipayMapper($module);
-        $this->totalItem          = 0;
-        $this->db                 = new HipayDBQuery($module);
-        $this->maintenanceData    = $maintenanceData;
+        $this->module                = $module;
+        $this->context               = Context::getContext();
+        $this->configHipay           = $this->module->hipayConfigTool->getConfigHipay();
+        $this->products              = $params["products"];
+        $this->discounts             = $params["discounts"];
+        $this->order                 = $params["order"];
+        $this->operation             = $params["operation"];
+        $this->captureRefundFee      = $params["captureRefundFee"];
+        $this->captureRefundDiscount = $params["captureRefundDiscount"];
+        $this->transactionAttempt    = $params["transactionAttempt"];
+        $this->mapper                = new HipayMapper($module);
+        $this->totalItem             = 0;
+        $this->db                    = new HipayDBQuery($module);
+        $this->maintenanceData       = $maintenanceData;
     }
 
     /**
@@ -105,10 +103,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         if (isset($product["ean13"]) && $product["ean13"] != "0") {
             $european_article_numbering = $product["ean13"];
         }
-        $product_reference          = HipayHelper::getProductRef($product);
-        $type                       = "good";
-        $name                       = $product["name"];
-        $quantity                   = $product["cart_quantity"];
+        $product_reference = HipayHelper::getProductRef($product);
+        $type              = "good";
+        $name              = $product["name"];
+        $quantity          = $product["cart_quantity"];
 
         $this->totalItem += $quantity;
 
@@ -226,7 +224,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         );
         // forced category
         $item->setProductCategory(1);
-        
+
         //save capture items and quantity in prestashop
         $captureData = array(
             "hp_ps_order_id" => $this->order->id,
@@ -238,7 +236,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             "amount" => $total_amount
         );
         $this->maintenanceData->addItem($captureData);
-        
+
         return $item;
     }
 
