@@ -10,14 +10,13 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/../../controllers/admin/AdminHiPayActions.php');
 
 /**
  * Class AdminHiPayRefundController
  *
  * Manage action for refund transaction
-  *
+ *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
@@ -223,12 +222,13 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $this->params["refundItems"]             = "full";
             }
 
-            $this->apiHandler->handleRefund($this->params);
+            if ($this->apiHandler->handleRefund($this->params)) {
+                $this->module->getLogs()->logInfos('# Refund Capture success');
+                $this->context->cookie->__set('hipay_success',
+                    $this->module->l('The refund has been validated'));
+            }
         }
 
-        $this->module->getLogs()->logInfos('# Refund Capture success');
-        $this->context->cookie->__set('hipay_success',
-            $this->module->l('The refund has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(
                 'AdminOrders'

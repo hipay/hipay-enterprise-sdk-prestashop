@@ -10,7 +10,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
@@ -157,9 +156,9 @@ class Apihandler
      */
     public function handleCapture($params)
     {
-        $this->handleMaintenance(
-            Operation::CAPTURE,
-            $params
+        return $this->handleMaintenance(
+                Operation::CAPTURE,
+                $params
         );
     }
 
@@ -169,9 +168,9 @@ class Apihandler
      */
     public function handleRefund($params)
     {
-        $this->handleMaintenance(
-            Operation::REFUND,
-            $params
+        return $this->handleMaintenance(
+                Operation::REFUND,
+                $params
         );
     }
 
@@ -182,9 +181,9 @@ class Apihandler
      */
     public function handleAcceptChallenge($params)
     {
-        $this->handleMaintenance(
-            Operation::ACCEPT_CHALLENGE,
-            $params
+        return $this->handleMaintenance(
+                Operation::ACCEPT_CHALLENGE,
+                $params
         );
     }
 
@@ -195,9 +194,9 @@ class Apihandler
      */
     public function handleDenyChallenge($params)
     {
-        $this->handleMaintenance(
-            Operation::DENY_CHALLENGE,
-            $params
+        return $this->handleMaintenance(
+                Operation::DENY_CHALLENGE,
+                $params
         );
     }
 
@@ -206,41 +205,50 @@ class Apihandler
      * @param type $mode
      * @param type $params
      */
-    private function handleMaintenance(
-    $mode, $params = array()
-    )
+    private function handleMaintenance($mode, $params = array())
     {
-        switch ($mode) {
-            case Operation::CAPTURE:
-                $params["operation"] = Operation::CAPTURE;
-                ApiCaller::requestMaintenance(
-                    $this->module,
-                    $params
-                );
-                break;
-            case Operation::REFUND:
-                $params["operation"] = Operation::REFUND;
-                ApiCaller::requestMaintenance(
-                    $this->module,
-                    $params
-                );
-                break;
-            case Operation::ACCEPT_CHALLENGE:
-                $params["operation"] = Operation::ACCEPT_CHALLENGE;
-                ApiCaller::requestMaintenance(
-                    $this->module,
-                    $params
-                );
-                break;
-            case Operation::DENY_CHALLENGE:
-                $params["operation"] = Operation::DENY_CHALLENGE;
-                ApiCaller::requestMaintenance(
-                    $this->module,
-                    $params
-                );
-                break;
-            default:
-                $this->module->getLogs()->logInfos("# Unknown maintenance operation");
+        try {
+            switch ($mode) {
+                case Operation::CAPTURE:
+                    $params["operation"] = Operation::CAPTURE;
+                    ApiCaller::requestMaintenance(
+                        $this->module,
+                        $params
+                    );
+                    break;
+                case Operation::REFUND:
+                    $params["operation"] = Operation::REFUND;
+                    ApiCaller::requestMaintenance(
+                        $this->module,
+                        $params
+                    );
+                    break;
+                case Operation::ACCEPT_CHALLENGE:
+                    $params["operation"] = Operation::ACCEPT_CHALLENGE;
+                    ApiCaller::requestMaintenance(
+                        $this->module,
+                        $params
+                    );
+                    break;
+                case Operation::DENY_CHALLENGE:
+                    $params["operation"] = Operation::DENY_CHALLENGE;
+                    ApiCaller::requestMaintenance(
+                        $this->module,
+                        $params
+                    );
+                    break;
+                default:
+                    $this->module->getLogs()->logInfos("# Unknown maintenance operation");
+            }
+            return true;
+        } catch (GatewayException $e) {
+            $errorMessage = $this->module->l(
+                'An error occured during request Maintenance.',
+                'capture'
+            );
+            $this->context->cookie->__set('hipay_errors',
+                $errorMessage);
+            return false;
         }
     }
 
@@ -249,9 +257,7 @@ class Apihandler
      * @param type $params
      * @param type $creditCard
      */
-    private function baseParamsInit(
-    &$params, $creditCard = true, $cart = false
-    )
+    private function baseParamsInit(&$params, $creditCard = true, $cart = false)
     {
         // no basket sent if PS_ROUND_TYPE is ROUND_TOTAL (prestashop config)
         if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL) {
@@ -378,14 +384,14 @@ class Apihandler
             case TransactionState::DECLINED:
                 $reason      = $response->getReason();
                 $this->module->getLogs()->logInfos(
-                    'There was an error request new transaction: '. $reason['message']
+                    'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $failUrl;
                 break;
             case TransactionState::ERROR:
                 $reason      = $response->getReason();
                 $this->module->getLogs()->logInfos(
-                    'There was an error request new transaction: '. $reason['message']
+                    'There was an error request new transaction: '.$reason['message']
                 );
                 $redirectUrl = $exceptionUrl;
                 break;
@@ -445,7 +451,7 @@ class Apihandler
     {
         // SQL LOCK
         //#################################################################
-        $cart = $this->context->cart;
+        $cart    = $this->context->cart;
         // load order for id_order
         $orderId = Order::getOrderByCartId($cart->id);
 
@@ -454,18 +460,18 @@ class Apihandler
 
         if ($cart && (!$orderId || empty($orderId))) {
             $this->module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
-            $customer = new Customer((int)$cart->id_customer);
-            $shopId = $cart->id_shop;
-            $shop = new Shop($shopId);
+            $customer = new Customer((int) $cart->id_customer);
+            $shopId   = $cart->id_shop;
+            $shop     = new Shop($shopId);
             // forced shop
             Shop::setContext(
                 Shop::CONTEXT_SHOP,
                 $cart->id_shop
             );
             $this->module->validateOrder(
-                (int)$cart->id,
+                (int) $cart->id,
                 Configuration::get('HIPAY_OS_PENDING'),
-                (float)$cart->getOrderTotal(true),
+                (float) $cart->getOrderTotal(true),
                 $params["methodDisplayName"],
                 'Order created by HiPay after success payment.',
                 array(),
@@ -475,7 +481,7 @@ class Apihandler
                 $shop
             );
             // get order id
-            $orderId = $this->module->currentOrder;
+            $orderId  = $this->module->currentOrder;
             $this->db->releaseSQLLock();
 
             $captureType = array(
@@ -484,7 +490,7 @@ class Apihandler
             );
 
             $this->db->setOrderCaptureType($captureType);
-            
+
             Hook::exec(
                 'displayHiPayAccepted',
                 array('cart' => $cart, "order_id" => $orderId)
@@ -501,6 +507,6 @@ class Apihandler
         } else {
             $this->module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
         }
-            return Tools::redirect('index.php?controller=order-confirmation&'.$params);
+        return Tools::redirect('index.php?controller=order-confirmation&'.$params);
     }
 }

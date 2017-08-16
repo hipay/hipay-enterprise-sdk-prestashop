@@ -221,12 +221,13 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->params["capture_refund_discount"] = true;
                 $this->params["refundItems"]             = "full";
             }
-            $this->apiHandler->handleCapture($this->params);
+            if ($this->apiHandler->handleCapture($this->params)) {
+                $this->module->getLogs()->logInfos('# Manual Capture success');
+                $this->context->cookie->__set('hipay_success',
+                    $this->module->l('Capture has been validated'));
+            }
         }
 
-        $this->module->getLogs()->logInfos('# Manual Capture success');
-        $this->context->cookie->__set('hipay_success',
-            $this->module->l('Capture has been validated'));
         Tools::redirectAdmin(
             $this->context->link->getAdminLink(
                 'AdminOrders'
