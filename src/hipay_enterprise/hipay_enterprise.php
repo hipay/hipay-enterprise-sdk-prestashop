@@ -575,12 +575,12 @@ class Hipay_enterprise extends PaymentModule
         $this->context->smarty->assign(
             array(
                 'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
-                'refundableAmountDisplay' => Tools::displayPrice($refundableAmount),
+                'refundableAmountDisplay' => $refundableAmount,
                 'refundableAmount' => $refundableAmount,
                 'shippingCost' => $shippingCost,
                 'errorHipay' => $errorHipay,
                 'messagesHipay' => $messagesHipay,
-                'stillToCaptureDisplay' => Tools::displayPrice($stillToCapture),
+                'stillToCaptureDisplay' => $stillToCapture,
                 'stillToCapture' => $stillToCapture,
                 'alreadyCaptured' => $alreadyCaptured,
                 'partiallyCaptured' => $partiallyCaptured,
