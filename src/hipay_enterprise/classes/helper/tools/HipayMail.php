@@ -1,16 +1,26 @@
 <?php
 /**
- * Helper to send emails for HiPay Module
+ * HiPay Enterprise SDK Prestashop
  *
- * @category    HiPay
- * @package     HiPay\Enterprise
- * @author
- * @copyright   Copyright (c) 2017 - HiPay
- * @license     http://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
 require_once(dirname(__FILE__) . '/../../../translations/HipayStrings.php');
 
+/**
+ * Helper to send emails for HiPay Module
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class HipayMail
 {
 

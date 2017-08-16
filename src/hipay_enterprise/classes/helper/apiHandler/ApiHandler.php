@@ -1,13 +1,16 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
@@ -21,6 +24,11 @@ use HiPay\Fullservice\Enum\Transaction\Operation;
 
 /**
  * Handle Hipay Api call
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class Apihandler
 {
@@ -51,21 +59,22 @@ class Apihandler
         $deliveryCountry = new Country((int) $delivery->id_country);
         $currency        = new Currency((int) $cart->id_currency);
 
-        $params["method"]      = "credit_card";
-        $params["moto"]        = true;
-        $params["iframe"]      = true;
-        $params["productlist"] = $this->getCreditCardProductList(
+        $params["method"]                   = "credit_card";
+        $params["moto"]                     = true;
+        $params["iframe"]                   = false;
+        $params["authentication_indicator"] = 0;
+        $params["productlist"]              = $this->getCreditCardProductList(
             $deliveryCountry,
             $currency
         );
 
         $this->baseParamsInit($params,
-                              true,
-                              $cart);
+            true,
+            $cart);
 
         $this->handleHostedPayment($params,
-                                   $cart,
-                                   true);
+            $cart,
+            true);
     }
 
     /**
@@ -87,7 +96,7 @@ class Apihandler
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
                 $this->handleDirectOrder($params,
-                                         true);
+                    true);
                 break;
             case Apihandler::IFRAME:
                 $params["iframe"]         = true;
@@ -130,7 +139,6 @@ class Apihandler
                     $params,
                     false
                 );
-                //    var_dump($params);
                 $this->handleDirectOrder($params);
                 break;
             case Apihandler::IFRAME:
@@ -252,8 +260,7 @@ class Apihandler
         } elseif ($creditCard && $this->configHipay["payment"]["global"]["activate_basket"]) {
             $params["basket"]                = $this->getCart($cart);
             $params["delivery_informations"] = $this->getDeliveryInformation($cart);
-        } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"])
-            && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
+        } elseif ($this->configHipay["payment"]["global"]["activate_basket"] || (isset($params["method"]) && isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]))
             && $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]
         ) {
             $params["basket"]                = $this->getCart($cart);
@@ -271,7 +278,7 @@ class Apihandler
     private function getCart($cart = false)
     {
         $cart = new CartFormatter($this->module,
-                                  $cart);
+            $cart);
 
         return $cart->generate();
     }
@@ -283,7 +290,7 @@ class Apihandler
     private function getDeliveryInformation($cart = false)
     {
         $deliveryInformation = new DeliveryShippingInfoFormatter($this->module,
-                                                                 $cart);
+            $cart);
 
         return $deliveryInformation->generate();
     }
@@ -471,6 +478,13 @@ class Apihandler
             $orderId = $this->module->currentOrder;
             $this->db->releaseSQLLock();
 
+            $captureType = array(
+                "order_id" => $orderId,
+                "type" => $this->configHipay["payment"]["global"]["capture_mode"]
+            );
+
+            $this->db->setOrderCaptureType($captureType);
+            
             Hook::exec(
                 'displayHiPayAccepted',
                 array('cart' => $cart, "order_id" => $orderId)
