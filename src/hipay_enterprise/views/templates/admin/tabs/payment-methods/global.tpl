@@ -30,8 +30,8 @@
                     </div>
                     <p class="help-block">
                         <ul class="hipay-notice-list">
-                            <li><b>Api</b> : {l s='The customer will fill his bank information directly on merchants'}</li>
-                            <li><b>Hosted</b> :{l s='The customer is redirected to a secured payment page hosted by HiPay.'}</li>
+                            <li><b>Api</b> : {l s='The customer will fill his bank information directly on merchants' mod='hipay_enterprise'}</li>
+                            <li><b>Hosted</b> :{l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}</li>
                         </ul>
                     </p>
                 </div>
@@ -105,8 +105,8 @@
                     </div>
                     <p class="help-block">
                         <ul class="hipay-notice-list">
-                            <li><b>Manual</b> : {l s='All transactions will be captured manually either from the Hipay Back office or from your admin prestashop'}</li>
-                            <li><b>Automatic</b> :{l s='All transactions will be captured automatically.'}</li>
+                            <li><b>Manual</b> : {l s='All transactions will be captured manually either from the Hipay Back office or from your admin prestashop' mod='hipay_enterprise'}</li>
+                            <li><b>Automatic</b> :{l s='All transactions will be captured automatically.' mod='hipay_enterprise'}</li>
                         </ul>
                     </p>
                 </div>

@@ -333,11 +333,11 @@ class Apihandler
         } else {
             $params["methodDisplayName"] = $this->configHipay["payment"]["local_payment"][$params["method"]]["displayName"];
         }
+
         $response = ApiCaller::requestDirectPost(
                 $this->module,
                 $params
         );
-
 
         $acceptUrl    = $this->context->link->getModuleLink(
             $this->module->name,
@@ -365,7 +365,6 @@ class Apihandler
         );
         $forwardUrl   = $response->getForwardUrl();
 
-
         switch ($response->getState()) {
             case TransactionState::COMPLETED:
                 $this->validateOrder($params);
@@ -379,14 +378,14 @@ class Apihandler
             case TransactionState::DECLINED:
                 $reason      = $response->getReason();
                 $this->module->getLogs()->logInfos(
-                    'There was an error request new transaction: '.$reason['message']
+                    'There was an error request new transaction: '. $reason['message']
                 );
                 $redirectUrl = $failUrl;
                 break;
             case TransactionState::ERROR:
                 $reason      = $response->getReason();
                 $this->module->getLogs()->logInfos(
-                    'There was an error request new transaction: '.$reason['message']
+                    'There was an error request new transaction: '. $reason['message']
                 );
                 $redirectUrl = $exceptionUrl;
                 break;
@@ -446,23 +445,27 @@ class Apihandler
     {
         // SQL LOCK
         //#################################################################
+        $cart = $this->context->cart;
+        // load order for id_order
+        $orderId = Order::getOrderByCartId($cart->id);
 
         $cart = $this->context->cart;
-        if ($cart) {
-            $this->module->getLogs()->logInfos("# Validate order for cart $cart->id");
-            $this->db->setSQLLockForCart($cart->id);
-            $customer = new Customer((int) $cart->id_customer);
-            $shopId   = $cart->id_shop;
-            $shop     = new Shop($shopId);
+        $this->db->setSQLLockForCart($cart->id);
+
+        if ($cart && (!$orderId || empty($orderId))) {
+            $this->module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
+            $customer = new Customer((int)$cart->id_customer);
+            $shopId = $cart->id_shop;
+            $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(
                 Shop::CONTEXT_SHOP,
                 $cart->id_shop
             );
             $this->module->validateOrder(
-                (int) $cart->id,
+                (int)$cart->id,
                 Configuration::get('HIPAY_OS_PENDING'),
-                (float) $cart->getOrderTotal(true),
+                (float)$cart->getOrderTotal(true),
                 $params["methodDisplayName"],
                 'Order created by HiPay after success payment.',
                 array(),
@@ -472,7 +475,7 @@ class Apihandler
                 $shop
             );
             // get order id
-            $orderId  = $this->module->currentOrder;
+            $orderId = $this->module->currentOrder;
             $this->db->releaseSQLLock();
 
             $captureType = array(
@@ -495,8 +498,9 @@ class Apihandler
                     'key' => $customer->secure_key,
                 )
             );
-
-            return Tools::redirect('index.php?controller=order-confirmation&'.$params);
+        } else {
+            $this->module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
         }
+            return Tools::redirect('index.php?controller=order-confirmation&'.$params);
     }
 }

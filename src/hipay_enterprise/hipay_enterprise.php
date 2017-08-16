@@ -39,9 +39,7 @@ class Hipay_enterprise extends PaymentModule
         $this->display   = 'view';
 
         $this->displayName = $this->l('HiPay Enterprise');
-        $this->description = $this->l(
-            'Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
-        );
+        $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
 
         // init log object
         $this->logs = new HipayLogs($this);
@@ -329,8 +327,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $hipay17                        = new HipayEnterpriseNew();
         // Fix Bug with translation and bad context ( Hook in an another file)
-        $params['translation_checkout'] = $this->l(
-            'You will be redirected to an external payment page. Please do not refresh the page during the process');
+        $params['translation_checkout'] = $this->l('You will be redirected to an external payment page. Please do not refresh the page during the process');
 
         return $hipay17->hipayPaymentOptions($params);
     }
