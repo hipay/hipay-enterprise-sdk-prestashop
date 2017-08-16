@@ -1,14 +1,14 @@
 {**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
-*}
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
 <form id="{$localPaymentName}-hipay" action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post" name="local"
       autocomplete="off">
     {assign "psVersion" "17"}

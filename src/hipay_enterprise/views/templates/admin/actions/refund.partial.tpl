@@ -1,18 +1,17 @@
 {**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
-*}
-
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
     <fieldset>
         <legend>{l s='Refund this order'  mod='hipay_enterprise'}</legend>
-        <p><b>{l s='Amount that can be refunded' mod='hipay_enterprise' } :</b> <span class="badge badge-success">  {displayPrice price=$refundableAmountDisplay=$id_currency}</span></p>
+        <p><b>{l s='Amount that can be refunded' mod='hipay_enterprise' } :</b> <span class="badge badge-success">  {displayPrice price=$refundableAmountDisplay currency=$id_currency}</span></p>
         <p class="help-block">
             <sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}</p>
         <form action="{$refundLink}" method="post" id="hipay_refund_form" class="form-horizontal ">

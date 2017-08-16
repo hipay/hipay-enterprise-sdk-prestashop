@@ -1,13 +1,16 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -15,6 +18,14 @@ ini_set('display_errors',
     1);
 error_reporting(E_ALL);
 
+/**
+ * Hipay_enterprise
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class Hipay_enterprise extends PaymentModule
 {
     public $hipayConfigTool;

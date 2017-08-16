@@ -1,14 +1,14 @@
 {**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
-*}
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
 <div class="panel">
     <div role="tabpanel">
         <div class="alert alert-info">
@@ -54,7 +54,7 @@
                                                 {/if}
                                                 {foreach $hipayCarriers["mode"] as $hpcarmode}
                                                     <option {if isset($mappedCarriers[$car["id_carrier"]]) && $mappedCarriers[$car["id_carrier"]]["mode"] eq  $hpcarmode->getCode()} selected {/if}
-                                                            value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
+                                                                                                                                                                                     value="{$hpcarmode->getCode()}">{$hpcarmode->getDisplayName($lang|upper)} </option>
                                                 {/foreach}
                                             </select>
                                         </td>
@@ -94,9 +94,9 @@
 <script>
     $(document).ready(function () {
         $(".day-type").change(function validate() {
-        var inputValue = hiPayInputControl.normalizePrice($(this).val());
-        var parsedValue = truncateDecimals(inputValue, 2);
-        $(this).val(parsedValue);
+            var inputValue = hiPayInputControl.normalizePrice($(this).val());
+            var parsedValue = truncateDecimals(inputValue, 2);
+            $(this).val(parsedValue);
         });
     });
 </script>

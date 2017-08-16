@@ -1,14 +1,14 @@
 {**
-* 2017 HiPay
-*
-* NOTICE OF LICENSE
-*
-*
-* @author    HiPay <support.wallet@hipay.com>
-* @copyright 2017 HiPay
-* @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
-*
-*}
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
 <div class="panel hipay-tabs">
     <form method="post" class="form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="account_form">
         <div role="tabpanel">
