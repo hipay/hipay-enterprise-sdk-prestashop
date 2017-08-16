@@ -10,7 +10,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/../../controllers/admin/AdminHiPayActions.php');
 
 /**
@@ -203,15 +202,15 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                             'You must capture discount because next capture amount will be lower than total discount amount.',
                             'capture'
                         );
+                        $this->context->cookie->__set('hipay_errors',
+                            $hipay_redirect_status);
+                        Tools::redirectAdmin(
+                            $this->context->link->getAdminLink(
+                                'AdminOrders'
+                            ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
+                        );
+                        die('');
                     }
-                    $this->context->cookie->__set('hipay_errors',
-                        $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink(
-                            'AdminOrders'
-                        ).'&id_order='.(int) $this->order->id.'&vieworder#hipay'
-                    );
-                    die('');
                 }
 
                 $this->params["refundItems"]             = $refundItems;

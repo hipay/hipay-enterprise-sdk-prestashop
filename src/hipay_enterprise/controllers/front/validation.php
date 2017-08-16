@@ -123,7 +123,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             "type" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]
         );
 
-        $this->db->setOrderCaptureType($captureType);
+        $db->setOrderCaptureType($captureType);
 
         $params = http_build_query(
             array(
