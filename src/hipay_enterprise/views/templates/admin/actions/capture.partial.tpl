@@ -10,7 +10,7 @@
 *
 *}
     <fieldset>
-        <legend>{l s='Manage Capture' }</legend>
+        <legend>{l s='Manage Capture' mod='hipay_enterprise'}</legend>
         {if $stillToCapture}
             <p class="alert alert-warning">
                 {l s='The order has not been fully captured.' mod='hipay_enterprise'} <br/>
@@ -19,21 +19,21 @@
         {/if}
         
         <div class="row">
-            <label class="col-lg-4">{l s='Amount already captured' }</label><span class="badge {if $refundableAmountDisplay > 0}badge-warning{else}badge-success{/if}">{$refundableAmountDisplay}</span>
+            <label class="col-lg-4">{l s='Amount already captured' mod='hipay_enterprise'}</label><span class="badge {if $refundableAmountDisplay > 0}badge-warning{else}badge-success{/if}">{$refundableAmountDisplay}</span>
         </div>
         <div class="row">
-            <label class="col-lg-4">{l s='Amount still to be captured' }</label><span
+            <label class="col-lg-4">{l s='Amount still to be captured' mod='hipay_enterprise'}</label><span
                     class="badge {if $stillToCaptureDisplay > 0}badge-warning{else}badge-success{/if}">{$stillToCaptureDisplay}</span>
         </div>
         <p class="help-block">
-            <sup>*</sup> {l s='Amount will be updated once the capture will be confirmed by HiPay Enterprise'}</p>
+            <sup>*</sup> {l s='Amount will be updated once the capture will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}</p>
         
         <form action="{$captureLink}" method="post" id="hipay_capture_form" class="">
             <input type="hidden" name="id_order" value="{$orderId}"/>
             <input type="hidden" name="id_emp" value="{$employeeId}"/>
             <input type="hidden" name="token" value="{$tokenCapture}"/>
             <div class="form-group">
-                <label class="col-lg-4" for="hipay_capture_type">{l s='Capture type'}</label>
+                <label class="col-lg-4" for="hipay_capture_type">{l s='Capture type' mod='hipay_enterprise'}</label>
                 <select id="hipay_capture_type" name="hipay_capture_type" class="col-lg-3">
                     {if !$partiallyCaptured }
                         <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>

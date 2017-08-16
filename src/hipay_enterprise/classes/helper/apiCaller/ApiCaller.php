@@ -86,7 +86,9 @@ class ApiCaller
 
             return $transaction;
         } catch (Exception $e) {
+            $db          = new HipayDBQuery($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
+            $db->releaseSQLLock();
             throw new GatewayException('An error occured during request requestDirectPost. Please Retry later. Reason ['.
             $e->getMessage().']',
             $e->getCode(),

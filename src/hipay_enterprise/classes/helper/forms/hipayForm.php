@@ -314,7 +314,7 @@ class HipayForm extends HipayFormInput
         $this->helper->tpl_vars['fields_value'] = $this->getFraudFormValues();
 
         $form['form']['legend'] = array(
-            'title' => $this->module->l('Payment fraud email'),
+            'title' => $this->module->l('Payment fraud email' ),
         );
 
         $form['form']['input'][] = $this->generateFormNotice();
