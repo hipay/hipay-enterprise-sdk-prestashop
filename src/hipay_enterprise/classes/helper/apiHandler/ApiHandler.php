@@ -475,6 +475,13 @@ class Apihandler
             $orderId  = $this->module->currentOrder;
             $this->db->releaseSQLLock();
 
+            $captureType = array(
+                "order_id" => $orderId,
+                "type" => $this->configHipay["payment"]["global"]["capture_mode"]
+            );
+
+            $this->db->setOrderCaptureType($captureType);
+            
             Hook::exec(
                 'displayHiPayAccepted',
                 array('cart' => $cart, "order_id" => $orderId)

@@ -49,6 +49,9 @@
                     {if $refundRequestedOS }
                         <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>
                     {/if}
+                    {if $refundStartedFromBo }
+                        <p class="alert alert-warning">{l s='A refund or a capture has been validated from HiPay back-office, you must proceed refund from HiPay back-office.' mod='hipay_enterprise'}</p>
+                    {/if}
                 {/if}
             </div>
         </div>
