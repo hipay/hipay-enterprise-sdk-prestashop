@@ -91,6 +91,11 @@ class Hipay_enterprise extends PaymentModule
         return $this->logs;
     }
 
+    public function getLocalPath()
+    {
+        return $this->local_path;
+    }
+
     /**
      * Functions installation HiPay module or uninstall
      */
