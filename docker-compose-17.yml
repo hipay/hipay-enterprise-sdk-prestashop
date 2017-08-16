@@ -3,7 +3,7 @@ prestashop17:
   dockerfile: ./conf/docker/Dockerfile17
   build: .
   ports:
-    - "8097:80"
+    - "8087:80"
   links:
     - smtp
     - mysql

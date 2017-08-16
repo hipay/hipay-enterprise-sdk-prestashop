@@ -3,7 +3,7 @@ prestashop16:
   dockerfile: ./conf/docker/Dockerfile16
   build: .
   ports:
-    - "8096:80"
+    - "8086:80"
   links:
     - smtp
     - mysql
