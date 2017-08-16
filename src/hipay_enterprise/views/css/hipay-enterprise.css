@@ -1,0 +1,27 @@
+.hipay-form-17 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 2.875rem;
+
+}
+
+.hipay-form-17 input, .hipay-form-17 select{
+    background-color: #FDFDFD !important;
+}
+
+.error-input-hp{
+    border-color : #ff4c4c!important;
+}
+
+.error-text-hp{
+    color :#ff4c4c ;
+    font-size: 15px;
+}
+
+.input-hp{
+    border: 1px solid rgba(0,0,0,.15);
+}
+
+.card-img{
+    margin-bottom: 1.05em;
+}

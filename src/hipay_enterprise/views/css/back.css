@@ -1,0 +1,225 @@
+/***********************************/
+/**           ORDER VIEW         **/
+/***********************************/
+#hipay_challenge_form.btn-deny {
+    background-color: #dc5f5c !important;
+}
+#hipay_challenge_form.btn-accept {
+    background-color: #26A65B !important;
+}
+
+.hipay-tabs #account_form h3,#panel-credit-card  h3,#panel-global-settings h3,#panel-local-payment h3  {
+    font-size:1.5em!important;
+    margin: -15px -15px 15px -16px!important;
+}
+
+.hipay-tabs #account_form h5 {
+    border-bottom: #dddddd solid 1px;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+.table.table-item-hipay {
+    padding-top: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+}
+
+.table.table-item-hipay thead tr th  {
+    text-align: center;
+    font-weight: 600;
+}
+
+.table.table-item-hipay tbody tr td  {
+    text-align: center;
+}
+
+.table-item-hipay thead th,.table-item-hipay tfoot tr {
+    font-weight: 600;
+    text-align: center;
+}
+
+.table-item-hipay tfoot tr td {
+    padding-top:10px;
+}
+
+.table-item-hipay tfoot tr td {
+    border-top: solid 2px #a0d0eb!important;
+}
+
+.bloc-actions-hipay {
+    padding-top: 50px;
+}
+
+/***********************************/
+/**           Technical VIEW      **/
+/***********************************/
+#module-informations .technical-information, #module-informations .technicals-requirements {
+    margin-top: 10px;
+}
+#module-informations .alert.alert-warning{
+    margin-right: 10px;
+}
+
+#panel-credit-card .bootstrap-duallistbox-container label,
+#panel-local-payment .bootstrap-duallistbox-container label{
+    text-align: center;
+}
+
+#panel-credit-card .bootstrap-duallistbox-container .info-container,
+#panel-local-payment .bootstrap-duallistbox-container .info-container{
+    display: none;
+}
+
+#panel-credit-card .credit-card-title, #panel-local-payment .credit-card-title {
+    color: #ffffff;
+    background-color: #ffffff;
+    text-align: center;
+    height: 55px;
+    line-height: 40px;
+    font-size: 1.5em;
+    min-height: 50px;
+}
+
+#panel-credit-card h4,#panel-local-payment h4 {
+    font-size: 2em;
+}
+
+/***********************************/
+/**        FAQ  VIEW              **/
+/***********************************/
+#panel-faq .panel-heading-question a {
+    color: #ffffff;
+}
+
+#panel-faq .panel-heading-question i {
+    color:#f9c940;
+}
+
+#panel-faq .panel-heading-question {
+    background-color: #00acdc;
+}
+
+#panel-faq .panel-heading-question i[class="icon-arrow-circle-o-down"] {
+    float: right;
+}
+
+#panel-faq .panel-heading.panel-heading-question  i {
+    font-size: 1.5em!important;
+    padding: 5px;
+}
+
+#panel-faq .panel-heading-question [data-toggle="collapse"].collapsed i[class="icon-arrow-circle-o-down"] {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+#hipay-header .text-branded,
+#hipay-content .text-branded {
+    color: #00aff0;
+}
+
+#hipay-header h4,
+#hipay-content h4 {
+    margin: 2px 0;
+    color: #00aff0;
+    font-size: 1.8em;
+}
+
+#hipay-header h4 {
+    margin: 15px auto;
+}
+
+#payment-logo {
+    max-height: 150px;
+    max-width: 100% !important;
+}
+
+#hipay-content h4 {
+    margin-bottom: 10px;
+}
+
+#hipay-content ul {
+    padding-left: 15px;
+}
+
+#hipay-content .ul-spaced li {
+    margin-bottom: 5px;
+}
+
+.production-switch{
+    border: solid 1px #279CBB!important;
+    background-color: #2eacce!important;
+}
+
+.hipay-enterprise.nav-tabs {
+    border: 0;
+    padding: .4rem;
+    background-color: #2eacce;
+    z-index: 2;
+    position: relative;
+    border-radius: 5px;
+    color: #000!important;
+}
+
+.hipay-enterprise.nav-tabs .nav-item.open .nav-link, .hipay-enterprise.nav-tabs .nav-item.open .nav-link:focus, .hipay-enterprise.nav-tabs .nav-item.open
+.nav-link:hover, .hipay-enterprise.nav-tabs .nav-link.active, .hipay-enterprise.nav-tabs .nav-link.active:focus, .hipay-enterprise.nav-tabs .nav-link.active:hover  {
+    background-color: rgba(255,255,255,.5);
+    color: #fff;
+    -webkit-transition: all 2s;
+    transition: all 2s;
+    border-radius: 3px;
+}
+
+.hipay-enterprise.nav-tabs li a,.nav-stacked li a {
+    color: #FFFFFF!important;
+}
+
+.nav-stacked li a {
+    color: #555!important;
+}
+
+.bootstrap .hipay-enterprise.nav-tabs li.active a, .bootstrap .hipay-enterprise.nav-tabs a:hover, .bootstrap .hipay-enterprise.nav-tabs li.active a:focus {
+    background-color: rgba(255,255,255,.2);
+    color: #FFFFFF;
+    -webkit-transition: all 2s;
+    transition: all 2s;
+}
+
+.hipay-enterprise.nav-tabs .nav-item.show .nav-link, .hipay-enterprise.nav-tabs .nav-link.active,
+.nav-stacked .nav-item.show .nav-link, .nav-stacked  .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ddd #ddd #fff;
+}
+
+.bootstrap .hipay-enterprise.nav-tabs>li.active>a, .bootstrap .hipay-enterprise.nav-tabs>li.active>a:hover, .bootstrap .nav-tabs>li.active>a:focus {
+    border :0px;
+}
+
+.bootstrap .nav-stacked li a {
+    font-size: 1.1em;
+    font-family: "Ubuntu Condensed",Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.bootstrap .nav-pills>li.active>a, .bootstrap .nav-pills>li.active>a:hover, .bootstrap .nav-pills>li.active>a:focus {
+    background-color: #2eacce;
+    color: #ffffff!important;
+}
+
+.label-value {
+    font-size: 13px;
+    font-weight: normal;
+    color: #666;
+    text-align: left;
+    margin-bottom: 0;
+    padding-top: 7px;
+    font-weight: 600;
+}
