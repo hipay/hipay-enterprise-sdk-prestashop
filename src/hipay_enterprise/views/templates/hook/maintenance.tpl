@@ -36,7 +36,7 @@
                 {if $showCapture && $stillToCapture > 0 && $manualCapture}
 
                     <div class="col-lg-12 panel">
-                     {include file='../admin/actions/capture.partial.tpl'}
+                        {include file='../admin/actions/capture.partial.tpl'}
                     </div>
                 {/if}
                 {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
@@ -46,6 +46,12 @@
                 {/if}
                 {if  !$showMoto && !$showChallenge && !$showCapture && !$showRefund }
                     <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
+                    {if $refundRequestedOS }
+                        <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>
+                    {/if}
+                    {if $refundStartedFromBo }
+                        <p class="alert alert-warning">{l s='A refund or a capture has been validated from HiPay back-office, you must proceed refund from HiPay back-office.' mod='hipay_enterprise'}</p>
+                    {/if}
                 {/if}
             </div>
         </div>

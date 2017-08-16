@@ -380,6 +380,8 @@ class Hipay_enterprise extends PaymentModule
         $showMoto              = false;
         $partiallyCaptured     = false;
         $partiallyRefunded     = false;
+        $refundRequestedOS     = false;
+        $refundStartedFromBo   = false;
         $orderId               = $order->id;
         $employeeId            = $this->context->employee->id;
         $basket                = $this->db->getOrderBasket($order->id);
@@ -397,6 +399,7 @@ class Hipay_enterprise extends PaymentModule
         $discount              = array();
         $catpureOrRefundFromBo = $this->db->captureOrRefundFromBO($order->id);
         $discounts             = $order->getCartRules();
+        $isManualCapture       = $this->db->isManualCapture($order->id);
         if (!empty($discounts)) {
             foreach ($discounts as $disc) {
                 $discount["name"][] = $disc["name"];
@@ -414,8 +417,19 @@ class Hipay_enterprise extends PaymentModule
                 >= $product["product_quantity"]);
         }
 
+
+
+
         if (!$refundedFees || !$refundedDiscounts) {
             $totallyRefunded = false;
+        }
+
+        if (!$capturedFees || !$capturedDiscounts) {
+            $totallyCaptured = false;
+        }
+
+        if (empty($capturedItems) && $stillToCapture == 0) {
+            $totallyCaptured = true;
         }
 
         if ($order->getCurrentState() == Configuration::get(
@@ -441,7 +455,7 @@ class Hipay_enterprise extends PaymentModule
         }
 
         if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_PARTIALLY_REFUNDED',
+                'HIPAY_OS_REFUNDED_PARTIALLY',
                 null,
                 null,
                 1
@@ -503,6 +517,14 @@ class Hipay_enterprise extends PaymentModule
             $showRefund  = true;
         }
 
+        if ($order->getCurrentState() == Configuration::get(
+                'HIPAY_OS_REFUNDED_PARTIALLY',
+                null,
+                null,
+                1
+            )) {
+            $showRefund = true;
+        }
         if ($order->current_state == Configuration::get(
                 'HIPAY_OS_CHALLENGED',
                 null,
@@ -513,6 +535,18 @@ class Hipay_enterprise extends PaymentModule
             $showChallenge = true;
             $showCapture   = false;
             $showRefund    = false;
+        }
+
+
+        if ($catpureOrRefundFromBo && $basket) {
+
+            $showRefund          = false;
+            $refundStartedFromBo = true;
+            $showCapture         = false;
+            if (!$isManualCapture && (!$partiallyRefunded || !empty($refundedItems) )) {
+                $showRefund          = true;
+                $refundStartedFromBo = false;
+            }
         }
 
         $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
@@ -542,6 +576,7 @@ class Hipay_enterprise extends PaymentModule
             }
         }
 
+
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED')) {
             $showRefund = false;
         }
@@ -567,10 +602,10 @@ class Hipay_enterprise extends PaymentModule
             $showCapture = false;
         }
 
-        if ($catpureOrRefundFromBo) {
-            $showRefund  = false;
-            $showCapture = false;
-        }
+        $refundRequestedOS = ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED',
+                null,
+                null,
+                1)) ? true : false;
 
         $this->context->smarty->assign(
             array(
@@ -611,7 +646,9 @@ class Hipay_enterprise extends PaymentModule
                 'showMoto' => $showMoto,
                 'cartId' => $cart->id,
                 'id_currency' => $id_currency,
-                'amountFees' => $amountFees
+                'amountFees' => $amountFees,
+                'refundRequestedOS' => $refundRequestedOS,
+                'refundStartedFromBo' => $refundStartedFromBo
             )
         );
 
@@ -1757,6 +1794,7 @@ class Hipay_enterprise extends PaymentModule
         $this->db->createOrderRefundCaptureTable();
         $this->db->createCCTokenTable();
         $this->db->createHipayTransactionTable();
+        $this->db->createHipayOrderCaptureType();
         return true;
     }
 

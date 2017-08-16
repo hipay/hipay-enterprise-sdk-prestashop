@@ -50,10 +50,12 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         }
 
         // If Gateway send payment product in redirection card brand
-        $cardBrand = Tools::getValue('cardbrand');
+        $cardBrand      = Tools::getValue('cardbrand');
         $paymentProduct = Tools::getValue('product');
 
-        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
+        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand,
+                $paymentProduct,
+                $this->module);
 
         HipayHelper::unsetCart();
 
@@ -104,6 +106,13 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             'displayHiPayAccepted',
             array('cart' => $objCart, "order_id" => $orderId)
         );
+
+        $captureType = array(
+            "order_id" => $orderId,
+            "type" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]
+        );
+
+        $this->db->setOrderCaptureType($captureType);
 
         $params = http_build_query(
             array(

@@ -1,13 +1,16 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../../tools/hipayConfig.php');
@@ -15,6 +18,15 @@ require_once(dirname(__FILE__).'/../../tools/hipayConfig.php');
 use HiPay\Fullservice\Enum\Transaction\ECI;
 use HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod;
 
+/**
+ *
+ * card payment method request formatter
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class CardTokenFormatter extends ApiFormatterAbstract
 {
     private $cardToken;

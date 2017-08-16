@@ -1,18 +1,29 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/ApiFormatterInterface.php');
 
 use \HiPay\Fullservice\Enum\Customer\Gender as Gender;
 
+/**
+ *
+ * Api formatter abstract
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 abstract class ApiFormatterAbstract implements ApiFormatterInterface
 {
     protected $module;

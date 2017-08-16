@@ -1,17 +1,27 @@
 <?php
 /**
+ * HiPay Enterprise SDK Prestashop
+ *
  * 2017 HiPay
  *
  * NOTICE OF LICENSE
  *
- * @author    HiPay <support.wallet@hipay.com>
+ * @author    HiPay <support.tpp@hipay.com>
  * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-wallet-sdk-prestashop/blob/master/LICENSE.md
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
+/**
+ * handle all module database queries
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class HipayDBQuery
 {
     const HIPAY_CAT_MAPPING_TABLE          = 'hipay_cat_mapping';
@@ -19,6 +29,7 @@ class HipayDBQuery
     const HIPAY_ORDER_REFUND_CAPTURE_TABLE = 'hipay_order_refund_capture';
     const HIPAY_CC_TOKEN_TABLE             = 'hipay_cc_token';
     const HIPAY_TRANSACTION_TABLE          = 'hipay_transaction';
+    const HIPAY_ORDER_CAPTURE_TYPE_TABLE   = 'hipay_order_capture_type';
     const HIPAY_PAYMENT_ORDER_PREFIX       = 'HiPay Enterprise';
 
     public function __construct($moduleInstance)
@@ -144,6 +155,24 @@ class HipayDBQuery
     }
 
     /**
+     *
+     * @return type
+     */
+    public function createHipayOrderCaptureType()
+    {
+        $this->logs->logInfos('Create Hipay order capture type table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'`(
+                `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `order_id` INT(10) UNSIGNED NOT NULL,
+                `type` VARCHAR(255) NOT NULL,
+                PRIMARY KEY (`hp_id`)
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    /**
      * Delete Hipay mapping table
      * @return type
      */
@@ -180,6 +209,14 @@ class HipayDBQuery
         $this->logs->logInfos('Delete credit card table');
 
         $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_CC_TOKEN_TABLE.'`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    public function deleteOrderCaptureTypoeTable()
+    {
+        $this->logs->logInfos('Delete order capture type table');
+
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'`';
         return Db::getInstance()->execute($sql);
     }
 
@@ -845,5 +882,40 @@ class HipayDBQuery
         );
 
         return true;
+    }
+
+    /**
+     * save order capture type
+     * @param type $values
+     * @return type
+     */
+    public function setOrderCaptureType($values)
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = pSQL($value);
+        }
+
+        return Db::getInstance()->insert(
+                HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE,
+                $values
+        );
+    }
+
+    /**
+     *
+     * @param type $orderId
+     */
+    public function isManualCapture($orderId)
+    {
+        $sql = 'SELECT * FROM `'._DB_PREFIX_.HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'` WHERE order_id='.pSQL(
+                (int) $orderId
+            ).' AND type = "manual" LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
     }
 }

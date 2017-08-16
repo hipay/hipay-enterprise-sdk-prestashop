@@ -17,6 +17,14 @@ require_once(dirname(__FILE__).'/HipayMail.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
+/**
+ * Handle notification from TPP
+ *
+ * @author      HiPay <support.tpp@hipay.com>
+ * @copyright   Copyright (c) 2017 - HiPay
+ * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ */
 class HipayNotification
 {
     const TRANSACTION_REF_CAPTURE_SUFFIX = "capture";
@@ -33,7 +41,8 @@ class HipayNotification
         $this->log     = $this->module->getLogs();
         $this->context = Context::getContext();
         $this->db      = new HipayDBQuery($this->module);
-
+        $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
+        
         $this->transaction = (new HiPay\Fullservice\Gateway\Mapper\TransactionMapper($data))->getModelObjectMapped();
         $this->log->logInfos(
             print_r(
@@ -65,11 +74,9 @@ class HipayNotification
         );
 
         if ($this->cart->orderExists()) {
-            // il existe une commande associée à ce panier
-            $this->orderExist = true;
             // init de l'id de commande
             // can't use Order::getOrderByCartId 'cause
-            $idOrder          = Order::getOrderByCartId($this->cart->id);
+            $idOrder = Order::getOrderByCartId($this->cart->id);
             if ($idOrder) {
                 $this->order = new Order((int) $idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
@@ -259,7 +266,7 @@ class HipayNotification
     private function updateOrderStatus($newState)
     {
         $return = true;
-        if ($this->orderExist) {
+        if ($this->cart->orderExists()) {
             $this->addOrderMessage();
             if ((int) $this->order->getCurrentState() != (int) $newState && !$this->controleIfStatushistoryExist(
                     _PS_OS_PAYMENT_,
@@ -297,7 +304,7 @@ class HipayNotification
      */
     private function registerOrder($state)
     {
-        if (!$this->orderExist) {
+        if (!$this->cart->orderExists()) {
             $message = HipayOrderMessage::formatOrderData($this->transaction);
 
             // init context
@@ -332,6 +339,13 @@ class HipayNotification
                 );
                 $this->order = new Order($this->module->currentOrder);
 
+                $captureType = array(
+                    "order_id" => $this->order->id,
+                    "type" => $this->configHipay["payment"]["global"]["capture_mode"]
+                );
+
+                $this->db->setOrderCaptureType($captureType);
+
                 $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
@@ -364,36 +378,40 @@ class HipayNotification
      */
     private function createOrderPayment($refund = false)
     {
-        if ($this->orderExist) {
-            $amount                 = $this->getRealCapturedAmount($refund);
-            $paymentProduct         = $this->getPaymentProductName();
-            $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
-            $currency               = new Currency($this->order->id_currency);
-            $payment_date           = date("Y-m-d H:i:s");
+        if ($this->cart->orderExists()) {
+            $amount = $this->getRealCapturedAmount($refund);
+            if ($amount != 0) {
+                $paymentProduct         = $this->getPaymentProductName();
+                $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
+                $currency               = new Currency($this->order->id_currency);
+                $payment_date           = date("Y-m-d H:i:s");
 
-            $invoices = $this->order->getInvoicesCollection();
-            $invoice  = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
+                $invoices = $this->order->getInvoicesCollection();
+                $invoice  = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
 
-            if ($this->order && Validate::isLoadedObject($this->order)) {
-                // Add order payment
-                if ($this->order->addOrderPayment(
-                        $amount,
-                        $paymentProduct,
-                        $payment_transaction_id,
-                        $currency,
-                        $payment_date,
-                        $invoice
-                    )
-                ) {
-                    $this->log->logInfos("# Order payment created with success {$this->order->id}");
-                    $orderPayment = $this->db->findOrderPayment($this->order->reference,
-                        $payment_transaction_id);
-                    if ($orderPayment) {
-                        $this->setOrderPaymentData($orderPayment);
+                if ($this->order && Validate::isLoadedObject($this->order)) {
+                    // Add order payment
+                    if ($this->order->addOrderPayment(
+                            $amount,
+                            $paymentProduct,
+                            $payment_transaction_id,
+                            $currency,
+                            $payment_date,
+                            $invoice
+                        )
+                    ) {
+                        $this->log->logInfos("# Order payment created with success {$this->order->id}");
+                        $orderPayment = $this->db->findOrderPayment($this->order->reference,
+                            $payment_transaction_id);
+                        if ($orderPayment) {
+                            $this->setOrderPaymentData($orderPayment);
+                        }
                     }
+                } else {
+                    $this->log->logErrors('# Error, order exist but the object order not loaded');
                 }
             } else {
-                $this->log->logErrors('# Error, order exist but the object order not loaded');
+                $this->log->logInfos('# Order Payment of 0 amount not added');
             }
         }
     }
@@ -450,7 +468,7 @@ class HipayNotification
 
                 $this->db->setCaptureOrRefundOrder($captureData);
             } catch (Exception $e) {
-                var_dump($e);
+                $this->log->logException($e);
             }
         }
 
@@ -475,7 +493,7 @@ class HipayNotification
     {
         $this->log->logInfos("# Refund Order {$this->order->reference} with refund amount {$this->transaction->getRefundedAmount()}");
 
-        if ($this->orderExist) {
+        if ($this->cart->orderExists()) {
             $this->addOrderMessage();
 
             if ($this->transaction->getOperation() == NULL) {
@@ -654,7 +672,7 @@ class HipayNotification
                 $ref .="-".$operationId;
             }
         } catch (Exception $ex) {
-            var_dump($ex);
+            $this->log->logException($ex);
         }
         return $ref;
     }

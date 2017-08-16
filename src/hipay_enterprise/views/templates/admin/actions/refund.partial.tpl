@@ -47,6 +47,8 @@
                         {foreach $products as $item}
                             {if empty($capturedItems) && !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
                                 {assign var="remainQty" value=$item["product_quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
+                            {else if empty($capturedItems) && empty($refundedItems) }
+                                {assign var="remainQty" value=$item["product_quantity"] }
                             {else if empty($capturedItems) || !isset($capturedItems[$item["product_id"]]) }
                                 {assign var="remainQty" value=0}
                             {else if !empty($refundedItems) && isset($refundedItems[$item["product_id"]]) }
