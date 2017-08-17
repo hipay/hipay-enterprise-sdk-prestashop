@@ -12,7 +12,7 @@
  */
 
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/HipayDBQuery.php');
 
 /**
  * Handle category and carrier mapping

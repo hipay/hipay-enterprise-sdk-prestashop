@@ -13,8 +13,8 @@
 
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
-require_once(dirname(__FILE__) . '/../../helper/hipayMapper.php');
-require_once(dirname(__FILE__) . '/../../helper/hipayHelper.php');
+require_once(dirname(__FILE__) . '/../../helper/HipayMapper.php');
+require_once(dirname(__FILE__) . '/../../helper/HipayHelper.php');
 
 /**
  *

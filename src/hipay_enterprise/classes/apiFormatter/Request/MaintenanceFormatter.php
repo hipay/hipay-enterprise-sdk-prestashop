@@ -12,9 +12,9 @@
  */
 require_once(dirname(__FILE__).'/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../Cart/CartMaintenanceFormatter.php');
-require_once(dirname(__FILE__).'/../../helper/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/../../helper/hipayHelper.php');
-require_once(dirname(__FILE__).'/../../helper/hipayOrderMessage.php');
+require_once(dirname(__FILE__).'/../../helper/HipayDBQuery.php');
+require_once(dirname(__FILE__).'/../../helper/HipayHelper.php');
+require_once(dirname(__FILE__).'/../../helper/HipayOrderMessage.php');
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 /**

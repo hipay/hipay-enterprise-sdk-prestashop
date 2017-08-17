@@ -12,10 +12,10 @@
  */
 
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/hipayMaintenanceData.php');
-require_once(dirname(__FILE__).'/hipayHelper.php');
-require_once(dirname(__FILE__).'/hipayOrderMessage.php');
+require_once(dirname(__FILE__).'/HipayDBQuery.php');
+require_once(dirname(__FILE__).'/HipayMaintenanceData.php');
+require_once(dirname(__FILE__).'/HipayHelper.php');
+require_once(dirname(__FILE__).'/HipayOrderMessage.php');
 require_once(dirname(__FILE__).'/HipayMail.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;

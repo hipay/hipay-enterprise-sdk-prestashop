@@ -13,7 +13,7 @@
 
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
-require_once(dirname(__FILE__).'/../../helper/hipayConfig.php');
+require_once(dirname(__FILE__).'/../../helper/HipayConfig.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 use HiPay\Fullservice\Gateway\Request\PaymentMethod\CardTokenPaymentMethod;

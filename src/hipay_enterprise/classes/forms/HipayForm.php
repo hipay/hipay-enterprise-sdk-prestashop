@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/hipayFormInput.php');
+require_once(dirname(__FILE__) . '/HipayFormInput.php');
 require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../translations/HipayStrings.php');
 

@@ -12,8 +12,8 @@
  */
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../ApiFormatterInterface.php');
-require_once(dirname(__FILE__).'/../../helper/hipayMapper.php');
-require_once(dirname(__FILE__).'/../../helper/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/../../helper/HipayMapper.php');
+require_once(dirname(__FILE__).'/../../helper/HipayDBQuery.php');
 
 /**
  *

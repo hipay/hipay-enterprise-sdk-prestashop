@@ -15,7 +15,7 @@ require_once(dirname(__FILE__).'/../apiFormatter/Request/HostedPaymentFormatter.
 require_once(dirname(__FILE__).'/../apiFormatter/Request/DirectPostFormatter.php');
 require_once(dirname(__FILE__).'/../apiFormatter/Request/MaintenanceFormatter.php');
 require_once(dirname(__FILE__).'/../exceptions/GatewayException.php');
-require_once(dirname(__FILE__).'/../helper/hipayMaintenanceData.php');
+require_once(dirname(__FILE__).'/../helper/HipayMaintenanceData.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
 
 /**

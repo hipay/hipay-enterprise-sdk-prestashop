@@ -11,8 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/../../classes/helper/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/../../classes/helper/hipayHelper.php');
+require_once(dirname(__FILE__).'/../../classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
 
 /**

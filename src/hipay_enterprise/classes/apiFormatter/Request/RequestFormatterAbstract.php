@@ -13,7 +13,7 @@
 require_once(dirname(__FILE__).'/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__).'/../Info/CustomerShippingInfoFormatter.php');
-require_once(dirname(__FILE__).'/../../helper/hipayHelper.php');
+require_once(dirname(__FILE__).'/../../helper/HipayHelper.php');
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;

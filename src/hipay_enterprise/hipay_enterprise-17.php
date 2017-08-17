@@ -12,8 +12,8 @@
  */
 
 require_once(dirname(__FILE__).'/classes/apiCaller/ApiCaller.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayHelper.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayHelper.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 

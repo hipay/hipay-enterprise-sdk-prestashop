@@ -13,7 +13,7 @@
 
 require_once(dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/../../classes/helper/hipayFormControl.php');
+require_once(dirname(__FILE__).'/../../classes/helper/HipayFormControl.php');
 
 /**
  * Class Hipay_enterpriseRedirectlocalModuleFrontController

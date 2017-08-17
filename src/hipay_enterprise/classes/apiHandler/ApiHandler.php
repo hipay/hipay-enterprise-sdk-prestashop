@@ -16,8 +16,8 @@ require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatte
 require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php');
 require_once(dirname(__FILE__).'/../apiFormatter/Info/DeliveryShippingInfoFormatter.php');
 require_once(dirname(__FILE__).'/../apiFormatter/Cart/CartFormatter.php');
-require_once(dirname(__FILE__).'/../helper/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/../helper/hipayHelper.php');
+require_once(dirname(__FILE__).'/../helper/HipayDBQuery.php');
+require_once(dirname(__FILE__).'/../helper/HipayHelper.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;

@@ -839,11 +839,11 @@ if (_PS_VERSION_ >= '1.7') {
 
 require_once(dirname(__FILE__).'/classes/helper/HipayLogs.php');
 require_once(dirname(__FILE__).'/classes/helper/hipayConfig.php');
-require_once(dirname(__FILE__).'/classes/forms/hipayForm.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayMapper.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayHelper.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayOrderStatus.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayFormControl.php');
+require_once(dirname(__FILE__).'/classes/forms/HipayForm.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayMapper.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayOrderStatus.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayFormControl.php');
 require_once(dirname(__FILE__).'/classes/helper/HipayConfigFormHandler.php');
