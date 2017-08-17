@@ -17,6 +17,7 @@ require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/GenericPaymentMet
 require_once(dirname(__FILE__).'/../apiFormatter/Info/DeliveryShippingInfoFormatter.php');
 require_once(dirname(__FILE__).'/../apiFormatter/Cart/CartFormatter.php');
 require_once(dirname(__FILE__).'/../tools/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/../tools/hipayHelper.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;
@@ -410,7 +411,9 @@ class Apihandler
     $deliveryCountry, $currency
     )
     {
-        $creditCard  = $this->module->getActivatedPaymentByCountryAndCurrency(
+        $creditCard  = HipayHelper::getActivatedPaymentByCountryAndCurrency(
+            $this->module,
+            $this->configHipay,
             "credit_card",
             $deliveryCountry,
             $currency

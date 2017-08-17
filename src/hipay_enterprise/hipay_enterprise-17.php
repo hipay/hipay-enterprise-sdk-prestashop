@@ -13,6 +13,7 @@
 
 require_once(dirname(__FILE__).'/classes/helper/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
+require_once(dirname(__FILE__).'/classes/helper/tools/hipayHelper.php');
 require_once(dirname(__FILE__).'/translations/HipayStrings.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
@@ -93,7 +94,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
 
             $paymentOptions        = array();
-            $sortedPaymentProducts = $this->getSortedActivatedPaymentByCountryAndCurrency(
+            $sortedPaymentProducts = HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
+                $this,
+                $this->hipayConfigTool->getConfigHipay(),
                 $country,
                 $currency,
                 $params['cart']->getOrderTotal()

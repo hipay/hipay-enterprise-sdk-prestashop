@@ -60,9 +60,7 @@ class HipayHelper
     {
         $context                    = Context::getContext();
         $cart                       = new Cart($context->cookie->id_cart);
-        unset($context->cookie->id_cart,
-            $cart,
-            $context->cookie->checkedTOS);
+        unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
         $context->cookie->update();
@@ -160,28 +158,21 @@ class HipayHelper
     public static function slugify($text)
     {
         // replace non letter or digits by -
-        $text = preg_replace('#[^\\pL\d]+#u',
-            '-',
-            $text);
+        $text = preg_replace('#[^\\pL\d]+#u', '-', $text);
 
         // trim
-        $text = trim($text,
-            '-');
+        $text = trim($text, '-');
 
         // transliterate
         if (function_exists('iconv')) {
-            $text = iconv('utf-8',
-                'us-ascii//TRANSLIT',
-                $text);
+            $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
         }
 
         // lowercase
         $text = Tools::strtolower($text);
 
         // remove unwanted characters
-        $text = preg_replace('#[^-\w]+#',
-            '',
-            $text);
+        $text = preg_replace('#[^-\w]+#', '', $text);
 
         if (empty($text)) {
             return 'n-a';
@@ -197,10 +188,8 @@ class HipayHelper
     public static function getAdminUrl()
     {
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $admin       = explode(DIRECTORY_SEPARATOR,
-                _PS_ADMIN_DIR_);
-            $adminFolder = array_pop((array_slice($admin,
-                    -1)));
+            $admin       = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
+            $adminFolder = array_pop((array_slice($admin, -1)));
             $adminUrl    = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder.'/';
         } else {
             $adminUrl = '';
@@ -242,12 +231,8 @@ class HipayHelper
      */
     public static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
     {
-        $redirectUrl404 = $context->link->getModuleLink(
-            $moduleInstance->name,
-            'exception',
-            array('status_error' => 500),
-            true
-        );
+        $redirectUrl404 = $context->link->getModuleLink($moduleInstance->name, 'exception',
+                                                        array('status_error' => 500), true);
 
         if (_PS_VERSION_ >= '1.7') {
             Tools::redirect($redirectUrl404);
@@ -260,10 +245,7 @@ class HipayHelper
                     'status_error_oc' => '200',
                     'cart_id' => $cart->id,
                     'savedCC' => $savedCC,
-                    'amount' => $cart->getOrderTotal(
-                        true,
-                        Cart::BOTH
-                    ),
+                    'amount' => $cart->getOrderTotal(true, Cart::BOTH),
                     'confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay()
                 )
             );
@@ -292,5 +274,83 @@ class HipayHelper
     {
         $context->cookie->__set('hipay_errors', '');
         $context->cookie->__set('hipay_success', '');
+    }
+
+    /**
+     * Get sorted and filtered available payment methods
+     * @param type $country
+     * @param type $currency
+     * @param type $orderTotal
+     * @return type
+     */
+    public static function getSortedActivatedPaymentByCountryAndCurrency($module, $configHipay, $country, $currency,
+                                                                         $orderTotal = 1)
+    {
+        $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
+        $activatedCreditCard["credit_card"]["products"]      = self::getActivatedPaymentByCountryAndCurrency(
+                $module, $configHipay, "credit_card", $country, $currency, $orderTotal
+        );
+
+        $activatedLocalPayment = self::getActivatedPaymentByCountryAndCurrency($module, $configHipay, "local_payment",
+                                                                               $country, $currency, $orderTotal);
+
+        $paymentProducts = array_merge($activatedCreditCard, $activatedLocalPayment);
+
+        uasort($paymentProducts, array("HipayHelper", "cmpPaymentProduct"));
+
+        return $paymentProducts;
+    }
+
+    /**
+     * return an array of payment methods (set in BO configuration) for the customer country and currency
+     * @param Country $country
+     * @param Currency $currency
+     * @return array
+     */
+    public static function getActivatedPaymentByCountryAndCurrency($module, $configHipay, $paymentMethodType, $country,
+                                                                   $currency, $orderTotal = 1)
+    {
+        $context = Context::getContext();
+        $activatedPayment = array();
+        foreach ($configHipay["payment"][$paymentMethodType] as $name => $settings) {
+            if ($settings["activated"] &&
+                (empty($settings["countries"]) || in_array(
+                    $country->iso_code, $settings["countries"]
+                )) &&
+                (empty($settings["currencies"]) || in_array(
+                    $currency->iso_code, $settings["currencies"]
+                )) &&
+                $orderTotal >= $settings["minAmount"]["EUR"] && ($orderTotal <= $settings["maxAmount"]["EUR"] || !$settings["maxAmount"]["EUR"])
+            ) {
+                if ($paymentMethodType == "local_payment") {
+                    if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE || Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM
+                        || !$settings["forceBasket"]
+                    ) {
+                        $activatedPayment[$name]                   = $settings;
+                        $activatedPayment[$name]["link"]           = $context->link->getModuleLink(
+                            $module->name, 'redirectlocal', array("method" => $name), true
+                        );
+                        $activatedPayment[$name]['payment_button'] = $module->getPath().'views/img/'.$settings["logo"];
+                    }
+                } else {
+                    $activatedPayment[$name] = $settings;
+                }
+            }
+        }
+        return $activatedPayment;
+    }
+
+    /**
+     * sorting function for payment products
+     * @param type $a
+     * @param type $b
+     * @return int
+     */
+    private static function cmpPaymentProduct($a, $b)
+    {
+        if ($a["frontPosition"] == $b["frontPosition"]) {
+            return 0;
+        }
+        return ($a["frontPosition"] < $b["frontPosition"]) ? -1 : 1;
     }
 }
