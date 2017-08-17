@@ -116,8 +116,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             )
                         )
                     );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17'
-                                : '16').'paymentFormIframe.tpl';
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/paymentFormIframe-17'
+                                : 'paymentFormIframe-16').'.tpl';
                 }
                 break;
             case Apihandler::DIRECTPOST:
@@ -144,7 +144,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             'methodFields' => $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"]
                         )
                     );
-                    $path = 'paymentLocalForm16.tpl';
+                    $path = 'payment/ps16/paymentLocalForm-16.tpl';
                 }
                 break;
             default:
@@ -193,7 +193,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                         'formErrors' => $errors
                     )
                 );
-                $path = 'paymentLocalForm16.tpl';
+                $path = 'payment/ps16/paymentLocalForm16.tpl';
                 return $path;
             }
         }

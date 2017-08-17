@@ -177,7 +177,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 )
             );
         }
-        $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/paymentLocalForm17.tpl');
+        $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/payment/ps17/paymentLocalForm-17.tpl');
 
         $newOption->setCallToActionText($this->l('Pay by')." ".$paymentProduct["displayName"])
             ->setAction(
@@ -252,7 +252,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         )
                     );
 
-                    $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
+                    $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/payment/ps17/paymentForm-17.tpl');
                     $newOption   = new PaymentOption();
                     $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
                         ->setAdditionalInformation("")

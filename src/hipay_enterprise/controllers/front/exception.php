@@ -23,8 +23,8 @@ require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
  */
 class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontController
 {
-    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/exception17.tpl';
-    const PATH_TEMPLATE_PS_16 =  'paymentReturn/exception.tpl';
+    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/ps17/exception-17.tpl';
+    const PATH_TEMPLATE_PS_16 =  'paymentReturn/ps16/exception-16.tpl';
 
 
     /**

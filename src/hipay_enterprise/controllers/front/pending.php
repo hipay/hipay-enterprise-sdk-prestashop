@@ -23,8 +23,8 @@ require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
  */
 class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
 {
-    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/pending17.tpl';
-    const PATH_TEMPLATE_PS_16 =  'paymentReturn/pending.tpl';
+    const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/ps17/pending-17.tpl';
+    const PATH_TEMPLATE_PS_16 =  'paymentReturn/ps16/pending-16.tpl';
 
     /**
      * @see FrontController::postProcess()

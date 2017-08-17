@@ -238,9 +238,9 @@ class Hipay_enterprise extends PaymentModule
                 )
             );
             if (_PS_VERSION_ >= '1.7') {
-                $path = 'views/templates/hook/my-account-17.tpl';
+                $path = 'views/templates/hook/ps17/my-account-17.tpl';
             } else {
-                $path = 'views/templates/hook/my-account-16.tpl';
+                $path = 'views/templates/hook/ps16/my-account-16.tpl';
             }
 
             return $this->display(

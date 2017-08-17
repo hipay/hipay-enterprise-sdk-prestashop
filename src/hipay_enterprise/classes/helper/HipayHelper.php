@@ -272,7 +272,7 @@ class HipayHelper
             );
         }
 
-        return 'paymentFormApi16.tpl';
+        return 'paymentFormApi-16.tpl';
     }
 
     /**

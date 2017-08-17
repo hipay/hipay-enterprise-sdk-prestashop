@@ -87,7 +87,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             )
                         )
                     );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/17' : '16').'paymentFormIframe.tpl';
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/payment/ps17/paymentFormIframe-17' : 'payment/ps16/paymentFormIframe-16').'.tpl';
                 }
                 break;
             case Apihandler::DIRECTPOST:
@@ -115,7 +115,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                         )
                     );
-                    $path = 'paymentFormApi16.tpl';
+                    $path = 'paymentFormApi-16.tpl';
                 }
                 break;
             default:
@@ -169,7 +169,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                 )
             );
-            return 'paymentFormApi16.tpl';
+            return 'paymentFormApi-16.tpl';
         }
     }
 
