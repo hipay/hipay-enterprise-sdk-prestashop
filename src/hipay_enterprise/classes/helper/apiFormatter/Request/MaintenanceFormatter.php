@@ -43,7 +43,10 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->order                 = (isset($params["order"])) ? new Order($params["order"]) : false;
         $this->operation             = (isset($params["operation"])) ? $params["operation"] : false;
         $this->db                    = new HipayDBQuery($module);
+        $this->context               = Context::getContext();
         $this->cart                  = ($this->order) ? new Cart($this->order->id_cart) : false;
+        $currency                    = ($this->order) ?new Currency($this->cart->id_currency): null;
+        $this->context->currency     = $currency;
         $this->maintenanceData       = $maintenanceData;
     }
 
@@ -67,21 +70,19 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
     {
         parent::mapRequest($maintenance);
         $this->setCustomData(
-            $maintenance,
-            $this->cart,
-            $this->params
+            $maintenance, $this->cart, $this->params
         );
 
         $maintenance->amount    = $this->amount;
         $maintenance->operation = $this->operation;
-        
+
         // retrieve number of capture or refund request
         $transactionAttempt = $this->maintenanceData->getNbOperationAttempt(
-            $this->operation,
-            $this->order->id
+            $this->operation, $this->order->id
         );
 
-        $maintenance->operation_id = HipayHelper::generateOperationId($this->order, $this->operation, $transactionAttempt);
+        $maintenance->operation_id = HipayHelper::generateOperationId($this->order, $this->operation,
+                                                                      $transactionAttempt);
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
             $params = array("products" => array(), "discounts" => $this->cart->getCartRules(),
@@ -99,9 +100,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             }
 
             $cart = new CartMaintenanceFormatter(
-                $this->module,
-                $params,
-                $this->maintenanceData
+                $this->module, $params, $this->maintenanceData
             );
 
             $maintenance->basket = $cart->generate();
@@ -113,8 +112,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             }
 
             $maintenance->amount = Tools::ps_round(
-                    $maintenance->amount,
-                    3
+                    $maintenance->amount, 3
             );
             $maintenance->basket = $maintenance->basket->toJson();
         }
