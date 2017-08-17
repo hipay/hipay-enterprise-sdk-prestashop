@@ -83,7 +83,7 @@ class HipayLogs
      */
     public function logInfos($msg)
     {
-        if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
+        if ($this->module->hipayConfigTool->getPaymentGlobal()["log_infos"]) {
             if (is_array($msg)) {
                 $this->writeLogs(self::LOG_HIPAY_INFOS,
                                  print_r(

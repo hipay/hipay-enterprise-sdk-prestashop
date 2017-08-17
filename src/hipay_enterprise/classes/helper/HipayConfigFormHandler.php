@@ -48,12 +48,12 @@ class HipayConfigFormHandler
 
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["account"]["global"] as $key => $value) {
+            foreach ($this->module->hipayConfigTool->getAccountGlobal() as $key => $value) {
                 $fieldValue                    = Tools::getValue($key);
                 $accountConfig["global"][$key] = $fieldValue;
             }
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["account"]["sandbox"] as $key => $value) {
+            foreach ($this->module->hipayConfigTool->getAccountSandbox() as $key => $value) {
                 if (($key == "api_username_sandbox" && Tools::getValue("api_username_sandbox") && !Tools::getValue("api_password_sandbox"))
                     || ($key == "api_password_sandbox" && Tools::getValue("api_password_sandbox") && !Tools::getValue("api_username_sandbox"))
                 ) {
@@ -83,7 +83,7 @@ class HipayConfigFormHandler
                 }
             }
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["account"]["production"] as $key => $value) {
+            foreach ($this->module->hipayConfigTool->getAccountProduction() as $key => $value) {
                 if (($key == "api_username_production" && Tools::getValue("api_username_production") && !Tools::getValue("api_password_production"))
                     || ($key == "api_password_production" && Tools::getValue("api_password_production") && !Tools::getValue("api_username_production"))
                 ) {
@@ -147,13 +147,13 @@ class HipayConfigFormHandler
             $accountConfig = array(
                 "global" => array(),
                 // Not cool but works
-                "credit_card" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
-                "local_payment" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
+                "credit_card" => $this->module->hipayConfigTool->getPaymentCreditCard(),
+                "local_payment" => $this->module->hipayConfigTool->getLocalPayment()
             );
 
             //requirement : input name in tpl must be the same that name of indexes in $this->module->configHipay
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
+            foreach ($this->module->hipayConfigTool->getPaymentGlobal() as $key => $value) {
                 if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
                     $fieldValue = $value;
                 } elseif ($key == "css_url" && Tools::getValue("css_url") && !HipayFormControl::checkHttpsUrl(Tools::getValue("css_url"))) {
@@ -208,9 +208,9 @@ class HipayConfigFormHandler
         try {
             // saving all array "payemnt" "credit_card" in $configHipay
             $accountConfig = array(
-                "global" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"],
+                "global" => $this->module->hipayConfigTool->getPaymentGlobal(),
                 "credit_card" => array(),
-                "local_payment" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
+                "local_payment" => $this->module->hipayConfigTool->getLocalPayment()
             );
 
             $keySaved = array(
@@ -230,7 +230,7 @@ class HipayConfigFormHandler
 
             //requirement : input name in tpl must be the same that name of indexes in $this->module->configHipay
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
+            foreach ($this->module->hipayConfigTool->getPaymentCreditCard() as $card => $conf) {
                 foreach ($conf as $key => $value) {
                     if (in_array($key, $keySaved)) {
                         $fieldValue = Tools::getValue($card."_".$key);
@@ -242,7 +242,7 @@ class HipayConfigFormHandler
                             }
                         }
                     } else {
-                        $fieldValue = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$card][$key];
+                        $fieldValue = $this->module->hipayConfigTool->getPaymentCreditCard()[$card][$key];
                     }
 
                     $accountConfig["credit_card"][$card][$key] = $fieldValue;
@@ -276,8 +276,8 @@ class HipayConfigFormHandler
         try {
             // saving all array "payemnt" "local_payment" in $configHipay
             $accountConfig = array(
-                "global" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["global"],
-                "credit_card" => $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
+                "global" => $this->module->hipayConfigTool->getPaymentGlobal(),
+                "credit_card" => $this->module->hipayConfigTool->getPaymentCreditCard(),
                 "local_payment" => array()
             );
 
@@ -294,7 +294,7 @@ class HipayConfigFormHandler
                 "frontPosition"
             );
 
-            foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
+            foreach ($this->module->hipayConfigTool->getLocalPayment() as $card => $conf) {
                 foreach ($conf as $key => $value) {
                     //prevent specific fields from being updated
                     if (in_array(
@@ -309,7 +309,7 @@ class HipayConfigFormHandler
                             }
                         }
                     } else {
-                        $fieldValue = $this->module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
+                        $fieldValue = $this->module->hipayConfigTool->getLocalPayment()[$card][$key];
                     }
                     $accountConfig["local_payment"][$card][$key] = $fieldValue;
                 }
@@ -351,7 +351,7 @@ class HipayConfigFormHandler
                 $accountConfig = array();
 
                 //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-                foreach ($this->module->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
+                foreach ($this->module->hipayConfigTool->getFraud() as $key => $value) {
                     $fieldValue          = Tools::getValue($key);
                     $accountConfig[$key] = $fieldValue;
                 }

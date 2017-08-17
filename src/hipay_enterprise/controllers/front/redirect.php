@@ -67,9 +67,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $savedCC = $this->ccToken->getSavedCC($cart->id_customer);
 
         //Displaying different forms depending of the operating mode chosen in the BO configuration
-        switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
+        switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]) {
             case Apihandler::HOSTEDPAGE:
-                if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
+                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $this->apiHandler->handleCreditCard(Apihandler::HOSTEDPAGE,
                                                         array(
                         "method" => "credit_card",
@@ -221,7 +221,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 );
 
                 if (!$customer->is_guest && Tools::isSubmit('saveTokenHipay')) {
-                    $configCC = $this->module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$selectedCC];
+                    $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[$selectedCC];
 
                     if (isset($configCC['recurring']) && $configCC['recurring']) {
                         $this->ccToken->saveCCToken(
@@ -264,14 +264,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     private function setAuthenticationIndicator($cart)
     {
-        switch ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["activate_3d_secure"]) {
+        switch ($this->module->hipayConfigTool->getPaymentGlobal()["activate_3d_secure"]) {
             case HipayConfig::THREE_D_S_DISABLED:
                 return 0;
             case HipayConfig::THREE_D_S_TRY_ENABLE_ALL:
                 return 1;
             case HipayConfig::THREE_D_S_TRY_ENABLE_RULES:
                 $cartSummary = $cart->getSummaryDetails();
-                foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["3d_secure_rules"] as $rule) {
+                foreach ($this->module->hipayConfigTool->getPaymentGlobal()["3d_secure_rules"] as $rule) {
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
                             (int) $cartSummary[$rule["field"]], html_entity_decode($rule["operator"]),
                                                                                    (int) $rule["value"]
@@ -286,7 +286,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case HipayConfig::THREE_D_S_FORCE_ENABLE_RULES:
                 $cartSummary = $cart->getSummaryDetails();
 
-                foreach ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["3d_secure_rules"] as $rule) {
+                foreach ($this->module->hipayConfigTool->getPaymentGlobal()["3d_secure_rules"] as $rule) {
                     if (isset($cartSummary[$rule["field"]]) && !$this->criteriaMet(
                             (int) $cartSummary[$rule["field"]], html_entity_decode($rule["operator"]),
                                                                                    (int) $rule["value"]

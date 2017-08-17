@@ -10,7 +10,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
 require_once(dirname(__FILE__).'/../apiHandler/ApiHandler.php');
 
 /**
@@ -53,6 +52,48 @@ class HipayConfig
         return $this->configHipay;
     }
 
+    public function getPaymentGlobal()
+    {
+
+        return $this->getConfigHipay()["payment"]["global"];
+    }
+
+    public function getPaymentCreditCard()
+    {
+
+        return $this->getConfigHipay()["payment"]["credit_card"];
+    }
+
+    public function getLocalPayment()
+    {
+
+        return $this->getConfigHipay()["payment"]["local_payment"];
+    }
+
+    public function getAccountGlobal()
+    {
+
+        return $this->getConfigHipay()["account"]["global"];
+    }
+
+    public function getAccountSandbox()
+    {
+
+        return $this->getConfigHipay()["account"]["sandbox"];
+    }
+
+    public function getAccountProduction()
+    {
+
+        return $this->getConfigHipay()["account"]["production"];
+    }
+
+    public function getFraud()
+    {
+
+        return $this->getConfigHipay()["fraud"];
+    }
+
     /**
      *  save a specific key of the module config
      * @param: string $key
@@ -69,32 +110,20 @@ class HipayConfig
         // the config is stacked in JSON
         $confHipay = Tools::jsonDecode(
                 Configuration::get(
-                    'HIPAY_CONFIG',
-                    null,
-                    $id_shop_group,
-                    $id_shop
-                ),
-                true
+                    'HIPAY_CONFIG', null, $id_shop_group, $id_shop
+                ), true
         );
 
         $confHipay[$key] = $value;
         //$confHipay = array_replace_recursive($confHipay,$value);
         if (Configuration::updateValue(
-                'HIPAY_CONFIG',
-                Tools::jsonEncode($confHipay),
-                false,
-                $id_shop_group,
-                $id_shop
+                'HIPAY_CONFIG', Tools::jsonEncode($confHipay), false, $id_shop_group, $id_shop
             )
         ) {
             $this->configHipay = Tools::jsonDecode(
                     Configuration::get(
-                        'HIPAY_CONFIG',
-                        null,
-                        $id_shop_group,
-                        $id_shop
-                    ),
-                    true
+                        'HIPAY_CONFIG', null, $id_shop_group, $id_shop
+                    ), true
             );
             return true;
         } else {
@@ -112,12 +141,8 @@ class HipayConfig
         $id_shop_group     = (int) Shop::getContextShopGroupID();
         $this->configHipay = Tools::jsonDecode(
                 Configuration::get(
-                    'HIPAY_CONFIG',
-                    null,
-                    $id_shop_group,
-                    $id_shop
-                ),
-                true
+                    'HIPAY_CONFIG', null, $id_shop_group, $id_shop
+                ), true
         );
 
         // if config exist but empty, init new object for configHipay
@@ -133,28 +158,26 @@ class HipayConfig
     {
         $configFields = array();
 
-        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
+        $configFields["payment"]["credit_card"]   = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 
         // we update only new payment method
         $localkeys = array_diff(
             array_keys($configFields["payment"]["local_payment"]),
-            array_keys($this->configHipay["payment"]["local_payment"])
+                       array_keys($this->configHipay["payment"]["local_payment"])
         );
-        $cckeys = array_diff(
+        $cckeys    = array_diff(
             array_keys($configFields["payment"]["credit_card"]),
-            array_keys($this->configHipay["payment"]["credit_card"])
+                       array_keys($this->configHipay["payment"]["credit_card"])
         );
 
         $this->module->getLogs()->logInfos("# Update Config");
         $this->module->getLogs()->logInfos(
             print_r(
-                $localkeys,
-                true
-            ) .
+                $localkeys, true
+            ).
             print_r(
-                $cckeys,
-                true
+                $cckeys, true
             )
         );
 
@@ -262,28 +285,19 @@ class HipayConfig
         $id_shop       = (int) $this->context->shop->id;
         $id_shop_group = (int) Shop::getContextShopGroupID();
         if (Configuration::updateValue(
-                'HIPAY_CONFIG',
-                Tools::jsonEncode($for_json_hipay),
-                false,
-                $id_shop_group,
-                $id_shop
+                'HIPAY_CONFIG', Tools::jsonEncode($for_json_hipay), false, $id_shop_group, $id_shop
             )
         ) {
             $this->configHipay = Tools::jsonDecode(
                     Configuration::get(
-                        'HIPAY_CONFIG',
-                        null,
-                        $id_shop_group,
-                        $id_shop
-                    ),
-                    true
+                        'HIPAY_CONFIG', null, $id_shop_group, $id_shop
+                    ), true
             );
 
 
             $this->module->getLogs()->logInfos(
                 print_r(
-                    $this->configHipay,
-                    true
+                    $this->configHipay, true
                 )
             );
 
@@ -305,10 +319,8 @@ class HipayConfig
 
         foreach ($files as $file) {
             $creditCard = array_merge(
-                $creditCard,
-                $this->addPaymentConfig(
-                    $file,
-                    $folderName
+                $creditCard, $this->addPaymentConfig(
+                    $file, $folderName
                 )
             );
         }
@@ -328,13 +340,11 @@ class HipayConfig
         $creditCard = array();
 
         if (preg_match(
-                '/(.*)\.json/',
-                $file
+                '/(.*)\.json/', $file
             ) == 1
         ) {
             $json                      = Tools::jsonDecode(
-                    Tools::file_get_contents($this->jsonFilesPath.$folderName.$file),
-                    true
+                    Tools::file_get_contents($this->jsonFilesPath.$folderName.$file), true
             );
             $creditCard[$json["name"]] = $json["config"];
         }

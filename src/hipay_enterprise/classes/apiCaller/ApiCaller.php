@@ -160,21 +160,21 @@ class ApiCaller
      */
     private static function createGatewayClient($moduleInstance, $moto = false)
     {
-        $sandbox = $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"];
+        $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
 
-        if ($moto && !empty($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_username_sandbox"])
-            && !empty($moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_password_sandbox"])) {
+        if ($moto && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"])
+            && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"])) {
 
-            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_username_sandbox"]
-                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_moto_username_production"];
-            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_moto_password_sandbox"]
-                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_moto_password_production"];
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"];
         } else {
 
-            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_username_sandbox"]
-                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_username_production"];
-            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["sandbox"]["api_password_sandbox"]
-                    : $moduleInstance->hipayConfigTool->getConfigHipay()["account"]["production"]["api_password_production"];
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_username_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getAccountProduction()["api_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_password_sandbox"]
+                    : $moduleInstance->hipayConfigTool->getAccountProduction()["api_password_production"];
         }
 
         $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;

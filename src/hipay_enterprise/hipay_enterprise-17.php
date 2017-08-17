@@ -162,7 +162,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'localPaymentName' => $name
             )
         );
-        if (empty($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$name]["additionalFields"]) || $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]
+        if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) || $this->hipayConfigTool->getPaymentGlobal()["operating_mode"]
             !== 'api' || (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"] )
         ) {
             $this->context->smarty->assign(
@@ -173,8 +173,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
         } else {
             $this->context->smarty->assign(
                 array(
-                    'methodFields' => $this->hipayConfigTool->getConfigHipay(
-                    )["payment"]["local_payment"][$name]["additionalFields"]["formFields"]
+                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]["formFields"]
                 )
             );
         }
@@ -211,10 +210,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
     {
         if (!empty($paymentProduct["products"])) {
             //displaying different forms depending of the operating mode chosen in the BO configuration
-            switch ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["operating_mode"]) {
+            switch ($this->hipayConfigTool->getPaymentGlobal()["operating_mode"]) {
                 case "hosted_page":
                     $newOption = new PaymentOption();
-                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
+                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
                         ->setAction(
                             $this->context->link->getModuleLink(
                                 $this->name,
@@ -223,7 +222,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 true
                             )
                     );
-                    if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["display_hosted_page"] == "redirect") {
+                    if ($this->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                         $newOption->setAdditionalInformation("<p>".$params['translation_checkout']."</p>");
                     }
                     $paymentOptions[] = $newOption;
@@ -255,7 +254,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                     $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/hook/paymentForm17.tpl');
                     $newOption   = new PaymentOption();
-                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"])
+                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
                         ->setAdditionalInformation("")
                         ->setModuleName("credit_card")
                         ->setForm($paymentForm);

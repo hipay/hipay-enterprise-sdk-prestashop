@@ -36,11 +36,11 @@ class HipayHelper
     {
         if (!$cardBrand) {
             if ($paymentProduct && $paymentProduct == 'credit_card') {
-                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["global"]["ccDisplayName"];
-            } else if ($paymentProduct && isset($module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
-                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct]["displayName"];
-            } elseif ($paymentProduct && isset($module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
-                $paymentProduct = $module->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct]["displayName"];
+                $paymentProduct = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
+            } else if ($paymentProduct && isset($module->hipayConfigTool->getLocalPayment()[$paymentProduct])) {
+                $paymentProduct = $module->hipayConfigTool->getLocalPayment()[$paymentProduct]["displayName"];
+            } elseif ($paymentProduct && isset($module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct])) {
+                $paymentProduct = $module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["displayName"];
             }
         } else {
             $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));

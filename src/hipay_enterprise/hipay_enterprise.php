@@ -229,7 +229,7 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookCustomerAccount()
     {
-        if ($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["card_token"]) {
+        if ($this->hipayConfigTool->getPaymentGlobal()["card_token"]) {
             $this->smarty->assign(
                 array(
                     "link" => $this->context->link->getModuleLink(
@@ -299,7 +299,7 @@ class Hipay_enterprise extends PaymentModule
             )
         );
         $this->smarty->assign(
-            'hipay_prod', !(bool) $this->hipayConfigTool->getConfigHipay()["account"]["global"]["sandbox_mode"]
+            'hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()["sandbox_mode"]
         );
 
         return $this->display(
@@ -515,7 +515,7 @@ class Hipay_enterprise extends PaymentModule
             $partiallyRefunded = true;
         }
 
-        if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]) && $this->hipayConfigTool->getConfigHipay()["payment"]["global"]["capture_mode"]
+        if (isset($this->hipayConfigTool->getPaymentGlobal()["capture_mode"]) && $this->hipayConfigTool->getPaymentGlobal()["capture_mode"]
             == "manual"
         ) {
             $manualCapture = true;
@@ -581,26 +581,19 @@ class Hipay_enterprise extends PaymentModule
 
         $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
         if ($paymentProduct) {
-            if (isset($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$paymentProduct])) {
-                if (!(bool) $this->hipayConfigTool->getConfigHipay(
-                    )["payment"]["local_payment"][$paymentProduct]["canRefund"]
-                ) {
+            if (isset($this->hipayConfigTool->getLocalPayment()[$paymentProduct])) {
+                if (!(bool) $this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canRefund"]) {
                     $showRefund = false;
                 }
-                if (!(bool) $this->hipayConfigTool->getConfigHipay(
-                    )["payment"]["local_payment"][$paymentProduct]["canManualCapture"]
+                if (!(bool) $this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canManualCapture"]
                 ) {
                     $showCapture = false;
                 }
-            } elseif (isset($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$paymentProduct])) {
-                if (!(bool) $this->hipayConfigTool->getConfigHipay(
-                    )["payment"]["credit_card"][$paymentProduct]["canRefund"]
-                ) {
+            } elseif (isset($this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct])) {
+                if (!(bool) $this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canRefund"]) {
                     $showRefund = false;
                 }
-                if (!(bool) $this->hipayConfigTool->getConfigHipay(
-                    )["payment"]["credit_card"][$paymentProduct]["canManualCapture"]
-                ) {
+                if (!(bool) $this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canManualCapture"]) {
                     $showCapture = false;
                 }
             }
