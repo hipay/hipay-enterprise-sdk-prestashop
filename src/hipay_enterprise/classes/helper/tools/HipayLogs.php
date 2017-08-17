@@ -25,17 +25,15 @@ class HipayLogs
     const LOG_HIPAY_INFOS    = 1;
     const LOG_HIPAY_REQUEST  = 2;
     const LOG_HIPAY_CALLBACK = 3;
-    const DEBUG_KEYS_MASK = '****';
+    const DEBUG_KEYS_MASK    = '****';
 
-    public $enable = true;
+    public $enable           = true;
     private $basePath;
-    private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc','api_password_sandbox',
-        'api_tokenjs_username_sandbox','api_tokenjs_password_publickey_sandbox','api_secret_passphrase_sandbox',
-        'api_password_production','api_tokenjs_username_production',
-        'api_tokenjs_password_publickey_production', 'api_secret_passphrase_production','api_moto_username_production',
-        'api_moto_password_production','api_moto_secret_passphrase_production');
-
-
+    private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc', 'api_password_sandbox',
+        'api_tokenjs_username_sandbox', 'api_tokenjs_password_publickey_sandbox', 'api_secret_passphrase_sandbox',
+        'api_password_production', 'api_tokenjs_username_production',
+        'api_tokenjs_password_publickey_production', 'api_secret_passphrase_production', 'api_moto_username_production',
+        'api_moto_password_production', 'api_moto_secret_passphrase_production');
 
     /**
      * HipayLogs constructor.
@@ -75,8 +73,7 @@ class HipayLogs
      */
     public function logErrors($msg)
     {
-        $this->writeLogs(self::LOG_HIPAY_ERROR,
-            $this->getExecutionContext().':'.$msg);
+        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext().':'.$msg);
     }
 
     /**
@@ -89,15 +86,12 @@ class HipayLogs
         if ($this->module->hipayConfigTool->getConfigHipay()["payment"]["global"]["log_infos"]) {
             if (is_array($msg)) {
                 $this->writeLogs(self::LOG_HIPAY_INFOS,
-                    print_r(
-                        $this->filterDebugData($msg),
-                        true
-                    ));
-            }else {
-                $this->writeLogs(self::LOG_HIPAY_INFOS,
-                    $msg);
+                                 print_r(
+                        $this->filterDebugData($msg), true
+                ));
+            } else {
+                $this->writeLogs(self::LOG_HIPAY_INFOS, $msg);
             }
-
         }
     }
 
@@ -109,9 +103,8 @@ class HipayLogs
     public function logCallback($transaction)
     {
         $this->writeLogs(self::LOG_HIPAY_CALLBACK,
-            print_r(
-                $this->filterDebugData($this->to_array($transaction)),
-                true
+                         print_r(
+                $this->filterDebugData($this->to_array($transaction)), true
         ));
     }
 
@@ -123,10 +116,73 @@ class HipayLogs
     public function logRequest($request)
     {
         $this->writeLogs(self::LOG_HIPAY_REQUEST,
-            print_r(
-                $this->filterDebugData($this->to_array($request)),
-                true
+                         print_r(
+                $this->filterDebugData($this->to_array($request)), true
         ));
+    }
+
+    /**
+     * List log files
+     *
+     * @return string
+     */
+    public function getLogFiles()
+    {
+        // Scan log dir
+        $directory = $this->getBasePath();
+        $files     = scandir($directory, 1);
+
+        // Init array files
+        $error_files    = array();
+        $info_files     = array();
+        $callback_files = array();
+        $request_files  = array();
+        $refund_files   = array();
+
+        // List files
+        foreach ($files as $file) {
+            if (preg_match("/error/i", $file) && count($error_files) < 10) {
+                $error_files[] = $file;
+            }
+            if (preg_match("/callback/i", $file) && count($callback_files) < 10) {
+                $callback_files[] = $file;
+            }
+            if (preg_match("/infos/i", $file) && count($info_files) < 10) {
+                $info_files[] = $file;
+            }
+            if (preg_match("/request/i", $file) && count($request_files) < 10
+            ) {
+                $request_files[] = $file;
+            }
+        }
+
+        return array(
+            'error' => $error_files,
+            'infos' => $info_files,
+            'callback' => $callback_files,
+            'request' => $request_files,
+            'refund' => $refund_files
+        );
+    }
+
+    /**
+     * Display log file
+     * @param type $logFile
+     */
+    public function displayLogFile($logFile)
+    {
+        $path = $this->getBasePath().$logFile;
+
+        if (!file_exists($path)) {
+            http_response_code(404);
+            die('<h1>File not found</h1>');
+            $this->logErrors("Log File not found $path");
+        } else {
+            header('Content-Type: text/plain');
+            $content = Tools::file_get_contents($path);
+            echo $content;
+            die();
+        }
     }
 
     /**
@@ -140,6 +196,53 @@ class HipayLogs
     }
 
     /**
+     * Recursive filter data for privacy data
+     *
+     * @param array $debugData
+     * @return array
+     */
+    protected function filterDebugData(array $debugData)
+    {
+        $debugReplacePrivateDataKeys = array_map('strtolower', $this->privateDataKeys);
+
+        foreach (array_keys($debugData) as $key) {
+            if (in_array(strtolower($key), $debugReplacePrivateDataKeys)) {
+                $debugData[$key] = self::DEBUG_KEYS_MASK;
+            } elseif (is_array($debugData[$key])) {
+                $debugData[$key] = $this->filterDebugData($debugData[$key]);
+            } elseif (is_object($debugData[$key])) {
+                $debugData[$key] = $this->filterDebugData($this->to_array($debugData[$key]));
+            }
+        }
+        return $debugData;
+    }
+
+    /**
+     * Get execution context
+     *
+     * @return Execution
+     */
+    protected function getExecutionContext()
+    {
+        $debug = debug_backtrace();
+        if (isset($debug[2])) {
+            return $debug[2]['class'].':'.$debug[2]['function'];
+        }
+        return null;
+    }
+
+    /**
+     *  Convert Object to Array
+     *
+     * @param $object
+     * @return array
+     */
+    private function to_array($object)
+    {
+        return (array) $object;
+    }
+
+    /**
      * Format log message and write log
      *
      * @param $type string
@@ -149,9 +252,7 @@ class HipayLogs
     private function writeLogs($type, $message)
     {
         $formatted_message = date('Y/m/d - H:i:s').': '.$message."\r\n";
-        return file_put_contents($this->getFilename($type),
-            $formatted_message,
-            FILE_APPEND);
+        return file_put_contents($this->getFilename($type), $formatted_message, FILE_APPEND);
     }
 
     /**
@@ -179,53 +280,5 @@ class HipayLogs
                 break;
         }
         return $this->basePath.date('Y-m-d').'-'.'hipay'.'-'.$filename.'.log';
-    }
-
-    /**
-     * Recursive filter data for privacy data
-     *
-     * @param array $debugData
-     * @return array
-     */
-    protected function filterDebugData(array $debugData)
-    {
-        $debugReplacePrivateDataKeys = array_map('strtolower',
-            $this->privateDataKeys);
-
-        foreach (array_keys($debugData) as $key) {
-            if (in_array(strtolower($key), $debugReplacePrivateDataKeys)) {
-                $debugData[$key] = self::DEBUG_KEYS_MASK;
-            } elseif (is_array($debugData[$key])) {
-                $debugData[$key] = $this->filterDebugData($debugData[$key]);
-            } elseif (is_object($debugData[$key])) {
-                $debugData[$key] = $this->filterDebugData($this->to_array($debugData[$key]));
-            }
-        }
-        return $debugData;
-    }
-
-    /**
-     *  Convert Object to Array
-     *
-     * @param $object
-     * @return array
-     */
-    function to_array($object)
-    {
-        return (array) $object;
-    }
-
-    /**
-     * Get execution context
-     *
-     * @return Execution
-     */
-    protected function getExecutionContext()
-    {
-        $debug = debug_backtrace();
-        if (isset($debug[2])) {
-            return $debug[2]['class'].':'.$debug[2]['function'];
-        }
-        return null;
     }
 }

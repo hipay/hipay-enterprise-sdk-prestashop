@@ -340,6 +340,36 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
+     *
+     * @param type $params
+     * @return type
+     */
+    private function hipayPaymentReturn($params)
+    {
+        // Payment Return for PS1.6
+        if ($this->active == false) {
+            return;
+        }
+        $order = $params['objOrder'];
+        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
+            $this->smarty->assign(
+                'status', 'ok'
+            );
+        }
+        $this->smarty->assign(
+            array(
+                'id_order' => $order->id,
+                'reference' => $order->reference,
+                'params' => $params,
+                'total_to_pay' => Tools::displayPrice(
+                    $params['total_to_pay'], $params['currencyObj'], false
+                ),
+                'shop_name' => $this->context->shop->name,
+            )
+        );
+    }
+
+    /**
      * Display refund and capture blocks in order admin page
      */
     public function hookDisplayAdminOrder()
@@ -679,7 +709,7 @@ class Hipay_enterprise extends PaymentModule
             array(
                 'module_dir' => $this->_path,
                 'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
-                'logs' => $this->getLogFiles(),
+                'logs' => $this->getLogs()->getLogFiles(),
                 'module_url' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite(
                     'AdminModules'
                 ),
@@ -720,18 +750,7 @@ class Hipay_enterprise extends PaymentModule
         //==================================//
         if (Tools::isSubmit('logfile')) {
             $logFile = Tools::getValue('logfile');
-            $path    = $this->logs->getBasePath().$logFile;
-
-            if (!file_exists($path)) {
-                http_response_code(404);
-                die('<h1>File not found</h1>');
-                $this->logs->logErrors("Log File not found $path");
-            } else {
-                header('Content-Type: text/plain');
-                $content = Tools::file_get_contents($path);
-                echo $content;
-                die();
-            }
+            $this->logs->displayLogFile($logFile);
             //==================================//
             //===         ACCOUNT VIEW       ===//
             //==================================//
@@ -1249,50 +1268,6 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
-     * List log files
-     *
-     * @return string
-     */
-    protected function getLogFiles()
-    {
-        // Scan log dir
-        $directory = $this->logs->getBasePath();
-        $files     = scandir($directory, 1);
-
-        // Init array files
-        $error_files    = array();
-        $info_files     = array();
-        $callback_files = array();
-        $request_files  = array();
-        $refund_files   = array();
-
-        // List files
-        foreach ($files as $file) {
-            if (preg_match("/error/i", $file) && count($error_files) < 10) {
-                $error_files[] = $file;
-            }
-            if (preg_match("/callback/i", $file) && count($callback_files) < 10) {
-                $callback_files[] = $file;
-            }
-            if (preg_match("/infos/i", $file) && count($info_files) < 10) {
-                $info_files[] = $file;
-            }
-            if (preg_match("/request/i", $file) && count($request_files) < 10
-            ) {
-                $request_files[] = $file;
-            }
-        }
-
-        return array(
-            'error' => $error_files,
-            'infos' => $info_files,
-            'callback' => $callback_files,
-            'request' => $request_files,
-            'refund' => $refund_files
-        );
-    }
-
-    /**
      * Clear every single merchant account data
      * @return boolean
      */
@@ -1300,36 +1275,6 @@ class Hipay_enterprise extends PaymentModule
     {
         Configuration::deleteByName('HIPAY_CONFIG');
         return true;
-    }
-
-    /**
-     *
-     * @param type $params
-     * @return type
-     */
-    private function hipayPaymentReturn($params)
-    {
-        // Payment Return for PS1.6
-        if ($this->active == false) {
-            return;
-        }
-        $order = $params['objOrder'];
-        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->smarty->assign(
-                'status', 'ok'
-            );
-        }
-        $this->smarty->assign(
-            array(
-                'id_order' => $order->id,
-                'reference' => $order->reference,
-                'params' => $params,
-                'total_to_pay' => Tools::displayPrice(
-                    $params['total_to_pay'], $params['currencyObj'], false
-                ),
-                'shop_name' => $this->context->shop->name,
-            )
-        );
     }
 
     /**
