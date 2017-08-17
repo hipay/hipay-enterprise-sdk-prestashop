@@ -320,7 +320,7 @@ class HipayHelper
     public static function getActivatedPaymentByCountryAndCurrency($module, $configHipay, $paymentMethodType, $country,
                                                                    $currency, $orderTotal = 1)
     {
-        $context = Context::getContext();
+        $context          = Context::getContext();
         $activatedPayment = array();
         foreach ($configHipay["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] &&
@@ -348,6 +348,81 @@ class HipayHelper
             }
         }
         return $activatedPayment;
+    }
+
+    /**
+     * return well formatted authorize credit card payment methods
+     * @return string
+     */
+    public static function getCreditCardProductList($module, $configHipay, $deliveryCountry, $currency)
+    {
+        $creditCard  = self::getActivatedPaymentByCountryAndCurrency($module, $configHipay, "credit_card",
+                                                                     $deliveryCountry, $currency);
+        $productList = join(",", array_keys($creditCard));
+
+        return $productList;
+    }
+
+    /**
+     *
+     * @param type $module
+     * @param type $context
+     * @param type $configHipay
+     * @param type $db
+     * @param type $cart
+     * @return type
+     */
+    public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
+    {
+        $orderId = Order::getOrderByCartId($cart->id);
+
+        if ($cart && (!$orderId || empty($orderId))) {
+            $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
+            
+            HipayHelper::unsetCart();
+
+            $customer = new Customer((int) $cart->id_customer);
+            $shopId   = $cart->id_shop;
+            $shop     = new Shop($shopId);
+            // forced shop
+            Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
+
+            $module->validateOrder(
+                (int) $cart->id, Configuration::get('HIPAY_OS_PENDING'), (float) $cart->getOrderTotal(true),
+                                                                                                      $productName,
+                                                                                                      'Order created by HiPay after success payment.',
+                                                                                                      array(),
+                                                                                                      $context->currency->id,
+                                                                                                      false,
+                                                                                                      $customer->secure_key,
+                                                                                                      $shop
+            );
+
+            // get order id
+            $orderId = $module->currentOrder;
+            $db->releaseSQLLock();
+
+            $captureType = array(
+                "order_id" => $orderId,
+                "type" => $configHipay["payment"]["global"]["capture_mode"]
+            );
+
+            $db->setOrderCaptureType($captureType);
+
+            Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
+
+            $params = http_build_query(
+                array(
+                    'id_cart' => $cart->id,
+                    'id_module' => $module->id,
+                    'id_order' => $orderId,
+                    'key' => $customer->secure_key,
+                )
+            );
+        } else {
+            $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
+        }
+        return Tools::redirect('index.php?controller=order-confirmation&'.$params);
     }
 
     /**

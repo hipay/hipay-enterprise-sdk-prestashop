@@ -838,7 +838,7 @@ if (_PS_VERSION_ >= '1.7') {
 }
 
 require_once(dirname(__FILE__).'/classes/helper/HipayLogs.php');
-require_once(dirname(__FILE__).'/classes/helper/hipayConfig.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayConfig.php');
 require_once(dirname(__FILE__).'/classes/forms/HipayForm.php');
 require_once(dirname(__FILE__).'/classes/helper/HipayMapper.php');
 require_once(dirname(__FILE__).'/classes/helper/HipayHelper.php');

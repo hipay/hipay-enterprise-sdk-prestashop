@@ -63,18 +63,12 @@ class Apihandler
         $params["moto"]                     = true;
         $params["iframe"]                   = false;
         $params["authentication_indicator"] = 0;
-        $params["productlist"]              = $this->getCreditCardProductList(
-            $deliveryCountry,
-            $currency
-        );
+        $params["productlist"]              = $this->getCreditCardProductList($this->module, $this->configHipay,
+                                                                              $deliveryCountry, $currency);
 
-        $this->baseParamsInit($params,
-            true,
-            $cart);
+        $this->baseParamsInit($params, true, $cart);
 
-        $this->handleHostedPayment($params,
-            $cart,
-            true);
+        $this->handleHostedPayment($params, $cart, true);
     }
 
     /**
@@ -82,9 +76,7 @@ class Apihandler
      * @param type $mode
      * @param type $params
      */
-    public function handleCreditCard(
-    $mode = Apihandler::HOSTEDPAGE, $params = array()
-    )
+    public function handleCreditCard($mode = Apihandler::HOSTEDPAGE, $params = array())
     {
         $this->baseParamsInit($params);
         $cart            = $this->context->cart;
@@ -95,22 +87,17 @@ class Apihandler
         switch ($mode) {
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
-                $this->handleDirectOrder($params,
-                    true);
+                $this->handleDirectOrder($params, true);
                 break;
             case Apihandler::IFRAME:
                 $params["iframe"]         = true;
-                $params["productlist"]    = $this->getCreditCardProductList(
-                    $deliveryCountry,
-                    $currency
-                );
+                $params["productlist"]    = $this->getCreditCardProductList($this->module, $this->configHipay,
+                                                                            $deliveryCountry, $currency);
                 return $this->handleIframe($params);
             case Apihandler::HOSTEDPAGE:
                 $params["iframe"]         = true;
-                $params["productlist"]    = $this->getCreditCardProductList(
-                    $deliveryCountry,
-                    $currency
-                );
+                $params["productlist"]    = HipayHelper::getCreditCardProductList($this->module, $this->configHipay,
+                                                                                  $deliveryCountry, $currency);
 
                 $this->handleHostedPayment($params);
                 break;
@@ -125,19 +112,15 @@ class Apihandler
      * @param type $params
      * @return type
      */
-    public function handleLocalPayment(
-    $mode = Apihandler::HOSTEDPAGE, $params = array()
-    )
+    public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array())
     {
         $this->baseParamsInit(
-            $params,
-            false
+            $params, false
         );
         switch ($mode) {
             case Apihandler::DIRECTPOST:
                 $params ["paymentmethod"] = $this->getPaymentMethod(
-                    $params,
-                    false
+                    $params, false
                 );
                 $this->handleDirectOrder($params);
                 break;
@@ -158,8 +141,7 @@ class Apihandler
     public function handleCapture($params)
     {
         return $this->handleMaintenance(
-                Operation::CAPTURE,
-                $params
+                Operation::CAPTURE, $params
         );
     }
 
@@ -170,8 +152,7 @@ class Apihandler
     public function handleRefund($params)
     {
         return $this->handleMaintenance(
-                Operation::REFUND,
-                $params
+                Operation::REFUND, $params
         );
     }
 
@@ -183,8 +164,7 @@ class Apihandler
     public function handleAcceptChallenge($params)
     {
         return $this->handleMaintenance(
-                Operation::ACCEPT_CHALLENGE,
-                $params
+                Operation::ACCEPT_CHALLENGE, $params
         );
     }
 
@@ -196,8 +176,7 @@ class Apihandler
     public function handleDenyChallenge($params)
     {
         return $this->handleMaintenance(
-                Operation::DENY_CHALLENGE,
-                $params
+                Operation::DENY_CHALLENGE, $params
         );
     }
 
@@ -213,29 +192,25 @@ class Apihandler
                 case Operation::CAPTURE:
                     $params["operation"] = Operation::CAPTURE;
                     ApiCaller::requestMaintenance(
-                        $this->module,
-                        $params
+                        $this->module, $params
                     );
                     break;
                 case Operation::REFUND:
                     $params["operation"] = Operation::REFUND;
                     ApiCaller::requestMaintenance(
-                        $this->module,
-                        $params
+                        $this->module, $params
                     );
                     break;
                 case Operation::ACCEPT_CHALLENGE:
                     $params["operation"] = Operation::ACCEPT_CHALLENGE;
                     ApiCaller::requestMaintenance(
-                        $this->module,
-                        $params
+                        $this->module, $params
                     );
                     break;
                 case Operation::DENY_CHALLENGE:
                     $params["operation"] = Operation::DENY_CHALLENGE;
                     ApiCaller::requestMaintenance(
-                        $this->module,
-                        $params
+                        $this->module, $params
                     );
                     break;
                 default:
@@ -244,11 +219,9 @@ class Apihandler
             return true;
         } catch (GatewayException $e) {
             $errorMessage = $this->module->l(
-                'An error occured during request Maintenance.',
-                'capture'
+                'An error occured during request Maintenance.', 'capture'
             );
-            $this->context->cookie->__set('hipay_errors',
-                $errorMessage);
+            $this->context->cookie->__set('hipay_errors', $errorMessage);
             return false;
         }
     }
@@ -284,8 +257,7 @@ class Apihandler
      */
     private function getCart($cart = false)
     {
-        $cart = new CartFormatter($this->module,
-            $cart);
+        $cart = new CartFormatter($this->module, $cart);
 
         return $cart->generate();
     }
@@ -296,8 +268,7 @@ class Apihandler
      */
     private function getDeliveryInformation($cart = false)
     {
-        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module,
-            $cart);
+        $deliveryInformation = new DeliveryShippingInfoFormatter($this->module, $cart);
 
         return $deliveryInformation->generate();
     }
@@ -309,10 +280,7 @@ class Apihandler
     {
         Tools::redirect(
             ApiCaller::getHostedPaymentPage(
-                $this->module,
-                $params,
-                $cart,
-                $moto
+                $this->module, $params, $cart, $moto
             )
         );
     }
@@ -325,8 +293,7 @@ class Apihandler
     private function handleIframe($params)
     {
         return ApiCaller::getHostedPaymentPage(
-                $this->module,
-                $params
+                $this->module, $params
         );
     }
 
@@ -342,33 +309,20 @@ class Apihandler
         }
 
         $response = ApiCaller::requestDirectPost(
-                $this->module,
-                $params
+                $this->module, $params
         );
 
         $acceptUrl    = $this->context->link->getModuleLink(
-            $this->module->name,
-            'validation',
-            array(),
-            true
+            $this->module->name, 'validation', array(), true
         );
         $failUrl      = $this->context->link->getModuleLink(
-            $this->module->name,
-            'decline',
-            array(),
-            true
+            $this->module->name, 'decline', array(), true
         );
         $pendingUrl   = $this->context->link->getModuleLink(
-            $this->module->name,
-            'pending',
-            array(),
-            true
+            $this->module->name, 'pending', array(), true
         );
         $exceptionUrl = $this->context->link->getModuleLink(
-            $this->module->name,
-            'exception',
-            array(),
-            true
+            $this->module->name, 'exception', array(), true
         );
         $forwardUrl   = $response->getForwardUrl();
 
@@ -404,28 +358,6 @@ class Apihandler
     }
 
     /**
-     * return well formatted authorize credit card payment methods
-     * @return string
-     */
-    private function getCreditCardProductList(
-    $deliveryCountry, $currency
-    )
-    {
-        $creditCard  = HipayHelper::getActivatedPaymentByCountryAndCurrency(
-            $this->module,
-            $this->configHipay,
-            "credit_card",
-            $deliveryCountry,
-            $currency
-        );
-        $productList = join(
-            ",",
-            array_keys($creditCard)
-        );
-        return $productList;
-    }
-
-    /**
      * return mapped payment method
      * @param type $params
      * @param type $creditCard
@@ -437,13 +369,11 @@ class Apihandler
     {
         if ($creditCard) {
             $paymentMethod = new CardTokenFormatter(
-                $this->module,
-                $params
+                $this->module, $params
             );
         } else {
             $paymentMethod = new GenericPaymentMethodFormatter(
-                $this->module,
-                $params
+                $this->module, $params
             );
         }
 
@@ -454,62 +384,10 @@ class Apihandler
     {
         // SQL LOCK
         //#################################################################
-        $cart    = $this->context->cart;
-        // load order for id_order
-        $orderId = Order::getOrderByCartId($cart->id);
-
         $cart = $this->context->cart;
         $this->db->setSQLLockForCart($cart->id);
 
-        if ($cart && (!$orderId || empty($orderId))) {
-            $this->module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
-            $customer = new Customer((int) $cart->id_customer);
-            $shopId   = $cart->id_shop;
-            $shop     = new Shop($shopId);
-            // forced shop
-            Shop::setContext(
-                Shop::CONTEXT_SHOP,
-                $cart->id_shop
-            );
-            $this->module->validateOrder(
-                (int) $cart->id,
-                Configuration::get('HIPAY_OS_PENDING'),
-                (float) $cart->getOrderTotal(true),
-                $params["methodDisplayName"],
-                'Order created by HiPay after success payment.',
-                array(),
-                $this->context->currency->id,
-                false,
-                $customer->secure_key,
-                $shop
-            );
-            // get order id
-            $orderId  = $this->module->currentOrder;
-            $this->db->releaseSQLLock();
-
-            $captureType = array(
-                "order_id" => $orderId,
-                "type" => $this->configHipay["payment"]["global"]["capture_mode"]
-            );
-
-            $this->db->setOrderCaptureType($captureType);
-
-            Hook::exec(
-                'displayHiPayAccepted',
-                array('cart' => $cart, "order_id" => $orderId)
-            );
-
-            $params = http_build_query(
-                array(
-                    'id_cart' => $cart->id,
-                    'id_module' => $this->module->id,
-                    'id_order' => $orderId,
-                    'key' => $customer->secure_key,
-                )
-            );
-        } else {
-            $this->module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
-        }
-        return Tools::redirect('index.php?controller=order-confirmation&'.$params);
+        HipayHelper::validateOrder($this->module, $this->context, $this->configHipay, $this->db, $cart,
+                                   $params["methodDisplayName"]);
     }
 }
