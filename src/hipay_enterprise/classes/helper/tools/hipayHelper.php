@@ -22,6 +22,16 @@
 class HipayHelper
 {
 
+    /**
+     * Clear every single merchant account data
+     * @return boolean
+     */
+    public static function clearAccountData()
+    {
+        Configuration::deleteByName('HIPAY_CONFIG');
+        return true;
+    }
+
     public static function getPaymentProductName($cardBrand, $paymentProduct, $module)
     {
         if (!$cardBrand) {

@@ -59,7 +59,11 @@ class Hipay_enterprise extends PaymentModule
         // init query object
         $this->db = new HipayDBQuery($this);
 
+        // init token manger object
         $this->token = new HipayCCToken($this);
+
+        //init config form data manager object
+        $this->hipayConfigFormHandler = new HipayConfigFormHandler($this);
 
         parent::__construct();
 
@@ -95,7 +99,8 @@ class Hipay_enterprise extends PaymentModule
         return $this->local_path;
     }
 
-    public function getPath(){
+    public function getPath()
+    {
         return $this->_path;
     }
 
@@ -115,7 +120,7 @@ class Hipay_enterprise extends PaymentModule
 
     public function uninstall()
     {
-        return $this->uninstallAdminTab() && parent::uninstall() && $this->clearAccountData() && $this->deleteHipayTable();
+        return $this->uninstallAdminTab() && parent::uninstall() && HipayHelper::clearAccountData() && $this->deleteHipayTable();
     }
 
     public function installHipay()
@@ -137,6 +142,57 @@ class Hipay_enterprise extends PaymentModule
             $return   = $return && $return16;
         }
         return $return;
+    }
+
+    public function installAdminTab()
+    {
+        $class_names = array(
+            'AdminHiPayCapture',
+            'AdminHiPayRefund',
+            'AdminHiPayMoto',
+            'AdminHiPayChallenge',
+            'AdminHiPayConfig',
+        );
+        return $this->createTabAdmin($class_names);
+    }
+
+    protected function createTabAdmin($class_names)
+    {
+        foreach ($class_names as $class_name) {
+            $tab             = new Tab();
+            $tab->active     = 1;
+            $tab->module     = $this->name;
+            $tab->class_name = $class_name;
+            $tab->id_parent  = -1;
+            foreach (Language::getLanguages(true) as $lang) {
+                $tab->name[$lang['id_lang']] = $this->name;
+            }
+            if (!$tab->add()) {
+                //    return false;
+            }
+        }
+        return true;
+    }
+
+    public function uninstallAdminTab()
+    {
+        $class_names = array(
+            'AdminHiPayCapture',
+            'AdminHiPayRefund',
+            'AdminHiPayMoto',
+            'AdminHiPayChallenge',
+            'AdminHiPayConfig',
+        );
+        foreach ($class_names as $class_name) {
+            $id_tab = (int) Tab::getIdFromClassName($class_name);
+            if ($id_tab) {
+                $tab = new Tab($id_tab);
+                if (!$tab->delete()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -626,57 +682,6 @@ class Hipay_enterprise extends PaymentModule
         );
     }
 
-    public function installAdminTab()
-    {
-        $class_names = array(
-            'AdminHiPayCapture',
-            'AdminHiPayRefund',
-            'AdminHiPayMoto',
-            'AdminHiPayChallenge',
-            'AdminHiPayConfig',
-        );
-        return $this->createTabAdmin($class_names);
-    }
-
-    protected function createTabAdmin($class_names)
-    {
-        foreach ($class_names as $class_name) {
-            $tab             = new Tab();
-            $tab->active     = 1;
-            $tab->module     = $this->name;
-            $tab->class_name = $class_name;
-            $tab->id_parent  = -1;
-            foreach (Language::getLanguages(true) as $lang) {
-                $tab->name[$lang['id_lang']] = $this->name;
-            }
-            if (!$tab->add()) {
-                //    return false;
-            }
-        }
-        return true;
-    }
-
-    public function uninstallAdminTab()
-    {
-        $class_names = array(
-            'AdminHiPayCapture',
-            'AdminHiPayRefund',
-            'AdminHiPayMoto',
-            'AdminHiPayChallenge',
-            'AdminHiPayConfig',
-        );
-        foreach ($class_names as $class_name) {
-            $id_tab = (int) Tab::getIdFromClassName($class_name);
-            if ($id_tab) {
-                $tab = new Tab($id_tab);
-                if (!$tab->delete()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     /**
      * Load configuration page
      * @return string
@@ -757,7 +762,7 @@ class Hipay_enterprise extends PaymentModule
         } elseif (Tools::isSubmit('submitAccount')) {
             $this->logs->logInfos('# submitAccount');
 
-            $this->saveAccountInformations();
+            $this->hipayConfigFormHandler->saveAccountInformations();
 
             $this->context->smarty->assign(
                 'active_tab', 'account_form'
@@ -767,514 +772,41 @@ class Hipay_enterprise extends PaymentModule
             //==================================//
         } elseif (Tools::isSubmit('submitGlobalPaymentMethods')) {
             $this->logs->logInfos('# submitGlobalPaymentMethods');
-            $this->saveGlobalPaymentInformations();
-            $this->context->smarty->assign(
-                'active_tab', 'payment_form'
-            );
-        } elseif (Tools::isSubmit('submit3DSecure')) {
-            $this->logs->logInfos('# submit3DSecure');
-            $this->save3DSecureInformations();
+            $this->hipayConfigFormHandler->saveGlobalPaymentInformations();
             $this->context->smarty->assign(
                 'active_tab', 'payment_form'
             );
         } elseif (Tools::isSubmit('creditCardSubmit')) {
             $this->logs->logInfos('# creditCardSubmit');
-            $this->saveCreditCardInformations();
+            $this->hipayConfigFormHandler->saveCreditCardInformations($this->context);
             $this->context->smarty->assign(
                 'active_tab', 'payment_form'
             );
         } elseif (Tools::isSubmit('localPaymentSubmit')) {
             $this->logs->logInfos('# localPaymentSubmit');
-            $this->saveLocalPaymentInformations();
+            $this->hipayConfigFormHandler->saveLocalPaymentInformations($this->context);
             $this->context->smarty->assign(
                 'active_tab', 'payment_form'
             );
         } elseif (Tools::isSubmit('fraudSubmit')) {
             $this->logs->logInfos('# fraudSubmit');
-            $this->saveFraudInformations();
+            $this->hipayConfigFormHandler->saveFraudInformations();
             $this->context->smarty->assign(
                 'active_tab', 'fraud_form'
             );
         } elseif (Tools::isSubmit('submitCategoryMapping')) {
             $this->logs->logInfos('# submitCategoryMapping');
-            $this->saveCategoryMappingInformations();
+            $this->hipayConfigFormHandler->saveCategoryMappingInformations();
             $this->context->smarty->assign(
                 'active_tab', 'category_form'
             );
         } elseif (Tools::isSubmit('submitCarrierMapping')) {
             $this->logs->logInfos('# submitCarrierMapping');
-            $this->saveCarrierMappingInformations();
+            $this->hipayConfigFormHandler->saveCarrierMappingInformations();
             $this->context->smarty->assign(
                 'active_tab', 'carrier_form'
             );
         }
-    }
-
-    protected function save3DSecureInformations()
-    {
-        $this->logs->logInfos('# save3DSecureInformations');
-
-        try {
-            $accountConfig                                 = array(
-                "global" => array()
-            );
-            $accountConfig["global"]["activate_3d_secure"] = Tools::getValue("activate_3d_secure");
-            $accountConfig["global"]["3d_secure_rules"]    = array();
-
-            foreach (Tools::getValue("3d_secure_rules") as $rule) {
-                $newRules = array(
-                    "field" => $rule["field"],
-                    "operator" => htmlentities($rule["operator"]),
-                    "value" => $rule["value"],
-                );
-
-                $accountConfig["global"]["3d_secure_rules"][] = $newRules;
-            }
-
-            return $accountConfig;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logErrors($e->getMessage());
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-    }
-
-    /**
-     * Save Carrier Mapping informations send by config page form
-     *
-     * @return : bool
-     * */
-    protected function saveCarrierMappingInformations()
-    {
-        $this->logs->logInfos('# SaveCarrierMappingInformations');
-
-        try {
-            $psCarriers = $this->mapper->getPrestashopCarriers();
-
-            $mapping       = array();
-            $this->_errors = array();
-            foreach ($psCarriers as $car) {
-                $psMapCar            = Tools::getValue('ps_map_'.$car["id_carrier"]);
-                $hipayMapCarMode     = Tools::getValue('hipay_map_mode_'.$car["id_carrier"]);
-                $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_'.$car["id_carrier"]);
-                $hipayMapCarOETA     = Tools::getValue('ps_map_prep_eta_'.$car["id_carrier"]);
-                $hipayMapCarDETA     = Tools::getValue('ps_map__delivery_eta_'.$car["id_carrier"]);
-
-                $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode,
-                    "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA,
-                    "deliveryeta" => $hipayMapCarDETA);
-            }
-
-            if (!empty($this->_errors)) {
-                $this->_errors = array(end($this->_errors));
-                return false;
-            }
-
-            $response           = $this->mapper->setMapping(
-                HipayMapper::HIPAY_CARRIER_MAPPING, $mapping
-            );
-            $this->_successes[] = $this->l('Carrier mapping configuration saved successfully.');
-
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Save Category Mapping informations send by config page form
-     *
-     * @return : bool
-     * */
-    protected function saveCategoryMappingInformations()
-    {
-        $this->logs->logInfos('# saveCategoryMappingInformations');
-        try {
-            $psCategories = $this->mapper->getPrestashopCategories();
-            $mapping      = array();
-            foreach ($psCategories as $cat) {
-                $psMapCat    = Tools::getValue('ps_map_'.$cat["id_category"]);
-                $hipayMapCat = Tools::getValue('hipay_map_'.$cat["id_category"]);
-
-                if ($this->mapper->hipayCategoryExist($hipayMapCat)) {
-                    $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
-                }
-            }
-            if (!empty($this->_errors)) {
-                $this->_errors = array(end($this->_errors));
-                return false;
-            }
-
-            $this->mapper->setMapping(
-                HipayMapper::HIPAY_CAT_MAPPING, $mapping
-            );
-
-            $this->_successes[] = $this->l('Category mapping configuration saved successfully.');
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Save Account informations send by config page form
-     *
-     * @return : bool
-     * */
-    protected function saveAccountInformations()
-    {
-        $this->logs->logInfos('# SaveAccountInformations');
-
-        try {
-            // saving all array "account" in $configHipay
-            $accountConfig = array("global" => array(), "sandbox" => array(), "production" => array());
-
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["global"] as $key => $value) {
-                $fieldValue                    = Tools::getValue($key);
-                $accountConfig["global"][$key] = $fieldValue;
-            }
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["sandbox"] as $key => $value) {
-                if (($key == "api_username_sandbox" && Tools::getValue("api_username_sandbox") && !Tools::getValue("api_password_sandbox"))
-                    || ($key == "api_password_sandbox" && Tools::getValue("api_password_sandbox") && !Tools::getValue("api_username_sandbox"))
-                ) {
-                    $this->_errors[] = $this->l("If sandbox api username is filled sandbox api password is mandatory");
-                    return false;
-                } elseif (($key == "api_tokenjs_username_sandbox" && Tools::getValue("api_tokenjs_username_sandbox") && !Tools::getValue("api_tokenjs_password_publickey_sandbox"))
-                    || ($key == "api_tokenjs_password_publickey_sandbox" && Tools::getValue(
-                        "api_tokenjs_password_publickey_sandbox"
-                    ) && !Tools::getValue("api_tokenjs_username_sandbox"))
-                ) {
-                    $this->_errors[] = $this->l(
-                        "If sandbox api TokenJS username is filled sandbox api TokenJS password is mandatory"
-                    );
-                    return false;
-                } elseif (($key == "api_moto_username_sandbox" && Tools::getValue("api_moto_username_sandbox") && !Tools::getValue("api_moto_password_sandbox"))
-                    || ($key == "api_moto_password_sandbox" && Tools::getValue("api_moto_password_sandbox") && !Tools::getValue(
-                        "api_moto_username_sandbox"
-                    ))
-                ) {
-                    $this->_errors[] = $this->l(
-                        "If sandbox api MO/TO username is filled sandbox api MO/TO password is mandatory"
-                    );
-                    return false;
-                } else {
-                    $fieldValue                     = Tools::getValue($key);
-                    $accountConfig["sandbox"][$key] = $fieldValue;
-                }
-            }
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["account"]["production"] as $key => $value) {
-                if (($key == "api_username_production" && Tools::getValue("api_username_production") && !Tools::getValue("api_password_production"))
-                    || ($key == "api_password_production" && Tools::getValue("api_password_production") && !Tools::getValue("api_username_production"))
-                ) {
-                    $this->_errors[] = $this->l(
-                        "If production api username is filled production api password is mandatory"
-                    );
-                    return false;
-                } elseif (($key == "api_tokenjs_username_production" && Tools::getValue(
-                        "api_tokenjs_username_production"
-                    ) && !Tools::getValue("api_tokenjs_password_publickey_production")) || ($key == "api_tokenjs_password_publickey_production"
-                    && Tools::getValue(
-                        "api_tokenjs_password_publickey_production"
-                    ) && !Tools::getValue("api_tokenjs_username_production"))
-                ) {
-                    $this->_errors[] = $this->l(
-                        "If production api TokenJS username is filled production api TokenJS password is mandatory"
-                    );
-                    return false;
-                } elseif (($key == "api_moto_username_production" && Tools::getValue("api_moto_username_production") && !Tools::getValue("api_moto_password_production"))
-                    || ($key == "api_moto_password_production" && Tools::getValue("api_moto_password_production") && !Tools::getValue("api_moto_username_production"))
-                ) {
-                    $this->_errors[] = $this->l(
-                        "If production api MO/TO username is filled production api MO/TO password is mandatory"
-                    );
-                    return false;
-                } else {
-                    $fieldValue                        = Tools::getValue($key);
-                    $accountConfig["production"][$key] = $fieldValue;
-                }
-            }
-
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "account", $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Module settings saved successfully.');
-            $this->logs->logInfos($this->hipayConfigTool->getConfigHipay());
-
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Save Global payment informations send by config page form
-     *
-     * @return : bool
-     * */
-    protected function saveGlobalPaymentInformations()
-    {
-        $this->logs->logInfos("# saveGlobalPaymentInformations");
-
-        try {
-            // saving all array "payemnt" "global" in $configHipay
-            $accountConfig = array(
-                "global" => array(),
-                // Not cool but works
-                "credit_card" => $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
-                "local_payment" => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
-            );
-
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["global"] as $key => $value) {
-                if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
-                    $fieldValue = $value;
-                } elseif ($key == "css_url" && Tools::getValue("css_url") && !HipayFormControl::checkHttpsUrl(Tools::getValue("css_url"))) {
-                    $this->_errors[] = $this->l(
-                        "CSS url needs to be a valid https url."
-                    );
-                    return false;
-                } else {
-                    $fieldValue = Tools::getValue($key);
-                }
-
-                $this->logs->logInfos(
-                    $key." => ".print_r(
-                        $fieldValue, true
-                    )
-                );
-                $accountConfig["global"][$key] = $fieldValue;
-            }
-            $conf3d                                        = $this->save3DSecureInformations();
-            $accountConfig["global"]["activate_3d_secure"] = $conf3d["global"]["activate_3d_secure"];
-            $accountConfig["global"]["3d_secure_rules"]    = $conf3d["global"]["3d_secure_rules"];
-
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Global payment method settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(), true
-                )
-            );
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * save credit cards settings form
-     * @return boolean
-     */
-    public function saveCreditCardInformations()
-    {
-        $this->logs->logInfos("# SaveCreditCardInformations");
-
-        try {
-            // saving all array "payemnt" "credit_card" in $configHipay
-            $accountConfig = array(
-                "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
-                "credit_card" => array(),
-                "local_payment" => $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"]
-            );
-
-            $keySaved = array(
-                "activated",
-                "currencies",
-                "countries",
-                "minAmount",
-                "maxAmount"
-            );
-
-            if (Tools::getValue("ccDisplayName")) {
-                $accountConfig["global"]["ccDisplayName"] = Tools::getValue("ccDisplayName");
-            }
-            if (Tools::getValue("ccFrontPosition")) {
-                $accountConfig["global"]["ccFrontPosition"] = Tools::getValue("ccFrontPosition");
-            }
-
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"] as $card => $conf) {
-                foreach ($conf as $key => $value) {
-                    if (in_array($key, $keySaved)) {
-                        $fieldValue = Tools::getValue($card."_".$key);
-                        if ($key == "currencies") {
-                            foreach (Tools::getValue($card."_".$key) as $currency) {
-                                if (!in_array($currency, $this->moduleCurrencies)) {
-                                    $this->db->setCurrencies($this->id, $this->context->shop->id, $currency);
-                                }
-                            }
-                        }
-                    } else {
-                        $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"][$card][$key];
-                    }
-
-                    $accountConfig["credit_card"][$card][$key] = $fieldValue;
-                }
-            }
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Credit card settings saved successfully.');
-            $this->logs->logInfos($this->hipayConfigTool->getConfigHipay());
-            return true;
-        } catch (Exception $e) {
-            // LOGS
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Save local payment form
-     *
-     * @return boolean
-     */
-    public function saveLocalPaymentInformations()
-    {
-        $this->logs->logInfos("# SaveLocalPaymentInformations");
-        try {
-            // saving all array "payemnt" "local_payment" in $configHipay
-            $accountConfig = array(
-                "global" => $this->hipayConfigTool->getConfigHipay()["payment"]["global"],
-                "credit_card" => $this->hipayConfigTool->getConfigHipay()["payment"]["credit_card"],
-                "local_payment" => array()
-            );
-
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-            $keySaved = array(
-                "activated",
-                "currencies",
-                "countries",
-                "minAmount",
-                "maxAmount",
-                "displayName",
-                "electronicSignature",
-                "frontPosition"
-            );
-
-            foreach ($this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"] as $card => $conf) {
-                foreach ($conf as $key => $value) {
-                    //prevent specific fields from being updated
-                    if (in_array(
-                            $key, $keySaved
-                        )) {
-                        $fieldValue = Tools::getValue($card."_".$key);
-                        if ($key == "currencies") {
-                            foreach (Tools::getValue($card."_".$key) as $currency) {
-                                if (!in_array($currency, $this->moduleCurrencies)) {
-                                    $this->db->setCurrencies($this->id, $this->context->shop->id, $currency);
-                                }
-                            }
-                        }
-                    } else {
-                        $fieldValue = $this->hipayConfigTool->getConfigHipay()["payment"]["local_payment"][$card][$key];
-                    }
-                    $accountConfig["local_payment"][$card][$key] = $fieldValue;
-                }
-            }
-            //save configuration
-            $this->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
-
-            $this->_successes[] = $this->l('Local payment settings saved successfully.');
-            $this->logs->logInfos(
-                print_r(
-                    $this->hipayConfigTool->getConfigHipay(), true
-                )
-            );
-            return true;
-        } catch (Exception $e) {
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Save fraud settings
-     * @return boolean
-     */
-    public function saveFraudInformations()
-    {
-        $this->logs->logInfos("# SaveFraudInformations");
-
-        try {
-            if (!Validate::isEmail(Tools::getValue('send_payment_fraud_email_copy_to'))) {
-                $this->_errors[] = $this->trans('The Copy To Email is not valid.', array());
-                return false;
-            } else {
-                // saving all array "fraud" in $configHipay
-                $accountConfig = array();
-
-                //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-                foreach ($this->hipayConfigTool->getConfigHipay()["fraud"] as $key => $value) {
-                    $fieldValue          = Tools::getValue($key);
-                    $accountConfig[$key] = $fieldValue;
-                }
-
-                //save configuration
-                $this->hipayConfigTool->setConfigHiPay(
-                    "fraud", $accountConfig
-                );
-
-                $this->_successes[] = $this->l('Fraud settings saved successfully.');
-                $this->logs->logInfos(
-                    print_r(
-                        $this->hipayConfigTool->getConfigHipay(), true
-                    )
-                );
-                return true;
-            }
-        } catch (Exception $e) {
-            $this->logs->logException($e);
-            $this->_errors[] = $this->l($e->getMessage());
-        }
-
-        return false;
-    }
-
-    /**
-     * Clear every single merchant account data
-     * @return boolean
-     */
-    protected function clearAccountData()
-    {
-        Configuration::deleteByName('HIPAY_CONFIG');
-        return true;
     }
 
     /**
@@ -1318,3 +850,4 @@ require_once(dirname(__FILE__).'/classes/helper/tools/hipayDBQuery.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayOrderStatus.php');
 require_once(dirname(__FILE__).'/classes/helper/tools/hipayFormControl.php');
+require_once(dirname(__FILE__).'/classes/helper/tools/HipayConfigFormHandler.php');
