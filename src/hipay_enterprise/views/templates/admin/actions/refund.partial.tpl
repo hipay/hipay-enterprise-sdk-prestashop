@@ -48,6 +48,8 @@
                                 {assign var="remainQty" value=$item["product_quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
                             {else if empty($capturedItems) && empty($refundedItems) }
                                 {assign var="remainQty" value=$item["product_quantity"] }
+                            {else if empty($capturedItems) && !empty($refundedItems) &&  !isset($refundedItems[$item["product_id"]])}
+                                {assign var="remainQty" value=$item["product_quantity"] }
                             {else if empty($capturedItems) || !isset($capturedItems[$item["product_id"]]) }
                                 {assign var="remainQty" value=0}
                             {else if !empty($refundedItems) && isset($refundedItems[$item["product_id"]]) }
@@ -220,7 +222,7 @@
             }
             
             if(parseFloat($("#total-refund-input").val()) <= 0){
-                displayError('{l s='Refund amount must be greater than zero.' mod='hipay_enterprise'}');
+                displayError("{l s='Refund amount must be greater than zero.' mod='hipay_enterprise'}");
                 return false;
             }
             
@@ -229,12 +231,12 @@
             }
             
             if(parseFloat($("#total-refund-input").val()) > refundableAmount +0.01){
-                displayError('{l s='Refund amount must be lower than the amount still to be refunded.' mod='hipay_enterprise'}');
+                displayError("{l s='Refund amount must be lower than the amount still to be refunded.' mod='hipay_enterprise'}");
                 return false;
             }
             
             if(  !$("#refund-discount").is(":checked") && (refundableAmount - parseFloat($("#total-refund-input").val()) <=  parseFloat($("#refund-discount").data("amount")))){
-                displayError('{l s='You must refund discount because next refund amount will be lower than total discount amount.' mod='hipay_enterprise'}');
+                displayError("{l s='You must refund discount because next refund amount will be lower than total discount amount.' mod='hipay_enterprise'}");
                 return false;
             }
             

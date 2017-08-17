@@ -237,7 +237,7 @@
             }
             
             if(parseFloat($("#total-capture-input").val()) <= 0){
-                displayError('{l s='Capture amount must be greater than zero.' mod='hipay_enterprise'}');
+                displayError("{l s='Capture amount must be greater than zero.' mod='hipay_enterprise'}");
                 return false;
             }
             
@@ -246,12 +246,12 @@
             }
             
             if(parseFloat($("#total-capture-input").val()) > stillToCapture +0.01){
-                displayError('{l s='Capture amount must be lower than the amount still to be captured.' mod='hipay_enterprise'}');
+                displayError("{l s='Capture amount must be lower than the amount still to be captured.' mod='hipay_enterprise'}");
                 return false;
             }
             
             if($("#capture-discount").val() != null &&  !$("#capture-discount").is(":checked") && (stillToCapture - parseFloat($("#total-capture-input").val()) <=  parseFloat($("#capture-discount").data("amount")))){
-                displayError('{l s='You must capture discount because next capture amount will be lower than total discount amount.' mod='hipay_enterprise'}');
+                displayError("{l s='You must capture discount because next capture amount will be lower than total discount amount.' mod='hipay_enterprise'}");
                 return false;
             }
             
