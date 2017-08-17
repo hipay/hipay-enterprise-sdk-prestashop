@@ -37,7 +37,7 @@ class HipayConfig
     {
         $this->context       = Context::getContext();
         $this->module        = $module_instance;
-        $this->jsonFilesPath = dirname(__FILE__)."/../paymentConfigFiles/";
+        $this->jsonFilesPath = dirname(__FILE__)."/../../paymentConfigFiles/";
     }
 
     /**
