@@ -11,10 +11,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/classes/helper/apiCaller/ApiCaller.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayHelper.php');
-require_once(dirname(__FILE__).'/translations/HipayStrings.php');
+require_once(dirname(__FILE__).'/classes/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayCCToken.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayHelper.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 

@@ -11,8 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayNotification.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/hipayNotification.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/hipayHelper.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 

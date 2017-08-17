@@ -13,8 +13,6 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 /**
  * Hipay_enterprise
@@ -29,7 +27,6 @@ class Hipay_enterprise extends PaymentModule
     public $hipayConfigTool;
     public $_errors           = array();
     public $_successes        = array();
-    public $min_amount        = 1;
     public $currencies_titles = array();
     public $moduleCurrencies  = array();
 
@@ -294,7 +291,6 @@ class Hipay_enterprise extends PaymentModule
                 'domain' => Tools::getShopDomainSSL(true),
                 'module_dir' => $this->_path,
                 'payment_button' => $this->_path.'views/img/cc.png',
-                'min_amount' => $this->min_amount,
                 'configHipay' => $this->hipayConfigTool->getConfigHipay(),
                 'sortedPaymentProducts' => HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
                     $this, $this->hipayConfigTool->getConfigHipay(), $country, $currency, $orderTotal
@@ -841,13 +837,13 @@ if (_PS_VERSION_ >= '1.7') {
     Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once(dirname(__FILE__).'/classes/helper/tools/HipayLogs.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayConfig.php');
-require_once(dirname(__FILE__).'/classes/helper/forms/hipayForm.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayMapper.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayHelper.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayDBQuery.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayOrderStatus.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/hipayFormControl.php');
-require_once(dirname(__FILE__).'/classes/helper/tools/HipayConfigFormHandler.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayLogs.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayConfig.php');
+require_once(dirname(__FILE__).'/classes/forms/hipayForm.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayMapper.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayHelper.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayDBQuery.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayCCToken.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayOrderStatus.php');
+require_once(dirname(__FILE__).'/classes/helper/hipayFormControl.php');
+require_once(dirname(__FILE__).'/classes/helper/HipayConfigFormHandler.php');

@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../classes/helper/tools/hipayHelper.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/hipayHelper.php');
 
 /**
  * Class Hipay_enterprisePendingModuleFrontController
