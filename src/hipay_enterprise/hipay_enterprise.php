@@ -13,9 +13,6 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-ini_set('display_errors',
-    1);
-error_reporting(E_ALL);
 
 /**
  * Hipay_enterprise
@@ -38,7 +35,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name                   = 'hipay_enterprise';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '2.0.0-beta';
+        $this->version                = '2.0.1-beta';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies             = true;
         $this->currencies_mode        = 'checkbox';
@@ -89,6 +86,11 @@ class Hipay_enterprise extends PaymentModule
     public function getLogs()
     {
         return $this->logs;
+    }
+
+    public function getLocalPath()
+    {
+        return $this->local_path;
     }
 
     /**

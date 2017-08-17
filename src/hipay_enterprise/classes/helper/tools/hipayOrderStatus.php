@@ -90,7 +90,7 @@ class HipayOrderStatus
                 $order_state->id
             );
             @copy(
-                    $module->local_path.'views/img/logo-16.png',
+                    $module->getLocalPath().'views/img/logo-16.png',
                     _PS_ORDER_STATE_IMG_DIR_.(int) $order_state->id.'.gif'
             );
 
