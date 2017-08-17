@@ -11,8 +11,6 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../translations/HipayStrings.php');
-
 /**
  * Helper to send emails for HiPay Module
  *
@@ -46,22 +44,22 @@ class HipayMail
         // === GET DEFAULT ADMIN INFORMATIONS === ///
         $emails[] = Configuration::get('PS_SHOP_EMAIL');
         $configuration = $module->hipayConfigTool->getConfigHipay();
-        $emailBBC = $configuration['fraud']['send_payment_fraud_email_copy_to'] ? : null;
+        $emailBCC = $configuration['fraud']['send_payment_fraud_email_copy_to'] ? : null;
         $copyMethod = $configuration['fraud']['send_payment_fraud_email_copy_method'];
 
         // === CHECK IF ONE OR MULTIPLE MAIL === //
-        if ($copyMethod == hipayForm::TYPE_EMAIL_SEPARATE){
-            $emails[] = $emailBBC;
-            $emailBBC = null;
+        if ($copyMethod == HipayForm::TYPE_EMAIL_SEPARATE){
+            $emails[] = $emailBCC;
+            $emailBCC = null;
         }
 
-        $subject = HipayStrings::SUBJECT_PAYMENT_VALIDATION;
+        $subject = $module->l('A payment transaction is awaiting validation for the order %s');
 
         // === SEND EMAIL === //
         self::sendEmailHipay('fraud',
             $subject,
             $emails,
-            $emailBBC,
+            $emailBCC,
             $context,
             $module,
             $order,
@@ -90,7 +88,7 @@ class HipayMail
         );
 
         $emails = array($customer->email);
-        $subject = HipayStrings::SUBJECT_PAYMENT_DENY;
+        $subject = $module->l('Refused payment for order %s');
 
         // === SEND EMAIL === //
         self::sendEmailHipay('payment_deny',
@@ -111,13 +109,13 @@ class HipayMail
      * @param $template string
      * @param $subject string
      * @param $emailsTo array
-     * @param $emailBBC string
+     * @param $emailBCC string
      * @param $context Prestahsop context
      * @param $module Hipay module instance
      * @param $order Order object
      * @param $templateVars array
      */
-    private static function sendEmailHipay($template, $subject, $emailsTo, $emailBBC, $context, $module, $order, $templateVars)
+    private static function sendEmailHipay($template, $subject, $emailsTo, $emailBCC, $context, $module, $order, $templateVars)
     {
         // === GET DEFAULT ADMIN INFORMATIONS === ///
         $idLang = Configuration::get('PS_LANG_DEFAULT');
@@ -143,7 +141,7 @@ class HipayMail
                 HipayMail::PATH_EMAILS_HIPAY,
                 false,
                 (int)$context->shop->id,
-                $emailBBC
+                $emailBCC
             );
 
             if (!$mailSuccess) {

@@ -364,12 +364,13 @@ class HipayHelper
     }
 
     /**
-     *
+     * Create order from successfull HiPay transaction
      * @param type $module
      * @param type $context
      * @param type $configHipay
      * @param type $db
      * @param type $cart
+     * @param type $productName
      * @return type
      */
     public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
