@@ -35,8 +35,6 @@ class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController
         $this->display_column_right = false;
         parent::initContent();
 
-        $context = Context::getContext();
-
         if (!(bool) $this->module->hipayConfigTool->getPaymentGlobal()["regenerate_cart_on_decline"]) {
             HipayHelper::unsetCart();
         }

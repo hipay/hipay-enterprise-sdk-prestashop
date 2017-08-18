@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }

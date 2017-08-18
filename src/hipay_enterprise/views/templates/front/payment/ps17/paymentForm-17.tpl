@@ -32,7 +32,7 @@
                         <div class="row">
                             <span class="hipay-img col-md-2 col-xs-3"><img class="card-img" src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
                             <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>
-                            <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'} : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
+                            <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'  mod='hipay_enterprise'} : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
                             <span class="hipay-card-holder col-md-10 col-xs-9">{$cc.card_holder}</span>
                         </div>
                     </div>
@@ -65,7 +65,10 @@
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
-    var activatedCreditCard = {$activatedCreditCard nofilter};
+    var activatedCreditCard = []; 
+    {foreach $activatedCreditCard as $cc}
+        activatedCreditCard.push("{$cc}");
+    {/foreach}
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;
     function setSelectedPaymentMethod() {

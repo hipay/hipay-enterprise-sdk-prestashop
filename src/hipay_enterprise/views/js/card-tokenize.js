@@ -30,7 +30,7 @@ $("#tokenizerForm").submit(function (e) {
     // prevent form from being submitted 
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (myPaymentMethodSelected) {
 
         if ($("input[name=ccTokenHipay]:checked").length) {
@@ -70,10 +70,11 @@ $("#tokenizerForm").submit(function (e) {
                 function (result) {
                     // The card has been successfully tokenized
                     var token = result.token;
+                    var brand = "";
                     if (result.hasOwnProperty('domestic_network')) {
-                        varbrand = result.domestic_network;
+                        brand = result.domestic_network;
                     } else {
-                        var brand = result.brand;
+                        brand = result.brand;
                     }
                     var pan = result.pan;
                     var card_expiry_month = result.card_expiry_month;

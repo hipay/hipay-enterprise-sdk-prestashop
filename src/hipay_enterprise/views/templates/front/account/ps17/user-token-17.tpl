@@ -12,12 +12,12 @@
 {extends file='customer/page.tpl'}
 
 {block name='page_title'}
-    {l s='Manage saved credit/debit card' d='hipay_enterprise'}
+    {l s='Manage saved credit/debit card' mod='hipay_enterprise'}
 {/block}
 
 {block name='page_content'}
     {if $savedCC }
-        <h6>{l s='Saved credit/debit card' d='hipay_enterprise'}</h6>
+        <h6>{l s='Saved credit/debit card' mod='hipay_enterprise'}</h6>
         <table class="table table-striped table-bordered hidden-sm-down">
             <thead class="thead-default">
                 <tr>

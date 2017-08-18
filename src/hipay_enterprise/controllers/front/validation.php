@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../classes/helper/HipayDBQuery.php');
 require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
@@ -33,7 +34,6 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
 
         $context = Context::getContext();
         $cartId  = Tools::getValue('orderId');
-        $transac = Tools::getValue('reference');
         $db      = new HipayDBQuery($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page

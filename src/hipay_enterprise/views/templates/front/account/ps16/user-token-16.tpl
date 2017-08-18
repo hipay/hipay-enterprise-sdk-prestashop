@@ -11,14 +11,14 @@
  *}
 {capture name=path}
     <a href="{$link->getPageLink('my-account', true)|escape:'html':'UTF-8'}">
-        {l s='My account'}
+        {l s='My account' mod='hipay_enterprise'}
     </a>
     <span class="navigation-pipe">{$navigationPipe}</span>
-    <span class="navigation_page">{l s='Order history'}</span>
+    <span class="navigation_page">{l s='Order history'  mod='hipay_enterprise'}</span>
 {/capture}
 {include file="$tpl_dir./errors.tpl"}
 
-<h1 class="page-heading bottom-indent">{l s='Saved credit/debit card' d='hipay_enterprise'}</h1>
+<h1 class="page-heading bottom-indent">{l s='Saved credit/debit card' mod='hipay_enterprise'}</h1>
 <p class="info-title">{l s='Here are the saved credit card from previous order.' mod='hipay_enterprise'}</p>
 <div class="block-center">
     {if $savedCC }

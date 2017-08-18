@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/RequestFormatterAbstract.php');
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 

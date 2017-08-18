@@ -98,7 +98,7 @@
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
     <script>
-        var activatedCreditCard = {$activatedCreditCard nofilter};
+        var activatedCreditCard = JSON.parse('{$activatedCreditCard}'); 
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
         var myPaymentMethodSelected = true;
         {if $confHipay.account.global.sandbox_mode}

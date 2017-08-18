@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatter.php');
@@ -58,7 +59,8 @@ class Apihandler
         $delivery        = new Address((int) $cart->id_address_delivery);
         $deliveryCountry = new Country((int) $delivery->id_country);
         $currency        = new Currency((int) $cart->id_currency);
-
+        $params = array();
+        
         $params["method"]                   = "credit_card";
         $params["moto"]                     = true;
         $params["iframe"]                   = false;
@@ -312,9 +314,6 @@ class Apihandler
                 $this->module, $params
         );
 
-        $acceptUrl    = $this->context->link->getModuleLink(
-            $this->module->name, 'validation', array(), true
-        );
         $failUrl      = $this->context->link->getModuleLink(
             $this->module->name, 'decline', array(), true
         );

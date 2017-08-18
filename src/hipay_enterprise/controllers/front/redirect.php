@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__).'/../../classes/helper/HipayCCToken.php');
@@ -43,7 +44,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $delivery         = new Address((int) $cart->id_address_delivery);
         $deliveryCountry  = new Country((int) $delivery->id_country);
         $currency         = new Currency((int) $cart->id_currency);
-        $customer         = new Customer((int) $cart->id_customer);
         $this->apiHandler = new ApiHandler(
             $this->module, $this->context
         );
@@ -107,7 +107,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')
                 ) {
                     $path = $this->apiNewCC(
-                        $cart, $context, $savedCC
+                        $cart, $context, $customer, $savedCC
                     );
                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
@@ -192,7 +192,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      * @param type $savedCC
      * @return string
      */
-    private function apiNewCC($cart, $context, $savedCC)
+    private function apiNewCC($cart, $context, $customer, $savedCC)
     {
         $selectedCC = Tools::strtolower(
                 str_replace(

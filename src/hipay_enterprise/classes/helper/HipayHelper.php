@@ -296,6 +296,7 @@ class HipayHelper
     public static function getSortedActivatedPaymentByCountryAndCurrency($module, $configHipay, $country, $currency,
                                                                          $orderTotal = 1)
     {
+        $activatedCreditCard = array();
         $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
         $activatedCreditCard["credit_card"]["products"]      = self::getActivatedPaymentByCountryAndCurrency(
                 $module, $configHipay, "credit_card", $country, $currency, $orderTotal

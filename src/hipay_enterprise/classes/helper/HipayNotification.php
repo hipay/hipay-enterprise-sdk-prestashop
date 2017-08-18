@@ -386,7 +386,7 @@ class HipayNotification
             $amount = $this->getRealCapturedAmount($refund);
             if ($amount != 0) {
                 $paymentProduct         = $this->getPaymentProductName();
-                $payment_transaction_id = $this->setTransactionRefForPrestashop($refund);
+                $payment_transaction_id = $this->setTransactionRefForPrestashop();
                 $currency               = new Currency($this->order->id_currency);
                 $payment_date           = date("Y-m-d H:i:s");
 
@@ -529,7 +529,7 @@ class HipayNotification
             // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
             if ($this->db->countOrderPayment(
                     $this->order->reference,
-                    $this->setTransactionRefForPrestashop(true)
+                    $this->setTransactionRefForPrestashop()
                 ) == 0
             ) {
                 $this->createOrderPayment(true);
@@ -653,7 +653,7 @@ class HipayNotification
      * every step of the capture is unique (id = {transacRef}-{CapturedAmount}). Prevent from duplicates or overwritting
      * @return string
      */
-    private function setTransactionRefForPrestashop($refund = false)
+    private function setTransactionRefForPrestashop()
     {
 
         $ref = $this->transaction->getTransactionReference();

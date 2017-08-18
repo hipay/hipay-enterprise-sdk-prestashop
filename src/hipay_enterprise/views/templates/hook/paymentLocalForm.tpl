@@ -30,7 +30,6 @@
                 hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}' , {if isset($field.required)}{$field.required}{else}false{/if});
                 {/if}
             {/foreach}
-            console.log(hiPayInputControl);
         })();
 
     </script>

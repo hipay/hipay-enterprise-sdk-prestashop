@@ -124,7 +124,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             $paymentOptions,
                             $key,
                             $paymentProduct,
-                            $params,
                             isset($sortedPaymentProducts["credit_card"]) && empty($sortedPaymentProducts["credit_card"]["products"]),
                             $i
                         );
@@ -142,11 +141,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
      * @param array $paymentOptions
      * @param type $name
      * @param type $paymentProduct
-     * @param type $params
      * @param type $emptyCreditCard
      * @param type $i
      */
-    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $params, $emptyCreditCard, &$i)
+    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i)
     {
 
         $newOption = new PaymentOption();
@@ -240,7 +238,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 true
                             ).__PS_BASE_URI__.'modules/'.$this->name.'/',
                             'savedCC' => $savedCC,
-                            'activatedCreditCard' => Tools::jsonEncode(array_keys($paymentProduct["products"])),
+                            'activatedCreditCard' => array_keys($paymentProduct["products"]),
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'is_guest' => $this->customer->is_guest,
                             'action' => $this->context->link->getModuleLink(
@@ -291,7 +289,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      * add JS to the bottom of the page
      * @param type $params
      */
-    public function hipayActionFrontControllerSetMedia($params)
+    public function hipayActionFrontControllerSetMedia()
     {
 
         // Only on order page

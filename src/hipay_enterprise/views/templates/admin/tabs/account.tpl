@@ -153,10 +153,10 @@
                         <div class="form-group">
                             <div class="col-lg-6 col-lg-offset-2">
                                 <div class="alert alert-info">
-                                    {l s='Generated in your HiPay Enterprise back office'} (<a title="BO Hipay" target="_blank" href="">https://merchant.hipay-tpp.com</a>) via </br >
+                                    {l s='Generated in your HiPay Enterprise back office'  mod='hipay_enterprise'} (<a title="BO Hipay" target="_blank" href="">https://merchant.hipay-tpp.com</a>) via </br >
                                     <strong>"Integration” => “Security Settings” => “Api credentials” => “Credentials accessibility”</strong>, {l s='these API credentials are required to use the HiPay Enterprise module.'  mod='hipay_enterprise'}</br >
-                                    {l s='You must generate public and private credentials.'}
-                                    {l s='You can also set specific credentials for your Mail Order to Order payments. If they are defined then they will be used when making your payments via the back office'}
+                                    {l s='You must generate public and private credentials.'  mod='hipay_enterprise'}
+                                    {l s='You can also set specific credentials for your Mail Order to Order payments. If they are defined then they will be used when making your payments via the back office' mod='hipay_enterprise'}
                                 </div>
                             </div>
                         </div>

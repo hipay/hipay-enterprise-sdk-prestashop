@@ -20,7 +20,7 @@
             <input type="hidden" name="id_emp" value="{$employeeId}"/>
             <input type="hidden" name="token" value="{$tokenRefund}"/>
             <div class="form-group">
-                <label class="col-lg-4" for="hipay_refund_type">{l s='Refund type'}</label>
+                <label class="col-lg-4" for="hipay_refund_type">{l s='Refund type'  mod='hipay_enterprise'}</label>
                 <select id="hipay_refund_type" name="hipay_refund_type" class="col-lg-3">
                     {if !$partiallyRefunded}
                         <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
@@ -36,11 +36,11 @@
                     <table class="table table-item-hipay">
                         <thead>
                             <tr>
-                                <th>{l s='Reference'}</th>
-                                <th>{l s='Product name'}</th>
+                                <th>{l s='Reference'  mod='hipay_enterprise'}</th>
+                                <th>{l s='Product name'  mod='hipay_enterprise'}</th>
                                 <th>{l s='Unit price' mod='hipay_enterprise'}</th>
-                                <th>{l s='Refunded'}</th>
-                                <th>{l s='Qty to be refund'}</th>
+                                <th>{l s='Refunded'  mod='hipay_enterprise'}</th>
+                                <th>{l s='Qty to be refund'  mod='hipay_enterprise'}</th>
                             </tr>
                         </thead>
                         {foreach $products as $item}
@@ -95,7 +95,7 @@
                         <tfoot>
                         <tr>
                             <td></td>
-                            <td>{l s='Shipping'}</td>
+                            <td>{l s='Shipping'  mod='hipay_enterprise'}</td>
                             <td>
                                         <span>
                                             {displayPrice price=$amountFees currency=$id_currency}
@@ -104,9 +104,9 @@
                             <td>
                                 {if $shippingCost > 0 }
                                     {if ($capturedFees && !$refundedFees) || ($stillToCaptureDisplay <= 0 && !$refundedFees)}
-                                        <input id="refund-fee" data-amount="{$amountFees}" type="checkbox" name="hipay_refund_fee"> {l s='Refund fee(s)'}
+                                        <input id="refund-fee" data-amount="{$amountFees}" type="checkbox" name="hipay_refund_fee"> {l s='Refund fee(s)'  mod='hipay_enterprise'}
                                     {else}
-                                        <span class="badge badge-success">Refunded</span>
+                                        <span class="badge badge-success">{l s='Refunded'  mod='hipay_enterprise'}</span>
                                     {/if}
                                 {else}
                                     {displayPrice price=0 currency=$id_currency}
@@ -127,7 +127,7 @@
                                     {if !$refundedDiscounts}
                                         <input id="refund-discount" data-amount="{$discount.value}" type="checkbox" name="hipay_refund_discount"> {l s='Refund Discount' mod='hipay_enterprise'}
                                     {else}
-                                        <span class="badge badge-success">Captured</span>
+                                        <span class="badge badge-success">{l s='Captured'  mod='hipay_enterprise'}</span>
                                     {/if}
                                 </td>
                                 <td></td>
@@ -220,7 +220,7 @@
             }
             
             if(parseFloat($("#total-refund-input").val()) <= 0){
-                displayError('{l s='Refund amount must be greater than zero.' mod='hipay_enterprise'}');
+                displayError("{l s='Refund amount must be greater than zero.' mod='hipay_enterprise'}");
                 return false;
             }
             
@@ -229,12 +229,12 @@
             }
             
             if(parseFloat($("#total-refund-input").val()) > refundableAmount +0.01){
-                displayError('{l s='Refund amount must be lower than the amount still to be refunded.' mod='hipay_enterprise'}');
+                displayError("{l s='Refund amount must be lower than the amount still to be refunded.' mod='hipay_enterprise'}");
                 return false;
             }
             
             if(  !$("#refund-discount").is(":checked") && (refundableAmount - parseFloat($("#total-refund-input").val()) <=  parseFloat($("#refund-discount").data("amount")))){
-                displayError('{l s='You must refund discount because next refund amount will be lower than total discount amount.' mod='hipay_enterprise'}');
+                displayError("{l s='You must refund discount because next refund amount will be lower than total discount amount.' mod='hipay_enterprise'}");
                 return false;
             }
             

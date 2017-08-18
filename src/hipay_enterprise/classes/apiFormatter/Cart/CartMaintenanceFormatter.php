@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
 require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__).'/../ApiFormatterInterface.php');
 require_once(dirname(__FILE__).'/../../helper/HipayMapper.php');
@@ -64,10 +65,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     protected function mapRequest(&$cart)
     {
-        $totalQty = 0;
         // Good items
         foreach ($this->products as $product) {
-            $totalQty += $product["quantity"];
             $item = $this->getGoodItem(
                 $product["item"], $product["quantity"]
             );
@@ -76,7 +75,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
 
         // Discount items
         if ($this->captureRefundDiscount && sizeof($this->discounts) > 0) {
-            $item = $this->getDiscountItem($totalQty);
+            $item = $this->getDiscountItem();
             $cart->addItem($item);
         }
 
@@ -159,7 +158,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * create a discount item from discount line informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getDiscountItem($totalQty)
+    private function getDiscountItem()
     {
         $product_reference    = "";
         $name                 = "";

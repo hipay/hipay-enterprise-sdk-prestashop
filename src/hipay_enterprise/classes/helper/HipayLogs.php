@@ -175,8 +175,8 @@ class HipayLogs
 
         if (!file_exists($path)) {
             http_response_code(404);
-            die('<h1>File not found</h1>');
             $this->logErrors("Log File not found $path");
+            die('<h1>File not found</h1>');
         } else {
             header('Content-Type: text/plain');
             $content = Tools::file_get_contents($path);
@@ -206,7 +206,7 @@ class HipayLogs
         $debugReplacePrivateDataKeys = array_map('strtolower', $this->privateDataKeys);
 
         foreach (array_keys($debugData) as $key) {
-            if (in_array(strtolower($key), $debugReplacePrivateDataKeys)) {
+            if (in_array(Tools::strtolower($key), $debugReplacePrivateDataKeys)) {
                 $debugData[$key] = self::DEBUG_KEYS_MASK;
             } elseif (is_array($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($debugData[$key]);
