@@ -22,7 +22,7 @@ function insertAfter(newElement, targetElement) {
     var parent = targetElement.parentNode;
 
     // if the parents lastchild is the targetElement...
-    if (parent.lastChild == targetElement) {
+    if (parent.lastChild === targetElement) {
         // add the newElement after the target element.
         parent.appendChild(newElement);
     } else {
@@ -50,10 +50,11 @@ function removeElementsByClass(className) {
  * @returns {Boolean}
  */
 function hasClass(el, className) {
-    if (el.classList)
-        return el.classList.contains(className)
-    else
-        return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))
+    if (el.classList) {
+        return el.classList.contains(className);
+    } else {
+        return !!el.className.match(new RegExp("(\\s|^)" + className + "(\\s|$)"));
+    }
 }
 
 /**
@@ -63,10 +64,11 @@ function hasClass(el, className) {
  * @returns {undefined}
  */
 function addClass(el, className) {
-    if (el.classList)
-        el.classList.add(className)
-    else if (!hasClass(el, className))
-        el.className += " " + className
+    if (el.classList) {
+        el.classList.add(className);
+    } else if (!hasClass(el, className)) {
+        el.className += " " + className;
+    }
 }
 
 /**
@@ -76,23 +78,12 @@ function addClass(el, className) {
  * @returns {undefined}
  */
 function removeClass(el, className) {
-    if (el.classList)
-        el.classList.remove(className)
-    else if (hasClass(el, className)) {
-        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
-        el.className = el.className.replace(reg, ' ')
+    if (el.classList) {
+        el.classList.remove(className);
+    } else if (hasClass(el, className)) {
+        var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+        el.className = el.className.replace(reg, " ");
     }
-}
-
-/**
- * 
- * @param {type} element
- * @param {type} text
- * @returns {undefined}
- */
-function errorMessage(element, text) {
-    addClass(element, 'error-input-hp');
-    insertAfter(generateElement(text), element);
 }
 
 /**
@@ -106,6 +97,17 @@ function generateElement(text) {
     addClass(pInsert, 'error-text-hp');
 
     return pInsert;
+}
+
+/**
+ * 
+ * @param {type} element
+ * @param {type} text
+ * @returns {undefined}
+ */
+function errorMessage(element, text) {
+    addClass(element, "error-input-hp");
+    insertAfter(generateElement(text), element);
 }
 
 /**
@@ -235,8 +237,8 @@ function normalizePrice(price) {
  */
 function checkNotEmptyField(element) {
 
-    if (element.value == null || element.value == "") {
-        errorMessage(element, 'Field is mandatory');
+    if (element.value === null || element.value === "") {
+        errorMessage(element, "Field is mandatory");
         return false;
     }
 
@@ -333,12 +335,30 @@ function checkCPNCURP(element) {
     return true;
 }
 
-var hiPayInputControl = {};
+/**
+ * 
+ * @param {type} input
+ * @returns {Boolean}
+ */
+function typeControlCheck(input) {
+    var element = document.getElementById(input.field);
+    removeClass(element, 'error-input-hp');
 
-hiPayInputControl.checkControl = checkControl;
-hiPayInputControl.addInput = addInput;
-hiPayInputControl.normalizePrice = normalizePrice;
-hiPayInputControl.forms = [];
+    switch (input.type) {
+        case "iban":
+            return checkIban(element);
+        case "bic":
+            return checkBic(element);
+        case "creditcardnumber":
+            return checkCCNumber(element);
+        case "cpf":
+            return checkCPF(element);
+        case "curp-cpn":
+            return checkCPNCURP(element);
+        default :
+            return checkNotEmptyField(element);
+    }
+}
 
 /**
  * 
@@ -347,30 +367,15 @@ hiPayInputControl.forms = [];
  */
 function checkControl(form) {
 
-    success = true;
+    var success = true;
     if (hiPayInputControl.forms[form]) {
-        removeElementsByClass('error-text-hp');
+        removeElementsByClass("error-text-hp");
         hiPayInputControl.forms[form].fields.forEach(function (input) {
             success = typeControlCheck(input) && success;
         })
     }
 
     return success;
-}
-
-/**
- * 
- * @param {type} form
- * @param {type} field
- * @param {type} type
- * @param {type} required
- * @returns {undefined}
- */
-function addInput(form, field, type, required) {
-    if (!hiPayInputControl.forms[form]) {
-        hiPayInputControl.forms[form] = new Form();
-    }
-    hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
 }
 
 /**
@@ -396,25 +401,26 @@ function Input(field, type, required) {
 
 /**
  * 
- * @param {type} input
- * @returns {Boolean}
+ * @param {type} form
+ * @param {type} field
+ * @param {type} type
+ * @param {type} required
+ * @returns {undefined}
  */
-function typeControlCheck(input) {
-    element = document.getElementById(input.field);
-    removeClass(element, 'error-input-hp');
-
-    switch (input.type) {
-        case 'iban':
-            return checkIban(element);
-        case 'bic':
-            return checkBic(element);
-        case 'creditcardnumber':
-            return checkCCNumber(element);
-        case 'cpf':
-            return checkCPF(element);
-        case 'curp-cpn':
-            return checkCPNCURP(element);
-        default :
-            return checkNotEmptyField(element);
+function addInput(form, field, type, required) {
+    if (!hiPayInputControl.forms[form]) {
+        hiPayInputControl.forms[form] = new Form();
     }
+    hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
 }
+
+var hiPayInputControl = {};
+
+hiPayInputControl.checkControl = checkControl;
+hiPayInputControl.addInput = addInput;
+hiPayInputControl.normalizePrice = normalizePrice;
+hiPayInputControl.forms = [];
+
+
+
+

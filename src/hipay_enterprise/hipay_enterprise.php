@@ -110,8 +110,6 @@ class Hipay_enterprise extends PaymentModule
             $this->_errors[] = $this->l('You have to enable the SOAP extension on your server to install this module');
             return false;
         }
-        $iso_code = Country::getIsoById(Configuration::get('PS_COUNTRY_DEFAULT'));
-
         return parent::install() && $this->installHipay();
     }
 
@@ -197,7 +195,7 @@ class Hipay_enterprise extends PaymentModule
      *
      * @param $value
      */
-    public function hookActionAdminDeleteBefore($value)
+    public function hookActionAdminDeleteBefore()
     {
         if (Tools::getValue('id_customer')) {
             $this->token->deleteAllToken(Tools::getValue('id_customer'));
@@ -209,7 +207,7 @@ class Hipay_enterprise extends PaymentModule
      *
      * @param $value
      */
-    public function hookActionAdminBulKDeleteBefore($value)
+    public function hookActionAdminBulKDeleteBefore()
     {
         if (Tools::getValue('customerBox')) {
             foreach (Tools::getValue('customerBox') as $customerId) {
@@ -255,7 +253,7 @@ class Hipay_enterprise extends PaymentModule
         return $hipay17->hipayActionFrontControllerSetMedia($params);
     }
 
-    public function hookBackOfficeHeader($params)
+    public function hookBackOfficeHeader()
     {
         $this->context->controller->addCSS(
             ($this->_path).'views/css/bootstrap-duallistbox.min.css', 'all'

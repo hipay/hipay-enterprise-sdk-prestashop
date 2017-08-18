@@ -446,9 +446,7 @@ class HipayConfigFormHandler
                 return false;
             }
 
-            $response           = $this->module->mapper->setMapping(
-                HipayMapper::HIPAY_CARRIER_MAPPING, $mapping
-            );
+            $this->module->mapper->setMapping(HipayMapper::HIPAY_CARRIER_MAPPING, $mapping);
             $this->module->_successes[] = $this->module->l('Carrier mapping configuration saved successfully.');
 
             return true;
