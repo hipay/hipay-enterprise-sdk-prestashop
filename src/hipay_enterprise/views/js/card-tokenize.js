@@ -55,11 +55,11 @@ $("#tokenizerForm").submit(function (e) {
         }
         //set param for Api call
         var params = {
-            card_number: $('#card-number').val(),
-            cvc: $('#cvc').val(),
-            card_expiry_month: $('input[name=expiry-month]').val(),
-            card_expiry_year: $('input[name=expiry-year]').val(),
-            card_holder: $('#the-card-name-id').val(),
+            card_number: $("#card-number").val(),
+            cvc: $("#cvc").val(),
+            card_expiry_month: $("input[name=expiry-month]").val(),
+            card_expiry_year: $("input[name=expiry-year]").val(),
+            card_holder: $("#the-card-name-id").val(),
             multi_use: multiUse
         };
         HiPay.setTarget(api_tokenjs_mode); // default is production/live
@@ -71,7 +71,7 @@ $("#tokenizerForm").submit(function (e) {
                     // The card has been successfully tokenized
                     var token = result.token;
                     var brand = "";
-                    if (result.hasOwnProperty('domestic_network')) {
+                    if (result.hasOwnProperty("domestic_network")) {
                         brand = result.domestic_network;
                     } else {
                         brand = result.brand;

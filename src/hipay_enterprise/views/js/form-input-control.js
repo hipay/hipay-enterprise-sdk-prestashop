@@ -94,9 +94,9 @@ function removeClass(el, className) {
  * @returns {pInsert|Element}
  */
 function generateElement(text) {
-    pInsert = document.createElement('span');
+    var pInsert = document.createElement("span");
     pInsert.textContent = text;
-    addClass(pInsert, 'error-text-hp');
+    addClass(pInsert, "error-text-hp");
 
     return pInsert;
 }
@@ -145,7 +145,7 @@ var validIBAN = (function () { // use an IIFE
 
     // return a function that does the actual work
     return function (input) {
-        var iban = String(input).toUpperCase().replace(/[^A-Z0-9]/g, ''), // keep only alphanumeric characters
+        var iban = String(input).toUpperCase().replace(/[^A-Z0-9]/g, ""), // keep only alphanumeric characters
                 code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
                 digits;
 
@@ -172,27 +172,29 @@ var validIBAN = (function () { // use an IIFE
  */
 function isCardNumberValid(value) {
     // accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value))
+    if (/[^0-9-\s]+/.test(value)){
         return false;
+    }
 
     // The Luhn Algorithm. It's so pretty.
     var nCheck = 0, nDigit = 0, bEven = false;
     value = value.replace(/\D/g, "");
 
     for (var n = value.length - 1; n >= 0; n--) {
-        var cDigit = value.charAt(n),
-                nDigit = parseInt(cDigit, 10);
+        var cDigit = value.charAt(n);
+        nDigit = parseInt(cDigit, 10);
 
         if (bEven) {
-            if ((nDigit *= 2) > 9)
+            if ((nDigit *= 2) > 9){
                 nDigit -= 9;
+            }
         }
 
         nCheck += nDigit;
         bEven = !bEven;
     }
 
-    return (nCheck % 10) == 0;
+    return (nCheck % 10) === 0;
 }
 
 /**
@@ -223,9 +225,9 @@ function validBic(value) {
  * @returns {Number|*}
  */
 function normalizePrice(price) {
-    price = parseFloat(price.replace(/,/g, '.'));
+    price = parseFloat(price.replace(/,/g, "."));
 
-    if (isNaN(price) || price === '') {
+    if (isNaN(price) || price === "") {
         price = 0;
     }
 
@@ -344,7 +346,7 @@ function checkCPNCURP(element) {
  */
 function typeControlCheck(input) {
     var element = document.getElementById(input.field);
-    removeClass(element, 'error-input-hp');
+    removeClass(element, "error-input-hp");
 
     switch (input.type) {
         case "iban":
