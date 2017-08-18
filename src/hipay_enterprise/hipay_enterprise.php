@@ -301,7 +301,7 @@ class Hipay_enterprise extends PaymentModule
         );
 
         return $this->display(
-                dirname(__FILE__), 'views/templates/hook/payment.tpl'
+                dirname(__FILE__), 'views/templates/hook/ps16/payment-16.tpl'
         );
     }
 

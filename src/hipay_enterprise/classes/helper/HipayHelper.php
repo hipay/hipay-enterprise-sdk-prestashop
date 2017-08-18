@@ -375,11 +375,15 @@ class HipayHelper
      */
     public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
     {
-        $orderId = Order::getOrderByCartId($cart->id);
+        if (_PS_VERSION_ >= '1.7.1.0') {
+            $orderId = Order::getIdByCartId($cart->id);
+        } else {
+            $orderId = Order::getOrderByCartId($cart->id);
+        }
 
         if ($cart && (!$orderId || empty($orderId))) {
             $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
-            
+
             HipayHelper::unsetCart();
 
             $customer = new Customer((int) $cart->id_customer);

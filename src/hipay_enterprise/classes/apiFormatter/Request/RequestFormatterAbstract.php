@@ -35,8 +35,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
     $moduleInstance, $params, $cart = false
     )
     {
-        parent::__construct($moduleInstance,
-            $cart);
+        parent::__construct($moduleInstance, $cart);
         $this->params = $params;
         $this->moto   = (isset($params["moto"]) && $params["moto"]) ? true : false;
     }
@@ -49,9 +48,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
     {
         parent::mapRequest($order);
         $this->setCustomData(
-            $order,
-            $this->cart,
-            $this->params
+            $order, $this->cart, $this->params
         );
 
         $order->orderid = $this->cart->id."(".time().")";
@@ -68,62 +65,49 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->description = $this->generateDescription($order);
 
         $order->amount   = $this->cart->getOrderTotal(
-            true,
-            Cart::BOTH
+            true, Cart::BOTH
         );
         $order->shipping = $this->cart->getSummaryDetails(
-                null,
-                true
+                null, true
             )['total_shipping'];
         $order->tax      = $this->cart->getSummaryDetails(
-                null,
-                true
+                null, true
             )['total_tax'];
 
         $order->currency = $this->currency->iso_code;
 
         if ($this->moto) {
             //set token for request integrity
-            $token         = HipayHelper::getHipayAdminToken('AdminOrders',
-                    Order::getOrderByCartId($this->cart->id));
-            $accept_url    = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=valid&id_order='.(int) Order::getOrderByCartId($this->cart->id);
-            $decline_url   = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=decline&id_order='.(int) Order::getOrderByCartId($this->cart->id);
-            $pending_url   = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=pending&id_order='.(int) Order::getOrderByCartId($this->cart->id);
-            $exception_url = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=exception&id_order='.(int) Order::getOrderByCartId($this->cart->id);
-            $cancel_url    = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=cancel&id_order='.(int) Order::getOrderByCartId($this->cart->id);
+
+            if (_PS_VERSION_ >= '1.7.1.0') {
+                $orderId = Order::getIdByCartId($this->cart->id);
+            } else {
+                $orderId = Order::getOrderByCartId($this->cart->id);
+            }
+
+            $token         = HipayHelper::getHipayAdminToken('AdminOrders', $orderId);
+            $accept_url    = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=valid&id_order='.(int) $orderId;
+            $decline_url   = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=decline&id_order='.(int) $orderId;
+            $pending_url   = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=pending&id_order='.(int) $orderId;
+            $exception_url = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=exception&id_order='.(int) $orderId;
+            $cancel_url    = HipayHelper::getAdminUrl().$this->context->link->getAdminLink('AdminHiPayMoto').'&hipaytoken='.$token.'&hipaystatus=cancel&id_order='.(int) $orderId;
         } else {
             //set token for request integrity
-            $token         = HipayHelper::getHipayToken($this->cart->id,
-                    'validation.php');
+            $token         = HipayHelper::getHipayToken($this->cart->id, 'validation.php');
             $accept_url    = $this->context->link->getModuleLink(
-                $this->module->name,
-                'validation',
-                array("product" => $this->params["method"], "token" => $token),
-                true
+                $this->module->name, 'validation', array("product" => $this->params["method"], "token" => $token), true
             );
             $decline_url   = $this->context->link->getModuleLink(
-                $this->module->name,
-                'decline',
-                array("token" => $token),
-                true
+                $this->module->name, 'decline', array("token" => $token), true
             );
             $pending_url   = $this->context->link->getModuleLink(
-                $this->module->name,
-                'pending',
-                array("token" => $token),
-                true
+                $this->module->name, 'pending', array("token" => $token), true
             );
             $exception_url = $this->context->link->getModuleLink(
-                $this->module->name,
-                'exception',
-                array("token" => $token),
-                true
+                $this->module->name, 'exception', array("token" => $token), true
             );
             $cancel_url    = $this->context->link->getModuleLink(
-                $this->module->name,
-                'cancel',
-                array("token" => $token),
-                true
+                $this->module->name, 'cancel', array("token" => $token), true
             );
         }
 
@@ -133,16 +117,16 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->exception_url = $exception_url;
         $order->cancel_url    = $cancel_url;
 
-        $order->customerBillingInfo     = $this->getCustomerBillingInfo();
-        $order->customerShippingInfo    = $this->getCustomerShippingInfo();
-        $order->firstname               = $this->customer->firstname;
-        $order->lastname                = $this->customer->lastname;
-        $order->cid                     = (int) $this->customer->id;
-        $order->ipaddr                  = $_SERVER ['REMOTE_ADDR'];
-        $order->language                = $this->getLanguageCode($this->context->language->iso_code);
-        $order->http_user_agent         = $_SERVER ['HTTP_USER_AGENT'];
-        $order->basket                  = $this->params["basket"];
-        $order->delivery_information    = $this->params["delivery_informations"];
+        $order->customerBillingInfo      = $this->getCustomerBillingInfo();
+        $order->customerShippingInfo     = $this->getCustomerShippingInfo();
+        $order->firstname                = $this->customer->firstname;
+        $order->lastname                 = $this->customer->lastname;
+        $order->cid                      = (int) $this->customer->id;
+        $order->ipaddr                   = $_SERVER ['REMOTE_ADDR'];
+        $order->language                 = $this->getLanguageCode($this->context->language->iso_code);
+        $order->http_user_agent          = $_SERVER ['HTTP_USER_AGENT'];
+        $order->basket                   = $this->params["basket"];
+        $order->delivery_information     = $this->params["delivery_informations"];
         $order->authentication_indicator = $this->params["authentication_indicator"];
     }
 
@@ -155,8 +139,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
     {
         $description = ''; // Initialize to blank
         foreach ($this->cart->getSummaryDetails(
-            null,
-            true
+            null, true
         )['products'] as $value) {
             if ($value ['reference']) {
                 // Add reference of each product
@@ -166,9 +149,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         // Trim trailing seperator
         $description = Tools::substr(
-                $description,
-                0,
-                -2
+                $description, 0, -2
         );
         if (Tools::strlen($description) == 0) {
             $description = 'cart_id_'.$order->orderid;
@@ -178,12 +159,8 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         if (Tools::strlen($description) > $max_length) {
             $offset      = ($max_length - 3) - Tools::strlen($description);
             $description = Tools::substr(
-                    $description,
-                    0,
-                    strrpos(
-                        $description,
-                        ' ',
-                        $offset
+                    $description, 0, strrpos(
+                        $description, ' ', $offset
                     )
                 ).'...';
         }
@@ -197,8 +174,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerBillingInfo()
     {
-        $billingInfo = new CustomerBillingInfoFormatter($this->module,
-            $this->cart);
+        $billingInfo = new CustomerBillingInfoFormatter($this->module, $this->cart);
 
         return $billingInfo->generate();
     }
@@ -209,8 +185,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerShippingInfo()
     {
-        $billingInfo = new CustomerShippingInfoFormatter($this->module,
-            $this->cart);
+        $billingInfo = new CustomerShippingInfoFormatter($this->module, $this->cart);
 
         return $billingInfo->generate();
     }

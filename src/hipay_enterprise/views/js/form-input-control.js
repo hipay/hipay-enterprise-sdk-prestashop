@@ -10,6 +10,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+var hiPayInputControl = {};
+hiPayInputControl.forms = [];
 
 /**
  * 
@@ -414,13 +416,6 @@ function addInput(form, field, type, required) {
     hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
 }
 
-var hiPayInputControl = {};
-
 hiPayInputControl.checkControl = checkControl;
 hiPayInputControl.addInput = addInput;
 hiPayInputControl.normalizePrice = normalizePrice;
-hiPayInputControl.forms = [];
-
-
-
-

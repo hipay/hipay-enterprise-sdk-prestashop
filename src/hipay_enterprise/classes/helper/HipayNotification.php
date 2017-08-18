@@ -78,8 +78,8 @@ class HipayNotification
 
         if ($this->cart->orderExists()) {
             // init de l'id de commande
-            // can't use Order::getOrderByCartId 'cause
-            $idOrder = Order::getOrderByCartId($this->cart->id);
+            // can't use Order::getOrderByCartId 'cause add shop restrictions
+            $idOrder = $this->db->getOrderByCartId($this->cart->id);
             if ($idOrder) {
                 $this->order = new Order((int) $idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");

@@ -94,8 +94,8 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
             }
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/user-token-17.tpl'
-                    : 'user-token-16.tpl');
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/account/ps17/user-token-17.tpl'
+                    : 'account/ps16/user-token-16.tpl');
 
         $savedCC = $this->ccToken->getSavedCC($context->customer->id);
 

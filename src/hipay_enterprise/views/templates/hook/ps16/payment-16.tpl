@@ -14,9 +14,9 @@
     <input id="ioBB" type="hidden" name="ioBB">
     {foreach $sortedPaymentProducts as $name => $paymentProduct}
         {if $name == "credit_card"}
-           {include file="../front/partial/cc.paymentoption.tpl"}
+           {include file="../../front/partial/cc.paymentoption.tpl"}
         {else}    
-            {include file="../front/partial/local.paymentoption.tpl"}
+            {include file="../../front/partial/local.paymentoption.tpl"}
         {/if}
     {/foreach}
 {/if}    

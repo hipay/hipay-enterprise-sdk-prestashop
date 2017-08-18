@@ -76,7 +76,7 @@
                     <label for="newsletter">
                         <div class="checker" id="uniform-newsletter">
                             <span class="">
-                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" checked>
+                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" >
                             </span>
                         </div>
                         {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
@@ -98,130 +98,18 @@
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
     <script>
+        var activatedCreditCard = {$activatedCreditCard nofilter};
+        var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
+        var myPaymentMethodSelected = true;
         {if $confHipay.account.global.sandbox_mode}
-        var api_tokenjs_mode = 'stage';
-        var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
-        var api_tokenjs_password_publickey = '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}';
+        var api_tokenjs_mode = "stage";
+        var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
+        var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
         {else}
-        var api_tokenjs_mode = 'production';
-        var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
-        var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
+        var api_tokenjs_mode = "production";
+        var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
+        var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
-
-        function checkPaymentDate() {
-            console.log($(".expiry").val());
-            if ($(".expiry").val() == null || $(".expiry").val() == "") {
-                $(".expiry").addClass("error-input-hp");
-                var pInsert = $('<span>Field is mandatory</span>');
-                $(".expiry").after(pInsert);
-                pInsert.addClass("error-text-hp");
-                return false;
-            }
-            return true;
-        }
-
-
-        $("#pay-button-one-click").click(function (e) {
-            // prevent form from being submitted
-            e.preventDefault();
-            e.stopPropagation();
-
-
-            if ($('input[name=ccTokenHipay]:checked').length) {
-                // at least one of the radio buttons was checked
-                $('#tokenizerForm').hide();
-                $('#payment-loader-hp').show();
-                $("#pay-button-one-click").prop('disabled', true);
-                $("#pay-button").prop('disabled', true);
-
-                $("#tokenizerForm").submit();
-                return true; // allow whatever action would normally happen to continue
-            } else {
-                // no radio button was checked
-                $("#error-js-oc").show();
-                $(".error-oc").text("{l s='You must choose one of the saved card.' mod='hipay_enterprise'}");
-                return false; // stop whatever action would normally happen
-            }
-
-        });
-
-        $("#pay-button").click(function (e) {
-            formErrors = !hiPayInputControl.checkControl('cc');
-            formErrors = !checkPaymentDate() || formErrors;
-
-            if (formErrors) {
-                return false;
-            }
-            multi_use = 0;
-            if($("#saveTokenHipay").is(':checked')){
-                multi_use = 1;
-            }
-            //set param for Api call
-            var params = {
-                card_number: $('#card-number').val(),
-                cvc: $('#cvc').val(),
-                card_expiry_month: $('input[name=expiry-month]').val(),
-                card_expiry_year: $('input[name=expiry-year]').val(),
-                card_holder: $('#the-card-name-id').val(),
-                multi_use: multi_use
-            };
-
-            HiPay.setTarget(api_tokenjs_mode); // default is production/live
-
-            HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
-            HiPay.create(params,
-                    function (result) {
-                        $('#tokenizerForm').hide();
-                        $('#payment-loader-hp').show();
-                        $("#pay-button-one-click").prop('disabled', true);
-                        $("#pay-button").prop('disabled', true);
-
-                        // The card has been successfully tokenized
-                        token = result.token;
-                        if (result.hasOwnProperty('domestic_network')) {
-                            brand = result.domestic_network;
-                        } else {
-                            brand = result.brand;
-                        }
-                        pan = result.pan;
-                        card_expiry_month = result.card_expiry_month;
-                        card_expiry_year = result.card_expiry_year;
-                        card_holder = result.card_holder;
-                        issuer = result.issuer;
-                        country = result.country;
-                        // set tokenization response
-                        $('#card-token').val(token);
-                        $('#card-brand').val(brand);
-                        $('#card-pan').val(pan);
-                        $('#card-holder').val($('#the-card-name-id').val());
-                        $('#card-expiry-month').val(card_expiry_month);
-                        $('#card-expiry-year').val(card_expiry_year);
-                        $('#card-issuer').val(issuer);
-                        $('#card-country').val(country);
-                        // we empty the form so we don't send credit card informations to the server
-                        $('#card-number').val("");
-                        $('#cvc').val("");
-                        $('input[name=expiry-month]').val("");
-                        $('input[name=expiry-year]').val("");
-                        $('#the-card-name-id').val("");
-                        //submit the form
-                        $("#tokenizerForm").submit();
-                        return true;
-                    },
-                    function (errors) {
-                        // An error occurred
-                        $("#error-js").show();
-                        if (typeof errors.message != "undefined") {
-                            $(".error").text("Error: " + errors.message);
-                        } else {
-                            $(".error").text("An error occurred with the request.");
-                        }
-                        return false;
-                    }
-            );
-            // prevent form from being submitted
-            e.preventDefault();
-            e.stopPropagation();
-        });
     </script>
+    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
 {/if}

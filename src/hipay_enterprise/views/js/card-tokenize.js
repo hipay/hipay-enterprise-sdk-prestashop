@@ -26,14 +26,11 @@ function checkPaymentDate() {
 }
 
 $("#tokenizerForm").submit(function (e) {
-
     var form = this;
     // prevent form from being submitted 
     e.preventDefault();
     e.stopPropagation();
-
-    var myPaymentMethodSelected = $(".payment-options").find("input[data-module-name='credit_card']").is(":checked");
-
+    
     if (myPaymentMethodSelected) {
 
         if ($("input[name=ccTokenHipay]:checked").length) {

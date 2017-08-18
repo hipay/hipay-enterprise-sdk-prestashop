@@ -40,6 +40,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $context          = Context::getContext();
         $cart             = $context->cart;
         $customer         = new Customer((int) $cart->id_customer);
+        $delivery         = new Address((int) $cart->id_address_delivery);
+        $deliveryCountry  = new Country((int) $delivery->id_country);
+        $currency         = new Currency((int) $cart->id_currency);
+        $customer         = new Customer((int) $cart->id_customer);
         $this->apiHandler = new ApiHandler(
             $this->module, $this->context
         );
@@ -51,10 +55,17 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->module->getLogs()->logInfos("# Redirect init CART ID".$context->cart->id);
 
         $this->ccToken = new HipayCCToken($this->module);
+
+        $this->creditCard = HipayHelper::getActivatedPaymentByCountryAndCurrency(
+                $this->module, $this->module->hipayConfigTool->getConfigHipay(), "credit_card", $deliveryCountry,
+                $currency
+        );
+
         $context->smarty->assign(
             array(
                 'nbProducts' => $cart->nbProducts(),
                 'cust_currency' => $cart->id_currency,
+                'activatedCreditCard' => Tools::jsonEncode(array_keys($this->creditCard)),
                 'currencies' => $this->module->getCurrency((int) $cart->id_currency),
                 'total' => $cart->getOrderTotal(true, Cart::BOTH),
                 'this_path' => $this->module->getPathUri(),
@@ -87,7 +98,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             )
                         )
                     );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/payment/ps17/paymentFormIframe-17' : 'payment/ps16/paymentFormIframe-16').'.tpl';
+                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.'/views/templates/front/payment/ps17/paymentFormIframe-17'
+                                : 'payment/ps16/paymentFormIframe-16').'.tpl';
                 }
                 break;
             case Apihandler::DIRECTPOST:
@@ -115,7 +127,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                         )
                     );
-                    $path = 'paymentFormApi-16.tpl';
+                    $path = 'payment/ps16/paymentFormApi-16.tpl';
                 }
                 break;
             default:
@@ -169,7 +181,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                 )
             );
-            return 'paymentFormApi-16.tpl';
+            return 'payment/ps16/paymentFormApi-16.tpl';
         }
     }
 
@@ -182,24 +194,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     private function apiNewCC($cart, $context, $savedCC)
     {
-        $delivery        = new Address((int) $cart->id_address_delivery);
-        $deliveryCountry = new Country((int) $delivery->id_country);
-        $currency        = new Currency((int) $cart->id_currency);
-        $customer        = new Customer((int) $cart->id_customer);
-
-        $creditCard = HipayHelper::getActivatedPaymentByCountryAndCurrency(
-                $this->module, $this->module->hipayConfigTool->getConfigHipay(), "credit_card", $deliveryCountry,
-                $currency
-        );
-
         $selectedCC = Tools::strtolower(
                 str_replace(
                     " ", "-", Tools::getValue('card-brand')
                 )
         );
 
-
-        if (in_array($selectedCC, array_keys($creditCard))) {
+        if (in_array($selectedCC, array_keys($this->creditCard))) {
             try {
                 $card = array(
                     "token" => Tools::getValue('card-token'),

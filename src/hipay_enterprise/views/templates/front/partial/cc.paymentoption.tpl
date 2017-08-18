@@ -18,7 +18,7 @@
                 <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
                      style="max-width: 160px;max-height: 50px;"
                      alt="{l s='Pay by credit card' mod='hipay_enterprise'}"/>
-                {l s='Pay by ' mod='hipay_enterprise' }{$configHipay.payment.global.ccDisplayName}
+                {l s='Pay by ' mod='hipay_enterprise' } {$configHipay.payment.global.ccDisplayName}
                 <span>
                     {if $configHipay.payment.global.operating_mode != 'api'}
                         <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>

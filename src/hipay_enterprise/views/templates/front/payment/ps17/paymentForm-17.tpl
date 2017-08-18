@@ -1,14 +1,14 @@
 {**
- * HiPay Enterprise SDK Prestashop
- *
- * 2017 HiPay
- *
- * NOTICE OF LICENSE
- *
- * @author    HiPay <support.tpp@hipay.com>
- * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- *}
+* HiPay Enterprise SDK Prestashop
+*
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+* @author    HiPay <support.tpp@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+*}
 <form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post"
       name="tokenizerForm"  autocomplete="off">
     {if $confHipay.payment.global.card_token}
@@ -63,16 +63,23 @@
     <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
     var activatedCreditCard = {$activatedCreditCard nofilter};
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
+    var myPaymentMethodSelected = false;
+    function setSelectedPaymentMethod() {
+        $(".payment-options").change(function () {
+            myPaymentMethodSelected = $(".payment-options").find("input[data-module-name='credit_card']").is(":checked");
+        });
+    }
     {if $confHipay.account.global.sandbox_mode}
-    var api_tokenjs_mode = 'stage';
-    var api_tokenjs_username = '{$confHipay.account.sandbox.api_tokenjs_username_sandbox}';
-    var api_tokenjs_password_publickey = '{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}';
+    var api_tokenjs_mode = "stage";
+    var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
+    var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
     {else}
-    var api_tokenjs_mode = 'production';
-    var api_tokenjs_username = '{$confHipay.account.production.api_tokenjs_username_production}';
-    var api_tokenjs_password_publickey = '{$confHipay.account.production.api_tokenjs_password_publickey_production}';
+    var api_tokenjs_mode = "production";
+    var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
+    var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
     {/if}
 </script>

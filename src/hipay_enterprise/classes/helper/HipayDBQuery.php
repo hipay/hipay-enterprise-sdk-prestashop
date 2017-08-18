@@ -292,6 +292,19 @@ class HipayDBQuery
     }
 
     /**
+     * 
+     * @param type $cartId
+     */
+    public function getOrderByCartId($cartId)
+    {
+        $sql    = 'SELECT `id_order`
+                    FROM `'._DB_PREFIX_.'orders`
+                    WHERE `id_cart` = '.(int) $cartId;
+        $result = Db::getInstance()->getRow($sql);
+        return isset($result['id_order']) ? $result['id_order'] : false;
+    }
+
+    /**
      * return transaction from Order Id
      * @return type
      */
@@ -345,20 +358,17 @@ class HipayDBQuery
     {
         try {
             Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE,
-                $values
+                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $values
             );
         } catch (Exception $exc) {
             $where = "`shop_id` = ".(int) $shopId;
 
             Db::getInstance()->delete(
-                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE,
-                $where
+                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $where
             );
 
             Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE,
-                $values
+                HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $values
             );
         }
         return true;
@@ -374,20 +384,17 @@ class HipayDBQuery
     {
         try {
             Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE,
-                $values
+                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $values
             );
         } catch (Exception $exc) {
             $where = "`shop_id` = ".(int) $shopId;
 
             Db::getInstance()->delete(
-                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE,
-                $where
+                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $where
             );
 
             Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE,
-                $values
+                HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $values
             );
         }
         return true;
@@ -445,8 +452,7 @@ class HipayDBQuery
 
         $this->logs->logInfos(
             '# Check order status exist : '.print_r(
-                $result,
-                true
+                $result, true
             )
         );
 
@@ -508,8 +514,7 @@ class HipayDBQuery
         // delete
         $where = "payment_method='".HipayDBQuery::HIPAY_PAYMENT_ORDER_PREFIX."' AND transaction_id='' AND order_reference='".$orderReference."'";
         Db::getInstance()->delete(
-            'order_payment',
-            $where
+            'order_payment', $where
         );
     }
 
@@ -524,8 +529,7 @@ class HipayDBQuery
             $values[$key] = pSQL($value);
         }
 
-        return Db::getInstance()->insert(HipayDBQuery::HIPAY_TRANSACTION_TABLE,
-                $values);
+        return Db::getInstance()->insert(HipayDBQuery::HIPAY_TRANSACTION_TABLE, $values);
     }
 
     /**
@@ -598,8 +602,7 @@ class HipayDBQuery
         if (!empty($result)) {
 
             return Tools::jsonDecode(
-                    $result[0]["basket"],
-                    true
+                    $result[0]["basket"], true
             );
         }
         return false;
@@ -617,8 +620,7 @@ class HipayDBQuery
         }
 
         return Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE,
-                $values
+                HipayDBQuery::HIPAY_ORDER_REFUND_CAPTURE_TABLE, $values
         );
     }
 
@@ -630,9 +632,7 @@ class HipayDBQuery
     public function getCapturedItems($orderId)
     {
         return $this->getMaintainedItems(
-                $orderId,
-                "capture",
-                "good"
+                $orderId, "capture", "good"
         );
     }
 
@@ -644,9 +644,7 @@ class HipayDBQuery
     public function getRefundedItems($orderId)
     {
         return $this->getMaintainedItems(
-                $orderId,
-                "refund",
-                "good"
+                $orderId, "refund", "good"
         );
     }
 
@@ -658,9 +656,7 @@ class HipayDBQuery
     public function captureOrRefundFromBO($orderId)
     {
         $item = $this->getMaintainedItems(
-            $orderId,
-            "BO_TPP",
-            "BO"
+            $orderId, "BO_TPP", "BO"
         );
         if (empty($item)) {
             return false;
@@ -715,9 +711,7 @@ class HipayDBQuery
      */
     public function feesAreCaptured($orderId)
     {
-        return $this->feesOrDiscountAreMaintained($orderId,
-                'fees',
-                'capture');
+        return $this->feesOrDiscountAreMaintained($orderId, 'fees', 'capture');
     }
 
     /**
@@ -726,9 +720,7 @@ class HipayDBQuery
      */
     public function feesAreRefunded($orderId)
     {
-        return $this->feesOrDiscountAreMaintained($orderId,
-                'fees',
-                'refund');
+        return $this->feesOrDiscountAreMaintained($orderId, 'fees', 'refund');
     }
 
     /**
@@ -737,9 +729,7 @@ class HipayDBQuery
      */
     public function discountsAreCaptured($orderId)
     {
-        return $this->feesOrDiscountAreMaintained($orderId,
-                'discount',
-                'capture');
+        return $this->feesOrDiscountAreMaintained($orderId, 'discount', 'capture');
     }
 
     /**
@@ -748,9 +738,7 @@ class HipayDBQuery
      */
     public function discountsAreRefunded($orderId)
     {
-        return $this->feesOrDiscountAreMaintained($orderId,
-                'discount',
-                'refund');
+        return $this->feesOrDiscountAreMaintained($orderId, 'discount', 'refund');
     }
 
     /**
@@ -807,8 +795,7 @@ class HipayDBQuery
         }
 
         return Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_CC_TOKEN_TABLE,
-                $values
+                HipayDBQuery::HIPAY_CC_TOKEN_TABLE, $values
         );
     }
 
@@ -880,8 +867,7 @@ class HipayDBQuery
             // delete
             $where = 'customer_id='.pSQL((int) $customerId).' AND hp_id='.pSQL((int) $tokenId);
             Db::getInstance()->delete(
-                HipayDBQuery::HIPAY_CC_TOKEN_TABLE,
-                $where
+                HipayDBQuery::HIPAY_CC_TOKEN_TABLE, $where
             );
 
             return true;
@@ -894,8 +880,7 @@ class HipayDBQuery
         // delete
         $where = 'customer_id='.pSQL((int) $customerId);
         Db::getInstance()->delete(
-            HipayDBQuery::HIPAY_CC_TOKEN_TABLE,
-            $where
+            HipayDBQuery::HIPAY_CC_TOKEN_TABLE, $where
         );
 
         return true;
@@ -913,8 +898,7 @@ class HipayDBQuery
         }
 
         return Db::getInstance()->insert(
-                HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE,
-                $values
+                HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE, $values
         );
     }
 
