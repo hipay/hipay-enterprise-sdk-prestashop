@@ -13,33 +13,42 @@
     <div class="panel-heading">{l s='FAQ' mod='hipay_enterprise'}</div>
     <div class="panel panel-default">
         <div class="panel-heading panel-heading-question">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}<i class="icon-arrow-circle-o-down"></i></a>
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><i
+                        class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}
+                <i class="icon-arrow-circle-o-down"></i></a>
         </div>
         <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
-                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying themes.
+                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying
+                themes.
                 This ensures a valid communication channel for all parties involved in any transactions.
             </div>
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading panel-heading-question">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><i class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}<i class="icon-arrow-circle-o-down"></i></a>
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><i
+                        class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}
+                <i class="icon-arrow-circle-o-down"></i></a>
         </div>
         <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
-                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying themes.
+                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying
+                themes.
                 This ensures a valid communication channel for all parties involved in any transactions.
             </div>
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading panel-heading-question">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><i class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}<i class="icon-arrow-circle-o-down"></i></a>
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><i
+                        class="icon-question-circle"></i> {l s='In which countries can I use HiPay Professional?' mod='hipay_enterprise'}
+                <i class="icon-arrow-circle-o-down"></i></a>
         </div>
         <div id="collapseThree" class="panel-collapse collapse">
             <div class="panel-body">
-                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying themes.
+                Account registration at <strong>PrepBootstrap</strong> is only required if you will be selling or buying
+                themes.
                 This ensures a valid communication channel for all parties involved in any transactions.
             </div>
         </div>

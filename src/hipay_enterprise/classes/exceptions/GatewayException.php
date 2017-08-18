@@ -17,7 +17,7 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class GatewayException extends Exception
 {
@@ -30,11 +30,9 @@ class GatewayException extends Exception
      * @param $context
      * @param $moduleInstance
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null, $context, $moduleInstance )
+    public function __construct($message = "", $code = 0, Throwable $previous = null, $context, $moduleInstance)
     {
         parent::__construct($message, $code, $previous);
-        HipayHelper::redirectToErrorPage($context,$moduleInstance);
+        HipayHelper::redirectToErrorPage($context, $moduleInstance);
     }
-
-
 }

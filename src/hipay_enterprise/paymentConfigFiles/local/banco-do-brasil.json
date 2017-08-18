@@ -17,13 +17,22 @@
     "countries": [
       "BR"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "banco-do-brasil.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\AstropayPaymentMethod",
@@ -32,8 +41,8 @@
         "national_identification_number": {
           "label": "CPF",
           "type": "text",
-          "required" : true,
-          "controlType" : "cpf"
+          "required": true,
+          "controlType": "cpf"
         }
       }
     }

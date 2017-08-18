@@ -24,7 +24,7 @@ require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class AdminHiPayActionsController extends ModuleAdminController
 {
@@ -56,10 +56,7 @@ class AdminHiPayActionsController extends ModuleAdminController
 
         parent::__construct();
 
-        $this->apiHandler = new ApiHandler(
-            $this->module,
-            $this->context
-        );
+        $this->apiHandler = new ApiHandler($this->module, $this->context);
         $this->db = new HipayDBQuery($this->module);
     }
 

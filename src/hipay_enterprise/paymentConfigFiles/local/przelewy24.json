@@ -13,13 +13,22 @@
     "countries": [
       "PL"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "p24.png",
     "additionalFields": {}
   }

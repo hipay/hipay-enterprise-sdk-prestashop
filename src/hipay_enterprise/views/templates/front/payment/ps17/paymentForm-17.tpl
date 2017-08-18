@@ -9,8 +9,9 @@
 * @copyright 2017 HiPay
 * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
 *}
-<form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded" class="form-horizontal hipay-form-17" method="post"
-      name="tokenizerForm"  autocomplete="off">
+<form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded"
+      class="form-horizontal hipay-form-17" method="post"
+      name="tokenizerForm" autocomplete="off">
     {if $confHipay.payment.global.card_token}
         {if $savedCC}
             <p><strong>{l s='Pay with a saved credit card' mod='hipay_enterprise'}</strong></p>
@@ -30,9 +31,11 @@
                     </div>
                     <div class="col-md-10 col-lg-10 col-xs-10 col-sm-10">
                         <div class="row">
-                            <span class="hipay-img col-md-2 col-xs-3"><img class="card-img" src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
+                            <span class="hipay-img col-md-2 col-xs-3"><img class="card-img"
+                                                                           src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
                             <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>
-                            <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'  mod='hipay_enterprise'} : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
+                            <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'  mod='hipay_enterprise'}
+                                : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
                             <span class="hipay-card-holder col-md-10 col-xs-9">{$cc.card_holder}</span>
                         </div>
                     </div>
@@ -65,9 +68,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
-    var activatedCreditCard = []; 
+    var activatedCreditCard = [];
     {foreach $activatedCreditCard as $cc}
-        activatedCreditCard.push("{$cc}");
+    activatedCreditCard.push("{$cc}");
     {/foreach}
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;

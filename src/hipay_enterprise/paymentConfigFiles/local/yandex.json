@@ -13,13 +13,22 @@
     "countries": [
       "RU"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 1,
     "forceBasket": 0,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "yandex.png",
     "additionalFields": {}
   }

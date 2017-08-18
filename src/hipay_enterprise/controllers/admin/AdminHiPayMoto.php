@@ -11,19 +11,19 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__).'/../../classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
 
 /**
  * Class AdminHiPayMotoController
  *
  * Manage action for MOTO payment
-  *
+ *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class AdminHiPayMotoController extends ModuleAdminController
 {
@@ -39,16 +39,13 @@ class AdminHiPayMotoController extends ModuleAdminController
      */
     public function __construct()
     {
-        $this->module    = 'hipay_enterprise';
+        $this->module = 'hipay_enterprise';
         $this->bootstrap = true;
-        $this->context   = Context::getContext();
+        $this->context = Context::getContext();
 
         parent::__construct();
 
-        $this->apiHandler = new ApiHandler(
-            $this->module,
-            $this->context
-        );
+        $this->apiHandler = new ApiHandler($this->module, $this->context);
     }
 
     /**
@@ -61,12 +58,11 @@ class AdminHiPayMotoController extends ModuleAdminController
         if (Tools::isSubmit('motoPayment')) {
             $cartId = Tools::getValue('cart_id');
 
-            $cart = new Cart((int) $cartId);
+            $cart = new Cart((int)$cartId);
             $this->apiHandler->handleMoto($cart);
         }
 
         if (Tools::getValue('hipaystatus') && Tools::getValue('id_order')) {
-
             $this->order = new Order(Tools::getValue('id_order'));
             if (!Validate::isLoadedObject($this->order)) {
                 throw new PrestaShopException('Can\'t load Order object');
@@ -75,32 +71,21 @@ class AdminHiPayMotoController extends ModuleAdminController
             $token = Tools::getValue('hipaytoken');
 
             // check requesty integrity
-            if ($token != HipayHelper::getHipayAdminToken('AdminOrders',
-                    $this->order->id)) {
+            if ($token != HipayHelper::getHipayAdminToken('AdminOrders', $this->order->id)) {
                 throw new PrestaShopException('Can\'t load Order object');
             }
 
-            ShopUrl::cacheMainDomainForShop((int) $this->order->id_shop);
+            ShopUrl::cacheMainDomainForShop((int)$this->order->id_shop);
 
             switch (Tools::getValue('hipaystatus')) {
-                case 'valid' :
-                    $this->context->cookie->__set('hipay_success',
-                        $this->module->l('The payment has been processed'));
+                case 'valid':
+                    $this->context->cookie->__set('hipay_success', $this->module->l('The payment has been processed'));
 
-                    if ($this->order->getCurrentState() == Configuration::get(
-                            'HIPAY_OS_MOTO_PENDING',
-                            null,
-                            null,
-                            1
-                        )) {
-
-                        $orderHistory           = new OrderHistory();
+                    if ($this->order->getCurrentState() == Configuration::get('HIPAY_OS_MOTO_PENDING', null, null, 1)) {
+                        $orderHistory = new OrderHistory();
                         $orderHistory->id_order = $this->order->id;
                         $orderHistory->changeIdOrderState(
-                            Configuration::get('HIPAY_OS_PENDING',
-                                null,
-                                null,
-                                1),
+                            Configuration::get('HIPAY_OS_PENDING', null, null, 1),
                             $this->order,
                             true
                         );
@@ -109,29 +94,30 @@ class AdminHiPayMotoController extends ModuleAdminController
                     }
 
                     break;
-                case 'decline' :
-                    $this->context->cookie->__set('hipay_errors',
-                        $this->module->l('The payment has been declined'));
+                case 'decline':
+                    $this->context->cookie->__set('hipay_errors', $this->module->l('The payment has been declined'));
                     break;
-                case 'pending' :
-                    $this->context->cookie->__set('hipay_errors',
-                        $this->module->l('The payment is pending'));
+                case 'pending':
+                    $this->context->cookie->__set('hipay_errors', $this->module->l('The payment is pending'));
                     break;
-                case 'exception' :
-                    $this->context->cookie->__set('hipay_errors',
-                        $this->module->l('There was an error with your payment'));
+                case 'exception':
+                    $this->context->cookie->__set(
+                        'hipay_errors',
+                        $this->module->l('There was an error with your payment')
+                    );
                     break;
-                case 'cancel' :
-                    $this->context->cookie->__set('hipay_errors',
-                        $this->module->l('The payment has been canceled'));
+                case 'cancel':
+                    $this->context->cookie->__set('hipay_errors', $this->module->l('The payment has been canceled'));
                     break;
             }
         }
 
 
         Tools::redirectAdmin(
-            $this->context->link->getAdminLink(
-                'AdminOrders'
-            ).'&id_order='.(int) $this->order->id.'&vieworder#hipay');
+            $this->context->link->getAdminLink('AdminOrders') .
+            '&id_order=' .
+            (int)$this->order->id .
+            '&vieworder#hipay'
+        );
     }
 }

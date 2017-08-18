@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
 
 /**
  * Class Hipay_enterpriseCancelModuleFrontController
@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/../../classes/helper/HipayHelper.php');
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController
 {
@@ -31,15 +31,17 @@ class Hipay_enterpriseCancelModuleFrontController extends ModuleFrontController
      */
     public function postProcess()
     {
-        $this->display_column_left  = false;
+        $this->display_column_left = false;
         $this->display_column_right = false;
         parent::initContent();
 
-        if (!(bool) $this->module->hipayConfigTool->getPaymentGlobal()["regenerate_cart_on_decline"]) {
+        if (!(bool)$this->module->hipayConfigTool->getPaymentGlobal()["regenerate_cart_on_decline"]) {
             HipayHelper::unsetCart();
         }
 
-        $path = (_PS_VERSION_ >= '1.7' ? 'module:'.$this->module->name.self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
+        $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
+            $this->module->name .
+            self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
 
         $this->module->getLogs()->logInfos("# Cancel payment : Your order has been canceled");
         $this->setTemplate($path);

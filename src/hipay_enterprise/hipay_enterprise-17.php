@@ -11,9 +11,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/classes/apiCaller/ApiCaller.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/classes/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -23,7 +23,7 @@ use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayEnterpriseNew extends Hipay_enterprise
 {
@@ -56,22 +56,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function hookDisplayHeader($params)
     {
-        $this->context->controller->addCSS(
-            _MODULE_DIR_.$this->name.'/views/css/card-js.min.css',
-            'all'
-        );
-        $this->context->controller->addCSS(
-            _MODULE_DIR_.$this->name.'/views/css/hipay-enterprise.css',
-            'all'
-        );
-        $this->context->controller->addJS(
-            _MODULE_DIR_.$this->name.'/views/js/card-js.min.js',
-            'all'
-        );
+        $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
+        $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
+        $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
 
-        $this->context->controller->addJS(array(_MODULE_DIR_.$this->name.'/views/js/devicefingerprint.js'));
+        $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/views/js/devicefingerprint.js'));
         $this->context->controller->addJS(
-            array(_MODULE_DIR_.$this->name.'/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
+            array(
+                _MODULE_DIR_ .
+                $this->name .
+                '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
         );
     }
 
@@ -84,15 +78,14 @@ class HipayEnterpriseNew extends Hipay_enterprise
     public function hipayExternalPaymentOption($params)
     {
         try {
-            $idAddress      = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
-                $params['cart']->id_address_delivery;
-            $address        = new Address((int) $idAddress);
-            $country        = new Country((int) $address->id_country);
-            $currency       = new Currency((int) $params['cart']->id_currency);
-            $this->customer = new Customer((int) $params['cart']->id_customer);
+            $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice : $params['cart']->id_address_delivery;
+            $address = new Address((int)$idAddress);
+            $country = new Country((int)$address->id_country);
+            $currency = new Currency((int)$params['cart']->id_currency);
+            $this->customer = new Customer((int)$params['cart']->id_customer);
 
 
-            $paymentOptions        = array();
+            $paymentOptions = array();
             $sortedPaymentProducts = HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
                 $this,
                 $this->hipayConfigTool->getConfigHipay(),
@@ -102,12 +95,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
 
             if (!empty($sortedPaymentProducts)) {
-
                 $this->context->smarty->assign(
                     array(
                         'module_dir' => $this->_path,
                         'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates',
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                         'methodFields' => array()
                     )
                 );
@@ -124,7 +116,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             $paymentOptions,
                             $key,
                             $paymentProduct,
-                            isset($sortedPaymentProducts["credit_card"]) && empty($sortedPaymentProducts["credit_card"]["products"]),
+                            isset($sortedPaymentProducts["credit_card"]) &&
+                            empty($sortedPaymentProducts["credit_card"]["products"]),
                             $i
                         );
                     }
@@ -160,8 +153,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'localPaymentName' => $name
             )
         );
-        if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) || $this->hipayConfigTool->getPaymentGlobal()["operating_mode"]
-            !== 'api' || (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"] )
+        if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
+            $this->hipayConfigTool->getPaymentGlobal()["operating_mode"] !== 'api' ||
+            (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"])
         ) {
             $this->context->smarty->assign(
                 array(
@@ -175,19 +169,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 )
             );
         }
-        $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/payment/ps17/paymentLocalForm-17.tpl');
+        $paymentForm = $this->fetch(
+            'module:' . $this->name . '/views/templates/front/payment/ps17/paymentLocalForm-17.tpl'
+        );
 
-        $newOption->setCallToActionText($this->l('Pay by')." ".$paymentProduct["displayName"])
-            ->setAction(
-                $this->context->link->getModuleLink(
-                    $this->name,
-                    'redirectlocal',
-                    array("method" => $name),
-                    true
-                )
-            )
-            ->setModuleName('local_payment_hipay')
-            ->setForm($paymentForm);
+        $newOption->setCallToActionText($this->l('Pay by') . " " . $paymentProduct["displayName"])
+                  ->setAction(
+                      $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true)
+                  )
+                  ->setModuleName('local_payment_hipay')
+                  ->setForm($paymentForm);
 
         // if no credit card, we force ioBB input to be displayed
         if ($i == 0 && $emptyCreditCard) {
@@ -211,51 +202,46 @@ class HipayEnterpriseNew extends Hipay_enterprise
             switch ($this->hipayConfigTool->getPaymentGlobal()["operating_mode"]) {
                 case "hosted_page":
                     $newOption = new PaymentOption();
-                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
-                        ->setAction(
-                            $this->context->link->getModuleLink(
-                                $this->name,
-                                'redirect',
-                                array(),
-                                true
-                            )
-                    );
+                    $newOption->setCallToActionText(
+                        $this->l('Pay by') . " " . $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]
+                    )
+                              ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true));
                     if ($this->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                        $newOption->setAdditionalInformation("<p>".$params['translation_checkout']."</p>");
+                        $newOption->setAdditionalInformation("<p>" . $params['translation_checkout'] . "</p>");
                     }
                     $paymentOptions[] = $newOption;
                     break;
                 case "api":
                     // set credit card for one click
-                    $this->ccToken    = new HipayCCToken($this);
-                    $savedCC          = $this->ccToken->getSavedCC($params['cart']->id_customer);
+                    $this->ccToken = new HipayCCToken($this);
+                    $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
 
                     $this->context->smarty->assign(
                         array(
                             'module_dir' => $this->_path,
-                            'this_path_ssl' => Tools::getShopDomainSsl(
-                                true,
-                                true
-                            ).__PS_BASE_URI__.'modules/'.$this->name.'/',
+                            'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
+                                __PS_BASE_URI__ .
+                                'modules/' .
+                                $this->name .
+                                '/',
                             'savedCC' => $savedCC,
                             'activatedCreditCard' => array_keys($paymentProduct["products"]),
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'is_guest' => $this->customer->is_guest,
-                            'action' => $this->context->link->getModuleLink(
-                                $this->name,
-                                'redirect',
-                                array(),
-                                true
-                            ),
+                            'action' => $this->context->link->getModuleLink($this->name, 'redirect', array(), true),
                         )
                     );
 
-                    $paymentForm = $this->fetch('module:'.$this->name.'/views/templates/front/payment/ps17/paymentForm-17.tpl');
-                    $newOption   = new PaymentOption();
-                    $newOption->setCallToActionText($this->l('Pay by')." ".$this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
-                        ->setAdditionalInformation("")
-                        ->setModuleName("credit_card")
-                        ->setForm($paymentForm);
+                    $paymentForm = $this->fetch(
+                        'module:' . $this->name . '/views/templates/front/payment/ps17/paymentForm-17.tpl'
+                    );
+                    $newOption = new PaymentOption();
+                    $newOption->setCallToActionText(
+                        $this->l('Pay by') . " " . $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]
+                    )
+                              ->setAdditionalInformation("")
+                              ->setModuleName("credit_card")
+                              ->setForm($paymentForm);
 
                     $paymentOptions[] = $newOption;
 
@@ -273,7 +259,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     public function checkCurrency($cart)
     {
-        $currency_order    = new Currency($cart->id_currency);
+        $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
         if (is_array($currencies_module)) {
             foreach ($currencies_module as $currency_module) {
@@ -296,16 +282,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
         if ('order' === $this->context->controller->php_self) {
             $this->context->controller->registerJavascript(
                 'card-tokenize',
-                'modules/'.$this->name.'/views/js/card-tokenize.js'
+                'modules/' . $this->name . '/views/js/card-tokenize.js'
             );
             $this->context->controller->registerJavascript(
                 'input-form-control',
-                'modules/'.$this->name.'/views/js/form-input-control.js',
+                'modules/' . $this->name . '/views/js/form-input-control.js',
                 array('position' => 'head')
             );
             $this->context->controller->registerJavascript(
                 'device-fingerprint',
-                'modules/'.$this->name.'/views/js/devicefingerprint.js'
+                'modules/' . $this->name . '/views/js/devicefingerprint.js'
             );
         }
     }

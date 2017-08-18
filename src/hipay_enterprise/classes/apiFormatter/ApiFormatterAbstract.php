@@ -11,8 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/ApiFormatterInterface.php');
+require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/ApiFormatterInterface.php');
 
 use \HiPay\Fullservice\Enum\Customer\Gender as Gender;
 
@@ -23,7 +23,7 @@ use \HiPay\Fullservice\Enum\Customer\Gender as Gender;
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 abstract class ApiFormatterAbstract implements ApiFormatterInterface
 {
@@ -31,17 +31,17 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
 
     public function __construct($module, $cart = false)
     {
-        $this->module          = $module;
-        $this->context         = Context::getContext();
-        $this->configHipay     = $this->module->hipayConfigTool->getConfigHipay();
-        $this->mapper          = new HipayMapper($module);
-        $this->cart            = (!$cart) ? $this->context->cart : $cart;
-        $this->customer        = (is_null($this->cart)) ? false : new Customer((int) $this->cart->id_customer);
-        $this->store           = (is_null($this->cart)) ? false : new Store((int) $this->cart->id_shop);
-        $this->delivery        = (is_null($this->cart)) ? false : new Address((int) $this->cart->id_address_delivery);
-        $this->deliveryCountry = (is_null($this->cart)) ? false : new Country((int) $this->delivery->id_country);
-        $this->deliveryState   = (is_null($this->cart)) ? false : new State((int) $this->delivery->id_state);
-        $this->currency        = (is_null($this->cart)) ? false : new Currency((int) $this->cart->id_currency);
+        $this->module = $module;
+        $this->context = Context::getContext();
+        $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
+        $this->mapper = new HipayMapper($module);
+        $this->cart = (!$cart) ? $this->context->cart : $cart;
+        $this->customer = (is_null($this->cart)) ? false : new Customer((int)$this->cart->id_customer);
+        $this->store = (is_null($this->cart)) ? false : new Store((int)$this->cart->id_shop);
+        $this->delivery = (is_null($this->cart)) ? false : new Address((int)$this->cart->id_address_delivery);
+        $this->deliveryCountry = (is_null($this->cart)) ? false : new Country((int)$this->delivery->id_country);
+        $this->deliveryState = (is_null($this->cart)) ? false : new State((int)$this->delivery->id_state);
+        $this->currency = (is_null($this->cart)) ? false : new Currency((int)$this->cart->id_currency);
     }
 
     /**
@@ -54,9 +54,6 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         // Gender of the customer (M=male, F=female, U=unknown).
         $gender = Gender::UNKNOWN;
 
-        if ($idGender == null) {
-            $gender = 'U';
-        }
         switch ($idGender) {
             case '1':
                 $gender = Gender::MALE;

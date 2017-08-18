@@ -21,7 +21,7 @@
         <div class="alert alert-danger">
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </div>
-    {/if} 
+    {/if}
     <p class="warning">
         {l s='We noticed a problem with your order. Please contact our ' mod='hipay_enterprise'}
         <strong><a href="{$link->getPageLink('contact', true)|escape:'html'}">{l s='customer support' mod='hipay_enterprise'}</a></strong>.

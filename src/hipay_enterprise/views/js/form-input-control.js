@@ -14,7 +14,7 @@ var hiPayInputControl = {};
 hiPayInputControl.forms = [];
 
 /**
- * 
+ *
  * @param {type} newElement
  * @param {type} targetElement
  * @returns {undefined}
@@ -34,7 +34,7 @@ function insertAfter(newElement, targetElement) {
 }
 
 /**
- * 
+ *
  * @param {type} className
  * @returns {undefined}
  */
@@ -46,7 +46,7 @@ function removeElementsByClass(className) {
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {Boolean}
@@ -60,7 +60,7 @@ function hasClass(el, className) {
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {undefined}
@@ -74,7 +74,7 @@ function addClass(el, className) {
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {undefined}
@@ -89,7 +89,7 @@ function removeClass(el, className) {
 }
 
 /**
- * 
+ *
  * @param {type} text
  * @returns {pInsert|Element}
  */
@@ -102,7 +102,7 @@ function generateElement(text) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @param {type} text
  * @returns {undefined}
@@ -133,7 +133,7 @@ var validIBAN = (function () { // use an IIFE
     // http://en.wikipedia.org/wiki/International_Bank_Account_Number#Modulo_operation_on_IBAN
     function mod97(string) {
         var checksum = string.slice(0, 2),
-                fragment;
+            fragment;
 
         for (var offset = 2; offset < string.length; offset += 7) {
             fragment = String(checksum) + string.substring(offset, offset + 7);
@@ -146,8 +146,8 @@ var validIBAN = (function () { // use an IIFE
     // return a function that does the actual work
     return function (input) {
         var iban = String(input).toUpperCase().replace(/[^A-Z0-9]/g, ""), // keep only alphanumeric characters
-                code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
-                digits;
+            code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
+            digits;
 
         // check syntax and length
         if (!code || iban.length !== CODE_LENGTHS[code[1]]) {
@@ -166,13 +166,13 @@ var validIBAN = (function () { // use an IIFE
 ());
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {Boolean}
  */
 function isCardNumberValid(value) {
     // accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value)){
+    if (/[^0-9-\s]+/.test(value)) {
         return false;
     }
 
@@ -185,7 +185,7 @@ function isCardNumberValid(value) {
         nDigit = parseInt(cDigit, 10);
 
         if (bEven) {
-            if ((nDigit *= 2) > 9){
+            if ((nDigit *= 2) > 9) {
                 nDigit -= 9;
             }
         }
@@ -198,7 +198,7 @@ function isCardNumberValid(value) {
 }
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {unresolved}
  */
@@ -207,7 +207,7 @@ function isCPFValid(value) {
 }
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {unresolved}
  */
@@ -235,7 +235,7 @@ function normalizePrice(price) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -250,7 +250,7 @@ function checkNotEmptyField(element) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -268,7 +268,7 @@ function checkIban(element) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -286,7 +286,7 @@ function checkBic(element) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -304,7 +304,7 @@ function checkCCNumber(element) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -322,7 +322,7 @@ function checkCPF(element) {
 }
 
 /**
- * 
+ *
  * @param {type} element
  * @returns {Boolean}
  */
@@ -340,7 +340,7 @@ function checkCPNCURP(element) {
 }
 
 /**
- * 
+ *
  * @param {type} input
  * @returns {Boolean}
  */
@@ -365,7 +365,7 @@ function typeControlCheck(input) {
 }
 
 /**
- * 
+ *
  * @param {type} form
  * @returns {success|Boolean}
  */
@@ -383,7 +383,7 @@ function checkControl(form) {
 }
 
 /**
- * 
+ *
  * @returns {Form}
  */
 function Form() {
@@ -391,7 +391,7 @@ function Form() {
 }
 
 /**
- * 
+ *
  * @param {type} field
  * @param {type} type
  * @param {type} required
@@ -404,7 +404,7 @@ function Input(field, type, required) {
 }
 
 /**
- * 
+ *
  * @param {type} form
  * @param {type} field
  * @param {type} type

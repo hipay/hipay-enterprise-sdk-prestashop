@@ -21,32 +21,34 @@ if (!defined('_PS_VERSION_')) {
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
-class Hipay_enterprise extends PaymentModule
+class HipayEnterprise extends PaymentModule
 {
     public $hipayConfigTool;
-    public $_errors           = array();
-    public $_successes        = array();
+    public $_errors = array();
+    public $_successes = array();
     public $currencies_titles = array();
-    public $moduleCurrencies  = array();
+    public $moduleCurrencies = array();
 
     public function __construct()
     {
-        $this->name                   = 'hipay_enterprise';
-        $this->tab                    = 'payments_gateways';
-        $this->version                = '2.0.0-beta';
+        $this->name = 'hipay_enterprise';
+        $this->tab = 'payments_gateways';
+        $this->version = '2.0.0-beta';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
-        $this->currencies             = true;
-        $this->currencies_mode        = 'checkbox';
-        $this->author                 = 'HiPay';
-        $this->is_eu_compatible       = 1;
+        $this->currencies = true;
+        $this->currencies_mode = 'checkbox';
+        $this->author = 'HiPay';
+        $this->is_eu_compatible = 1;
 
         $this->bootstrap = true;
-        $this->display   = 'view';
+        $this->display = 'view';
 
         $this->displayName = $this->l('HiPay Enterprise');
-        $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
+        $this->description = $this->l(
+            'Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
+        );
 
         // init log object
         $this->logs = new HipayLogs($this);
@@ -66,14 +68,14 @@ class Hipay_enterprise extends PaymentModule
         parent::__construct();
 
         $this->currencies_titles = array();
-        $this->countries_titles  = array();
+        $this->countries_titles = array();
 
         $countries = Country::getCountries($this->context->language->id);
 
         foreach ($countries as $country) {
             $this->countries_titles[$country["iso_code"]] = $country["name"];
         }
-        $moduleCurrencies = $this->getCurrency((int) Configuration::get('PS_CURRENCY_DEFAULT'));
+        $moduleCurrencies = $this->getCurrency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
         foreach ($moduleCurrencies as $cur) {
             $this->moduleCurrencies[] = $cur["iso_code"];
         }
@@ -116,7 +118,10 @@ class Hipay_enterprise extends PaymentModule
 
     public function uninstall()
     {
-        return $this->uninstallAdminTab() && parent::uninstall() && HipayHelper::clearAccountData() && $this->deleteHipayTable();
+        return $this->uninstallAdminTab() &&
+            parent::uninstall() &&
+            HipayHelper::clearAccountData() &&
+            $this->deleteHipayTable();
     }
 
     public function installHipay()
@@ -131,11 +136,15 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionAdminDeleteBefore');
         $return &= $this->registerHook('actionAdminBulKDeleteBefore');
         if (_PS_VERSION_ >= '1.7') {
-            $return17 = $this->registerHook('paymentOptions') && $this->registerHook('header') && $this->registerHook('actionFrontControllerSetMedia');
-            $return   = $return && $return17;
+            $return17 = $this->registerHook('paymentOptions') &&
+                $this->registerHook('header') &&
+                $this->registerHook('actionFrontControllerSetMedia');
+            $return = $return && $return17;
         } elseif (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $return16 = $this->registerHook('payment') && $this->registerHook('paymentReturn') && $this->registerHook('displayPaymentEU');
-            $return   = $return && $return16;
+            $return16 = $this->registerHook('payment') &&
+                $this->registerHook('paymentReturn') &&
+                $this->registerHook('displayPaymentEU');
+            $return = $return && $return16;
         }
         return $return;
     }
@@ -155,11 +164,11 @@ class Hipay_enterprise extends PaymentModule
     protected function createTabAdmin($class_names)
     {
         foreach ($class_names as $class_name) {
-            $tab             = new Tab();
-            $tab->active     = 1;
-            $tab->module     = $this->name;
+            $tab = new Tab();
+            $tab->active = 1;
+            $tab->module = $this->name;
             $tab->class_name = $class_name;
-            $tab->id_parent  = -1;
+            $tab->id_parent = -1;
             foreach (Language::getLanguages(true) as $lang) {
                 $tab->name[$lang['id_lang']] = $this->name;
             }
@@ -180,7 +189,7 @@ class Hipay_enterprise extends PaymentModule
             'AdminHiPayConfig',
         );
         foreach ($class_names as $class_name) {
-            $id_tab = (int) Tab::getIdFromClassName($class_name);
+            $id_tab = (int)Tab::getIdFromClassName($class_name);
             if ($id_tab) {
                 $tab = new Tab($id_tab);
                 if (!$tab->delete()) {
@@ -219,9 +228,9 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookUpdateCarrier($params)
     {
-        $this->logs->logInfos('# HookUpdateCarrier'.$params['id_carrier']);
-        $idCarrierOld = (int) ($params['id_carrier']);
-        $idCarrierNew = (int) ($params['carrier']->id);
+        $this->logs->logInfos('# HookUpdateCarrier' . $params['id_carrier']);
+        $idCarrierOld = (int)($params['id_carrier']);
+        $idCarrierNew = (int)($params['carrier']->id);
 
         $this->mapper->updateCarrier($idCarrierOld, $idCarrierNew);
     }
@@ -231,9 +240,7 @@ class Hipay_enterprise extends PaymentModule
         if ($this->hipayConfigTool->getPaymentGlobal()["card_token"]) {
             $this->smarty->assign(
                 array(
-                    "link" => $this->context->link->getModuleLink(
-                        $this->name, 'userToken', array(), true
-                    )
+                    "link" => $this->context->link->getModuleLink($this->name, 'userToken', array(), true)
                 )
             );
             if (_PS_VERSION_ >= '1.7') {
@@ -242,9 +249,7 @@ class Hipay_enterprise extends PaymentModule
                 $path = 'views/templates/hook/ps16/my-account-16.tpl';
             }
 
-            return $this->display(
-                    dirname(__FILE__), $path
-            );
+            return $this->display(dirname(__FILE__), $path);
         }
     }
 
@@ -256,17 +261,11 @@ class Hipay_enterprise extends PaymentModule
 
     public function hookBackOfficeHeader()
     {
-        $this->context->controller->addCSS(
-            ($this->_path).'views/css/bootstrap-duallistbox.min.css', 'all'
-        );
-        $this->context->controller->addCSS(
-            ($this->_path).'views/css/bootstrap-multiselect.css', 'all'
-        );
-        $this->context->controller->addCSS($this->_path.'views/css/back.css', 'all');
+        $this->context->controller->addCSS(($this->_path) . 'views/css/bootstrap-duallistbox.min.css', 'all');
+        $this->context->controller->addCSS(($this->_path) . 'views/css/bootstrap-multiselect.css', 'all');
+        $this->context->controller->addCSS($this->_path . 'views/css/back.css', 'all');
 
-        $this->context->controller->addJS(
-            $this->_path.'/views/js/form-input-control.js', 'all'
-        );
+        $this->context->controller->addJS($this->_path . '/views/js/form-input-control.js', 'all');
     }
 
     /**
@@ -277,33 +276,32 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPayment($params)
     {
-        $idAddress  = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
-            $params['cart']->id_address_delivery;
-        $address    = new Address((int) $idAddress);
-        $country    = new Country((int) $address->id_country);
-        $currency   = new Currency((int) $params['cart']->id_currency);
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice : $params['cart']->id_address_delivery;
+        $address = new Address((int)$idAddress);
+        $country = new Country((int)$address->id_country);
+        $currency = new Currency((int)$params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
-        $this->context->controller->addJS(array(_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js'));
+        $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
 
         $this->smarty->assign(
             array(
                 'domain' => Tools::getShopDomainSSL(true),
                 'module_dir' => $this->_path,
-                'payment_button' => $this->_path.'views/img/cc.png',
+                'payment_button' => $this->_path . 'views/img/cc.png',
                 'configHipay' => $this->hipayConfigTool->getConfigHipay(),
                 'sortedPaymentProducts' => HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
-                    $this, $this->hipayConfigTool->getConfigHipay(), $country, $currency, $orderTotal
+                    $this,
+                    $this->hipayConfigTool->getConfigHipay(),
+                    $country,
+                    $currency,
+                    $orderTotal
                 ),
                 'lang' => Tools::strtolower($this->context->language->iso_code),
             )
         );
-        $this->smarty->assign(
-            'hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()["sandbox_mode"]
-        );
+        $this->smarty->assign('hipay_prod', !(bool)$this->hipayConfigTool->getAccountGlobal()["sandbox_mode"]);
 
-        return $this->display(
-                dirname(__FILE__), 'views/templates/hook/ps16/payment-16.tpl'
-        );
+        return $this->display(dirname(__FILE__), 'views/templates/hook/ps16/payment-16.tpl');
     }
 
     /**
@@ -314,35 +312,39 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayPaymentEU($params)
     {
-        $idAddress  = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
+        $idAddress = $params['cart']->id_address_invoice ? $params['cart']->id_address_invoice :
             $params['cart']->id_address_delivery;
-        $address    = new Address((int) $idAddress);
-        $country    = new Country((int) $address->id_country);
-        $currency   = new Currency((int) $params['cart']->id_currency);
+        $address = new Address((int)$idAddress);
+        $country = new Country((int)$address->id_country);
+        $currency = new Currency((int)$params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
 
         $paymentOptions = array();
 
         $sortedPaymentProducts = HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
-                $this, $this->hipayConfigTool->getConfigHipay(), $country, $currency, $orderTotal
+            $this,
+            $this->hipayConfigTool->getConfigHipay(),
+            $country,
+            $currency,
+            $orderTotal
         );
 
         if (!empty($sortedPaymentProducts)) {
             foreach ($sortedPaymentProducts as $name => $paymentProduct) {
                 if ($name == "credit_card") {
-                    $paymentOptions[] = array(
-                        'cta_text' => $this->l('Pay by credit card'),
-                        'logo' => Media::getMediaPath($this->_path.'views/img/amexa200.png'),
-                        'action' => $this->context->link->getModuleLink(
-                            $this->name, 'redirect', array(), true
-                        )
-                    );
+                    $paymentOptions[] =
+                        array(
+                            'cta_text' => $this->l('Pay by credit card'),
+                            'logo' => Media::getMediaPath($this->_path . 'views/img/amexa200.png'),
+                            'action' => $this->context->link->getModuleLink($this->name, 'redirect', array(), true)
+                        );
                 } else {
-                    $paymentOptions[] = array(
-                        'cta_text' => $this->l('Pay by').' '.$paymentProduct['displayName'],
-                        'logo' => Media::getMediaPath($paymentProduct['payment_button']),
-                        'action' => $paymentProduct['link']
-                    );
+                    $paymentOptions[] =
+                        array(
+                            'cta_text' => $this->l('Pay by') . ' ' . $paymentProduct['displayName'],
+                            'logo' => Media::getMediaPath($paymentProduct['payment_button']),
+                            'action' => $paymentProduct['link']
+                        );
                 }
             }
         }
@@ -356,9 +358,11 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookPaymentOptions($params)
     {
-        $hipay17                        = new HipayEnterpriseNew();
+        $hipay17 = new HipayEnterpriseNew();
         // Fix Bug with translation and bad context ( Hook in an another file)
-        $params['translation_checkout'] = $this->l('You will be redirected to an external payment page. Please do not refresh the page during the process');
+        $params['translation_checkout'] = $this->l(
+            'You will be redirected to an external payment page. Please do not refresh the page during the process'
+        );
 
         return $hipay17->hipayPaymentOptions($params);
     }
@@ -384,9 +388,7 @@ class Hipay_enterprise extends PaymentModule
 
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $this->hipayPaymentReturn($params);
-            return $this->display(
-                    dirname(__FILE__), 'views/templates/hook/paymentReturn.tpl'
-            );
+            return $this->display(dirname(__FILE__), 'views/templates/hook/paymentReturn.tpl');
         }
     }
 
@@ -403,18 +405,14 @@ class Hipay_enterprise extends PaymentModule
         }
         $order = $params['objOrder'];
         if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->smarty->assign(
-                'status', 'ok'
-            );
+            $this->smarty->assign('status', 'ok');
         }
         $this->smarty->assign(
             array(
                 'id_order' => $order->id,
                 'reference' => $order->reference,
                 'params' => $params,
-                'total_to_pay' => Tools::displayPrice(
-                    $params['total_to_pay'], $params['currencyObj'], false
-                ),
+                'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
                 'shop_name' => $this->context->shop->name,
             )
         );
@@ -425,58 +423,58 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookDisplayAdminOrder()
     {
-        $order                 = new Order((int) Tools::getValue('id_order'));
-        $cart                  = new Cart($order->id_cart);
-        $shippingCost          = $order->total_shipping;
-        $refundableAmount      = $order->getTotalPaid();
-        $errorHipay            = $this->context->cookie->__get('hipay_errors');
-        $messagesHipay         = $this->context->cookie->__get('hipay_success');
-        $stillToCapture        = $order->total_paid_tax_incl - $refundableAmount;
-        $alreadyCaptured       = $this->db->alreadyCaptured($order->id);
-        $manualCapture         = false;
-        $showCapture           = false;
-        $showRefund            = false;
-        $showChallenge         = false;
-        $showMoto              = false;
-        $partiallyCaptured     = false;
-        $partiallyRefunded     = false;
-        $refundRequestedOS     = false;
-        $refundStartedFromBo   = false;
-        $orderId               = $order->id;
-        $employeeId            = $this->context->employee->id;
-        $basket                = $this->db->getOrderBasket($order->id);
-        $products              = $order->getProducts();
-        $capturedFees          = $this->db->feesAreCaptured($order->id);
-        $refundedFees          = $this->db->feesAreRefunded($order->id);
-        $capturedDiscounts     = $this->db->discountsAreCaptured($order->id);
-        $refundedDiscounts     = $this->db->discountsAreRefunded($order->id);
-        $amountFees            = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
-        $capturedItems         = $this->db->getCapturedItems($order->id);
-        $refundedItems         = $this->db->getRefundedItems($order->id);
-        $totallyRefunded       = true;
-        $totallyCaptured       = true;
-        $id_currency           = $order->id_currency;
-        $discount              = array();
+        $order = new Order((int)Tools::getValue('id_order'));
+        $cart = new Cart($order->id_cart);
+        $shippingCost = $order->total_shipping;
+        $refundableAmount = $order->getTotalPaid();
+        $errorHipay = $this->context->cookie->__get('hipay_errors');
+        $messagesHipay = $this->context->cookie->__get('hipay_success');
+        $stillToCapture = $order->total_paid_tax_incl - $refundableAmount;
+        $alreadyCaptured = $this->db->alreadyCaptured($order->id);
+        $manualCapture = false;
+        $showCapture = false;
+        $showRefund = false;
+        $showChallenge = false;
+        $showMoto = false;
+        $partiallyCaptured = false;
+        $partiallyRefunded = false;
+        $refundRequestedOS = false;
+        $refundStartedFromBo = false;
+        $orderId = $order->id;
+        $employeeId = $this->context->employee->id;
+        $basket = $this->db->getOrderBasket($order->id);
+        $products = $order->getProducts();
+        $capturedFees = $this->db->feesAreCaptured($order->id);
+        $refundedFees = $this->db->feesAreRefunded($order->id);
+        $capturedDiscounts = $this->db->discountsAreCaptured($order->id);
+        $refundedDiscounts = $this->db->discountsAreRefunded($order->id);
+        $amountFees = $order->getShipping() ? $order->getShipping()[0]['shipping_cost_tax_incl'] : 0;
+        $capturedItems = $this->db->getCapturedItems($order->id);
+        $refundedItems = $this->db->getRefundedItems($order->id);
+        $totallyRefunded = true;
+        $totallyCaptured = true;
+        $id_currency = $order->id_currency;
+        $discount = array();
         $catpureOrRefundFromBo = $this->db->captureOrRefundFromBO($order->id);
-        $discounts             = $order->getCartRules();
-        $isManualCapture       = $this->db->isManualCapture($order->id);
+        $discounts = $order->getCartRules();
+        $isManualCapture = $this->db->isManualCapture($order->id);
+
         if (!empty($discounts)) {
             foreach ($discounts as $disc) {
                 $discount["name"][] = $disc["name"];
-                $discount["value"]  = (!isset($discount["value"])) ? $disc["value"] : $discount["value"] + $disc["value"];
+                $discount["value"] = (!isset($discount["value"])) ? $disc["value"] : $discount["value"] +
+                    $disc["value"];
             }
             $discount["name"] = join("/", $discount["name"]);
         }
 
 
         foreach ($order->getProducts() as $product) {
-            $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) && $refundedItems[$product["product_id"]]["quantity"]
-                >= $product["product_quantity"]);
-            $totallyCaptured &= (isset($capturedItems[$product["product_id"]]) && $capturedItems[$product["product_id"]]["quantity"]
-                >= $product["product_quantity"]);
+            $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) &&
+                $refundedItems[$product["product_id"]]["quantity"] >= $product["product_quantity"]);
+            $totallyCaptured &= (isset($capturedItems[$product["product_id"]]) &&
+                $capturedItems[$product["product_id"]]["quantity"] >= $product["product_quantity"]);
         }
-
-
 
 
         if (!$refundedFees || !$refundedDiscounts) {
@@ -491,89 +489,79 @@ class Hipay_enterprise extends PaymentModule
             $totallyCaptured = true;
         }
 
-        if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_MOTO_PENDING', null, null, 1
-            ) && !$this->db->getTransactionReference($order->id)
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_MOTO_PENDING', null, null, 1) &&
+            !$this->db->getTransactionReference($order->id)
         ) {
-            $showMoto    = true;
+            $showMoto = true;
             $showCapture = false;
-            $showRefund  = false;
+            $showRefund = false;
         }
 
-        if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1
-            ) || !empty($capturedItems) || $capturedFees || $capturedDiscounts
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1) ||
+            !empty($capturedItems) ||
+            $capturedFees ||
+            $capturedDiscounts
         ) {
             $partiallyCaptured = true;
         }
 
-        if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1
-            ) || !empty($refundedItems) || $refundedFees || !$totallyCaptured || $refundedDiscounts
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1) ||
+            !empty($refundedItems) ||
+            $refundedFees ||
+            !$totallyCaptured ||
+            $refundedDiscounts
         ) {
             $partiallyRefunded = true;
         }
 
-        if (isset($this->hipayConfigTool->getPaymentGlobal()["capture_mode"]) && $this->hipayConfigTool->getPaymentGlobal()["capture_mode"]
-            == "manual"
+        if (isset($this->hipayConfigTool->getPaymentGlobal()["capture_mode"]) &&
+            $this->hipayConfigTool->getPaymentGlobal()["capture_mode"] == "manual"
         ) {
             $manualCapture = true;
         }
 
-        if ((boolean) $order->getHistory(
-                $this->context->language->id,
-                Configuration::get(
-                    'HIPAY_OS_PENDING', null, null, 1
-                )
-            ) || (boolean) $order->getHistory(
-                $this->context->language->id,
-                Configuration::get(
-                    'HIPAY_OS_CHALLENGED', null, null, 1
-                )
-            )
-        ) {
+        $isPending = $order->getHistory(
+            $this->context->language->id,
+            Configuration::get('HIPAY_OS_PENDING', null, null, 1)
+        );
+
+        $isChallenged = $order->getHistory(
+            $this->context->language->id,
+            Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1)
+        );
+
+        if ((boolean)$isPending || (boolean)$isChallenged) {
             // Order was previously pending or challenged
             // Then check if its currently in authorized state
-            if ($order->current_state == Configuration::get(
-                    'HIPAY_OS_AUTHORIZED', null, null, 1
-                )
-            ) {
+            if ($order->current_state == Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1)) {
                 $manualCapture = true;
             }
         }
 
-        if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_AUTHORIZED', null, null, 1
-            ) || $order->getCurrentState() == _PS_OS_PAYMENT_ || $order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1
-            )
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1) ||
+            $order->getCurrentState() == _PS_OS_PAYMENT_ ||
+            $order->getCurrentState() == Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1)
         ) {
             $showCapture = true;
-            $showRefund  = true;
-        }
-
-        if ($order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1
-            )) {
             $showRefund = true;
         }
-        if ($order->current_state == Configuration::get(
-                'HIPAY_OS_CHALLENGED', null, null, 1
-            )
-        ) {
+
+        if ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)) {
+            $showRefund = true;
+        }
+        if ($order->current_state == Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1)) {
             $showChallenge = true;
-            $showCapture   = false;
-            $showRefund    = false;
+            $showCapture = false;
+            $showRefund = false;
         }
 
 
         if ($catpureOrRefundFromBo && $basket) {
-
-            $showRefund          = false;
+            $showRefund = false;
             $refundStartedFromBo = true;
-            $showCapture         = false;
-            if (!$isManualCapture && (!$partiallyRefunded || !empty($refundedItems) )) {
-                $showRefund          = true;
+            $showCapture = false;
+            if (!$isManualCapture && (!$partiallyRefunded || !empty($refundedItems))) {
+                $showRefund = true;
                 $refundStartedFromBo = false;
             }
         }
@@ -581,18 +569,17 @@ class Hipay_enterprise extends PaymentModule
         $paymentProduct = $this->db->getPaymentProductFromMessage($order->id);
         if ($paymentProduct) {
             if (isset($this->hipayConfigTool->getLocalPayment()[$paymentProduct])) {
-                if (!(bool) $this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canRefund"]) {
+                if (!(bool)$this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canRefund"]) {
                     $showRefund = false;
                 }
-                if (!(bool) $this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canManualCapture"]
-                ) {
+                if (!(bool)$this->hipayConfigTool->getLocalPayment()[$paymentProduct]["canManualCapture"]) {
                     $showCapture = false;
                 }
             } elseif (isset($this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct])) {
-                if (!(bool) $this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canRefund"]) {
+                if (!(bool)$this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canRefund"]) {
                     $showRefund = false;
                 }
-                if (!(bool) $this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canManualCapture"]) {
+                if (!(bool)$this->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["canManualCapture"]) {
                     $showCapture = false;
                 }
             }
@@ -603,20 +590,17 @@ class Hipay_enterprise extends PaymentModule
             $showRefund = false;
         }
 
-        if ($order->getCurrentState() == _PS_OS_ERROR_ || $order->getCurrentState() == _PS_OS_CANCELED_ || $order->getCurrentState()
-            == Configuration::get(
-                'HIPAY_OS_EXPIRED', null, null, 1
-            ) || $order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_REFUND_REQUESTED', null, null, 1
-            ) || $order->getCurrentState() == Configuration::get(
-                'HIPAY_OS_REFUNDED', null, null, 1
-            )
+        if ($order->getCurrentState() == _PS_OS_ERROR_ ||
+            $order->getCurrentState() == _PS_OS_CANCELED_ ||
+            $order->getCurrentState() == Configuration::get('HIPAY_OS_EXPIRED', null, null, 1) ||
+            $order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1) ||
+            $order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED', null, null, 1)
         ) {
             $showCapture = false;
         }
 
-        $refundRequestedOS = ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1))
-                ? true : false;
+        $refundRequestedOS = ($order->getCurrentState() ==
+            Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1)) ? true : false;
 
         $this->context->smarty->assign(
             array(
@@ -666,7 +650,8 @@ class Hipay_enterprise extends PaymentModule
         HipayHelper::resetMessagesHipay($this->context);
 
         return $this->display(
-                dirname(__FILE__), 'views/templates/hook/maintenance.tpl'
+            dirname(__FILE__),
+            'views/templates/hook/maintenance.tpl'
         );
     }
 
@@ -680,22 +665,21 @@ class Hipay_enterprise extends PaymentModule
 
         $formGenerator = new HipayForm($this);
 
-        $configuration = $this->local_path.'views/templates/admin/configuration.tpl';
+        $configuration = $this->local_path . 'views/templates/admin/configuration.tpl';
 
-        $psCategories     = $this->mapper->getPrestashopCategories();
-        $hipayCategories  = $this->mapper->getHipayCategories();
-        $psCarriers       = $this->mapper->getPrestashopCarriers();
-        $hipayCarriers    = $this->mapper->getHipayCarriers();
+        $psCategories = $this->mapper->getPrestashopCategories();
+        $hipayCategories = $this->mapper->getHipayCategories();
+        $psCarriers = $this->mapper->getPrestashopCarriers();
+        $hipayCarriers = $this->mapper->getHipayCarriers();
         $mappedCategories = $this->mapper->getMappedCategories($this->context->shop->id);
-        $mappedCarriers   = $this->mapper->getMappedCarriers($this->context->shop->id);
+        $mappedCarriers = $this->mapper->getMappedCarriers($this->context->shop->id);
 
-        $source = array(
-            "brand_version" => _PS_VERSION_,
-            "integration_version" => $this->version,
-        );
+        $source = array("brand_version" => _PS_VERSION_, "integration_version" => $this->version,);
 
         if (!Configuration::get('PS_SSL_ENABLED')) {
-            $this->_technicalErrors = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.');
+            $this->_technicalErrors = $this->l(
+                'A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.'
+            );
         }
 
         $this->context->smarty->assign(
@@ -703,9 +687,11 @@ class Hipay_enterprise extends PaymentModule
                 'module_dir' => $this->_path,
                 'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
                 'logs' => $this->getLogs()->getLogFiles(),
-                'module_url' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite(
-                    'AdminModules'
-                ),
+                'module_url' => AdminController::$currentIndex .
+                    '&configure=' .
+                    $this->name .
+                    '&token=' .
+                    Tools::getAdminTokenLite('AdminModules'),
                 'fraud_form' => $formGenerator->getFraudForm(),
                 'form_errors' => $this->_errors,
                 'form_successes' => $this->_successes,
@@ -714,7 +700,12 @@ class Hipay_enterprise extends PaymentModule
                 'default_currency' => Configuration::get('PS_SHOP_DEFAULT'),
                 'limitedCountries' => $this->countries_titles,
                 'this_callback' => $this->context->link->getModuleLink(
-                    $this->name, 'notify', array(), true, null, (int) Configuration::get('PS_SHOP_DEFAULT')
+                    $this->name,
+                    'notify',
+                    array(),
+                    true,
+                    null,
+                    (int)Configuration::get('PS_SHOP_DEFAULT')
                 ),
                 'ipaddr' => $_SERVER ['REMOTE_ADDR'],
                 'psCategories' => $psCategories,
@@ -752,7 +743,8 @@ class Hipay_enterprise extends PaymentModule
             $this->hipayConfigFormHandler->saveAccountInformations();
 
             $this->context->smarty->assign(
-                'active_tab', 'account_form'
+                'active_tab',
+                'account_form'
             );
             //==================================//
             //===   GLOBAL PAYMENT METHODS   ===//
@@ -761,37 +753,43 @@ class Hipay_enterprise extends PaymentModule
             $this->logs->logInfos('# submitGlobalPaymentMethods');
             $this->hipayConfigFormHandler->saveGlobalPaymentInformations();
             $this->context->smarty->assign(
-                'active_tab', 'payment_form'
+                'active_tab',
+                'payment_form'
             );
         } elseif (Tools::isSubmit('creditCardSubmit')) {
             $this->logs->logInfos('# creditCardSubmit');
             $this->hipayConfigFormHandler->saveCreditCardInformations($this->context);
             $this->context->smarty->assign(
-                'active_tab', 'payment_form'
+                'active_tab',
+                'payment_form'
             );
         } elseif (Tools::isSubmit('localPaymentSubmit')) {
             $this->logs->logInfos('# localPaymentSubmit');
             $this->hipayConfigFormHandler->saveLocalPaymentInformations($this->context);
             $this->context->smarty->assign(
-                'active_tab', 'payment_form'
+                'active_tab',
+                'payment_form'
             );
         } elseif (Tools::isSubmit('fraudSubmit')) {
             $this->logs->logInfos('# fraudSubmit');
             $this->hipayConfigFormHandler->saveFraudInformations();
             $this->context->smarty->assign(
-                'active_tab', 'fraud_form'
+                'active_tab',
+                'fraud_form'
             );
         } elseif (Tools::isSubmit('submitCategoryMapping')) {
             $this->logs->logInfos('# submitCategoryMapping');
             $this->hipayConfigFormHandler->saveCategoryMappingInformations();
             $this->context->smarty->assign(
-                'active_tab', 'category_form'
+                'active_tab',
+                'category_form'
             );
         } elseif (Tools::isSubmit('submitCarrierMapping')) {
             $this->logs->logInfos('# submitCarrierMapping');
             $this->hipayConfigFormHandler->saveCarrierMappingInformations();
             $this->context->smarty->assign(
-                'active_tab', 'carrier_form'
+                'active_tab',
+                'carrier_form'
             );
         }
     }
@@ -820,21 +818,22 @@ class Hipay_enterprise extends PaymentModule
         return true;
     }
 }
+
 if (_PS_VERSION_ >= '1.7') {
     // version 1.7
-    require_once(dirname(__FILE__).'/hipay_enterprise-17.php');
+    require_once(dirname(__FILE__) . '/hipay_enterprise-17.php');
 } elseif (_PS_VERSION_ < '1.6') {
     // Version < 1.6
     Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once(dirname(__FILE__).'/classes/helper/HipayLogs.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayConfig.php');
-require_once(dirname(__FILE__).'/classes/forms/HipayForm.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayMapper.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayHelper.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayDBQuery.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayCCToken.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayOrderStatus.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayFormControl.php');
-require_once(dirname(__FILE__).'/classes/helper/HipayConfigFormHandler.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayLogs.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayConfig.php');
+require_once(dirname(__FILE__) . '/classes/forms/HipayForm.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayMapper.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayFormControl.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php');

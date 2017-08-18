@@ -17,7 +17,7 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayConfigFormHandler
 {
@@ -30,7 +30,7 @@ class HipayConfigFormHandler
     public function __construct($module_instance)
     {
         $this->context = Context::getContext();
-        $this->module  = $module_instance;
+        $this->module = $module_instance;
     }
 
     /**
@@ -49,76 +49,97 @@ class HipayConfigFormHandler
             //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
 
             foreach ($this->module->hipayConfigTool->getAccountGlobal() as $key => $value) {
-                $fieldValue                    = Tools::getValue($key);
+                $fieldValue = Tools::getValue($key);
                 $accountConfig["global"][$key] = $fieldValue;
             }
 
             foreach ($this->module->hipayConfigTool->getAccountSandbox() as $key => $value) {
-                if (($key == "api_username_sandbox" && Tools::getValue("api_username_sandbox") && !Tools::getValue("api_password_sandbox"))
-                    || ($key == "api_password_sandbox" && Tools::getValue("api_password_sandbox") && !Tools::getValue("api_username_sandbox"))
+                if (($key == "api_username_sandbox" &&
+                        Tools::getValue("api_username_sandbox") &&
+                        !Tools::getValue("api_password_sandbox")) ||
+                    ($key == "api_password_sandbox" &&
+                        Tools::getValue("api_password_sandbox") &&
+                        !Tools::getValue("api_username_sandbox"))
                 ) {
-                    $this->module->_errors[] = $this->module->l("If sandbox api username is filled sandbox api password is mandatory");
+                    $this->module->_errors[] = $this->module->l(
+                        "If sandbox api username is filled sandbox api password is mandatory"
+                    );
                     return false;
-                } elseif (($key == "api_tokenjs_username_sandbox" && Tools::getValue("api_tokenjs_username_sandbox") && !Tools::getValue("api_tokenjs_password_publickey_sandbox"))
-                    || ($key == "api_tokenjs_password_publickey_sandbox" && Tools::getValue(
-                        "api_tokenjs_password_publickey_sandbox"
-                    ) && !Tools::getValue("api_tokenjs_username_sandbox"))
+                } elseif (($key == "api_tokenjs_username_sandbox" &&
+                        Tools::getValue("api_tokenjs_username_sandbox") &&
+                        !Tools::getValue("api_tokenjs_password_publickey_sandbox")) ||
+                    ($key == "api_tokenjs_password_publickey_sandbox" &&
+                        Tools::getValue("api_tokenjs_password_publickey_sandbox") &&
+                        !Tools::getValue("api_tokenjs_username_sandbox"))
                 ) {
                     $this->module->_errors[] = $this->module->l(
                         "If sandbox api TokenJS username is filled sandbox api TokenJS password is mandatory"
                     );
                     return false;
-                } elseif (($key == "api_moto_username_sandbox" && Tools::getValue("api_moto_username_sandbox") && !Tools::getValue("api_moto_password_sandbox"))
-                    || ($key == "api_moto_password_sandbox" && Tools::getValue("api_moto_password_sandbox") && !Tools::getValue(
-                        "api_moto_username_sandbox"
-                    ))
+                } elseif (($key == "api_moto_username_sandbox" &&
+                        Tools::getValue("api_moto_username_sandbox") &&
+                        !Tools::getValue("api_moto_password_sandbox"))
+                    ||
+                    ($key == "api_moto_password_sandbox" &&
+                        Tools::getValue("api_moto_password_sandbox") &&
+                        !Tools::getValue(
+                            "api_moto_username_sandbox"
+                        ))
                 ) {
                     $this->module->_errors[] = $this->module->l(
                         "If sandbox api MO/TO username is filled sandbox api MO/TO password is mandatory"
                     );
                     return false;
                 } else {
-                    $fieldValue                     = Tools::getValue($key);
+                    $fieldValue = Tools::getValue($key);
                     $accountConfig["sandbox"][$key] = $fieldValue;
                 }
             }
 
             foreach ($this->module->hipayConfigTool->getAccountProduction() as $key => $value) {
-                if (($key == "api_username_production" && Tools::getValue("api_username_production") && !Tools::getValue("api_password_production"))
-                    || ($key == "api_password_production" && Tools::getValue("api_password_production") && !Tools::getValue("api_username_production"))
+                if (($key == "api_username_production" &&
+                        Tools::getValue("api_username_production") &&
+                        !Tools::getValue("api_password_production"))
+                    ||
+                    ($key == "api_password_production" &&
+                        Tools::getValue("api_password_production") &&
+                        !Tools::getValue("api_username_production"))
                 ) {
                     $this->module->_errors[] = $this->module->l(
                         "If production api username is filled production api password is mandatory"
                     );
                     return false;
-                } elseif (($key == "api_tokenjs_username_production" && Tools::getValue(
-                        "api_tokenjs_username_production"
-                    ) && !Tools::getValue("api_tokenjs_password_publickey_production")) || ($key == "api_tokenjs_password_publickey_production"
-                    && Tools::getValue(
-                        "api_tokenjs_password_publickey_production"
-                    ) && !Tools::getValue("api_tokenjs_username_production"))
+                } elseif (($key == "api_tokenjs_username_production" &&
+                        Tools::getValue("api_tokenjs_username_production") &&
+                        !Tools::getValue("api_tokenjs_password_publickey_production")) ||
+                    ($key == "api_tokenjs_password_publickey_production" &&
+                        Tools::getValue("api_tokenjs_password_publickey_production") &&
+                        !Tools::getValue("api_tokenjs_username_production"))
                 ) {
                     $this->module->_errors[] = $this->module->l(
                         "If production api TokenJS username is filled production api TokenJS password is mandatory"
                     );
                     return false;
-                } elseif (($key == "api_moto_username_production" && Tools::getValue("api_moto_username_production") && !Tools::getValue("api_moto_password_production"))
-                    || ($key == "api_moto_password_production" && Tools::getValue("api_moto_password_production") && !Tools::getValue("api_moto_username_production"))
+                } elseif (($key == "api_moto_username_production" &&
+                        Tools::getValue("api_moto_username_production") &&
+                        !Tools::getValue("api_moto_password_production"))
+                    ||
+                    ($key == "api_moto_password_production" &&
+                        Tools::getValue("api_moto_password_production") &&
+                        !Tools::getValue("api_moto_username_production"))
                 ) {
                     $this->module->_errors[] = $this->module->l(
                         "If production api MO/TO username is filled production api MO/TO password is mandatory"
                     );
                     return false;
                 } else {
-                    $fieldValue                        = Tools::getValue($key);
+                    $fieldValue = Tools::getValue($key);
                     $accountConfig["production"][$key] = $fieldValue;
                 }
             }
 
             //save configuration
-            $this->module->hipayConfigTool->setConfigHiPay(
-                "account", $accountConfig
-            );
+            $this->module->hipayConfigTool->setConfigHiPay("account", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Module settings saved successfully.');
             $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
@@ -156,37 +177,28 @@ class HipayConfigFormHandler
             foreach ($this->module->hipayConfigTool->getPaymentGlobal() as $key => $value) {
                 if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
                     $fieldValue = $value;
-                } elseif ($key == "css_url" && Tools::getValue("css_url") && !HipayFormControl::checkHttpsUrl(Tools::getValue("css_url"))) {
-                    $this->module->_errors[] = $this->module->l(
-                        "CSS url needs to be a valid https url."
-                    );
+                } elseif ($key == "css_url" &&
+                    Tools::getValue("css_url") &&
+                    !HipayFormControl::checkHttpsUrl(Tools::getValue("css_url"))
+                ) {
+                    $this->module->_errors[] = $this->module->l("CSS url needs to be a valid https url.");
                     return false;
                 } else {
                     $fieldValue = Tools::getValue($key);
                 }
 
-                $this->module->logs->logInfos(
-                    $key." => ".print_r(
-                        $fieldValue, true
-                    )
-                );
+                $this->module->logs->logInfos($key . " => " . print_r($fieldValue, true));
                 $accountConfig["global"][$key] = $fieldValue;
             }
-            $conf3d                                        = $this->save3DSecureInformations();
+            $conf3d = $this->save3DSecureInformations();
             $accountConfig["global"]["activate_3d_secure"] = $conf3d["global"]["activate_3d_secure"];
-            $accountConfig["global"]["3d_secure_rules"]    = $conf3d["global"]["3d_secure_rules"];
+            $accountConfig["global"]["3d_secure_rules"] = $conf3d["global"]["3d_secure_rules"];
 
             //save configuration
-            $this->module->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
+            $this->module->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Global payment method settings saved successfully.');
-            $this->module->logs->logInfos(
-                print_r(
-                    $this->module->hipayConfigTool->getConfigHipay(), true
-                )
-            );
+            $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -233,9 +245,9 @@ class HipayConfigFormHandler
             foreach ($this->module->hipayConfigTool->getPaymentCreditCard() as $card => $conf) {
                 foreach ($conf as $key => $value) {
                     if (in_array($key, $keySaved)) {
-                        $fieldValue = Tools::getValue($card."_".$key);
+                        $fieldValue = Tools::getValue($card . "_" . $key);
                         if ($key == "currencies") {
-                            foreach (Tools::getValue($card."_".$key) as $currency) {
+                            foreach (Tools::getValue($card . "_" . $key) as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
                                     $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
@@ -249,9 +261,7 @@ class HipayConfigFormHandler
                 }
             }
             //save configuration
-            $this->module->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
+            $this->module->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Credit card settings saved successfully.');
             $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
@@ -297,12 +307,10 @@ class HipayConfigFormHandler
             foreach ($this->module->hipayConfigTool->getLocalPayment() as $card => $conf) {
                 foreach ($conf as $key => $value) {
                     //prevent specific fields from being updated
-                    if (in_array(
-                            $key, $keySaved
-                        )) {
-                        $fieldValue = Tools::getValue($card."_".$key);
+                    if (in_array($key, $keySaved)) {
+                        $fieldValue = Tools::getValue($card . "_" . $key);
                         if ($key == "currencies") {
-                            foreach (Tools::getValue($card."_".$key) as $currency) {
+                            foreach (Tools::getValue($card . "_" . $key) as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
                                     $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
@@ -315,16 +323,10 @@ class HipayConfigFormHandler
                 }
             }
             //save configuration
-            $this->module->hipayConfigTool->setConfigHiPay(
-                "payment", $accountConfig
-            );
+            $this->module->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Local payment settings saved successfully.');
-            $this->module->logs->logInfos(
-                print_r(
-                    $this->module->hipayConfigTool->getConfigHipay(), true
-                )
-            );
+            $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
             return true;
         } catch (Exception $e) {
             $this->module->logs->logException($e);
@@ -352,21 +354,15 @@ class HipayConfigFormHandler
 
                 //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
                 foreach ($this->module->hipayConfigTool->getFraud() as $key => $value) {
-                    $fieldValue          = Tools::getValue($key);
+                    $fieldValue = Tools::getValue($key);
                     $accountConfig[$key] = $fieldValue;
                 }
 
                 //save configuration
-                $this->module->hipayConfigTool->setConfigHiPay(
-                    "fraud", $accountConfig
-                );
+                $this->module->hipayConfigTool->setConfigHiPay("fraud", $accountConfig);
 
                 $this->module->_successes[] = $this->module->l('Fraud settings saved successfully.');
-                $this->module->logs->logInfos(
-                    print_r(
-                        $this->module->hipayConfigTool->getConfigHipay(), true
-                    )
-                );
+                $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
                 return true;
             }
         } catch (Exception $e) {
@@ -387,10 +383,10 @@ class HipayConfigFormHandler
         $this->module->logs->logInfos('# saveCategoryMappingInformations');
         try {
             $psCategories = $this->module->mapper->getPrestashopCategories();
-            $mapping      = array();
+            $mapping = array();
             foreach ($psCategories as $cat) {
-                $psMapCat    = Tools::getValue('ps_map_'.$cat["id_category"]);
-                $hipayMapCat = Tools::getValue('hipay_map_'.$cat["id_category"]);
+                $psMapCat = Tools::getValue('ps_map_' . $cat["id_category"]);
+                $hipayMapCat = Tools::getValue('hipay_map_' . $cat["id_category"]);
 
                 if ($this->module->mapper->hipayCategoryExist($hipayMapCat)) {
                     $mapping[] = array("pscat" => $psMapCat, "hipaycat" => $hipayMapCat);
@@ -401,9 +397,7 @@ class HipayConfigFormHandler
                 return false;
             }
 
-            $this->module->mapper->setMapping(
-                HipayMapper::HIPAY_CAT_MAPPING, $mapping
-            );
+            $this->module->mapper->setMapping(HipayMapper::HIPAY_CAT_MAPPING, $mapping);
 
             $this->module->_successes[] = $this->module->l('Category mapping configuration saved successfully.');
             return true;
@@ -427,18 +421,22 @@ class HipayConfigFormHandler
         try {
             $psCarriers = $this->module->mapper->getPrestashopCarriers();
 
-            $mapping       = array();
+            $mapping = array();
             $this->module->_errors = array();
             foreach ($psCarriers as $car) {
-                $psMapCar            = Tools::getValue('ps_map_'.$car["id_carrier"]);
-                $hipayMapCarMode     = Tools::getValue('hipay_map_mode_'.$car["id_carrier"]);
-                $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_'.$car["id_carrier"]);
-                $hipayMapCarOETA     = Tools::getValue('ps_map_prep_eta_'.$car["id_carrier"]);
-                $hipayMapCarDETA     = Tools::getValue('ps_map__delivery_eta_'.$car["id_carrier"]);
+                $psMapCar = Tools::getValue('ps_map_' . $car["id_carrier"]);
+                $hipayMapCarMode = Tools::getValue('hipay_map_mode_' . $car["id_carrier"]);
+                $hipayMapCarShipping = Tools::getValue('hipay_map_shipping_' . $car["id_carrier"]);
+                $hipayMapCarOETA = Tools::getValue('ps_map_prep_eta_' . $car["id_carrier"]);
+                $hipayMapCarDETA = Tools::getValue('ps_map__delivery_eta_' . $car["id_carrier"]);
 
-                $mapping[] = array("pscar" => $psMapCar, "hipaycarmode" => $hipayMapCarMode,
-                    "hipaycarshipping" => $hipayMapCarShipping, "prepeta" => $hipayMapCarOETA,
-                    "deliveryeta" => $hipayMapCarDETA);
+                $mapping[] = array(
+                    "pscar" => $psMapCar,
+                    "hipaycarmode" => $hipayMapCarMode,
+                    "hipaycarshipping" => $hipayMapCarShipping,
+                    "prepeta" => $hipayMapCarOETA,
+                    "deliveryeta" => $hipayMapCarDETA
+                );
             }
 
             if (!empty($this->module->_errors)) {
@@ -468,17 +466,15 @@ class HipayConfigFormHandler
         $this->module->logs->logInfos('# save3DSecureInformations');
 
         try {
-            $accountConfig                                 = array(
-                "global" => array()
-            );
+            $accountConfig = array("global" => array());
             $accountConfig["global"]["activate_3d_secure"] = Tools::getValue("activate_3d_secure");
-            $accountConfig["global"]["3d_secure_rules"]    = array();
+            $accountConfig["global"]["3d_secure_rules"] = array();
 
             foreach (Tools::getValue("3d_secure_rules") as $rule) {
                 $newRules = array(
                     "field" => $rule["field"],
                     "operator" => htmlentities($rule["operator"]),
-                    "value" => $rule["value"],
+                    "value" => $rule["value"]
                 );
 
                 $accountConfig["global"]["3d_secure_rules"][] = $newRules;

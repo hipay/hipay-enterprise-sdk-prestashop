@@ -15,7 +15,8 @@
     <input id="expiry-month" class="expiry-month" name="expiry-month">
     <input id="expiry-year" required class="expiry-year" name="expiry-year">
     <input id="cvc" class="cvc" data-toggle="tooltip"
-           title="3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front." name="cvc">
+           title="3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front."
+           name="cvc">
 </div>
 
 <input id="card-token" type='hidden' name='card-token' value=''/>
@@ -32,5 +33,5 @@
         hiPayInputControl.addInput('cc', 'card-number', 'creditcardnumber', true);
         hiPayInputControl.addInput('cc', 'the-card-name-id', null, true);
         hiPayInputControl.addInput('cc', 'cvc', null, true);
-     })();
+    })();
 </script>

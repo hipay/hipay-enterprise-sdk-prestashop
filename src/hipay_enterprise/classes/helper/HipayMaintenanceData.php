@@ -11,15 +11,15 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/HipayDBQuery.php');
 
 /**
- * Handle maintenance data 
+ * Handle maintenance data
  *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayMaintenanceData
 {
@@ -31,11 +31,11 @@ class HipayMaintenanceData
      */
     public function __construct($moduleInstance)
     {
-        $this->module  = $moduleInstance;
-        $this->logs    = $this->module->getLogs();
+        $this->module = $moduleInstance;
+        $this->logs = $this->module->getLogs();
         $this->context = Context::getContext();
-        $this->db      = new HipayDBQuery($this->module);
-        $this->items   = array();
+        $this->db = new HipayDBQuery($this->module);
+        $this->items = array();
     }
 
     /**

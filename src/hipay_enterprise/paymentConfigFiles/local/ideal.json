@@ -13,13 +13,22 @@
     "countries": [
       "NL"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "ideal.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",
@@ -28,8 +37,8 @@
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",
           "type": "text",
-          "required" : true,
-          "controlType" : "bic"
+          "required": true,
+          "controlType": "bic"
         }
       }
     }

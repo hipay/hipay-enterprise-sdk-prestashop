@@ -21,14 +21,13 @@
         {/if}
         <br/>
     {/foreach}
-
     <input type="hidden" name="localSubmit"/>
     <script>
         (function () {
             {foreach $methodFields as $name => $field}
-                {if isset($field.controlType)}
-                hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}' , {if isset($field.required)}{$field.required}{else}false{/if});
-                {/if}
+            {if isset($field.controlType)}
+            hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}', {if isset($field.required)}{$field.required}{else}false{/if});
+            {/if}
             {/foreach}
         })();
 

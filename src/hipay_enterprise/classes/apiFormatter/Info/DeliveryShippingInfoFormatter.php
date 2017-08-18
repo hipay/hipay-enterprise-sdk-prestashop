@@ -11,8 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__).'/../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
+require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 
 /**
  *
@@ -21,7 +21,7 @@ require_once(dirname(__FILE__).'/../ApiFormatterAbstract.php');
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class DeliveryShippingInfoFormatter extends apiFormatterAbstract
 {
@@ -51,7 +51,7 @@ class DeliveryShippingInfoFormatter extends apiFormatterAbstract
      */
     protected function mapRequest(&$deliveryShippingInfo)
     {
-        $deliveryShippingInfo->delivery_date   = $this->calculateEstimatedDate();
+        $deliveryShippingInfo->delivery_date = $this->calculateEstimatedDate();
         $deliveryShippingInfo->delivery_method = $this->getMappingShippingMethod();
     }
 
@@ -63,9 +63,9 @@ class DeliveryShippingInfoFormatter extends apiFormatterAbstract
     private function calculateEstimatedDate()
     {
         if ($this->mappedShipping != null) {
-            $today     = new \Datetime();
+            $today = new \Datetime();
             $daysDelay = $this->mappedShipping["preparation_eta"] + $this->mappedShipping["delivery_eta"];
-            $interval  = new \DateInterval("P{$daysDelay}D");
+            $interval = new \DateInterval("P{$daysDelay}D");
 
             return $today->add($interval)->format("Y-m-d");
         }
@@ -81,8 +81,7 @@ class DeliveryShippingInfoFormatter extends apiFormatterAbstract
     {
         if ($this->mappedShipping != null) {
             return json_encode(
-                array('mode' => $this->mappedShipping["hp_carrier_mode"],
-                    'shipping' => $this->mappedShipping["hp_carrier_shipping"])
+                array('mode' => $this->mappedShipping["hp_carrier_mode"], 'shipping' => $this->mappedShipping["hp_carrier_shipping"])
             );
         }
         return null;

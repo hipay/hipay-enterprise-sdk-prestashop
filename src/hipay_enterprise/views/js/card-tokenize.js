@@ -67,66 +67,66 @@ $("#tokenizerForm").submit(function (e) {
         HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
 
         HiPay.create(params,
-                function (result) {
-                    // The card has been successfully tokenized
-                    var token = result.token;
-                    var brand = "";
-                    if (result.hasOwnProperty("domestic_network")) {
-                        brand = result.domestic_network;
-                    } else {
-                        brand = result.brand;
-                    }
-                    var pan = result.pan;
-                    var card_expiry_month = result.card_expiry_month;
-                    var card_expiry_year = result.card_expiry_year;
-                    var card_holder = result.card_holder;
-                    var issuer = result.issuer;
-                    var country = result.country;
+            function (result) {
+                // The card has been successfully tokenized
+                var token = result.token;
+                var brand = "";
+                if (result.hasOwnProperty("domestic_network")) {
+                    brand = result.domestic_network;
+                } else {
+                    brand = result.brand;
+                }
+                var pan = result.pan;
+                var card_expiry_month = result.card_expiry_month;
+                var card_expiry_year = result.card_expiry_year;
+                var card_holder = result.card_holder;
+                var issuer = result.issuer;
+                var country = result.country;
 
-                    if (activatedCreditCard.indexOf(brand.toLowerCase().replace(" ", "-")) !== -1) {
+                if (activatedCreditCard.indexOf(brand.toLowerCase().replace(" ", "-")) !== -1) {
 
-                        $("#tokenizerForm").hide();
-                        $("#payment-loader-hp").show();
-                        $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
+                    $("#tokenizerForm").hide();
+                    $("#payment-loader-hp").show();
+                    $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
 
-                        // set tokenization response
-                        $("#card-token").val(token);
-                        $("#card-brand").val(brand);
-                        $("#card-pan").val(pan);
-                        $("#card-holder").val($("#the-card-name-id").val());
-                        $("#card-expiry-month").val(card_expiry_month);
-                        $("#card-expiry-year").val(card_expiry_year);
-                        $("#card-issuer").val(issuer);
-                        $("#card-country").val(country);
+                    // set tokenization response
+                    $("#card-token").val(token);
+                    $("#card-brand").val(brand);
+                    $("#card-pan").val(pan);
+                    $("#card-holder").val($("#the-card-name-id").val());
+                    $("#card-expiry-month").val(card_expiry_month);
+                    $("#card-expiry-year").val(card_expiry_year);
+                    $("#card-issuer").val(issuer);
+                    $("#card-country").val(country);
 
-                        // we empty the form so we don't send credit card informations to the server
-                        $("#card-number").val("");
-                        $("#cvc").val("");
-                        $("input[name=expiry-month]").val("");
-                        $("input[name=expiry-year]").val("");
-                        $("#the-card-name-id").val("");
+                    // we empty the form so we don't send credit card informations to the server
+                    $("#card-number").val("");
+                    $("#cvc").val("");
+                    $("input[name=expiry-month]").val("");
+                    $("input[name=expiry-year]").val("");
+                    $("#the-card-name-id").val("");
 
-                        //submit the form
-                        form.submit();
+                    //submit the form
+                    form.submit();
 
-                        return true;
-                    } else {
-                        $("#error-js").show();
-                        $(".error").text(activatedCreditCardError);
-                        return false;
-                    }
-
-                },
-                function (errors) {
-                    // An error occurred
+                    return true;
+                } else {
                     $("#error-js").show();
-                    if (typeof errors.message != "undefined") {
-                        $(".error").text(errors.message);
-                    } else {
-                        $(".error").text("An error occurred with the request.");
-                    }
+                    $(".error").text(activatedCreditCardError);
                     return false;
                 }
+
+            },
+            function (errors) {
+                // An error occurred
+                $("#error-js").show();
+                if (typeof errors.message != "undefined") {
+                    $(".error").text(errors.message);
+                } else {
+                    $(".error").text("An error occurred with the request.");
+                }
+                return false;
+            }
         );
 
     }

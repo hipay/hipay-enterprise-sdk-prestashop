@@ -22,7 +22,7 @@ use HiPay\Fullservice\Enum\Transaction\ECI;
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
 {
@@ -48,31 +48,21 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         }
 
         // Check Notification signature
-        $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"]
-            : "";
+        $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"] : "";
 
-        $notificationHandler = new HipayNotification(
-            $this->module,
-            $params
-        );
+        $notificationHandler = new HipayNotification($this->module, $params);
 
         $moto = false;
-        if($notificationHandler->getEci() == ECI::MOTO){
+        if ($notificationHandler->getEci() == ECI::MOTO) {
             $moto = true;
         }
 
-        if (!HipayHelper::checkSignature(
-            $signature,
-            $this->module->hipayConfigTool->getConfigHipay(),
-            true,
-            $moto
-        )
-        ) {
+        if (!HipayHelper::checkSignature($signature, $this->module->hipayConfigTool->getConfigHipay(), true, $moto)) {
             $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
             die('Bad Callback initiated - signature');
         }
-        
-        
+
+
         $notificationHandler->processTransaction();
         die();
     }

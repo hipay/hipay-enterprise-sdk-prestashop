@@ -17,7 +17,7 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayMail
 {
@@ -44,11 +44,11 @@ class HipayMail
         // === GET DEFAULT ADMIN INFORMATIONS === ///
         $emails[] = Configuration::get('PS_SHOP_EMAIL');
         $configuration = $module->hipayConfigTool->getConfigHipay();
-        $emailBCC = $configuration['fraud']['send_payment_fraud_email_copy_to'] ? : null;
+        $emailBCC = $configuration['fraud']['send_payment_fraud_email_copy_to'] ?: null;
         $copyMethod = $configuration['fraud']['send_payment_fraud_email_copy_method'];
 
         // === CHECK IF ONE OR MULTIPLE MAIL === //
-        if ($copyMethod == HipayForm::TYPE_EMAIL_SEPARATE){
+        if ($copyMethod == HipayForm::TYPE_EMAIL_SEPARATE) {
             $emails[] = $emailBCC;
             $emailBCC = null;
         }
@@ -56,15 +56,16 @@ class HipayMail
         $subject = $module->l('A payment transaction is awaiting validation for the order %s');
 
         // === SEND EMAIL === //
-        self::sendEmailHipay('fraud',
+        self::sendEmailHipay(
+            'fraud',
             $subject,
             $emails,
             $emailBCC,
             $context,
             $module,
             $order,
-            $templateVars);
-
+            $templateVars
+        );
     }
 
     /**
@@ -77,21 +78,22 @@ class HipayMail
     public static function sendMailPaymentDeny($context, $module, $order)
     {
         // === GET DEFAULT ADMIN INFORMATIONS === ///
-        $customer = new Customer((int) $order->id_customer);
+        $customer = new Customer((int)$order->id_customer);
 
         // === PREPARE EMAIL VARIABLES == ///
         $templateVars = array(
             '{id_order}' => $order->reference,
             '{order_name}' => $order->getUniqReference(),
-            '{firstname}'=>  $customer->firstname,
-            '{lastname}'=>  $customer->lastname,
+            '{firstname}' => $customer->firstname,
+            '{lastname}' => $customer->lastname,
         );
 
         $emails = array($customer->email);
         $subject = $module->l('Refused payment for order %s');
 
         // === SEND EMAIL === //
-        self::sendEmailHipay('payment_deny',
+        self::sendEmailHipay(
+            'payment_deny',
             $subject,
             $emails,
             null,
@@ -115,15 +117,23 @@ class HipayMail
      * @param $order Order object
      * @param $templateVars array
      */
-    private static function sendEmailHipay($template, $subject, $emailsTo, $emailBCC, $context, $module, $order, $templateVars)
-    {
+    private static function sendEmailHipay(
+        $template,
+        $subject,
+        $emailsTo,
+        $emailBCC,
+        $context,
+        $module,
+        $order,
+        $templateVars
+    ) {
         // === GET DEFAULT ADMIN INFORMATIONS === ///
         $idLang = Configuration::get('PS_LANG_DEFAULT');
 
         // === SEND EMAIL === ///
-        foreach ($emailsTo as $email){
+        foreach ($emailsTo as $email) {
             $mailSuccess = @Mail::Send(
-                (int) $idLang,
+                (int)$idLang,
                 $template,
                 Context::getContext()->getTranslator()->trans(
                     $subject,
@@ -145,11 +155,10 @@ class HipayMail
             );
 
             if (!$mailSuccess) {
-                $module->getLogs()->logErrors( 'An error occured during email sending to ' .  $email );
+                $module->getLogs()->logErrors('An error occured during email sending to ' . $email);
             } else {
                 $module->log->logInfos("# Send Mail Payment deny to $email with $template");
             }
         }
     }
-
 }

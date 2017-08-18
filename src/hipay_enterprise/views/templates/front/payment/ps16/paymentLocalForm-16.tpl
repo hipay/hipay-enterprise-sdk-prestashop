@@ -38,7 +38,8 @@
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </p>
     {/if}
-    <form id="{$localPaymentName}" enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}" class="form-horizontal col-lg-4 col-lg-offset-4"
+    <form id="{$localPaymentName}" enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}"
+          class="form-horizontal col-lg-4 col-lg-offset-4"
           method="post" name="tokenizerForm" id="tokenizerForm" autocomplete="off">
         <div class="order_carrier_content box">
             <h2 class="page-subheading">{l s='Pay with %s' sprintf=$methodName mod='hipay_enterprise'}</h2>
@@ -51,7 +52,8 @@
             {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
             <p class="cart_navigation clearfix">
                 <button id="pay-button" type="submit" name="processCarrier"
-                        class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12" style="">
+                        class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
+                        style="">
                     <span>
                         {l s='Pay' mod='hipay_enterprise'}
                     </span>
@@ -65,11 +67,11 @@
             // prevent form from being submitted 
             e.preventDefault();
             e.stopPropagation();
-            
+
             if (hiPayInputControl.checkControl('{$localPaymentName}')) {
                 this.submit();
             }
-            
+
         });
     </script>
 {/if}

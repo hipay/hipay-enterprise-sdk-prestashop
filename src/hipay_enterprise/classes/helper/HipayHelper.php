@@ -17,7 +17,7 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayHelper
 {
@@ -58,7 +58,7 @@ class HipayHelper
      */
     public static function generateOperationId($order, $operation, $transactionAttempt)
     {
-        return $order->id.'-'.$operation.'-'.($transactionAttempt + 1);
+        return $order->id . '-' . $operation . '-' . ($transactionAttempt + 1);
     }
 
     /**
@@ -68,8 +68,8 @@ class HipayHelper
      */
     public static function unsetCart()
     {
-        $context                    = Context::getContext();
-        $cart                       = new Cart($context->cookie->id_cart);
+        $context = Context::getContext();
+        $cart = new Cart($context->cookie->id_cart);
         unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
@@ -84,14 +84,12 @@ class HipayHelper
      * @param type $fromNotification
      * @return boolean
      */
-    public static function checkSignature(
-    $signature, $config, $fromNotification = false, $moto = false
-    )
+    public static function checkSignature($signature, $config, $fromNotification = false, $moto = false)
     {
-        $passphrase     = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
-                : $config["account"]["production"]["api_secret_passphrase_production"];
+        $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
+            : $config["account"]["production"]["api_secret_passphrase_production"];
         $passphraseMoto = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
-                : $config["account"]["production"]["api_secret_passphrase_production"];
+            : $config["account"]["production"]["api_secret_passphrase_production"];
 
         if (empty($passphrase) && empty($signature)) {
             return true;
@@ -99,7 +97,9 @@ class HipayHelper
 
         if ($fromNotification) {
             $rawPostData = Tools::file_get_contents("php://input");
-            if ($signature == sha1($rawPostData.$passphrase) || ($moto && $signature == sha1($rawPostData.$passphraseMoto))) {
+            if ($signature == sha1($rawPostData . $passphrase) ||
+                ($moto && $signature == sha1($rawPostData . $passphraseMoto))
+            ) {
                 return true;
             }
             return false;
@@ -118,15 +118,19 @@ class HipayHelper
         if (!empty($product["reference"])) {
             if (isset($product["attributes_small"])) {
                 // Product with declinaison
-                $reference = $product["reference"]."-".HipayHelper::slugify($product["attributes_small"]);
+                $reference = $product["reference"] . "-" . HipayHelper::slugify($product["attributes_small"]);
             } else {
                 // Product simple or virtual
                 $reference = $product["reference"];
             }
         } else {
-            $reference = $product["id_product"]."-".$product["id_product_attribute"]."-".HipayHelper::slugify($product["name"]);
+            $reference = $product["id_product"] .
+                "-" .
+                $product["id_product_attribute"] .
+                "-" .
+                HipayHelper::slugify($product["name"]);
             if (isset($product["attributes_small"])) {
-                $reference .= "-".HipayHelper::slugify($product["attributes_small"]);
+                $reference .= "-" . HipayHelper::slugify($product["attributes_small"]);
             }
         }
         return $reference;
@@ -139,7 +143,7 @@ class HipayHelper
      */
     public static function getCarrierRef($carrier)
     {
-        $reference = $carrier->id."-".HipayHelper::slugify($carrier->name);
+        $reference = $carrier->id . "-" . HipayHelper::slugify($carrier->name);
 
         return $reference;
     }
@@ -154,7 +158,7 @@ class HipayHelper
         if (!empty($discount["code"])) {
             $reference = $discount["code"];
         } else {
-            $reference = $discount["id_cart_rule"]."-".HipayHelper::slugify($discount["name"]);
+            $reference = $discount["id_cart_rule"] . "-" . HipayHelper::slugify($discount["name"]);
         }
 
         return $reference;
@@ -198,9 +202,9 @@ class HipayHelper
     public static function getAdminUrl()
     {
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
-            $admin       = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
+            $admin = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
             $adminFolder = array_pop((array_slice($admin, -1)));
-            $adminUrl    = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder.'/';
+            $adminUrl = _PS_BASE_URL_ . __PS_BASE_URI__ . $adminFolder . '/';
         } else {
             $adminUrl = '';
         }
@@ -215,7 +219,7 @@ class HipayHelper
      */
     public static function getHipayToken($cartId, $page = 'validation.php')
     {
-        return md5(Tools::getToken($page).$cartId);
+        return md5(Tools::getToken($page) . $cartId);
     }
 
     /**
@@ -226,7 +230,7 @@ class HipayHelper
      */
     public static function getHipayAdminToken($tab, $orderID)
     {
-        return md5(Tools::getAdminTokenLite($tab).$orderID);
+        return md5(Tools::getAdminTokenLite($tab) . $orderID);
     }
 
     /**
@@ -241,8 +245,12 @@ class HipayHelper
      */
     public static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
     {
-        $redirectUrl404 = $context->link->getModuleLink($moduleInstance->name, 'exception',
-                                                        array('status_error' => 500), true);
+        $redirectUrl404 = $context->link->getModuleLink(
+            $moduleInstance->name,
+            'exception',
+            array('status_error' => 500),
+            true
+        );
 
         if (_PS_VERSION_ >= '1.7') {
             Tools::redirect($redirectUrl404);
@@ -277,7 +285,7 @@ class HipayHelper
 
     /**
      * Restore error messages in Session or cookie
-     * 
+     *
      * @param type $context
      */
     public static function resetMessagesHipay($context)
@@ -288,22 +296,40 @@ class HipayHelper
 
     /**
      * Get sorted and filtered available payment methods
-     * @param type $country
-     * @param type $currency
-     * @param type $orderTotal
-     * @return type
+     *
+     * @param $module
+     * @param $configHipay
+     * @param $country
+     * @param $currency
+     * @param int $orderTotal
+     * @return array
      */
-    public static function getSortedActivatedPaymentByCountryAndCurrency($module, $configHipay, $country, $currency,
-                                                                         $orderTotal = 1)
-    {
+    public static function getSortedActivatedPaymentByCountryAndCurrency(
+        $module,
+        $configHipay,
+        $country,
+        $currency,
+        $orderTotal = 1
+    ) {
         $activatedCreditCard = array();
         $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
-        $activatedCreditCard["credit_card"]["products"]      = self::getActivatedPaymentByCountryAndCurrency(
-                $module, $configHipay, "credit_card", $country, $currency, $orderTotal
+        $activatedCreditCard["credit_card"]["products"] = self::getActivatedPaymentByCountryAndCurrency(
+            $module,
+            $configHipay,
+            "credit_card",
+            $country,
+            $currency,
+            $orderTotal
         );
 
-        $activatedLocalPayment = self::getActivatedPaymentByCountryAndCurrency($module, $configHipay, "local_payment",
-                                                                               $country, $currency, $orderTotal);
+        $activatedLocalPayment = self::getActivatedPaymentByCountryAndCurrency(
+            $module,
+            $configHipay,
+            "local_payment",
+            $country,
+            $currency,
+            $orderTotal
+        );
 
         $paymentProducts = array_merge($activatedCreditCard, $activatedLocalPayment);
 
@@ -314,34 +340,47 @@ class HipayHelper
 
     /**
      * return an array of payment methods (set in BO configuration) for the customer country and currency
-     * @param Country $country
-     * @param Currency $currency
+     *
+     * @param $module
+     * @param $configHipay
+     * @param $paymentMethodType
+     * @param $country
+     * @param $currency
+     * @param int $orderTotal
      * @return array
      */
-    public static function getActivatedPaymentByCountryAndCurrency($module, $configHipay, $paymentMethodType, $country,
-                                                                   $currency, $orderTotal = 1)
-    {
-        $context          = Context::getContext();
+    public static function getActivatedPaymentByCountryAndCurrency(
+        $module,
+        $configHipay,
+        $paymentMethodType,
+        $country,
+        $currency,
+        $orderTotal = 1
+    ) {
+        $context = Context::getContext();
         $activatedPayment = array();
         foreach ($configHipay["payment"][$paymentMethodType] as $name => $settings) {
             if ($settings["activated"] &&
-                (empty($settings["countries"]) || in_array(
-                    $country->iso_code, $settings["countries"]
-                )) &&
-                (empty($settings["currencies"]) || in_array(
-                    $currency->iso_code, $settings["currencies"]
-                )) &&
-                $orderTotal >= $settings["minAmount"]["EUR"] && ($orderTotal <= $settings["maxAmount"]["EUR"] || !$settings["maxAmount"]["EUR"])
+                (empty($settings["countries"]) || in_array($country->iso_code, $settings["countries"])) &&
+                (empty($settings["currencies"]) || in_array($currency->iso_code, $settings["currencies"])) &&
+                $orderTotal >= $settings["minAmount"]["EUR"] &&
+                ($orderTotal <= $settings["maxAmount"]["EUR"] || !$settings["maxAmount"]["EUR"])
             ) {
                 if ($paymentMethodType == "local_payment") {
-                    if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE || Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM
-                        || !$settings["forceBasket"]
+                    if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE ||
+                        Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM ||
+                        !$settings["forceBasket"]
                     ) {
-                        $activatedPayment[$name]                   = $settings;
-                        $activatedPayment[$name]["link"]           = $context->link->getModuleLink(
-                            $module->name, 'redirectlocal', array("method" => $name), true
+                        $activatedPayment[$name] = $settings;
+                        $activatedPayment[$name]["link"] = $context->link->getModuleLink(
+                            $module->name,
+                            'redirectlocal',
+                            array("method" => $name),
+                            true
                         );
-                        $activatedPayment[$name]['payment_button'] = $module->getPath().'views/img/'.$settings["logo"];
+                        $activatedPayment[$name]['payment_button'] = $module->getPath() .
+                            'views/img/' .
+                            $settings["logo"];
                     }
                 } else {
                     $activatedPayment[$name] = $settings;
@@ -353,12 +392,22 @@ class HipayHelper
 
     /**
      * return well formatted authorize credit card payment methods
+     *
+     * @param $module
+     * @param $configHipay
+     * @param $deliveryCountry
+     * @param $currency
      * @return string
      */
     public static function getCreditCardProductList($module, $configHipay, $deliveryCountry, $currency)
     {
-        $creditCard  = self::getActivatedPaymentByCountryAndCurrency($module, $configHipay, "credit_card",
-                                                                     $deliveryCountry, $currency);
+        $creditCard = self::getActivatedPaymentByCountryAndCurrency(
+            $module,
+            $configHipay,
+            "credit_card",
+            $deliveryCountry,
+            $currency
+        );
         $productList = join(",", array_keys($creditCard));
 
         return $productList;
@@ -387,31 +436,30 @@ class HipayHelper
 
             HipayHelper::unsetCart();
 
-            $customer = new Customer((int) $cart->id_customer);
-            $shopId   = $cart->id_shop;
-            $shop     = new Shop($shopId);
+            $customer = new Customer((int)$cart->id_customer);
+            $shopId = $cart->id_shop;
+            $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
 
             $module->validateOrder(
-                (int) $cart->id, Configuration::get('HIPAY_OS_PENDING'), (float) $cart->getOrderTotal(true),
-                                                                                                      $productName,
-                                                                                                      'Order created by HiPay after success payment.',
-                                                                                                      array(),
-                                                                                                      $context->currency->id,
-                                                                                                      false,
-                                                                                                      $customer->secure_key,
-                                                                                                      $shop
+                (int)$cart->id,
+                Configuration::get('HIPAY_OS_PENDING'),
+                (float)$cart->getOrderTotal(true),
+                $productName,
+                'Order created by HiPay after success payment.',
+                array(),
+                $context->currency->id,
+                false,
+                $customer->secure_key,
+                $shop
             );
 
             // get order id
             $orderId = $module->currentOrder;
             $db->releaseSQLLock();
 
-            $captureType = array(
-                "order_id" => $orderId,
-                "type" => $configHipay["payment"]["global"]["capture_mode"]
-            );
+            $captureType = array("order_id" => $orderId, "type" => $configHipay["payment"]["global"]["capture_mode"]);
 
             $db->setOrderCaptureType($captureType);
 
@@ -428,7 +476,7 @@ class HipayHelper
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
         }
-        return Tools::redirect('index.php?controller=order-confirmation&'.$params);
+        return Tools::redirect('index.php?controller=order-confirmation&' . $params);
     }
 
     /**

@@ -14,14 +14,24 @@
       "GB",
       "FR"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","electronicSignature","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "electronicSignature",
+      "countries"
+    ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
     "forceHpayment": 0,
     "forceBasket": 0,
-    "electronicSignature" : 1,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "electronicSignature": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "sdd.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\SEPADirectDebitPaymentMethod",
@@ -32,38 +42,38 @@
         "gender": {
           "label": "Gender",
           "type": "gender",
-          "required" : true,
-          "controlType" : false
+          "required": true,
+          "controlType": false
         },
         "firstname": {
           "label": "Firstname",
           "type": "text",
-          "required" : true,
-          "controlType" : false
+          "required": true,
+          "controlType": false
         },
         "lastname": {
           "label": "Lastname",
           "type": "text",
-          "required" : true,
-          "controlType" : false
+          "required": true,
+          "controlType": false
         },
         "bank_name": {
           "label": "Bank Name",
           "type": "text",
-          "required" : true,
-          "controlType" : false
+          "required": true,
+          "controlType": false
         },
         "iban": {
           "label": "International Bank Account Number (IBAN)",
           "type": "text",
-          "required" : true,
-          "controlType" : "iban"
+          "required": true,
+          "controlType": "iban"
         },
         "issuer_bank_id": {
           "label": "Business Identifier Code (BIC)",
           "type": "text",
-          "required" : true,
-          "controlType" : "bic"
+          "required": true,
+          "controlType": "bic"
         }
       }
     }

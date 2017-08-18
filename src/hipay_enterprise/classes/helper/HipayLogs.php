@@ -17,17 +17,17 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayLogs
 {
-    const LOG_HIPAY_ERROR    = 0;
-    const LOG_HIPAY_INFOS    = 1;
-    const LOG_HIPAY_REQUEST  = 2;
+    const LOG_HIPAY_ERROR = 0;
+    const LOG_HIPAY_INFOS = 1;
+    const LOG_HIPAY_REQUEST = 2;
     const LOG_HIPAY_CALLBACK = 3;
-    const DEBUG_KEYS_MASK    = '****';
+    const DEBUG_KEYS_MASK = '****';
 
-    public $enable           = true;
+    public $enable = true;
     private $basePath;
     private $privateDataKeys = array('token', 'cardtoken', 'card_number', 'cvc', 'api_password_sandbox',
         'api_tokenjs_username_sandbox', 'api_tokenjs_password_publickey_sandbox', 'api_secret_passphrase_sandbox',
@@ -44,12 +44,12 @@ class HipayLogs
     public function __construct($module_instance, $enableConf = true)
     {
         $this->context = Context::getContext();
-        $this->module  = $module_instance;
+        $this->module = $module_instance;
 
         // Init base path for logs
-        $this->basePath = _PS_ROOT_DIR_.'/app/logs/';
+        $this->basePath = _PS_ROOT_DIR_ . '/app/logs/';
         if (!file_exists($this->basePath)) {
-            $this->basePath = _PS_ROOT_DIR_.'/log/';
+            $this->basePath = _PS_ROOT_DIR_ . '/log/';
         }
 
         $this->enable = (isset($enableConf) ? $enableConf : true);
@@ -73,7 +73,7 @@ class HipayLogs
      */
     public function logErrors($msg)
     {
-        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext().':'.$msg);
+        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext() . ':' . $msg);
     }
 
     /**
@@ -85,10 +85,7 @@ class HipayLogs
     {
         if ($this->module->hipayConfigTool->getPaymentGlobal()["log_infos"]) {
             if (is_array($msg)) {
-                $this->writeLogs(self::LOG_HIPAY_INFOS,
-                                 print_r(
-                        $this->filterDebugData($msg), true
-                ));
+                $this->writeLogs(self::LOG_HIPAY_INFOS, print_r($this->filterDebugData($msg), true));
             } else {
                 $this->writeLogs(self::LOG_HIPAY_INFOS, $msg);
             }
@@ -102,10 +99,10 @@ class HipayLogs
      */
     public function logCallback($transaction)
     {
-        $this->writeLogs(self::LOG_HIPAY_CALLBACK,
-                         print_r(
-                $this->filterDebugData($this->to_array($transaction)), true
-        ));
+        $this->writeLogs(
+            self::LOG_HIPAY_CALLBACK,
+            print_r($this->filterDebugData($this->toArray($transaction)), true)
+        );
     }
 
     /**
@@ -115,10 +112,7 @@ class HipayLogs
      */
     public function logRequest($request)
     {
-        $this->writeLogs(self::LOG_HIPAY_REQUEST,
-                         print_r(
-                $this->filterDebugData($this->to_array($request)), true
-        ));
+        $this->writeLogs(self::LOG_HIPAY_REQUEST, print_r($this->filterDebugData($this->toArray($request)), true));
     }
 
     /**
@@ -130,14 +124,14 @@ class HipayLogs
     {
         // Scan log dir
         $directory = $this->getBasePath();
-        $files     = scandir($directory, 1);
+        $files = scandir($directory, 1);
 
         // Init array files
-        $error_files    = array();
-        $info_files     = array();
+        $error_files = array();
+        $info_files = array();
         $callback_files = array();
-        $request_files  = array();
-        $refund_files   = array();
+        $request_files = array();
+        $refund_files = array();
 
         // List files
         foreach ($files as $file) {
@@ -171,7 +165,7 @@ class HipayLogs
      */
     public function displayLogFile($logFile)
     {
-        $path = $this->getBasePath().$logFile;
+        $path = $this->getBasePath() . $logFile;
 
         if (!file_exists($path)) {
             http_response_code(404);
@@ -211,7 +205,7 @@ class HipayLogs
             } elseif (is_array($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($debugData[$key]);
             } elseif (is_object($debugData[$key])) {
-                $debugData[$key] = $this->filterDebugData($this->to_array($debugData[$key]));
+                $debugData[$key] = $this->filterDebugData($this->toArray($debugData[$key]));
             }
         }
         return $debugData;
@@ -226,7 +220,7 @@ class HipayLogs
     {
         $debug = debug_backtrace();
         if (isset($debug[2])) {
-            return $debug[2]['class'].':'.$debug[2]['function'];
+            return $debug[2]['class'] . ':' . $debug[2]['function'];
         }
         return null;
     }
@@ -237,9 +231,9 @@ class HipayLogs
      * @param $object
      * @return array
      */
-    private function to_array($object)
+    private function toArray($object)
     {
-        return (array) $object;
+        return (array)$object;
     }
 
     /**
@@ -251,7 +245,7 @@ class HipayLogs
      */
     private function writeLogs($type, $message)
     {
-        $formatted_message = date('Y/m/d - H:i:s').': '.$message."\r\n";
+        $formatted_message = date('Y/m/d - H:i:s') . ': ' . $message . "\r\n";
         return file_put_contents($this->getFilename($type), $formatted_message, FILE_APPEND);
     }
 
@@ -279,6 +273,6 @@ class HipayLogs
                 $filename = 'infos';
                 break;
         }
-        return $this->basePath.date('Y-m-d').'-'.'hipay'.'-'.$filename.'.log';
+        return $this->basePath . date('Y-m-d') . '-' . 'hipay' . '-' . $filename . '.log';
     }
 }

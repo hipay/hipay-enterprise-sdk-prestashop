@@ -76,7 +76,7 @@
                     <label for="newsletter">
                         <div class="checker" id="uniform-newsletter">
                             <span class="">
-                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay" >
+                                <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
                             </span>
                         </div>
                         {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
@@ -98,7 +98,7 @@
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
     <script>
-        var activatedCreditCard = JSON.parse('{$activatedCreditCard}'); 
+        var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
         var myPaymentMethodSelected = true;
         {if $confHipay.account.global.sandbox_mode}

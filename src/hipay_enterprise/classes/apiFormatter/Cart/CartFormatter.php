@@ -23,7 +23,7 @@ require_once(dirname(__FILE__) . '/../../helper/HipayHelper.php');
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class CartFormatter extends ApiFormatterAbstract
 {
@@ -79,24 +79,20 @@ class CartFormatter extends ApiFormatterAbstract
             $european_article_numbering = $product["ean13"];
         }
 
-        $product_reference = HipayHelper::getProductRef($product) ;
+        $product_reference = HipayHelper::getProductRef($product);
         $type = "good";
         $name = $product["name"];
         $quantity = $product["cart_quantity"];
 
 
-        $discount = -1 * Tools::ps_round(
-                ($product["price_without_reduction"] * $product["cart_quantity"]) - ($product["price_with_reduction"] * $product["cart_quantity"]),
+        $discount = -1 *
+            Tools::ps_round(
+                ($product["price_without_reduction"] * $product["cart_quantity"]) -
+                ($product["price_with_reduction"] * $product["cart_quantity"]),
                 2
             );
-        $total_amount = Tools::ps_round(
-            $product["total_wt"],
-            2
-        );
-        $unit_price = Tools::ps_round(
-            (($total_amount - $discount) / $quantity),
-            3
-        );
+        $total_amount = Tools::ps_round($product["total_wt"], 2);
+        $unit_price = Tools::ps_round((($total_amount - $discount) / $quantity), 3);
 
         $tax_rate = $product["rate"];
         $discount_description = "";
@@ -144,19 +140,13 @@ class CartFormatter extends ApiFormatterAbstract
         $total_amount = 0;
 
         foreach ($this->cart->getCartRules() as $disc) {
-            $product_reference[] = HipayHelper::getDiscountRef($disc) ;
+            $product_reference[] = HipayHelper::getDiscountRef($disc);
             $name[] = $disc["name"];
-            $unit_price += -1 * Tools::ps_round(
-                    $disc["value_real"],
-                    2
-                );
+            $unit_price += -1 * Tools::ps_round($disc["value_real"], 2);
             $tax_rate = 0.00;
             $discount = 0.00;
             $discount_description[] = $disc["description"];
-            $total_amount += -1 * Tools::ps_round(
-                    $disc["value_real"],
-                    2
-                );
+            $total_amount += -1 * Tools::ps_round($disc["value_real"], 2);
         }
         $product_reference = join("/", $product_reference);
         $name = join("/", $name);
@@ -183,7 +173,7 @@ class CartFormatter extends ApiFormatterAbstract
      */
     private function getFeesItem($cartSummary)
     {
-        $carrier           = new Carrier($cartSummary["carrier"]->id);
+        $carrier = new Carrier($cartSummary["carrier"]->id);
         $product_reference = HipayHelper::getCarrierRef($carrier);
         $name = $cartSummary["carrier"]->name;
         $unit_price = (float)$cartSummary["total_shipping"];

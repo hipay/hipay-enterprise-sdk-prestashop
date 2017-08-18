@@ -21,7 +21,7 @@ require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class GenericPaymentMethodFormatter extends ApiFormatterAbstract
 {
@@ -67,7 +67,9 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract
                 $PMRequest->{$attr} = $this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["defaultFieldsValue"][$attr];
             } elseif (isset($this->params[$attr])) {
                 // format gender data
-                if ($this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["formFields"][$attr]['type'] == 'gender') {
+                if ($this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["formFields"][$attr]['type'] ==
+                    'gender'
+                ) {
                     $this->params[$attr] = $this->getGender($this->params[$attr]);
                 }
                 $PMRequest->{$attr} = $this->params[$attr];

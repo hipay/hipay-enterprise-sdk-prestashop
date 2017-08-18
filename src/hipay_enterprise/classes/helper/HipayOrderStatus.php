@@ -17,7 +17,7 @@
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link 	https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayOrderStatus
 {
@@ -32,26 +32,20 @@ class HipayOrderStatus
 
         foreach ($hipayStates as $name => $state) {
             $waiting_state_config = $name;
-            $waiting_state_color  = $state["waiting_state_color"];
-            $waiting_state_names  = array();
+            $waiting_state_color = $state["waiting_state_color"];
+            $waiting_state_names = array();
 
             $setup = $state["setup"];
 
             foreach (Language::getLanguages(false) as $language) {
                 if (Tools::strtolower($language['iso_code']) == 'fr') {
-                    $waiting_state_names[(int) $language['id_lang']] = $state["name_FR"];
+                    $waiting_state_names[(int)$language['id_lang']] = $state["name_FR"];
                 } else {
-                    $waiting_state_names[(int) $language['id_lang']] = $state["name_EN"];
+                    $waiting_state_names[(int)$language['id_lang']] = $state["name_EN"];
                 }
             }
 
-            self::saveOrderState(
-                $waiting_state_config,
-                $waiting_state_color,
-                $waiting_state_names,
-                $setup,
-                $module
-            );
+            self::saveOrderState($waiting_state_config, $waiting_state_color, $waiting_state_names, $setup, $module);
         }
 
         return true;
@@ -69,29 +63,26 @@ class HipayOrderStatus
     {
         $state_id = Configuration::get($config);
 
-        if ((bool) $state_id == true) {
+        if ((bool)$state_id == true) {
             $order_state = new OrderState($state_id);
         } else {
             $order_state = new OrderState();
         }
 
-        $order_state->name  = $names;
+        $order_state->name = $names;
         $order_state->color = $color;
 
         foreach ($setup as $param => $value) {
             $order_state->{$param} = $value;
         }
 
-        if ((bool) $state_id == true) {
+        if ((bool)$state_id == true) {
             return $order_state->save();
         } elseif ($order_state->add() == true) {
-            Configuration::updateValue(
-                $config,
-                $order_state->id
-            );
+            Configuration::updateValue($config, $order_state->id);
             @copy(
-                    $module->getLocalPath().'views/img/logo-16.png',
-                    _PS_ORDER_STATE_IMG_DIR_.(int) $order_state->id.'.gif'
+                $module->getLocalPath() . 'views/img/logo-16.png',
+                _PS_ORDER_STATE_IMG_DIR_ . (int)$order_state->id . '.gif'
             );
 
             return true;

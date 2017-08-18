@@ -13,13 +13,22 @@
     "countries": [
       "DE"
     ],
-    "displayConfigurationFields" : ["displayName","minAmount","maxAmount","countries"],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
     "forceHpayment": 0,
     "forceBasket": 1,
-    "minAmount": {"EUR" :0},
-    "maxAmount": {"EUR" :false},
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
     "logo": "klarna.png",
     "additionalFields": {}
   }
