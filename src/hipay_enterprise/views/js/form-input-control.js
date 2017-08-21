@@ -242,7 +242,7 @@ function normalizePrice(price) {
 function checkNotEmptyField(element) {
 
     if (element.value === null || element.value === "") {
-        errorMessage(element, "Field is mandatory");
+        errorMessage(element, i18nFieldIsMandatory);
         return false;
     }
 
@@ -261,7 +261,7 @@ function checkIban(element) {
     }
 
     if (!validIBAN(element.value)) {
-        errorMessage(element, "This is not a correct IBAN");
+        errorMessage(element, i18nBadIban);
         return false;
     }
     return true;
@@ -279,7 +279,7 @@ function checkBic(element) {
     }
 
     if (!validBic(element.value)) {
-        errorMessage(element, "This is not a correct BIC");
+        errorMessage(element, i18nBadBic);
         return false;
     }
     return true;
@@ -297,7 +297,7 @@ function checkCCNumber(element) {
     }
 
     if (!isCardNumberValid(element.value)) {
-        errorMessage(element, "This is not a correct credit card number");
+        errorMessage(element, i18nBadCC);
         return false;
     }
     return true;
@@ -315,7 +315,7 @@ function checkCPF(element) {
     }
 
     if (!isCPFValid(element.value)) {
-        errorMessage(element, "This is not a correct CPF");
+        errorMessage(element, i18nBadCPF);
         return false;
     }
     return true;
@@ -333,7 +333,7 @@ function checkCPNCURP(element) {
     }
 
     if (!isCPNCURPValid(element.value)) {
-        errorMessage(element, "This is not a correct CPN/CURP");
+        errorMessage(element, i18nBadCPNCURP);
         return false;
     }
     return true;
