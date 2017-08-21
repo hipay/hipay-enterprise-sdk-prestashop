@@ -43,6 +43,9 @@ class HipayNotification
         $this->module = $moduleInstance;
         $this->log = $this->module->getLogs();
         $this->context = Context::getContext();
+
+        $this->context->language = new Language(Configuration::get('PS_LANG_DEFAULT'));
+
         $this->db = new HipayDBQuery($this->module);
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
 
@@ -234,7 +237,7 @@ class HipayNotification
     private function registerOrder($state)
     {
         if (!$this->cart->orderExists()) {
-            $message = HipayOrderMessage::formatOrderData($this->transaction);
+            $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
 
             // init context
             Context::getContext()->cart = new Cart((int)$this->cart->id);
@@ -508,7 +511,7 @@ class HipayNotification
         );
 
         $this->db->setHipayTransaction($data);
-        HipayOrderMessage::orderMessage($this->order->id, $this->order->id_customer, $this->transaction);
+        HipayOrderMessage::orderMessage($this->module, $this->order->id, $this->order->id_customer, $this->transaction);
     }
 
     /**

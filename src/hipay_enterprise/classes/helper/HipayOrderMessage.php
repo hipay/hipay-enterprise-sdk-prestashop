@@ -30,9 +30,9 @@ class HipayOrderMessage
      * @param type $orderId
      * @param type $transaction
      */
-    public static function orderMessage($orderId, $customerId, $transaction)
+    public static function orderMessage($module, $orderId, $customerId, $transaction)
     {
-        $data = HipayOrderMessage::formatOrderData($transaction);
+        $data = HipayOrderMessage::formatOrderData($module, $transaction);
         HipayOrderMessage::addMessage($orderId, $customerId, $data);
     }
 
@@ -41,28 +41,28 @@ class HipayOrderMessage
      * @param type $transaction
      * @return type
      */
-    public static function formatOrderData($transaction)
+    public static function formatOrderData($module, $transaction)
     {
         $message = "HiPay Notification " . $transaction->getState() . "\n";
         switch ($transaction->getStatus()) {
             case TransactionStatus::CAPTURED: //118
             case TransactionStatus::CAPTURE_REQUESTED: //117
-                $message .= "Registered notification from HiPay about captured amount of " .
+                $message .= $module->l('Registered notification from HiPay about captured amount of ') .
                     $transaction->getCapturedAmount() .
                     "\n";
                 break;
             case TransactionStatus::REFUND_REQUESTED: //124
             case TransactionStatus::REFUNDED: //125
-                $message .= "Registered notification from HiPay about refunded amount of " .
+                $message .= $module->l('Registered notification from HiPay about refunded amount of ') .
                     $transaction->getRefundedAmount() .
                     "\n";
                 break;
         }
 
-        $message .= "Order total amount :" . $transaction->getAuthorizedAmount() . "\n";
+        $message .= $module->l('Order total amount :') . $transaction->getAuthorizedAmount() . "\n";
         $message .= "\n";
-        $message .= "Transaction ID: " . $transaction->getTransactionReference() . "\n";
-        $message .= "HiPay status: " . $transaction->getStatus() . "\n";
+        $message .= $module->l('Transaction ID: ') . $transaction->getTransactionReference() . "\n";
+        $message .= $module->l('HiPay status: ') . $transaction->getStatus() . "\n";
         if (Validate::isCleanHtml($message)) {
             return $message;
         }

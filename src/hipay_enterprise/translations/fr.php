@@ -12,9 +12,10 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_2fb302ad440d0eade342f67f7cfcfb31'] = 'En copie';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_b627630626fd6ea907a6481cc1af9598'] = 'Méthode de copie';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_f31ffd8a957ed58bd7f57e74a99ae496'] = 'Le destinataire sera en copie de l\'email';
-$_MODULE['<{hipay_enterprise}prestashop>hipayform_8df0982966fe750f140b222aee116e79'] = 'Deux mails sont envoyés';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_11b61d4b1d1cc34fb081410f0ec5595e'] = 'Email séparés';
+$_MODULE['<{hipay_enterprise}prestashop>hipayform_8df0982966fe750f140b222aee116e79'] = 'Deux mails sont envoyés';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
+$_MODULE['<{hipay_enterprise}prestashop>hipayform_92f0352f846dae3265a134be268f14e8'] = 'Quand une transaction est probablement une fraude un email est envoyé à l\'email de contact de votre boutique et à une adresse supplémentaire. Ici vous pouvez configurer le destinataire supplémentaire.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_7328fddefd53de471baeb6e2b764f78a'] = 'email@domain.com';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Activé';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_b9f5c797ebbf55adccdd8539a65a0241'] = 'Désactivé';
@@ -32,8 +33,14 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'Ce n\'est pas un BIC correct';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'Ce n\'est pas un CPF correct';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'Ce n\'est pas CURP/CPN correct';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement en succès ';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Une transaction pour la commande %s est en attente de validation';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Notification provenant de HiPay concernant un montant capturé de ';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_dcff891b1393af8c2f13bcb13307d6dc'] = 'Notification provenant de HiPay concernant un montant remboursé de ';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_147b202e5d808b32bd8d1eaaa135a58e'] = 'Montant total de la commande :';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_41683156a02a5458061f1ceff3a7b7e4'] = 'ID de transaction :';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_cab7966508bf13075ade294cdf147b53'] = 'Status HiPay :';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_02e383a51b8b0406237283795478178b'] = 'Veuillez saisir un montant';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_7c56e444724c6564fd77922c01950efa'] = 'Veuillez saisir un montant supérieur à zéro';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_03ed23bea6d995c37463fc5818e9d778'] = 'Le montant saisie dépasse le montant autorisé';
