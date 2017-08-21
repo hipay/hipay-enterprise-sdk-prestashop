@@ -39,10 +39,13 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"] : false;
         $this->captureRefundDiscount = (isset($params["capture_refund_discount"])) ? $params["capture_refund_discount"] : false;
         $this->refundItems = (isset($params["refundItems"])) ? $params["refundItems"] : false;
+        $this->context     = Context::getContext();
         $this->order = (isset($params["order"])) ? new Order($params["order"]) : false;
         $this->operation = (isset($params["operation"])) ? $params["operation"] : false;
         $this->db = new HipayDBQuery($module);
         $this->cart = ($this->order) ? new Cart($this->order->id_cart) : false;
+        $currency   = ($this->order) ?new Currency($this->cart->id_currency): null;
+        $this->context->currency = $currency;
         $this->maintenanceData = $maintenanceData;
     }
 
