@@ -23,7 +23,7 @@ if (!defined('_PS_VERSION_')) {
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
-class HipayEnterprise extends PaymentModule
+class Hipay_enterprise extends PaymentModule
 {
     public $hipayConfigTool;
     public $_errors = array();
