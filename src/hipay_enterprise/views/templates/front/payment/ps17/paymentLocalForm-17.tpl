@@ -16,10 +16,11 @@
     {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
     <input class="ioBB" type="hidden" name="ioBB">
 </form>
+{include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 <script>
     document.addEventListener('DOMContentLoaded', formListener{$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}, false);
 
-    function formListener {$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}() {
+    function formListener{$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}() {
         $("#{$localPaymentName}-hipay").submit(function (e) {
             // prevent form from being submitted 
             e.preventDefault();

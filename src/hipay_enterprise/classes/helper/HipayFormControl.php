@@ -85,12 +85,12 @@ class HipayFormControl
                 break;
             case 'cpf':
                 if (!HipayFormControl::isValidCPF($value)) {
-                    $errors[$name] = $module->l('Error : This is not a correct CPF');
+                    $errors[$name] = $module->l('This is not a correct CPF');
                 }
                 break;
             case 'curp-cpn':
                 if (!HipayFormControl::isValidCPNCURP($value)) {
-                    $errors[$name] = $module->l('Error : This is not a correct CURP/CPN');
+                    $errors[$name] = $module->l('This is not a correct CURP/CPN');
                 }
                 break;
         }

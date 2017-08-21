@@ -447,7 +447,7 @@ class HipayHelper
                 Configuration::get('HIPAY_OS_PENDING'),
                 (float)$cart->getOrderTotal(true),
                 $productName,
-                'Order created by HiPay after success payment.',
+                $module->l('Order created by HiPay after success payment.'),
                 array(),
                 $context->currency->id,
                 false,

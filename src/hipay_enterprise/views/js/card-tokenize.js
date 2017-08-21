@@ -17,7 +17,7 @@ $(document).ready(function () {
 function checkPaymentDate() {
     if ($(".expiry").val() === null || $(".expiry").val() === "") {
         $(".expiry").addClass("error-input-hp");
-        var pInsert = $("<span>Field is mandatory</span>");
+        var pInsert = $("<span>"+i18nFieldIsMandatory+"</span>");
         $(".expiry").after(pInsert);
         pInsert.addClass("error-text-hp");
         return false;
@@ -123,7 +123,7 @@ $("#tokenizerForm").submit(function (e) {
                 if (typeof errors.message != "undefined") {
                     $(".error").text(errors.message);
                 } else {
-                    $(".error").text("An error occurred with the request.");
+                    $(".error").text(i18nBadRequest);
                 }
                 return false;
             }
