@@ -28,7 +28,6 @@
 <input id="card-issuer" type='hidden' name='card-issuer' value=''/>
 <input id="card-country" type='hidden' name='card-country' value=''/>
 <input id="ioBB" type="hidden" name="ioBB">
-{include file="../front/partial/js.strings.tpl"}
 <script>
     (function () {
         hiPayInputControl.addInput('cc', 'card-number', 'creditcardnumber', true);

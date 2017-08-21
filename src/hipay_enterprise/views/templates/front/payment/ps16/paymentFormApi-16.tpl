@@ -97,6 +97,7 @@
         <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
+    {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
     <script>
         var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";

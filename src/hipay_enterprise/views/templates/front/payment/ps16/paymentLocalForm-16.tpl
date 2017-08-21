@@ -62,6 +62,7 @@
         </div>
 
     </form>
+    {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
     <script>
         $("#{$localPaymentName}").submit(function (e) {
             // prevent form from being submitted 

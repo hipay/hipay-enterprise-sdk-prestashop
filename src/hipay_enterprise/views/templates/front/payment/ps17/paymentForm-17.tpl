@@ -65,6 +65,7 @@
     <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
     <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
 </div>
+{include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
