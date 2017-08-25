@@ -198,7 +198,7 @@ class HipayConfigFormHandler
             $this->module->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Global payment method settings saved successfully.');
-            $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
+            $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
             return true;
         } catch (Exception $e) {
             // LOGS
@@ -326,7 +326,7 @@ class HipayConfigFormHandler
             $this->module->hipayConfigTool->setConfigHiPay("payment", $accountConfig);
 
             $this->module->_successes[] = $this->module->l('Local payment settings saved successfully.');
-            $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
+            $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
             return true;
         } catch (Exception $e) {
             $this->module->logs->logException($e);
@@ -362,7 +362,7 @@ class HipayConfigFormHandler
                 $this->module->hipayConfigTool->setConfigHiPay("fraud", $accountConfig);
 
                 $this->module->_successes[] = $this->module->l('Fraud settings saved successfully.');
-                $this->module->logs->logInfos(print_r($this->module->hipayConfigTool->getConfigHipay(), true));
+                $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
                 return true;
             }
         } catch (Exception $e) {

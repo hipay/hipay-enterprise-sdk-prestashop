@@ -127,19 +127,10 @@ class Apihandler
     public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array())
     {
         $this->baseParamsInit($params, false);
-        switch ($mode) {
-            case Apihandler::DIRECTPOST:
-                $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
-                $this->handleDirectOrder($params);
-                break;
-            case Apihandler::IFRAME:
-                return $this->handleIframe($params);
-            case Apihandler::HOSTEDPAGE:
-                $this->handleHostedPayment($params);
-                break;
-            default:
-                $this->module->getLogs()->logInfos("# Unknown payment mode");
-        }
+
+        // All locals payment ar done with API Order
+        $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
+        $this->handleDirectOrder($params);
     }
 
     /**

@@ -62,7 +62,9 @@ class CartFormatter extends ApiFormatterAbstract
         }
         // Fees items
         $item = $this->getFeesItem($cartSummary);
-        $cart->addItem($item);
+        if ($item) {
+            $cart->addItem($item);
+        }
     }
 
     /**
@@ -173,24 +175,27 @@ class CartFormatter extends ApiFormatterAbstract
      */
     private function getFeesItem($cartSummary)
     {
-        $carrier = new Carrier($cartSummary["carrier"]->id);
-        $product_reference = HipayHelper::getCarrierRef($carrier);
-        $name = $cartSummary["carrier"]->name;
-        $unit_price = (float)$cartSummary["total_shipping"];
-        $tax_rate = $cartSummary["carrier"]->getTaxesRate($this->delivery);
-        $discount = 0.00;
-        $total_amount = (float)$cartSummary["total_shipping"];
-        $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
-            $product_reference,
-            $name,
-            $unit_price,
-            $tax_rate,
-            $discount,
-            $total_amount
-        );
-        // forced category
-        $item->setProductCategory(1);
+        if ($cartSummary["carrier"]->id) {
+            $carrier = new Carrier($cartSummary["carrier"]->id);
+            $product_reference = HipayHelper::getCarrierRef($carrier);
+            $name = $cartSummary["carrier"]->name;
+            $unit_price = (float)$cartSummary["total_shipping"];
+            $tax_rate = $cartSummary["carrier"]->getTaxesRate($this->delivery);
+            $discount = 0.00;
+            $total_amount = (float)$cartSummary["total_shipping"];
+            $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
+                $product_reference,
+                $name,
+                $unit_price,
+                $tax_rate,
+                $discount,
+                $total_amount
+            );
+            // forced category
+            $item->setProductCategory(1);
 
-        return $item;
+            return $item;
+        }
+        return null;
     }
 }

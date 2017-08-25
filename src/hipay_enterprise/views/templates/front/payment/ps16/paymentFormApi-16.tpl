@@ -112,6 +112,6 @@
         var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
     </script>
-    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
     <script type="text/javascript" src="{$this_path_ssl}views/js/card-js.min.js"></script>
+    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
 {/if}

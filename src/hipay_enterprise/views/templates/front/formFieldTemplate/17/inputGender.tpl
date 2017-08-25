@@ -11,7 +11,7 @@
  *}
 
 <div class="form-group row">
-    <label class="col-md-3 form-control-label {if isset($field.required) && $field.required}required{/if}">{$field["label"]}</label>
+    <label class="col-md-3 form-control-label {if isset($field.required) && $field.required}required{/if}">{$field["label"][$language]}</label>
 
     <div class="col-md-9">
         <select id="{$localPaymentName}-{$name}" class="form-control"

@@ -289,7 +289,7 @@ class HipayConfig
                 true
             );
 
-            $this->module->getLogs()->logInfos(print_r($this->configHipay, true));
+            $this->module->getLogs()->logInfos($this->configHipay);
 
             return true;
         } else {

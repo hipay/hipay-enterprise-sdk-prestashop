@@ -46,10 +46,9 @@
         {/if}
     {/if}
     <div id="error-js" style="display:none" class="alert alert-danger">
-        <span>{l s='An error has occurred' mod='hipay_enterprise'}</span>
-        <ol>
+        <ul>
             <li class="error"></li>
-        </ol>
+        </ul>
     </div>
     {include file="$hipay_enterprise_tpl_dir/hook/paymentForm.tpl"}
     <br/>
@@ -71,8 +70,9 @@
 
     var activatedCreditCard = [];
     {foreach $activatedCreditCard as $cc}
-    activatedCreditCard.push("{$cc}");
+        activatedCreditCard.push("{$cc}");
     {/foreach}
+
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;
     function setSelectedPaymentMethod() {

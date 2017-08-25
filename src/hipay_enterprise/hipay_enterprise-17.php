@@ -58,8 +58,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
     {
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
         $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
-        $this->context->controller->addJS(_MODULE_DIR_ . $this->name . '/views/js/card-js.min.js', 'all');
-
         $this->context->controller->addJS(array(_MODULE_DIR_ . $this->name . '/views/js/devicefingerprint.js'));
         $this->context->controller->addJS(
             array(
@@ -165,7 +163,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
         } else {
             $this->context->smarty->assign(
                 array(
-                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]["formFields"]
+                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]["formFields"],
+                    'language' => $this->context->language->language_code
                 )
             );
         }
@@ -280,6 +279,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
+            $this->context->controller->registerJavascript(
+                'card-js',
+                'modules/' . $this->name . '//views/js/card-js.min.js'
+            );
             $this->context->controller->registerJavascript(
                 'card-tokenize',
                 'modules/' . $this->name . '/views/js/card-tokenize.js'

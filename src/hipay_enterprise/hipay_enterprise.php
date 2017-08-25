@@ -90,6 +90,19 @@ class Hipay_enterprise extends PaymentModule
         $this->hipayConfigTool = new HipayConfig($this);
     }
 
+    /**
+     * Translations in Front Controller doesn't work
+     *
+     * @see http://forge.prestashop.com/browse/BOOM-3716
+     */
+    private function fakeTranslation() {
+        $fake =  $this->l('Registered notification from HiPay about captured amount of ');
+        $fake =  $this->l('Registered notification from HiPay about refunded amount of ');
+        $fake =  $this->l('Order total amount :');
+        $fake =  $this->l('Transaction ID: ');
+        $fake =  $this->l('HiPay status: ');
+    }
+
     public function getLogs()
     {
         return $this->logs;
@@ -362,9 +375,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $hipay17 = new HipayEnterpriseNew();
         // Fix Bug with translation and bad context ( Hook in an another file)
-        $params['translation_checkout'] = $this->l(
-            'You will be redirected to an external payment page. Please do not refresh the page during the process'
-        );
+        $params['translation_checkout'] = $this->l('You will be redirected to an external payment page. Please do not refresh the page during the process');
 
         return $hipay17->hipayPaymentOptions($params);
     }
@@ -679,8 +690,7 @@ class Hipay_enterprise extends PaymentModule
         $source = array("brand_version" => _PS_VERSION_, "integration_version" => $this->version,);
 
         if (!Configuration::get('PS_SSL_ENABLED')) {
-            $this->_technicalErrors = $this->l(
-                'A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.'
+            $this->_technicalErrors = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.'
             );
         }
 

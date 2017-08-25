@@ -301,11 +301,11 @@ $_MODULE['<{hipay_enterprise}prestashop>cc.paymentoption_d22e8bf6263dfeb9e56945a
 $_MODULE['<{hipay_enterprise}prestashop>cc.paymentoption_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous serez redirigé vers une page de paiement externe. Ne pas actualiser la page pendant le processus';
 $_MODULE['<{hipay_enterprise}prestashop>cc.paymentoption_c7cc9229632063f7337e50d31f713cec'] = '(Test mode)';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_7f6c29842152c67b71b49d97ef59b277'] = 'Ce champ est obligatoire';
-$_MODULE['<{hipay_enterprise}prestashop>js.strings_52dc8faa28d49a8a9c67114f3a1ee03c'] = 'Ce n\'est pas un IBAN correct';
-$_MODULE['<{hipay_enterprise}prestashop>js.strings_1ec9c387d8257bf02b3594d009c8603b'] = 'Ce n\'est pas un BIC correct';
-$_MODULE['<{hipay_enterprise}prestashop>js.strings_254403217719796723eb58fa41aea7ec'] = 'Ce n\'est pas un numéro de carte de crédit correct';
-$_MODULE['<{hipay_enterprise}prestashop>js.strings_0e4fc7d1593232a8c43233dbc7a3188e'] = 'Ce n\'est pas un CPF correct';
-$_MODULE['<{hipay_enterprise}prestashop>js.strings_945e1955beccc1a37f03a296edd8a13c'] = 'Ce n\'est pas CURP/CPN correct';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_52dc8faa28d49a8a9c67114f3a1ee03c'] = 'IBAN incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_254403217719796723eb58fa41aea7ec'] = 'Numéro de carte de crédit incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF correct';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_945e1955beccc1a37f03a296edd8a13c'] = 'CURP/CPN incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_ab46006a075d4237288ca235f0f68cb3'] = 'Une erreur est survenue pendant la requête';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_931d3a3ad177dd96a28c9642fec11b01'] = 'Numéro de carte';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_f7c7b71c823f4afa44065aa411c40223'] = 'Nom sur la carte';

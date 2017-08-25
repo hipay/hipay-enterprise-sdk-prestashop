@@ -32,10 +32,12 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
      */
     public function postProcess()
     {
+        $this->name = 'notify';
         if ($this->module->active == false) {
             $this->module->getLogs()->logErrors('Notify : postProcess => Module Disable');
             die;
         }
+
         $params = $_POST;
         $transactionReference = $params["transaction_reference"];
         // Process log from notification

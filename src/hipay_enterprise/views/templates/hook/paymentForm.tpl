@@ -15,8 +15,9 @@
     <input id="expiry-month" class="expiry-month" name="expiry-month">
     <input id="expiry-year" required class="expiry-year" name="expiry-year">
     <input id="cvc" class="cvc" data-toggle="tooltip"
-           title="3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front."
+           title=""
            name="cvc">
+    <input name="text" type="text">
 </div>
 
 <input id="card-token" type='hidden' name='card-token' value=''/>

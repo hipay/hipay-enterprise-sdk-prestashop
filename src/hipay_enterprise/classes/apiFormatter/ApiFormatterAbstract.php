@@ -51,10 +51,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
      */
     protected function getGender($idGender = null)
     {
-        // Gender of the customer (M=male, F=female, U=unknown).
-        $gender = Gender::UNKNOWN;
-
-        switch ($idGender) {
+          switch ($idGender) {
             case '1':
                 $gender = Gender::MALE;
                 break;

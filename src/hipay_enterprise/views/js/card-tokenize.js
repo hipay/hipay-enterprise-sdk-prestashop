@@ -12,6 +12,7 @@
 
 $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
+    $('<a href="#" class="tooltips">' + i18nCVCLabel + '<span>' + i18nCVCTooltip + '</span></a>').insertAfter('#cvc');
 });
 
 function checkPaymentDate() {
@@ -121,7 +122,13 @@ $("#tokenizerForm").submit(function (e) {
                 // An error occurred
                 $("#error-js").show();
                 if (typeof errors.message != "undefined") {
-                    $(".error").text(errors.message);
+                    message = i18nBadRequest;
+                    switch (errors.code) {
+                        case 416:
+                            message = i18nTokenisationError416;
+                            break;
+                    }
+                    $(".error").text(message);
                 } else {
                     $(".error").text(i18nBadRequest);
                 }

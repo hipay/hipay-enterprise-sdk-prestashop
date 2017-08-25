@@ -39,7 +39,12 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
      */
     protected function mapRequest(&$request)
     {
-        $source = array("source" => "CMS", "brand" => "prestashop", "brand_version" => _PS_VERSION_, "integration_version" => $this->module->version);
+        $source = array(
+            "source" => "CMS",
+            "brand" => "prestashop",
+            "brand_version" => _PS_VERSION_,
+            "integration_version" => $this->module->version
+        );
 
         $this->module->getLogs()->logInfos('# Process Custom Request source');
         $request->source = Tools::jsonEncode($source);
@@ -64,9 +69,15 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             $paymentCode = $this->params["method"];
         }
 
-        $customDataHipay = array("shipping_description" => $cartSummary["carrier"]->name, "customer_code" => array_shift(
-            $group->name
-        ), "payment_code" => $paymentCode, "display_iframe" => $iframe,);
+        $shippingDescription = $cartSummary["carrier"]->name ?: "";
+        $customDataHipay = array(
+            "shipping_description" => $shippingDescription,
+            "customer_code" => array_shift(
+                $group->name
+            ),
+            "payment_code" => $paymentCode,
+            "display_iframe" => $iframe,
+        );
 
 
         // Add custom data for transaction request

@@ -83,7 +83,9 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         // Fees items
         if ($this->captureRefundFee) {
             $item = $this->getFeesItem();
-            $cart->addItem($item);
+            if ($item) {
+                $cart->addItem($item);
+            }
         }
     }
 
