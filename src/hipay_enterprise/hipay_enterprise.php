@@ -47,8 +47,7 @@ class Hipay_enterprise extends PaymentModule
         $this->display = 'view';
 
         $this->displayName = $this->l('HiPay Enterprise');
-        $this->description = $this->l(
-            'Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
+        $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
         );
 
         // init log object
@@ -101,6 +100,7 @@ class Hipay_enterprise extends PaymentModule
         $fake =  $this->l('Order total amount :');
         $fake =  $this->l('Transaction ID: ');
         $fake =  $this->l('HiPay status: ');
+        $fake =  $this->l('A payment transaction is awaiting validation for the order %s');
     }
 
     public function getLogs()
