@@ -237,6 +237,7 @@ class HipayNotification
     private function registerOrder($state)
     {
         if (!$this->cart->orderExists()) {
+            $this->log->logInfos('Register New order: ' .$this->cart->id);
             $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
 
             // init context
@@ -254,6 +255,7 @@ class HipayNotification
             $paymentProduct = $this->getPaymentProductName();
 
             try {
+                $this->log->logInfos('Prepare Validate order from registerOrder');
                 $this->module->validateOrder(
                     Context::getContext()->cart->id,
                     $state,

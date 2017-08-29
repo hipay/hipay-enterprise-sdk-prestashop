@@ -294,7 +294,7 @@ class Apihandler
 
         switch ($response->getState()) {
             case TransactionState::COMPLETED:
-                $this->validateOrder($params);
+                $this->callValidateOrder($params);
                 break;
             case TransactionState::PENDING:
                 $redirectUrl = $pendingUrl;
@@ -336,11 +336,12 @@ class Apihandler
         return $paymentMethod->generate();
     }
 
-    private function validateOrder($params)
+    private function callValidateOrder($params)
     {
         // SQL LOCK
         //#################################################################
         $cart = $this->context->cart;
+        $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
         $this->db->setSQLLockForCart($cart->id);
 
         HipayHelper::validateOrder(
@@ -351,5 +352,7 @@ class Apihandler
             $cart,
             $params["methodDisplayName"]
         );
+
+        $this->db->releaseSQLLock();
     }
 }

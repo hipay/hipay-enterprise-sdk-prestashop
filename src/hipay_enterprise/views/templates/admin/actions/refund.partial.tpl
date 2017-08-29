@@ -43,7 +43,7 @@
                         <th>{l s='Product name'  mod='hipay_enterprise'}</th>
                         <th>{l s='Unit price' mod='hipay_enterprise'}</th>
                         <th>{l s='Refunded'  mod='hipay_enterprise'}</th>
-                        <th>{l s='Qty to be refund'  mod='hipay_enterprise'}</th>
+                        <th>{l s='Qty to be refunded'  mod='hipay_enterprise'}</th>
                     </tr>
                     </thead>
                     {foreach $products as $item}
@@ -139,7 +139,7 @@
                                            name="hipay_refund_discount">
                                     {l s='Refund Discount' mod='hipay_enterprise'}
                                 {else}
-                                    <span class="badge badge-success">{l s='Captured'  mod='hipay_enterprise'}</span>
+                                    <span class="badge badge-success">{l s='Refunded'  mod='hipay_enterprise'}</span>
                                 {/if}
                             </td>
                             <td></td>

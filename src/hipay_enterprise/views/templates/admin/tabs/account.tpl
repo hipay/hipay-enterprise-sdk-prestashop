@@ -32,7 +32,7 @@
                                 <a class="slide-button btn production-switch"></a>
                             </span>
                             <p class="help-block">
-                                {l s='When in test mode, payment cards are not really charged. Enable this options for testing purposes only.' mod='hipay_enterprise'}
+                                {l s='When in test mode, payment cards are not really charged. Enable this option for testing purposes only.' mod='hipay_enterprise'}
                             </p>
                         </div>
                     </div>

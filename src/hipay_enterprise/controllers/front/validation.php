@@ -70,6 +70,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
 
         $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
 
+        $this->module->getLogs()->logInfos("# Prepare Validate Order from Validation");
         HipayHelper::validateOrder(
             $this->module,
             $context,

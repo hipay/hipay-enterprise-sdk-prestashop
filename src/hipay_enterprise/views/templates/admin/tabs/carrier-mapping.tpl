@@ -23,11 +23,11 @@
                     <div class="form-group">
                         <table class="table">
                             <thead>
-                            <th>{l s='Prestashop delivery method' mod='hipay_enterprise'}</th>
-                            <th>{l s='Order preparation estimate time' mod='hipay_enterprise'}</th>
-                            <th>{l s='Delivery estimate time' mod='hipay_enterprise'}</th>
-                            <th>{l s='Hipay delivery mode' mod='hipay_enterprise'}</th>
-                            <th>{l s='Hipay delivery method' mod='hipay_enterprise'}</th>
+                            <th>{l s='PrestaShop delivery method' mod='hipay_enterprise'}</th>
+                            <th>{l s='Order preparation estimated time' mod='hipay_enterprise'}</th>
+                            <th>{l s='Delivery estimated time' mod='hipay_enterprise'}</th>
+                            <th>{l s='HiPay delivery mode' mod='hipay_enterprise'}</th>
+                            <th>{l s='HiPay delivery method' mod='hipay_enterprise'}</th>
                             </thead>
                             <tbody>
                             {foreach $psCarriers as $car}

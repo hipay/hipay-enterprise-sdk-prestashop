@@ -19,7 +19,7 @@
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
-class HipayOrderStatus
+class HiPayOrderStatus
 {
 
     /**
@@ -108,8 +108,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "En attente d'autorisation (Hipay)",
-                "name_EN" => "Waiting for authorization (Hipay)",
+                "name_FR" => "En attente d'autorisation (HiPay)",
+                "name_EN" => "Waiting for authorization (HiPay)",
             ),
             "HIPAY_OS_MOTO_PENDING" => array(
                 "waiting_state_color" => "#4169E1",
@@ -121,8 +121,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "En attente de paiement MO/TO (Hipay)",
-                "name_EN" => "Waiting for MO/TO payment (Hipay)",
+                "name_FR" => "En attente de paiement MO/TO (HiPay)",
+                "name_EN" => "Waiting for MO/TO payment (HiPay)",
             ),
             "HIPAY_OS_EXPIRED" => array(
                 "waiting_state_color" => "#8f0621",
@@ -134,8 +134,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Expiré (Hipay)",
-                "name_EN" => "Expired (Hipay)",
+                "name_FR" => "Expiré (HiPay)",
+                "name_EN" => "Expired (HiPay)",
             ),
             "HIPAY_OS_CHALLENGED" => array(
                 "waiting_state_color" => "#4169E1",
@@ -147,8 +147,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Contesté (Hipay) ",
-                "name_EN" => "Challenged (Hipay)",
+                "name_FR" => "Contesté (HiPay) ",
+                "name_EN" => "Challenged (HiPay)",
             ),
             "HIPAY_OS_AUTHORIZED" => array(
                 "waiting_state_color" => "LimeGreen",
@@ -160,8 +160,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Paiement autorisé (Hipay)",
-                "name_EN" => "Payment authorized (Hipay)",
+                "name_FR" => "Paiement autorisé (HiPay)",
+                "name_EN" => "Payment authorized (HiPay)",
             ),
             "HIPAY_OS_CAPTURE_REQUESTED" => array(
                 "waiting_state_color" => "LimeGreen",
@@ -173,8 +173,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Capture demmandé (Hipay)",
-                "name_EN" => "Capture requested (Hipay)",
+                "name_FR" => "Capture demmandé (HiPay)",
+                "name_EN" => "Capture requested (HiPay)",
             ),
             "HIPAY_OS_CAPTURED" => array(
                 "waiting_state_color" => "LimeGreen",
@@ -186,8 +186,8 @@ class HipayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Capturé (Hipay)",
-                "name_EN" => "Captured (Hipay)",
+                "name_FR" => "Capturé (HiPay)",
+                "name_EN" => "Captured (HiPay)",
             ),
             "HIPAY_OS_PARTIALLY_CAPTURED" => array(
                 "waiting_state_color" => "LimeGreen",
@@ -200,8 +200,8 @@ class HipayOrderStatus
                     'send_email' => false,
                     'paid' => false
                 ),
-                "name_FR" => "Capture partielle (Hipay)",
-                "name_EN" => "partially captured (Hipay)",
+                "name_FR" => "Capture partielle (HiPay)",
+                "name_EN" => "partially captured (HiPay)",
             ),
             "HIPAY_OS_REFUND_REQUESTED" => array(
                 "waiting_state_color" => "#ec2e15",
@@ -214,8 +214,8 @@ class HipayOrderStatus
                     'send_email' => false,
                     'paid' => false
                 ),
-                "name_FR" => "Remboursement demandé (Hipay)",
-                "name_EN" => "Refund requested (Hipay)",
+                "name_FR" => "Remboursement demandé (HiPay)",
+                "name_EN" => "Refund requested (HiPay)",
             ),
             "HIPAY_OS_REFUNDED_PARTIALLY" => array(
                 "waiting_state_color" => "HotPink",
@@ -228,8 +228,8 @@ class HipayOrderStatus
                     'send_email' => false,
                     'paid' => false
                 ),
-                "name_FR" => "Remboursé Partiellement (Hipay)",
-                "name_EN" => "Refunded Partially (Hipay)",
+                "name_FR" => "Remboursé Partiellement (HiPay)",
+                "name_EN" => "Refunded Partially (HiPay)",
             ),
             "HIPAY_OS_REFUNDED" => array(
                 "waiting_state_color" => "HotPink",
@@ -243,8 +243,8 @@ class HipayOrderStatus
                     'paid' => false,
                     'template' => 'refund'
                 ),
-                "name_FR" => "Remboursé (Hipay)",
-                "name_EN" => "Refunded (Hipay)",
+                "name_FR" => "Remboursé (HiPay)",
+                "name_EN" => "Refunded (HiPay)",
             ),
             "HIPAY_OS_DENIED" => array(
                 "waiting_state_color" => "#8f0621",
@@ -257,8 +257,8 @@ class HipayOrderStatus
                     'send_email' => false,
                     'paid' => false
                 ),
-                "name_FR" => "Refusé (Hipay)",
-                "name_EN" => "Denied (Hipay)",
+                "name_FR" => "Refusé (HiPay)",
+                "name_EN" => "Denied (HiPay)",
             ),
             "HIPAY_OS_CHARGEDBACK" => array(
                 "waiting_state_color" => "#f89406",
@@ -271,8 +271,8 @@ class HipayOrderStatus
                     'send_email' => false,
                     'paid' => false
                 ),
-                "name_FR" => "Charged back (Hipay)",
-                "name_EN" => "Charged back (Hipay)",
+                "name_FR" => "Charged back (HiPay)",
+                "name_EN" => "Charged back (HiPay)",
             )
         );
 

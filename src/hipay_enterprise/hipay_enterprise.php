@@ -561,6 +561,9 @@ class Hipay_enterprise extends PaymentModule
 
         if ($order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)) {
             $showRefund = true;
+            if (!$totallyCaptured) {
+                $showCapture = true;
+            }
         }
         if ($order->current_state == Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1)) {
             $showChallenge = true;

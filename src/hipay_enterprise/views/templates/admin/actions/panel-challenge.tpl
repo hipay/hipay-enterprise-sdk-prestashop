@@ -11,7 +11,7 @@
  *}
 
 <fieldset>
-    <legend>{l s='Manage challenge'  mod='hipay_enterprise'}</legend>
+    <legend>{l s='Manage challenged transaction'  mod='hipay_enterprise'}</legend>
     <p class="alert alert-danger">The payment was challenged by your fraud ruleset and is pending.
         Please review the fraud screening result and choose whether you want to accept or deny the payment
         transaction.</p>

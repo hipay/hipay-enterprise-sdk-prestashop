@@ -59,7 +59,7 @@
                         <th>{l s='Product name' mod='hipay_enterprise'}</th>
                         <th>{l s='Unit price' mod='hipay_enterprise'}</th>
                         <th>{l s='Captured' mod='hipay_enterprise'}</th>
-                        <th>{l s='Qty to be capture' mod='hipay_enterprise'}</th>
+                        <th>{l s='Qty to be captured' mod='hipay_enterprise'}</th>
                     </tr>
                     </thead>
                     {foreach $products as $item}

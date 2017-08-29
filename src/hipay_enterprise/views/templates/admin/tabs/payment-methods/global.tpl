@@ -185,7 +185,7 @@
             <div class="form-group">
                 <label class="control-label col-lg-3">
                     <span>
-                        {l s='Keep cart when payment fail' mod='hipay_enterprise'}
+                        {l s='Keep cart when payment fails' mod='hipay_enterprise'}
                     </span>
                 </label>
                 <div class="col-lg-9">
@@ -209,8 +209,8 @@
                           data-toggle="tooltip"
                           data-html="true"
                           title=""
-                          data-original-title="{l s='Logs infos' mod='hipay_enterprise'}">
-                        {l s='Logs infos' mod='hipay_enterprise'}
+                          data-original-title="{l s='Logs information' mod='hipay_enterprise'}">
+                        {l s='Logs information' mod='hipay_enterprise'}
                     </span>
                 </label>
                 <div class="col-lg-9">
@@ -228,7 +228,7 @@
 
             <div class="form-group">
                 <label class="control-label col-lg-3">
-                    {l s='Activate 3-D secure' mod='hipay_enterprise'}
+                    {l s='Activate 3-D Secure' mod='hipay_enterprise'}
                 </label>
                 <div class="col-lg-9">
                     <select name="activate_3d_secure" class="col-lg-3" id="activate_3d_secure">
