@@ -280,6 +280,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
             $this->context->controller->registerJavascript(
+                'strings',
+                'modules/' . $this->name . '/views/js/strings.js'
+            );
+            $this->context->controller->registerJavascript(
                 'card-js',
                 'modules/' . $this->name . '/views/js/card-js.min.js'
             );
