@@ -12,9 +12,10 @@
 
 $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
-    $('<a href="#" class="tooltips">' + i18nCVCLabel + '<span>' + i18nCVCTooltip + '</span></a>').insertAfter('#cvc');
-    $('.card-js #card-number').attr('placeholder',i18nCardNumber);
-    $('.card-js #the-card-name-id').attr('placeholder',i18nNameOnCard);
+    $('<a href="#" class="tooltips">' + i18nCVCLabelLocal + '<span>' + i18nCVCTooltipLocal + '</span></a>').insertAfter('#cvc');
+    $('.card-js #card-number').attr('placeholder',i18nCardNumberLocal);
+    $('.card-js #the-card-name-id').attr('placeholder',i18nNameOnCardLocal);
+    $('.card-js .expiry').attr('placeholder',i18nDateLocal);
 });
 
 function checkPaymentDate() {
