@@ -1,4 +1,16 @@
-<script>
+{**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ *}
+{** Don't remove empty span (Bug with tpl wich has only script in PS17 ) *}
+<script type="text/javascript">
     var i18nFieldIsMandatory = "{l s='Field is mandatory' mod='hipay_enterprise'}";
     var i18nBadIban = "{l s='This is not a correct IBAN' mod='hipay_enterprise'}";
     var i18nBadBic = "{l s='This is not a correct BIC' mod='hipay_enterprise'}";

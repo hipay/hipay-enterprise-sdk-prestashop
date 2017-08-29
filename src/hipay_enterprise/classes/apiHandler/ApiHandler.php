@@ -95,7 +95,7 @@ class Apihandler
                 break;
             case Apihandler::IFRAME:
                 $params["iframe"] = true;
-                $params["productlist"] = $this->getCreditCardProductList(
+                $params["productlist"] = HipayHelper::getCreditCardProductList(
                     $this->module,
                     $this->configHipay,
                     $deliveryCountry,

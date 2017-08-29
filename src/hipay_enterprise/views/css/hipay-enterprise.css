@@ -28,7 +28,8 @@
 
 a.tooltips {
     position: relative;
-    display: inline;
+    text-align: right;
+    display: block;
     font-size: 0.8em;
 }
 a.tooltips span {

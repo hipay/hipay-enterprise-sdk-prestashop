@@ -9,6 +9,7 @@
 * @copyright 2017 HiPay
 * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
 *}
+{include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 <form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded"
       class="form-horizontal hipay-form-17" method="post"
       name="tokenizerForm" autocomplete="off">
@@ -64,7 +65,7 @@
     <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
     <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
 </div>
-{include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 

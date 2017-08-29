@@ -13,6 +13,8 @@
 $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
     $('<a href="#" class="tooltips">' + i18nCVCLabel + '<span>' + i18nCVCTooltip + '</span></a>').insertAfter('#cvc');
+    $('.card-js #card-number').attr('placeholder',i18nCardNumber);
+    $('.card-js #the-card-name-id').attr('placeholder',i18nNameOnCard);
 });
 
 function checkPaymentDate() {

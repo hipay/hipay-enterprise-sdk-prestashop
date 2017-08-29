@@ -425,18 +425,20 @@ class HipayHelper
      */
     public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
     {
+        $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
             $orderId = Order::getIdByCartId($cart->id);
         } else {
             $orderId = Order::getOrderByCartId($cart->id);
         }
 
+        $customer = new Customer((int)$cart->id_customer);
+
         if ($cart && (!$orderId || empty($orderId))) {
             $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
 
             HipayHelper::unsetCart();
 
-            $customer = new Customer((int)$cart->id_customer);
             $shopId = $cart->id_shop;
             $shop = new Shop($shopId);
             // forced shop
@@ -465,6 +467,12 @@ class HipayHelper
 
             Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
 
+
+        } else {
+            $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
+        }
+
+        if ($customer) {
             $params = http_build_query(
                 array(
                     'id_cart' => $cart->id,
@@ -473,9 +481,8 @@ class HipayHelper
                     'key' => $customer->secure_key,
                 )
             );
-        } else {
-            $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
         }
+
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
     }
 

@@ -9,6 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
+
+{include file="$hipay_enterprise_tpl_dir/../front/partial/js.strings.tpl"}
 {capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
 
@@ -97,8 +99,8 @@
         <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
-    {include file="$hipay_enterprise_tpl_dir/../front/partial/js.strings.tpl"}
-    <script>
+
+    <script type="text/javascript" >
         var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
         var myPaymentMethodSelected = true;
@@ -112,6 +114,6 @@
         var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
     </script>
-    <script type="text/javascript" src="{$this_path_ssl}views/js/card-js.min.js"></script>
-    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
+
+
 {/if}
