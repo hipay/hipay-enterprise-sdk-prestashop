@@ -281,7 +281,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
         if ('order' === $this->context->controller->php_self) {
             $this->context->controller->registerJavascript(
                 'card-js',
-                'modules/' . $this->name . '//views/js/card-js.min.js'
+                'modules/' . $this->name . '/views/js/card-js.min.js'
             );
             $this->context->controller->registerJavascript(
                 'card-tokenize',
