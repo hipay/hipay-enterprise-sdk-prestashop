@@ -147,7 +147,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                         '&vieworder#hipay'
                     );
                     die('');
-                } else if (Tools::getValue('total-capture-input') > $stillToCapture) {
+                } else if (Tools::getValue('total-capture-input') > $stillToCapture + 0.01) {
                     $hipay_redirect_status = $this->module->l(
                         'Capture amount must be lower than the amount still to be captured.',
                         'capture'
