@@ -100,6 +100,8 @@
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
 
+    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
+
     <script type="text/javascript" >
         var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";

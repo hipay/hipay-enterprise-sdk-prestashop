@@ -133,7 +133,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     $path = 'payment/ps16/paymentFormApi-16.tpl';
                     $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/strings.js'));
                     $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js'));
-                    $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/card-tokenize.js'));
                 }
                 break;
             default:

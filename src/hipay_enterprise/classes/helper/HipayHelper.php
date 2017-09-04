@@ -466,8 +466,6 @@ class HipayHelper
             $db->setOrderCaptureType($captureType);
 
             Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
-
-
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
         }

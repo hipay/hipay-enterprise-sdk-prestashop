@@ -48,7 +48,11 @@ class HipayForm extends HipayFormInput
         $this->helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false);
         $this->helper->currentIndex .= '&' .
             http_build_query(
-                array('configure' => $this->module->name, 'tab_module' => 'payments_gateways', 'module_name' => $this->module->name,)
+                array(
+                    'configure' => $this->module->name,
+                    'tab_module' => 'payments_gateways',
+                    'module_name' => $this->module->name,
+                )
             );
 
         $this->helper->module = $this;
@@ -78,7 +82,7 @@ class HipayForm extends HipayFormInput
 
         $this->helper->tpl_vars['fields_value'] = $this->getFraudFormValues();
 
-        $form['form']['legend'] = array('title' => $this->module->l('Payment fraud email','HipayForm'));
+        $form['form']['legend'] = array('title' => $this->module->l('Payment fraud email', 'HipayForm'));
 
         $form['form']['input'][] = $this->generateFormNotice();
 
@@ -99,26 +103,27 @@ class HipayForm extends HipayFormInput
             array(
                 'desc' => "<ul class='hipay-notice-list'><li><b>Bcc</b> :" .
                     $this->module->l('The recipient will be in copy of the email', 'HipayForm') .
-                    "</li><li><b>".$this->module->l('Separate email', 'HipayForm')."</b> :" .
+                    "</li><li><b>" . $this->module->l('Separate email', 'HipayForm') . "</b> :" .
                     $this->module->l('Two mails are sent', 'HipayForm') .
-                    "</li></ul>", "options" =>
-                array(
-                    "query" => array(
-                        array(
-                            "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_BCC,
-                            "name" => $this->module->l(
-                                'Bcc',
-                                'HipayForm'
+                    "</li></ul>",
+                "options" =>
+                    array(
+                        "query" => array(
+                            array(
+                                "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_BCC,
+                                "name" => $this->module->l(
+                                    'Bcc',
+                                    'HipayForm'
+                                )
+                            ),
+                            array(
+                                "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_SEPARATE,
+                                "name" => $this->module->l('Separate email', 'HipayForm')
                             )
                         ),
-                        array(
-                            "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_SEPARATE,
-                            "name" => $this->module->l('Separate email', 'HipayForm')
-                        )
-                    ),
-                    "id" => "send_payment_fraud_email_copy_method_id",
-                    "name" => "name"
-                )
+                        "id" => "send_payment_fraud_email_copy_method_id",
+                        "name" => "name"
+                    )
             )
         );
 
@@ -140,7 +145,8 @@ class HipayForm extends HipayFormInput
         // init field
         $values = array(
             "input_split" => $this->generateHtmlNoticeAdmin(
-                $this->module->l('When a transaction is likely to be a fraud then an email is sent to the contact email from your shop as well as to an additional sender. Here you can configure the additional recipient email','HipayForm')
+                $this->module->l('When a transaction is likely to be a fraud then an email is sent to the contact email from your shop as well as to an additional sender. Here you can configure the additional recipient email',
+                    'HipayForm')
             ),
             "payment_fraud_email_sender" => "",
             "send_payment_fraud_email_copy_to" => "",

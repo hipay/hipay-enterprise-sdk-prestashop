@@ -36,7 +36,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.2-beta';
+        $this->version = '2.0.2';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
@@ -94,13 +94,14 @@ class Hipay_enterprise extends PaymentModule
      *
      * @see http://forge.prestashop.com/browse/BOOM-3716
      */
-    private function fakeTranslation() {
-        $fake =  $this->l('Registered notification from HiPay about captured amount of ');
-        $fake =  $this->l('Registered notification from HiPay about refunded amount of ');
-        $fake =  $this->l('Order total amount :');
-        $fake =  $this->l('Transaction ID: ');
-        $fake =  $this->l('HiPay status: ');
-        $fake =  $this->l('A payment transaction is awaiting validation for the order %s');
+    private function fakeTranslation()
+    {
+        $fake = $this->l('Registered notification from HiPay about captured amount of ');
+        $fake = $this->l('Registered notification from HiPay about refunded amount of ');
+        $fake = $this->l('Order total amount :');
+        $fake = $this->l('Transaction ID: ');
+        $fake = $this->l('HiPay status: ');
+        $fake = $this->l('A payment transaction is awaiting validation for the order %s');
     }
 
     public function getLogs()
