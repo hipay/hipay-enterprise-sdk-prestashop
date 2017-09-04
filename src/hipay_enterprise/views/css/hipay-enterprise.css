@@ -5,23 +5,59 @@
 
 }
 
-.hipay-form-17 input, .hipay-form-17 select{
+.hipay-form-17 input, .hipay-form-17 select {
     background-color: #FDFDFD !important;
 }
 
-.error-input-hp{
-    border-color : #ff4c4c!important;
+.error-input-hp {
+    border-color: #ff4c4c !important;
 }
 
-.error-text-hp{
-    color :#ff4c4c ;
+.error-text-hp {
+    color: #ff4c4c;
     font-size: 15px;
 }
 
-.input-hp{
-    border: 1px solid rgba(0,0,0,.15);
+.input-hp {
+    border: 1px solid rgba(0, 0, 0, .15);
 }
 
-.card-img{
+.card-img {
     margin-bottom: 1.05em;
+}
+
+a.tooltips {
+    position: relative;
+    text-align: right;
+    display: block;
+    font-size: 0.8em;
+}
+a.tooltips span {
+    position: absolute;
+    width:340px;
+    color: #FFFFFF;
+    background: #000000;
+    text-align: left;
+    visibility: hidden;
+    border-radius: 6px;
+    padding: 3px;
+}
+a.tooltips span:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    width: 0; height: 0;
+    border-top: 8px solid #000000;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+}
+a:hover.tooltips span {
+    visibility: visible;
+    opacity: 0.8;
+    bottom: 30px;
+    left: 50%;
+    margin-left: -76px;
+    z-index: 999;
 }

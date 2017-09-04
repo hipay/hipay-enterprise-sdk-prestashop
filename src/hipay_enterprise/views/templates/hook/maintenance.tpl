@@ -34,7 +34,6 @@
                     </div>
                 {/if}
                 {if $showCapture && $stillToCapture > 0 && $manualCapture}
-
                     <div class="col-lg-12 panel">
                         {include file='../admin/actions/capture.partial.tpl'}
                     </div>

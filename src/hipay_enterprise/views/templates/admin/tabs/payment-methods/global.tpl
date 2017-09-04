@@ -10,7 +10,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 <div class="panel  hipay-tabs" id="panel-global-settings">
-    <form method="post" class="defaultForm form-horizontal" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
+    <form method="post" class="defaultForm form-horizontal"
+          action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" id="credit_card_form">
         <div class="form-wrapper">
             <div class="panel-heading">
                 <i class="icon icon-credit-card"></i> {l s='Global settings' mod='hipay_enterprise'}
@@ -24,29 +25,37 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <select name="operating_mode" class="col-lg-2" id="operating_mode">
-                            <option value="api" {if $config_hipay.payment.global.operating_mode == "api"}selected="selected" {/if} >{l s='Api' mod='hipay_enterprise'}</option>
-                            <option value="hosted_page" {if $config_hipay.payment.global.operating_mode == "hosted_page"}selected="selected" {/if} >{l s='Hosted page' mod='hipay_enterprise'}</option>
+                            <option value="api"
+                                    {if $config_hipay.payment.global.operating_mode == "api"}selected="selected" {/if} >{l s='Api' mod='hipay_enterprise'}</option>
+                            <option value="hosted_page"
+                                    {if $config_hipay.payment.global.operating_mode == "hosted_page"}selected="selected" {/if} >{l s='Hosted page' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                     <p class="help-block">
-                        <ul class="hipay-notice-list">
-                            <li><b>Api</b> : {l s='The customer will fill his bank information directly on merchants' mod='hipay_enterprise'}</li>
-                            <li><b>Hosted</b> :{l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}</li>
-                        </ul>
+                    <ul class="hipay-notice-list">
+                        <li><b>Api</b>
+                            : {l s='The customer will fill his bank information directly on merchants' mod='hipay_enterprise'}
+                        </li>
+                        <li><b>Hosted</b>
+                            :{l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}
+                        </li>
+                    </ul>
                     </p>
                 </div>
             </div>
             <div id="hostedconf">
                 <div class="form-group">
                     <label class="control-label col-lg-3">
-                        <span >
+                        <span>
                             {l s='Display Hosted Page' mod='hipay_enterprise'}
                         </span>
                     </label>
                     <div class="col-lg-2">
                         <select name="display_hosted_page" class="" id="display_hosted_page">
-                            <option value="redirect" {if $config_hipay.payment.global.display_hosted_page == "redirect"}selected="selected" {/if} >{l s='Redirect' mod='hipay_enterprise'}</option>
-                            <option value="iframe" {if $config_hipay.payment.global.display_hosted_page == "iframe"}selected="selected" {/if} >{l s='Iframe' mod='hipay_enterprise'}</option>
+                            <option value="redirect"
+                                    {if $config_hipay.payment.global.display_hosted_page == "redirect"}selected="selected" {/if} >{l s='Redirect' mod='hipay_enterprise'}</option>
+                            <option value="iframe"
+                                    {if $config_hipay.payment.global.display_hosted_page == "iframe"}selected="selected" {/if} >{l s='Iframe' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                 </div>
@@ -99,15 +108,20 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <select name="capture_mode" class="col-lg-2" id="capture_mode">
-                            <option value="automatic" {if $config_hipay.payment.global.capture_mode == "automatic"}selected="selected" {/if} >{l s='Automatic' mod='hipay_enterprise'}</option>
-                            <option value="manual" {if $config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if} >{l s='Manual' mod='hipay_enterprise'}</option>
+                            <option value="automatic"
+                                    {if $config_hipay.payment.global.capture_mode == "automatic"}selected="selected" {/if} >{l s='Automatic' mod='hipay_enterprise'}</option>
+                            <option value="manual"
+                                    {if $config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if} >{l s='Manual' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                     <p class="help-block">
-                        <ul class="hipay-notice-list">
-                            <li><b>Manual</b> : {l s='All transactions will be captured manually either from the Hipay Back office or from your admin prestashop' mod='hipay_enterprise'}</li>
-                            <li><b>Automatic</b> :{l s='All transactions will be captured automatically.' mod='hipay_enterprise'}</li>
-                        </ul>
+                    <ul class="hipay-notice-list">
+                        <li><b>Manual</b>
+                            : {l s='All transactions will be captured manually either from the Hipay Back office or from your admin prestashop' mod='hipay_enterprise'}
+                        </li>
+                        <li><b>Automatic</b>
+                            :{l s='All transactions will be captured automatically.' mod='hipay_enterprise'}</li>
+                    </ul>
                     </p>
                 </div>
             </div>
@@ -164,22 +178,24 @@
                     </p>
                 </div>
             </div>
-            <!-- SWITCH MODE END -->      
+            <!-- SWITCH MODE END -->
 
 
             <!-- SWITCH MODE START -->
             <div class="form-group">
                 <label class="control-label col-lg-3">
-                    <span >
-                        {l s='Keep cart when payment fail' mod='hipay_enterprise'}
+                    <span>
+                        {l s='Keep cart when payment fails' mod='hipay_enterprise'}
                     </span>
                 </label>
                 <div class="col-lg-9">
                     <span class="switch prestashop-switch fixed-width-lg">
-                        <input type="radio" name="regenerate_cart_on_decline" id="regenerate_cart_on_decline_switchmode_on" value="1"
+                        <input type="radio" name="regenerate_cart_on_decline"
+                               id="regenerate_cart_on_decline_switchmode_on" value="1"
                                {if $config_hipay.payment.global.regenerate_cart_on_decline }checked="checked"{/if}>
                         <label for="regenerate_cart_on_decline_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                        <input type="radio" name="regenerate_cart_on_decline" id="regenerate_cart_on_decline_switchmode_off" value="0"
+                        <input type="radio" name="regenerate_cart_on_decline"
+                               id="regenerate_cart_on_decline_switchmode_off" value="0"
                                {if $config_hipay.payment.global.regenerate_cart_on_decline == false}checked="checked"{/if}>
                         <label for="regenerate_cart_on_decline_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                         <a class="slide-button btn"></a>
@@ -193,8 +209,8 @@
                           data-toggle="tooltip"
                           data-html="true"
                           title=""
-                          data-original-title="{l s='Logs infos' mod='hipay_enterprise'}">
-                        {l s='Logs infos' mod='hipay_enterprise'}
+                          data-original-title="{l s='Logs information' mod='hipay_enterprise'}">
+                        {l s='Logs information' mod='hipay_enterprise'}
                     </span>
                 </label>
                 <div class="col-lg-9">
@@ -212,7 +228,7 @@
 
             <div class="form-group">
                 <label class="control-label col-lg-3">
-                    {l s='Activate 3-D secure' mod='hipay_enterprise'}
+                    {l s='Activate 3-D Secure' mod='hipay_enterprise'}
                 </label>
                 <div class="col-lg-9">
                     <select name="activate_3d_secure" class="col-lg-3" id="activate_3d_secure">
@@ -263,10 +279,12 @@
         </div>
         <div class="panel-footer">
             <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i
-                    class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
+                        class="process-icon-eraser"></i>{l s='Discard changes' mod='hipay_enterprise'}
             </button>
-            <button type="submit" class="btn btn-default btn btn-default pull-right" name="submitGlobalPaymentMethods"><i
-                    class="process-icon-save"></i> {l s='Save configuration changes' mod='hipay_enterprise'}</button>
+            <button type="submit" class="btn btn-default btn btn-default pull-right" name="submitGlobalPaymentMethods">
+                <i
+                        class="process-icon-save"></i> {l s='Save configuration changes' mod='hipay_enterprise'}
+            </button>
         </div>
     </form>
 </div>
@@ -283,7 +301,7 @@
                 $("#hostedconf").show();
             }
         });
-        
+
         if ($("#activate_3d_secure").val() == "0") {
             $("#3ds-rules").hide();
         }

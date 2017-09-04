@@ -11,9 +11,10 @@
  *}
 
 <fieldset>
-    <legend>{l s='Manage challenge'  mod='hipay_enterprise'}</legend>
+    <legend>{l s='Manage challenged transaction'  mod='hipay_enterprise'}</legend>
     <p class="alert alert-danger">The payment was challenged by your fraud ruleset and is pending.
-        Please review the fraud screening result and choose whether you want to accept or deny the payment transaction.</p>
+        Please review the fraud screening result and choose whether you want to accept or deny the payment
+        transaction.</p>
     <form action="{$challengeLink}" method="post" id="hipay_challenge_form" class="form-horizontal">
         <input type="hidden" name="id_order" value="{$orderId}"/>
         <div class="form-group">
@@ -27,9 +28,9 @@
 
 <script>
     $(document).ready(function () {
-        $("#hipay_challenge_form").submit(function() {
+        $("#hipay_challenge_form").submit(function () {
             msgConfirmation = '{l s='Are-you sure to $action for this order ?' mod='hipay_enterprise'}';
-            if (!confirm(msgConfirmation.replace('$action',$('#' + document.activeElement.id).html()))) {
+            if (!confirm(msgConfirmation.replace('$action', $('#' + document.activeElement.id).html()))) {
                 return false;
             }
         });

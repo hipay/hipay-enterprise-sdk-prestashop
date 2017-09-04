@@ -11,222 +11,10 @@
  */
 
 var hiPayInputControl = {};
-
-hiPayInputControl.checkControl = checkControl;
-hiPayInputControl.addInput = addInput;
-hiPayInputControl.normalizePrice = normalizePrice;
 hiPayInputControl.forms = [];
 
 /**
- * 
- * @param {type} form
- * @returns {success|Boolean}
- */
-function checkControl(form) {
-
-    success = true;
-    if (hiPayInputControl.forms[form]) {
-        removeElementsByClass('error-text-hp');
-        hiPayInputControl.forms[form].fields.forEach(function (input) {
-            success = typeControlCheck(input) && success;
-        })
-    }
-
-    return success;
-}
-
-/**
- * 
- * @param {type} form
- * @param {type} field
- * @param {type} type
- * @param {type} required
- * @returns {undefined}
- */
-function addInput(form, field, type, required) {
-    if (!hiPayInputControl.forms[form]) {
-        hiPayInputControl.forms[form] = new Form();
-    }
-    hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
-}
-
-/**
- * 
- * @returns {Form}
- */
-function Form() {
-    this.fields = [];
-}
-
-/**
- * 
- * @param {type} field
- * @param {type} type
- * @param {type} required
- * @returns {Input}
- */
-function Input(field, type, required) {
-    this.field = field;
-    this.type = type;
-    this.required = required;
-}
-
-/**
- * 
- * @param {type} input
- * @returns {Boolean}
- */
-function typeControlCheck(input) {
-    element = document.getElementById(input.field);
-    removeClass(element, 'error-input-hp');
-
-    switch (input.type) {
-        case 'iban':
-            return checkIban(element);
-        case 'bic':
-            return checkBic(element);
-        case 'creditcardnumber':
-            return checkCCNumber(element);
-        case 'cpf':
-            return checkCPF(element);
-        case 'curp-cpn':
-            return checkCPNCURP(element);
-        default :
-            return checkNotEmptyField(element);
-    }
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkNotEmptyField(element) {
-
-    if (element.value == null || element.value == "") {
-        errorMessage(element, 'Field is mandatory');
-        return false;
-    }
-
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkIban(element) {
-
-    if (!checkNotEmptyField(element)) {
-        return false;
-    }
-
-    if (!validIBAN(element.value)) {
-        errorMessage(element, "This is not a correct IBAN");
-        return false;
-    }
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkBic(element) {
-
-    if (!checkNotEmptyField(element)) {
-        return false;
-    }
-
-    if (!validBic(element.value)) {
-        errorMessage(element, "This is not a correct BIC");
-        return false;
-    }
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkCCNumber(element) {
-
-    if (!checkNotEmptyField(element)) {
-        return false;
-    }
-
-    if (!isCardNumberValid(element.value)) {
-        errorMessage(element, "This is not a correct credit card number");
-        return false;
-    }
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkCPF(element) {
-
-    if (!checkNotEmptyField(element)) {
-        return false;
-    }
-
-    if (!isCPFValid(element.value)) {
-        errorMessage(element, "This is not a correct CPF");
-        return false;
-    }
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @returns {Boolean}
- */
-function checkCPNCURP(element) {
-
-    if (!checkNotEmptyField(element)) {
-        return false;
-    }
-
-    if (!isCPNCURPValid(element.value)) {
-        errorMessage(element, "This is not a correct CPN/CURP");
-        return false;
-    }
-    return true;
-}
-
-/**
- * 
- * @param {type} element
- * @param {type} text
- * @returns {undefined}
- */
-function errorMessage(element, text) {
-    addClass(element, 'error-input-hp');
-    insertAfter(generateElement(text), element);
-}
-
-/**
- * 
- * @param {type} text
- * @returns {pInsert|Element}
- */
-function generateElement(text) {
-    pInsert = document.createElement('span');
-    pInsert.textContent = text;
-    addClass(pInsert, 'error-text-hp');
-
-    return pInsert;
-}
-
-/**
- * 
+ *
  * @param {type} newElement
  * @param {type} targetElement
  * @returns {undefined}
@@ -236,7 +24,7 @@ function insertAfter(newElement, targetElement) {
     var parent = targetElement.parentNode;
 
     // if the parents lastchild is the targetElement...
-    if (parent.lastChild == targetElement) {
+    if (parent.lastChild === targetElement) {
         // add the newElement after the target element.
         parent.appendChild(newElement);
     } else {
@@ -246,7 +34,7 @@ function insertAfter(newElement, targetElement) {
 }
 
 /**
- * 
+ *
  * @param {type} className
  * @returns {undefined}
  */
@@ -258,44 +46,70 @@ function removeElementsByClass(className) {
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {Boolean}
  */
 function hasClass(el, className) {
-    if (el.classList)
-        return el.classList.contains(className)
-    else
-        return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'))
+    if (el.classList) {
+        return el.classList.contains(className);
+    } else {
+        return !!el.className.match(new RegExp("(\\s|^)" + className + "(\\s|$)"));
+    }
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {undefined}
  */
 function addClass(el, className) {
-    if (el.classList)
-        el.classList.add(className)
-    else if (!hasClass(el, className))
-        el.className += " " + className
+    if (el.classList) {
+        el.classList.add(className);
+    } else if (!hasClass(el, className)) {
+        el.className += " " + className;
+    }
 }
 
 /**
- * 
+ *
  * @param {type} el
  * @param {type} className
  * @returns {undefined}
  */
 function removeClass(el, className) {
-    if (el.classList)
-        el.classList.remove(className)
-    else if (hasClass(el, className)) {
-        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
-        el.className = el.className.replace(reg, ' ')
+    if (el.classList) {
+        el.classList.remove(className);
+    } else if (hasClass(el, className)) {
+        var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
+        el.className = el.className.replace(reg, " ");
     }
+}
+
+/**
+ *
+ * @param {type} text
+ * @returns {pInsert|Element}
+ */
+function generateElement(text) {
+    var pInsert = document.createElement("span");
+    pInsert.textContent = text;
+    addClass(pInsert, "error-text-hp");
+
+    return pInsert;
+}
+
+/**
+ *
+ * @param {type} element
+ * @param {type} text
+ * @returns {undefined}
+ */
+function errorMessage(element, text) {
+    addClass(element, "error-input-hp");
+    insertAfter(generateElement(text), element);
 }
 
 /**
@@ -319,7 +133,7 @@ var validIBAN = (function () { // use an IIFE
     // http://en.wikipedia.org/wiki/International_Bank_Account_Number#Modulo_operation_on_IBAN
     function mod97(string) {
         var checksum = string.slice(0, 2),
-                fragment;
+            fragment;
 
         for (var offset = 2; offset < string.length; offset += 7) {
             fragment = String(checksum) + string.substring(offset, offset + 7);
@@ -331,9 +145,9 @@ var validIBAN = (function () { // use an IIFE
 
     // return a function that does the actual work
     return function (input) {
-        var iban = String(input).toUpperCase().replace(/[^A-Z0-9]/g, ''), // keep only alphanumeric characters
-                code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
-                digits;
+        var iban = String(input).toUpperCase().replace(/[^A-Z0-9]/g, ""), // keep only alphanumeric characters
+            code = iban.match(/^([A-Z]{2})(\d{2})([A-Z\d]+)$/), // match and capture (1) the country code, (2) the check digits, and (3) the rest
+            digits;
 
         // check syntax and length
         if (!code || iban.length !== CODE_LENGTHS[code[1]]) {
@@ -352,37 +166,39 @@ var validIBAN = (function () { // use an IIFE
 ());
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {Boolean}
  */
 function isCardNumberValid(value) {
     // accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value))
+    if (/[^0-9-\s]+/.test(value)) {
         return false;
+    }
 
     // The Luhn Algorithm. It's so pretty.
     var nCheck = 0, nDigit = 0, bEven = false;
     value = value.replace(/\D/g, "");
 
     for (var n = value.length - 1; n >= 0; n--) {
-        var cDigit = value.charAt(n),
-                nDigit = parseInt(cDigit, 10);
+        var cDigit = value.charAt(n);
+        nDigit = parseInt(cDigit, 10);
 
         if (bEven) {
-            if ((nDigit *= 2) > 9)
+            if ((nDigit *= 2) > 9) {
                 nDigit -= 9;
+            }
         }
 
         nCheck += nDigit;
         bEven = !bEven;
     }
 
-    return (nCheck % 10) == 0;
+    return (nCheck % 10) === 0;
 }
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {unresolved}
  */
@@ -391,7 +207,7 @@ function isCPFValid(value) {
 }
 
 /**
- * 
+ *
  * @param {type} value
  * @returns {unresolved}
  */
@@ -399,7 +215,7 @@ function isCPNCURPValid(value) {
     return value.match(/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/);
 }
 
-function validBic(value){
+function validBic(value) {
     return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
 }
 
@@ -408,12 +224,200 @@ function validBic(value){
  * @param price
  * @returns {Number|*}
  */
-function normalizePrice (price) {
-    price = parseFloat(price.replace(/,/g, '.'));
+function normalizePrice(price) {
+    price = parseFloat(price.replace(/,/g, "."));
 
-    if (isNaN(price) || price === '') {
+    if (isNaN(price) || price === "") {
         price = 0;
     }
 
     return price;
 }
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkNotEmptyField(element) {
+
+    if (element.value === null || element.value === "") {
+        errorMessage(element, i18nFieldIsMandatory);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkIban(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!validIBAN(element.value)) {
+        errorMessage(element, i18nBadIban);
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkBic(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!validBic(element.value)) {
+        errorMessage(element, i18nBadBic);
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkCCNumber(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCardNumberValid(element.value)) {
+        errorMessage(element, i18nBadCC);
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkCPF(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCPFValid(element.value)) {
+        errorMessage(element, i18nBadCPF);
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function checkCPNCURP(element) {
+
+    if (!checkNotEmptyField(element)) {
+        return false;
+    }
+
+    if (!isCPNCURPValid(element.value)) {
+        errorMessage(element, i18nBadCPNCURP);
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ * @param {type} input
+ * @returns {Boolean}
+ */
+function typeControlCheck(input) {
+    var element = document.getElementById(input.field);
+    removeClass(element, "error-input-hp");
+
+    switch (input.type) {
+        case "iban":
+            return checkIban(element);
+        case "bic":
+            return checkBic(element);
+        case "creditcardnumber":
+            return checkCCNumber(element);
+        case "cpf":
+            return checkCPF(element);
+        case "curp-cpn":
+            return checkCPNCURP(element);
+        default :
+            return checkNotEmptyField(element);
+    }
+}
+
+/**
+ *
+ * @param {type} form
+ * @returns {success|Boolean}
+ */
+function checkControl(form) {
+
+    var success = true;
+    if (hiPayInputControl.forms[form]) {
+        removeElementsByClass("error-text-hp");
+        hiPayInputControl.forms[form].fields.forEach(function (input) {
+            success = typeControlCheck(input) && success;
+        })
+    }
+
+    return success;
+}
+
+/**
+ *
+ * @returns {Form}
+ */
+function Form() {
+    this.fields = [];
+}
+
+/**
+ *
+ * @param {type} field
+ * @param {type} type
+ * @param {type} required
+ * @returns {Input}
+ */
+function Input(field, type, required) {
+    this.field = field;
+    this.type = type;
+    this.required = required;
+}
+
+/**
+ *
+ * @param {type} form
+ * @param {type} field
+ * @param {type} type
+ * @param {type} required
+ * @returns {undefined}
+ */
+function addInput(form, field, type, required) {
+    if (!hiPayInputControl.forms[form]) {
+        hiPayInputControl.forms[form] = new Form();
+    }
+    hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
+}
+
+hiPayInputControl.checkControl = checkControl;
+hiPayInputControl.addInput = addInput;
+hiPayInputControl.normalizePrice = normalizePrice;

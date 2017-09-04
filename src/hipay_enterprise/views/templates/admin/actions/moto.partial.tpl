@@ -29,5 +29,5 @@
                 class="btn btn-primary ">
             {l s='Pay order MO/TO' mod='hipay_enterprise'}
         </button>
-    </form>    
+    </form>
 </fieldset>

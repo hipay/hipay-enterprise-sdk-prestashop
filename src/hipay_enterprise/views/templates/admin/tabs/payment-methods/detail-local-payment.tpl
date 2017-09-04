@@ -56,22 +56,24 @@
         </div>
         <br/>
         {if "minAmount"|in_array:$method.displayConfigurationFields}
-        <div class="row">
-            <div class="form-group">
-                <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
-                <div class="input-group col-lg-2">
-                    <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"/>
-                    <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
+                    <div class="input-group col-lg-2">
+                        <input type="text" class="money-type" name="{$key}_minAmount[EUR]"
+                               value="{$method.minAmount.EUR}"/>
+                        <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+                    </div>
                 </div>
             </div>
-        </div>
         {/if}
         {if "maxAmount"|in_array:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
-                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"/>
+                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]"
+                               value="{$method.maxAmount.EUR}"/>
                         <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                     </div>
                 </div>
@@ -85,10 +87,12 @@
                     </label>
                     <div class="input-group col-lg-2">
                         <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="{$key}_electronicSignature" id="electronic_signature_switchmode_on" value="1"
-                                   {if $method.electronicSignature} checked="checked"{/if}>
+                            <input type="radio" name="{$key}_electronicSignature"
+                                   id="electronic_signature_switchmode_on" value="1"
+                                    {if $method.electronicSignature} checked="checked"{/if}>
                             <label for="electronic_signature_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                            <input type="radio" name="{$key}_electronicSignature" id="electronic_signature_switchmode_off" value="0"
+                            <input type="radio" name="{$key}_electronicSignature"
+                                   id="electronic_signature_switchmode_off" value="0"
                                    {if $method.electronicSignature  == false}checked="checked"{/if}>
                             <label for="electronic_signature_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
@@ -120,9 +124,11 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                     <div class="col-lg-9">
-                        <select id="multiselect-{$key}" name="{$key}_currencies[]" multiple="multiple" class="multiselect-currency">
+                        <select id="multiselect-{$key}" name="{$key}_currencies[]" multiple="multiple"
+                                class="multiselect-currency">
                             {foreach $limitedCurrencies as $currency }
-                                <option value="{$currency@key}" {if $currency@key|in_array:$method.currencies } selected {/if} >{$currency@key} - {$currency} </option>
+                                <option value="{$currency@key}" {if $currency@key|in_array:$method.currencies } selected {/if} >{$currency@key}
+                                    - {$currency} </option>
                             {/foreach}
                         </select>
                     </div>

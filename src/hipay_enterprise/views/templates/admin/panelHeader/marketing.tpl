@@ -17,7 +17,9 @@
     <div class="col-xs-12 col-sm-12 col-md-6 text-center">
         <h4>{l s='HiPay is a global online payment platform designed to handle all your payment needs' mod='hipay_enterprise'}</h4>
         <p>{l s='End-to-end customizable fraud protection, industry-leading data and analytics, seamless omnichannel support and automated financial reconciliation' mod='hipay_enterprise'}</p>
-        <p>{l s='Visit our website to' mod='hipay_enterprise'} <a href='https://hipay.com/en/payment-solution-enterprise' target='_blank'>{l s='find out more' mod='hipay_enterprise'}</a></p>
+        <p>{l s='Visit our website to' mod='hipay_enterprise'} <a
+                    href='https://hipay.com/en/payment-solution-enterprise'
+                    target='_blank'>{l s='find out more' mod='hipay_enterprise'}</a></p>
     </div>
 </div>
 
@@ -36,14 +38,19 @@
                     <div class="col-md-5">
                         <h4>{l s='Expand your business internationally' mod='hipay_enterprise'}</h4>
                         <p>{l s='Optimize your conversion rates with one single integration to access a wide range of local and international payment methods so your customers can make purchases in their preferred currency and payment methods.' mod='hipay_enterprise'}</p>
-                        <p><a href='https://hipay.com/en/payment-methods' target='_blank'>{l s='Over 100 currencies and 220 payment methods available' mod='hipay_enterprise'}</a></p>
+                        <p><a href='https://hipay.com/en/payment-methods'
+                              target='_blank'>{l s='Over 100 currencies and 220 payment methods available' mod='hipay_enterprise'}</a>
+                        </p>
                     </div>
                     <div class="col-md-5 col-md-offset-1">
                         <h4>{l s='Chose the best way to integrate your payment pages' mod='hipay_enterprise'}</h4>
                         <ul class="ul-spaced">
-                            <li>{l s='Hosted Integration' mod='hipay_enterprise'} : {l s='HiPay hosts the payment page on its secure site. With this option, you will benefit from getting a single point of contact and personalized payment pages that are PCI-DSS compliant.' mod='hipay_enterprise'}</li>
-                            <li>{l s='Iframe' mod='hipay_enterprise'} : {l s='A hybrid solution where the buyer remains on the merchant site to make a payment, but the information is entered on an iframe hosted by HiPay.' mod='hipay_enterprise'}</li>
-                            <li>{l s='API integration' mod='hipay_enterprise'} : {l s='The payment page is hosted entirely on the merchant site. You will need PCI-DSS certification to allow credit card numbers to transit through your servers.' mod='hipay_enterprise'}</li>
+                            <li>{l s='Hosted Integration' mod='hipay_enterprise'}
+                                : {l s='HiPay hosts the payment page on its secure site. With this option, you will benefit from getting a single point of contact and personalized payment pages that are PCI-DSS compliant.' mod='hipay_enterprise'}</li>
+                            <li>{l s='Iframe' mod='hipay_enterprise'}
+                                : {l s='A hybrid solution where the buyer remains on the merchant site to make a payment, but the information is entered on an iframe hosted by HiPay.' mod='hipay_enterprise'}</li>
+                            <li>{l s='API integration' mod='hipay_enterprise'}
+                                : {l s='The payment page is hosted entirely on the merchant site. You will need PCI-DSS certification to allow credit card numbers to transit through your servers.' mod='hipay_enterprise'}</li>
                         </ul>
                     </div>
                 </div>
