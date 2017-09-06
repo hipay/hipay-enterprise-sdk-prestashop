@@ -1,4 +1,6 @@
 mysql:
+  ports:
+    - "3318:3306"
   env_file:
     - ./conf/env_file/production/env
 prestashop16:
@@ -25,4 +27,7 @@ prestashop17:
   env_file:
     - ./conf/env_file/stage/env
     - ./conf/env_file/stage/env17
+smtp:
+  ports:
+    - "1018:1080"
 
