@@ -8,5 +8,3 @@ mysql:
 smtp:
   image: schickling/mailcatcher
   container_name: smtp-hipay-enterprise
-  ports:
-    - "1018:1080"
