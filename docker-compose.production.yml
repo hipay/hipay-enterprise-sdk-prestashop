@@ -1,4 +1,5 @@
 mysql:
+  container_name: {CONTAINER_NAME_MYSQL}
   ports:
     - "{PORT_MYSQL}:3306"
   env_file:
