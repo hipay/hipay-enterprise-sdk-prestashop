@@ -16,6 +16,8 @@ prestashop16:
   env_file:
     - ./conf/env_file/production/env
     - ./conf/env_file/production/env16
+  labels:
+    - "com.hipay.github={label}"
 prestashop17:
   container_name: {CONTAINER_NAME_WEB1}
   dockerfile: ./conf/docker/Dockerfile17
@@ -28,6 +30,8 @@ prestashop17:
   env_file:
     - ./conf/env_file/production/env
     - ./conf/env_file/production/env17
+  labels:
+    - "com.hipay.github={label}"
 smtp:
   container_name: {CONTAINER_NAME_SMTP}
   ports:
