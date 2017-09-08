@@ -2,7 +2,7 @@ mysql:
   ports:
     - "3318:3306"
   env_file:
-    - ./conf/env_file/production/env
+    - ./conf/env_file/stage/env
 prestashop16:
   container_name: hipay-enterprise-shop-ps16-stage
   dockerfile: ./conf/docker/Dockerfile16
