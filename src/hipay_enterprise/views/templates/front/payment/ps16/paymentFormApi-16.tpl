@@ -11,7 +11,7 @@
  *}
 
 {include file="$hipay_enterprise_tpl_dir/../front/partial/js.strings.tpl"}
-{capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
+{capture name=path}{l s='Payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
 
 {assign var='current_step' value='payment'}
@@ -46,13 +46,13 @@
 
                     {foreach $savedCC as $cc}
                         <div class="">
-                            <label>
-                                <input type="radio" name="ccTokenHipay" id="ccTokenHipay" value="{$cc.token}"/>
+                            <input type="radio" name="ccTokenHipay" id="ccTokenHipay" value="{$cc.token}"/>
+                            <label for="ccTokenHipay">
+                                <img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/>
                                 {$cc.pan} ({"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year})
-                                - {$cc.card_holder} <img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/>
+                                - {$cc.card_holder}
                             </label>
                         </div>
-                        <br/>
                     {/foreach}
                     <button id="pay-button-one-click" type="submit" name="processCarrierHipay"
                             class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
@@ -70,29 +70,31 @@
                 <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
                 <div style="clear: both;"></div>
             </div>
-            <br/>
+            <div>
             {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
-            <br/>
+            </div>
+
             {if $confHipay.payment.global.card_token && !$is_guest}
                 <div class="checkbox">
-                    <label for="newsletter">
+                    <span for="newsletter">
                         <div class="checker" id="uniform-newsletter">
                             <span class="">
                                 <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
                             </span>
                         </div>
-                        {l s='Save credit card (One click payment)' mod='hipay_enterprise'}
-                    </label>
+                        <label for="saveTokenHipay">{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
+                    </span>
                 </div>
             {/if}
-            <br/>
-            <button id="pay-button" type="submit" name="processCarrierHipay"
-                    class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
-                    style="">
-                <span>
-                    {l s='Pay' mod='hipay_enterprise'}
-                </span>
-            </button>
+            <div class="block-pay">
+                <button id="pay-button" type="submit" name="processCarrierHipay"
+                        class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
+                        style="">
+                    <span>
+                        {l s='Pay' mod='hipay_enterprise'}
+                    </span>
+                </button>
+            </div>
         </div>
     </form>
     <p id="payment-loader-hp" style='text-align: center; display:none;'>
