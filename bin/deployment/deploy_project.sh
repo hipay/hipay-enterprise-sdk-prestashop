@@ -8,6 +8,10 @@ sshpass -p $PASS_DEPLOY ssh root@docker-knock-auth.hipay.org -p $port mkdir /dep
 echo "Transfert Artifact project for project $CIRCLE_PROJECT_REPONAME and branch $CIRCLE_BRANCH"
 sshpass -p $PASS_DEPLOY scp -P $port ./package-ready-for-prestahsop/*.zip root@docker-knock-auth.hipay.org:/deploy/project/artifactory/$CIRCLE_PROJECT_REPONAME/$BRANCH
 
+echo "Deploy project in artifactory"
+sshpass -p $PASS_DEPLOY ssh root@docker-knock-auth.hipay.org -p $port  "export DOCKER_API_VERSION=1.23 && docker exec " \
+    "deploy.hipay-pos-platform.com" jfrog rt u /deploy/project/artifactory/$CIRCLE_PROJECT_REPONAME/$BRANCH/"*.zip" hipay/org.hipay/ --build-name=Test --build-number=1 --flat=false --user=admin --password=$ARTIFACTORY_PASSWORD
+
 echo "Deploy project for project $CIRCLE_PROJECT_REPONAME and branch $CIRCLE_BRANCH"
 sshpass -p $PASS_DEPLOY ssh root@docker-knock-auth.hipay.org -p $port  "export DOCKER_API_VERSION=1.23 && docker exec " \
     "deploy.hipay-pos-platform.com" /deploy/deploy_project.sh  $CIRCLE_PROJECT_REPONAME $CIRCLE_BRANCH
