@@ -4,11 +4,11 @@ machine:
 test:
   pre:
     - sudo apt-get install sshpass
-    - ./prestashop.sh init-stage
+    #- ./prestashop.sh init-stage
   override:
-    - sleep 500
-    - curl --retry 10 --retry-delay 20 -v http://localhost:8086
-    - curl --retry 10 --retry-delay 20 -v http://localhost:8087
+    #- sleep 500
+    #- curl --retry 10 --retry-delay 20 -v http://localhost:8086
+    #- curl --retry 10 --retry-delay 20 -v http://localhost:8087
 deployment:
   prod:
     branch: /.*?/
