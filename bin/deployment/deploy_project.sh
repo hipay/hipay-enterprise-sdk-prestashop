@@ -10,7 +10,7 @@ sshpass -p $PASS_DEPLOY scp -P $port ./package-ready-for-prestashop/*.zip root@d
 
 echo "Deploy project in artifactory"
 sshpass -p $PASS_DEPLOY ssh root@docker-knock-auth.hipay.org -p $port  "export DOCKER_API_VERSION=1.23 && docker exec " \
-    "deploy.hipay-pos-platform.com" jfrog rt u /deploy/project/artifactory/$CIRCLE_PROJECT_REPONAME/$BRANCH/"*.zip" hipay/org.hipay/ \
+    "deploy.hipay-pos-platform.com" jfrog rt u /deploy/project/artifactory/$CIRCLE_PROJECT_REPONAME/$BRANCH/*.zip "hipay/org.hipay/" \
     --build-name=Test --build-number=1 --flat=false --user=admin --password=$ARTIFACTORY_PASSWORD --url http://jira-artifactory-pi.hipay-pos-platform.com:8098/artifactory
 
 echo "Deploy project for project $CIRCLE_PROJECT_REPONAME and branch $CIRCLE_BRANCH"
