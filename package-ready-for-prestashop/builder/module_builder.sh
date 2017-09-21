@@ -39,7 +39,7 @@ function cleanAndPackage()
     fi
 
     find hipay_enterprise/ -type d -exec cp index.php {} \;
-    zip -r package-ready-for-prestashop/hipay_enterprise-$version.zip hipay_enterprise
+    zip -r package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$version.zip hipay_enterprise
     rm -R hipay_enterprise
 }
 
