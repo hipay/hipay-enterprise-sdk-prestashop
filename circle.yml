@@ -17,4 +17,4 @@ deployment:
       - ./package-ready-for-prestashop/builder/module_builder.sh -v ${CIRCLE_BRANCH////-}
       - mkdir $CIRCLE_ARTIFACTS/package
       - cp ./package-ready-for-prestashop/*.zip $CIRCLE_ARTIFACTS/package
-      - sh ./bin/deployment/deploy_project.sh
+      - ./bin/deployment/deploy_project.sh
