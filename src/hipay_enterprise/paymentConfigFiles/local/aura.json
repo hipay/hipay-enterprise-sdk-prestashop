@@ -39,7 +39,10 @@
       "defaultFieldsValue": {},
       "formFields": {
         "national_identification_number": {
-          "label": "CPF",
+          "label":  {
+            "en": "CPF",
+            "fr": "CPF"
+          },
           "type": "text",
           "required": true,
           "controlType": "cpf"
