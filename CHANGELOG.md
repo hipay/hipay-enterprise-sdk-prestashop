@@ -1,3 +1,7 @@
+# Version 2.0.3
+
+- Fix template FAQ Tab
+
 # Version 2.0.2
 
 - Fix translations FR and EN
