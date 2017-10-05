@@ -9,7 +9,13 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-<label class="{if isset($field.required) && $field.required}required{/if}">{$field["label"][$language]} </label>
+<label class="{if isset($field.required) && $field.required}required{/if}">
+        {if isset($field["label"][$language])}
+            {$field["label"][$language]}
+        {else}    
+            {$field["label"]["en"]}
+        {/if}
+</label>
 <select id="{$localPaymentName}-{$name}" class="form-control col-lg-6"
         {if isset($field.required) && $field.required}required{/if} name="{$name}">
     <option value="1">{l s='Mr' mod='hipay_enterprise'}</option>

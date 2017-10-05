@@ -39,7 +39,10 @@
       "defaultFieldsValue": {},
       "formFields": {
         "national_identification_number": {
-          "label": "CURP/CPN",
+          "label": {
+            "en": "CURP/CPN",
+            "fr": "CURP/CPN"
+          },
           "type": "text",
           "required": true,
           "controlType": "curp-cpn"

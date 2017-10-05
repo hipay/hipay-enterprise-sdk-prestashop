@@ -3,8 +3,15 @@ machine:
     - docker
 test:
   pre:
-      - ./prestashop.sh init-stage
+    - sudo apt-get install sshpass
+    - ./prestashop.sh init-stage
   override:
     - sleep 500
     - curl --retry 10 --retry-delay 20 -v http://localhost:8086
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
+deployment:
+  prod:
+    branch: /.*?/
+    tag: /.*?/
+    commands:
+      - sh ./bin/deployment/deploy_project.sh

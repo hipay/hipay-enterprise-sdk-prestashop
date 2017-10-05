@@ -35,7 +35,10 @@
       "defaultFieldsValue": {},
       "formFields": {
         "issuer_bank_id": {
-          "label": "Business Identifier Code (BIC)",
+          "label": {
+            "en": "Business Identifier Code (BIC)",
+            "fr": "Business Identifier Code (BIC)"
+          },
           "type": "text",
           "required": true,
           "controlType": "bic"
