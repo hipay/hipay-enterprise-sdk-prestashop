@@ -1,3 +1,7 @@
+# Version 2.0.4
+
+- Fix Product key for Prestashop addons
+
 # Version 2.0.3
 
 - Fix template FAQ Tab
