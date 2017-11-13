@@ -69,7 +69,7 @@ class HipayNotification
         // forced shop
         Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
 
-        if ($this->cart->orderExists()) {
+        if (HipayHelper::orderExists($this->cart->id)) {
             // can't use Order::getOrderByCartId 'cause add shop restrictions
             $idOrder = $this->db->getOrderByCartId($this->cart->id);
             if ($idOrder) {
@@ -94,7 +94,7 @@ class HipayNotification
     public function processTransaction()
     {
         try {
-            $this->db->setSQLLockForCart($this->cart->id);
+            $this->db->setSQLLockForCart($this->cart->id ,"# ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logInfos(
                 "# ProcessTransaction for cart ID : " .
                 $this->cart->id .
@@ -185,11 +185,11 @@ class HipayNotification
             }
 
 
-            $this->db->releaseSQLLock();
+            $this->db->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
             // END SQL LOCK
             //#################################################################
         } catch (Exception $ex) {
-            $this->db->releaseSQLLock();
+            $this->db->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
         }
     }
 
@@ -201,7 +201,7 @@ class HipayNotification
     private function updateOrderStatus($newState)
     {
         $return = true;
-        if ($this->cart->orderExists()) {
+        if (HipayHelper::orderExists($this->cart->id)) {
             $this->addOrderMessage();
             if ((int)$this->order->getCurrentState() != (int)$newState &&
                 !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true) &&
@@ -236,7 +236,7 @@ class HipayNotification
      */
     private function registerOrder($state)
     {
-        if (!$this->cart->orderExists()) {
+        if (!HipayHelper::orderExists($this->cart->id)) {
             $this->log->logInfos('Register New order: ' .$this->cart->id);
             $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
 
@@ -304,7 +304,7 @@ class HipayNotification
      */
     private function createOrderPayment($refund = false)
     {
-        if ($this->cart->orderExists()) {
+        if (HipayHelper::orderExists($this->cart->id)) {
             $amount = $this->getRealCapturedAmount($refund);
             if ($amount != 0) {
                 $paymentProduct = $this->getPaymentProductName();
@@ -415,7 +415,7 @@ class HipayNotification
             "# Refund Order {$this->order->reference} with refund amount {$this->transaction->getRefundedAmount()}"
         );
 
-        if ($this->cart->orderExists()) {
+        if (HipayHelper::orderExists($this->cart->id)) {
             $this->addOrderMessage();
 
             if ($this->transaction->getOperation() == null) {
