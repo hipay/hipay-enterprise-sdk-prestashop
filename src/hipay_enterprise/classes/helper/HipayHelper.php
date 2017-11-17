@@ -497,4 +497,18 @@ class HipayHelper
         }
         return ($a["frontPosition"] < $b["frontPosition"]) ? -1 : 1;
     }
+
+    /**
+     * Check if order has already been placed ( Without prestashop cache)
+     *
+     * @return bool result
+     */
+    public static function orderExists($cart_id)
+    {
+        if ($cart_id) {
+            $result = (bool)Db::getInstance()->getValue('SELECT count(*) FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int)$cart_id);
+            return $result;
+        }
+        return false;
+    }
 }
