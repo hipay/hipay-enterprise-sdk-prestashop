@@ -15,56 +15,6 @@ function randNumbInRange(min, max) {
 casper.test.begin('Functions', function(test) {
 
 
-    /* Log to BO TPP */
-    casper.logToBackend = function() {
-        this.echo("Accessing and logging to TPP BackOffice...", "INFO");
-        this.waitForUrl(/login/, function success() {
-            this.fillSelectors('form', {
-                'input[name="email"]': loginBackend,
-                'input[name="password"]': passBackend
-            }, true);
-            if(loginBackend != "" && passBackend != "") {
-                test.info("Done");
-            } else {
-                this.echo("WARNING: No Backend credentials available !", "WARNING");
-                test.done();
-            }
-        }, function fail() {
-            test.assertUrlMatch(/login/, "Login page exists");
-        });
-    };
-    /* Select account for test from BO TPP */
-    casper.selectAccountBackend = function(name) {
-        this.waitForUrl(/dashboard/, function success() {
-            if(this.exists('div#s2id_dropdown-merchant-input>a')) {
-                this.echo("Selecting sub-account...", "INFO");
-                this.echo('URL match 1');
-                this.thenClick('div#s2id_dropdown-merchant-input>a', function() {
-                    this.sendKeys('input[placeholder="Account name or API credential"]', name);
-                    this.wait(1000, function() {    
-                        this.click(x('//span[contains(., "HIPAY_RE7_' + name + ' -")]'));
-                    });
-                });
-            }
-            else {
-                this.echo("Selecting account "  + name + " with old backend ", "INFO");
-                if(this.exists(x('//td[contains(., "HIPAY_RE7_' + name + '")]/preceding-sibling::td[@class="account-number"]/a'))) {
-                    this.thenClick('div#fs-account-navigation>div>a', function() {
-                        this.thenClick(x('//li/a[text()="Test"]'), function() {
-                            this.thenClick(x('//td[contains(., "HIPAY_RE7")]/i'), function() {
-                                this.click(x('//td[contains(., "HIPAY_RE7_' + name + '")]/preceding-sibling::td[@class="account-number"]/a'));
-                            });
-                        });
-                    });
-                } else {
-                    this.echo('Account is not listed "HIPAY_RE7_' + name + '"', "ERROR");
-                }
-            }
-        }, function fail() {
-            test.assertUrlMatch(/dashboard/, "dashboard page exists");
-        },
-        25000);
-    };
 
    casper.getOrderReference = function() {
         return orderReference;
@@ -252,6 +202,31 @@ casper.test.begin('Functions', function(test) {
                 this.fillSelectors("form#credit_card_form",
                     {'select[name="operating_mode"]': mode },
                 false
+                );
+                this.click('form#credit_card_form div.panel-footer button[name="submitGlobalPaymentMethods"]');
+                this.waitForSelector('.alert.alert-success' , function success() {
+                    test.info("Configure settings mode : Done");
+                }, function fail(){
+                    test.assertExists('.alert.alert-success', "'Success' alert exists ");
+                });
+            }, function fail() {
+                test.assertExists('form#credit_card_form', "'Credit card' form exists ");
+            }, 10000);
+        }, function fail() {
+            test.assertExists(x('//span[text()="Modules"]'), "Modules admin page exists");
+        }, 10000);
+    },
+
+    /* Configure Capture mode  ( mode=automatic|manual )  */
+    casper.configureCaptureMode = function (mode) {
+        this.echo("Configure capture mode with " + mode + " ...", "INFO");
+        this.waitForSelector('ul.hipay-enterprise li a[href="#payment_form"]', function success() {
+            this.click('ul.hipay-enterprise li a[href="#payment_form"]');
+            this.waitForSelector('form#credit_card_form', function success() {
+
+                this.fillSelectors("form#credit_card_form",
+                    {'select[name="capture_mode"]': mode },
+                    false
                 );
                 this.click('form#credit_card_form div.panel-footer button[name="submitGlobalPaymentMethods"]');
                 this.waitForSelector('.alert.alert-success' , function success() {

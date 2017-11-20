@@ -11,99 +11,6 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
         cartID = casper.getCartId(),
 		orderID = casper.getOrderId();
 
-	/* Open notification details */
-	casper.openingNotif = function(status) {
-		this.click('a[href="#payment-notification"]');
-		if(status != "116")
-			this.echo("Opening Notification details with status " + status + "...", "INFO");
-		this.waitForSelector(x('//tr/td/span[text()="' + status + '"]/parent::td/following-sibling::td[@class="cell-right"]/a'), function success() {
-			this.click(x('//tr/td/span[text()="' + status + '"]/parent::td/following-sibling::td[@class="cell-right"]/a'));
-			test.info("Done");
-		}, function fail() {
-			if(status == "117") {
-				notif117 = false;
-				this.echo("Notification 117 not exists", "WARNING");
-			}
-			else {
-				if(!reload) {
-					this.echo("Waiting for notifications...", "WARNING")
-					this.wait(5000, function() {
-						reload = true;
-						this.reload();
-						test.info("Done");
-						this.openingNotif(status);
-					});
-				}
-				else
-					test.assertExists(x('//tr/td/span[text()="' + status + '"]/parent::td/following-sibling::td[@class="cell-right"]/a'), "Notification " + status + " exists");
-			}
-		});
-	};
-	/* Get data request and hash code from the details */
-	casper.gettingData = function(status) {
-		this.echo("Getting data request from details...", "INFO");
-		this.waitUntilVisible('div#fsmodal', function success() {
-			hash = this.fetchText(x('//tr/td/pre[contains(., "Hash")]')).split('\n')[7].split(':')[1].trim();
-			data = this.fetchText('textarea.copy-transaction-message-textarea');
-			try {
-				test.assert(hash.length > 1, "Hash Code captured !");
-				test.assertNotEquals(data.indexOf("status=" + status), -1, "Data request captured !");
-			} catch(e) {
-				if(String(e).indexOf("Hash") != -1)
-					test.fail("Failure: Hash Code not captured");
-				else
-					test.fail("Failure: data request not captured");
-			}
-			this.click("div.modal-backdrop");
-		}, function fail() {
-			test.assertVisible('div#fsmodal', "Modal window exists");
-		});
-	};
-	/* Execute shell command in order to simulate notification to server */
-	casper.execCommand = function(code, retry) {
-		data = data.replace(/\n/g, '&');
-		child = spawn('/bin/bash', ['bin/generator/generator.sh', data, code, baseURL + urlNotification]);
-		try {
-			child.stdout.on('data', function(out) {
-				casper.wait(3000, function() {
-					if(out.indexOf("CURL") != -1)
-						this.echo(out.trim(), "INFO");
-					else if(out.indexOf("200") != -1 || out.indexOf("503") != -1)
-						test.info("Done");
-					output = out;
-				});
-			});
-			child.stderr.on('data', function(err) {
-				casper.wait(2000, function() {
-					this.echo(err, "WARNING");
-				});
-			});
-		} catch(e) {
-			if(!retry) {
-				this.echo("Error during file execution! Retry command...", "WARNING");
-				this.execCommand(code, true);
-			}
-			else
-				test.fail("Failure on child processing command");
-		}
-	};
-	/* Test CURL status code from shell command */
-	casper.checkCurl = function(httpCode) {
-		try {
-			test.assertNotEquals(output.indexOf(httpCode), -1, "Correct CURL Status Code " + httpCode + " from CURL command !");
-		} catch(e) {
-			if(output.indexOf("503") != -1)
-				test.fail("Failure on CURL Status Code from CURL command: 503");
-			else if(output == "") {
-				test.comment("Too early to check CURL status code");
-				this.wait(15000, function() {
-					this.checkCurl(httpCode);
-				});
-			}
-			else
-				test.fail("Failure on CURL Status Code from CURL command: " + output.trim());
-		}
-	};
 	/* Check status notification from server on the order */
 	casper.checkNotifPrestashop = function(status) {
 		test.assertExists(x('//div[@class="message-item"]//div[@class="message-body"]//p[@class="message-item-text"][contains(., "Statut HiPay :' + status + '")]'), "Notification " + status + " is recorded per CMS !");
@@ -117,7 +24,7 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 			loginBackend = casper.cli.get('login-backend');
 			passBackend = casper.cli.get('pass-backend');
 		}
-		this.logToBackend();
+		this.logToBackend(loginBackend,passBackend);
 	})
 	/* Select sub-account use for test*/
 	.then(function() {
@@ -125,39 +32,11 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 	})
 	/* Open Transactions tab */
 	.then(function() {
-		this.waitForUrl(/maccount/, function success() {
-			this.click('a.nav-transactions');
-			test.info("Done");
-		}, function fail() {
-			test.assertUrlMatch(/maccount/, "Dashboard page with account ID exists");
-		});
+		this.goToTabTransactions();
 	})
 	/* Search last created order */
 	.then(function() {
-		this.echo("Finding cart ID # " + cartID + " in order list...", "INFO");
-		this.waitForUrl(/manage/, function success() {
-			this.click('input#checkbox-orderid');
-			this.fillSelectors('form#form-manage', {
-					'input#searchfilters-orderid-start':cartID,
-					'select#searchfilters-orderid-type':"startwith"
-				},false);
-			this.click('input[name="submitbutton"]');
-
-			this.waitForUrl(/list/, function success() {
-				test.info("Done list");
-				// Select the first order if several orders are present
-				this.waitForSelector("table.datatable-transactions tbody tr:first-child", function success() {
-					this.click('table.datatable-transactions tbody tr:first-child a[data-original-title="View transaction details"]');
-				}, function fail(){
-					test.assertExists('table.datatable-transactions tbody tr:first-child', "History block of this order exists");
-				},25000);
-			}, function fail() {
-				test.assertUrlMatch(/list/, "Manage list exists");
-			},25000);
-
-		}, function fail() {
-			test.assertUrlMatch(/manage/, "Manage page exists");
-		});
+		this.searchAndSelectOrder(cartID);
 	})
 	/* Open Notification tab and opening this notifications details */
 	.then(function() {
@@ -170,7 +49,7 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 	})
 	/* Execute shell script */
 	.then(function() {
-		this.execCommand(hash);
+		this.execCommand(hash,'bin/tests/000_lib/bower_components/hipay-casperjs-lib/generator/generator.sh');
 	})
 	/* Check CURL status code */
 	.then(function() {
@@ -188,7 +67,7 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 				this.gettingData("117");
 			});
 			this.then(function() {
-				this.execCommand(hash);
+				this.execCommand(hash,'bin/tests/000_lib/bower_components/hipay-casperjs-lib/generator/generator.sh');
 			});
 			this.then(function() {
 				this.checkCurl("200");
@@ -203,7 +82,7 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 		this.gettingData("118");
 	})
 	.then(function() {
-		this.execCommand(hash);
+		this.execCommand(hash,'bin/tests/000_lib/bower_components/hipay-casperjs-lib/generator/generator.sh');
 	})
 	.then(function() {
 		this.checkCurl("200");
