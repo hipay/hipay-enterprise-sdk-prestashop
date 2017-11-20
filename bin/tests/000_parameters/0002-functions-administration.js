@@ -369,13 +369,13 @@ casper.test.begin('Functions', function(test) {
                     });
                 }, function fail() {
                     test.assertExists('.success',"'Import pack localization failed' button exists");
-                }, 10000);
+                }, 30000);
             }, function fail() {
                 test.assertExists('select[name="iso_localization_pack"]', "Localization input exists");
-            }, 15000);
+            }, 35000);
         }, function fail() {
             test.assertExists('#subtab-AdminParentLocalization a', "Modules admin page exists");
-        }, 10000);
+        }, 30000);
     };
 
 	casper.echo('Fonctions Adnimistration loaded !', 'INFO');

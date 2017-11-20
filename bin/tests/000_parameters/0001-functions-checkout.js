@@ -58,8 +58,7 @@ casper.test.begin('Functions', function(test) {
         }, function fail() {
             var altImg = this.getElementAttribute('section.featured-products .products article:first-child a img', 'alt');
             test.assertExists('section.featured-products .products article:first-child a img', "'" + altImg + "' image exists");
-        });
-
+        }, 25000);
         this.waitForSelector('.product-add-to-cart button.add-to-cart', function success() {
             this.fillSelectors('form#add-to-cart-or-refresh', {
                 'input[name="qty"]': 7,
@@ -68,7 +67,7 @@ casper.test.begin('Functions', function(test) {
             this.click('.product-add-to-cart button.add-to-cart');
         }, function fail() {
             test.assertExists('.product-add-to-cart button.add-to-cart', "Button Product add exists");
-        });
+        }, 25000);
         this.waitForSelector('#blockcart-modal .cart-content-btn button', function success() {
             this.click('#blockcart-modal .cart-content-btn button');
             test.info("Continue checkout ...");
@@ -80,7 +79,7 @@ casper.test.begin('Functions', function(test) {
             test.info("Open cart detail");
         }, function fail() {
             test.assertExists("nav.header-nav .header a", "Cart button");
-        });
+        },25000);
         this.waitForUrl(/controller=cart&action=show/, function success() {
             this.click('.cart-summary .checkout a')
         }, function fail() {
@@ -136,7 +135,7 @@ casper.test.begin('Functions', function(test) {
             test.info("Done");
         }, function fail() {
             test.assertExists("#checkout-addresses-step .js-address-form form", "'Billing Information' formular exists");
-        });
+        },30000);
 	};
 	/* Fill shipping method */
 	casper.shippingMethod = function() {
