@@ -61,29 +61,35 @@ casper.test.begin('Functions', function(test) {
         }, 25000);
         this.waitForSelector('.product-add-to-cart button.add-to-cart', function success() {
             this.fillSelectors('form#add-to-cart-or-refresh', {
-                'input[name="qty"]': 7,
+                'input[name="qty"]': 6,
             }, false);
 
             this.click('.product-add-to-cart button.add-to-cart');
         }, function fail() {
             test.assertExists('.product-add-to-cart button.add-to-cart', "Button Product add exists");
         }, 25000);
-        this.waitForSelector('#blockcart-modal .cart-content-btn button', function success() {
+
+        this.waitForSelector('#blockcart-modal', function success() {
+            this.click('#blockcart-modal .cart-content-btn a');
             this.click('#blockcart-modal .cart-content-btn button');
             test.info("Continue checkout ...");
         }, function fail() {
-            test.assertExists("#blockcart-modal .cart-content-btn button", "Continue button exist");
+            test.assertExists("#blockcart-modal", "Modal exist");
         });
-        this.waitForSelector('nav.header-nav .header a', function success() {
-            this.click('nav.header-nav .header a');
-            test.info("Open cart detail");
-        }, function fail() {
-            test.assertExists("nav.header-nav .header a", "Cart button");
-        },25000);
-        this.waitForUrl(/controller=cart&action=show/, function success() {
-            this.click('.cart-summary .checkout a')
-        }, function fail() {
-            test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
+
+        casper.then(function() {
+            this.waitForSelector('nav.header-nav .header a', function success() {
+                this.click('nav.header-nav .header a');
+                test.info("Open cart detail");
+            }, function fail() {
+                test.assertExists("nav.header-nav .header a", "Cart button");
+            },15000);
+
+            this.waitForUrl(/controller=cart&action=show/, function success() {
+                this.click('.cart-summary .checkout a')
+            }, function fail() {
+                test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
+            });
         });
 	};
 

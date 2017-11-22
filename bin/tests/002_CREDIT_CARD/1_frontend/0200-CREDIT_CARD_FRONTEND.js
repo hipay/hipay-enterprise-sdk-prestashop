@@ -16,11 +16,10 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + currentBrandCC, fu
     casper.start(baseURL)
     /* Active API Mode in Global Settings  */
     .then(function() {
-        if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
-           authentification.proceed(test);
-           this.gotToHiPayConfiguration();
-           this.configureSettingsMode("api");
-        }
+        authentification.proceed(test);
+        this.gotToHiPayConfiguration();
+        this.configureSettingsMode("api");
+        this.configureCaptureMode("automatic");
     })
     .thenOpen(baseURL, function() {
         this.selectItemAndOptions();

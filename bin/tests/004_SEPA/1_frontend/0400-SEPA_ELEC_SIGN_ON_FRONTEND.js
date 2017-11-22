@@ -16,6 +16,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' without Electronic Signatur
     .then(function() {
 		authentification.proceed(test);
 		this.gotToHiPayConfiguration();
+		this.configureSettingsMode("hosted_page");
 		this.activateMethod("sdd");
 		this.setValueOptions("sdd_electronicSignature","0");
 		this.waitForSelector('input[name="sdd_displayName"]', function success() {

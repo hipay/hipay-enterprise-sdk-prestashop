@@ -1,12 +1,12 @@
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : SISAL
+ *                       VALIDATION TEST METHOD : IDEAL
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
 /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise Sisal";
+var paymentType = "HiPay Enterprise iDeal";
 
 casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(test) {
     phantom.clearCookies();
@@ -14,14 +14,19 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     casper.start(baseURL)
     .then(function() {
         authentification.proceed(test);
+        this.configureCaptureMode("automatic");
         this.gotToHiPayConfiguration();
-        this.activateMethod("sisal");
-        this.waitForSelector('input[name="sisal_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="sisal_displayName"]', 'value');
+        this.activateMethod("ideal");
+        this.configureSettingsMode("hosted_page");
+        this.waitForSelector('input[name="ideal_displayName"]', function success() {
+            label = this.getElementAttribute('input[name="ideal_displayName"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="sisal_displayName"]', "Input name exist");
+            test.assertExists('input[name="ideal_displayName"]', "Input name exist");
         });
+    })
+    .then(function() {
+        this.activateLocalization('NL');
     })
     .thenOpen(baseURL, function() {
         this.selectItemAndOptions();
@@ -30,17 +35,17 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
         this.personalInformation();
     })
     .then(function() {
-        this.billingInformation('FR');
+        this.billingInformation('NL');
     })
     .then(function() {
         this.shippingMethod();
     })
     .then(function() {
-        this.selectMethodInCheckout("Payer par " + label);
+        this.selectMethodInCheckout("Payer par " + label,true);
     })
-    /* Fill Sisal formular */
+    /* Fill IDeal formular */
     .then(function() {
-
+        this.fillPaymentFormularByPaymentProduct("ideal");
     })
     .then(function() {
         this.orderResultSuccess(paymentType);

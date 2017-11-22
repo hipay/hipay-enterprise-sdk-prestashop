@@ -51,8 +51,8 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Electronic Signature',
                 'select[name="gender"]': "1",
                 'input[name="firstname"]': "TEST",
                 'input[name="lastname"]': "TEST",
-                'input[name="iban"]': ibanNumber.FR,
-                'input[name="issuer_bank_id"]': bicNumber[1],
+                'input[name="iban"]': ibanNumber.fr,
+                'input[name="issuer_bank_id"]': bicNumber.fr,
                 'input[name="bank_name"]': "BANK TEST"
             }, false);
 

@@ -14,8 +14,6 @@ function randNumbInRange(min, max) {
 
 casper.test.begin('Functions', function(test) {
 
-
-
    casper.getOrderReference = function() {
         return orderReference;
    };

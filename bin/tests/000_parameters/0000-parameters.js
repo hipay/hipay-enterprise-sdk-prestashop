@@ -1,7 +1,6 @@
 var fs = require('fs'),
 	utils = require('utils'),
-	childProcess = require("child_process"),
-	spawn = childProcess.spawn,
+    pathGenerator = 'bin/tests/000_lib/bower_components/hipay-casperjs-lib/generator/generator.sh',
 	x = require('casper').selectXPath,
 	defaultViewPortSizes = { width: 1920, height: 1080 },
 	baseURL = casper.cli.get('url'),

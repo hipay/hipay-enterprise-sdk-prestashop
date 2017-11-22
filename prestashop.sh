@@ -113,31 +113,5 @@ if [ "$1" = 'test' ]; then
    bower install hipay-casperjs-lib#develop --allow-root
    cd ../../../;
 
-   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][2][0-9][2]-*.js --url=$BASE_URL --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any
-fi
-
-if [ "$1" = 'udpate-lib' ]; then
-   cd bin/tests/000_lib
-   bower install hipay-casperjs-lib#develop --allow-root
-fi
-
-if [ "$1" = 'test' ]; then
-   #setBackendCredentials
-   #setPaypalCredentials
-
-   rm -rf bin/tests/errors/*
-   printf "Errors from previous tests cleared !\n\n"
-
-   if [ "$(ls -A ~/.local/share/Ofi\ Labs/PhantomJS/)" ]; then
-       rm -rf ~/.local/share/Ofi\ Labs/PhantomJS/*
-       printf "Cache cleared !\n\n"
-   else
-       printf "Pas de cache à effacer !\n\n"
-   fi
-
-   cd bin/tests/000_lib
-   bower install hipay-casperjs-lib#develop --allow-root
-   cd ../../../;
-
-   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][2][0-9][2]-*.js --url=$BASE_URL --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any
+   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][9][0-9][0-9]-*.js --url=$BASE_URL --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any
 fi
