@@ -113,5 +113,13 @@ if [ "$1" = 'test' ]; then
    bower install hipay-casperjs-lib#develop --allow-root
    cd ../../../;
 
-   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][9][0-9][0-9]-*.js --url=$BASE_URL --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any
+   if [ "$2" = '17' ]; then
+    BASE_URL="http://localhost:8087/"
+    PRESTASHOP_VERSION=1.7
+   else
+    BASE_URL="http://localhost:8086/"
+    PRESTASHOP_VERSION=1.6
+   fi
+
+   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][0-9][0-9][0-9]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any
 fi

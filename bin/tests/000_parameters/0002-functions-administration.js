@@ -174,7 +174,7 @@ casper.test.begin('Functions', function(test) {
         this.echo("Go to HiPay panel configuration", "INFO");
         this.waitForSelector('ul.menu #subtab-AdminParentModulesSf a', function success() {
             this.click('ul.menu #subtab-AdminParentModulesSf a');
-            this.waitForSelector(x('//a[text()="Modules installés"]'), function success() {
+            (x('//a[text()="Modules installés"]'), function success() {
                 this.click(x('//a[text()="Modules installés"]'));
                 this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
                     this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');

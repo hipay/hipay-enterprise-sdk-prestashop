@@ -22,7 +22,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + currentBrandCC, fu
         this.configureCaptureMode("automatic");
     })
     .thenOpen(baseURL, function() {
-        this.selectItemAndOptions();
+        this.selectIbabastemAndOptions();
     })
     .then(function() {
         this.personalInformation();
