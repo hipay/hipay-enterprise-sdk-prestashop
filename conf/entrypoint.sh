@@ -2,6 +2,8 @@
 
 COLOR_SUCCESS='\033[0;32m'
 NC='\033[0m'
+ENV_DEVELOPMENT="development"
+ENV_STAGE="stage"
 
 #===================================#
 #       CALL PARENT ENTRYPOINT
@@ -15,9 +17,7 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 #       CUSTOMS CONFIGURATIONS
 #===================================#
 if [ ! -f /var/www/html/console/console.php ];then
-    
 
-    
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
@@ -55,11 +55,13 @@ if [ ! -f /var/www/html/console/console.php ];then
 
     php console.php c:flush
 
-    # INSTALL X DEBUG
-    echo '' | pecl install xdebug
-    echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
-    echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini
-    echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+    if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ];then
+        # INSTALL X DEBUG
+        echo '' | pecl install xdebug
+        echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
+        echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini
+        echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+    fi
    
    #===================================#
     #            ADD CRON

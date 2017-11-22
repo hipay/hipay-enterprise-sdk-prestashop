@@ -30,7 +30,7 @@ test:
     - ./prestashop.sh init-stage
   override:
     - sleep 400
-    - curl --retry 10 --retry-delay 20 -v http://localhost:8086
+#    - curl --retry 10 --retry-delay 20 -v http://localhost:8086
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
     - sh bin/tests/casper_run_circle.sh
   post:
