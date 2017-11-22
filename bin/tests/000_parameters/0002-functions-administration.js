@@ -174,20 +174,20 @@ casper.test.begin('Functions', function(test) {
         this.echo("Go to HiPay panel configuration", "INFO");
         this.waitForSelector('ul.menu #subtab-AdminParentModulesSf a', function success() {
             this.click('ul.menu #subtab-AdminParentModulesSf a');
-            (x('//a[text()="Modules installés"]'), function success() {
+            this.waitForSelector(x('//a[text()="Modules installés"]'), function success() {
                 this.click(x('//a[text()="Modules installés"]'));
                 this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
                     this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');
                     test.info("Done");
                 }, function fail() {
                     test.assertExists('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button',"'Configuration' button exists");
-                }, 10000);
+                }, 15000);
             }, function fail() {
                 test.assertExists(x('//a[text()="Modules installés"]'), "Installed Modules admin page exists");
-            }, 10000);
+            }, 15000);
         }, function fail() {
             test.assertExists('ul.menu #subtab-AdminParentModulesSf a', "Modules admin page exists");
-        }, 10000);
+        }, 15000);
     };
 
     /* Configure Operating mode  ( mode=api|hosted_page )  */
@@ -211,8 +211,8 @@ casper.test.begin('Functions', function(test) {
                 test.assertExists('form#credit_card_form', "'Credit card' form exists ");
             }, 10000);
         }, function fail() {
-            test.assertExists(x('//span[text()="Modules"]'), "Modules admin page exists");
-        }, 10000);
+            test.assertExists('ul.hipay-enterprise li a[href="#payment_form"]', "Modules admin page exists");
+        }, 20000);
     },
 
     /* Configure Capture mode  ( mode=automatic|manual )  */

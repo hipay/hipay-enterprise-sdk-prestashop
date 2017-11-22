@@ -10,7 +10,7 @@ exports.proceed = function proceed(test) {
             }, false);
             this.click('.form-group button[type=submit]');
             this.waitForUrl(/AdminDashboard/, function success() {
-                test.info("Done");
+                test.info("Connected");
             }, function fail() {
                 test.assertExists(".error-msg", "Incorrect credentials !");
             }, 20000);

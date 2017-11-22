@@ -19,9 +19,13 @@ casper.test.begin('Test filling wrong credentials and pay ' + paymentType + ' wi
     .then(function() {
         if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
            authentification.proceed(test);
-           this.gotToHiPayConfiguration();
-           this.configureSettingsMode("api");
         }
+    })
+    .then(function(){
+        this.gotToHiPayConfiguration();
+    })
+    .then(function(){
+        this.configureSettingsMode("api");
     })
     .then(function() {
         /* Fill wrong api user name in module Settings */
