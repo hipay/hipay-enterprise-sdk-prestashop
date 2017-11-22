@@ -14,7 +14,7 @@ RUN apt-get update \
 
 COPY conf /tmp
 
-COPY src/* /var/www/html/modules/
+COPY src /var/www/html/modules
 
 RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
     && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh \
