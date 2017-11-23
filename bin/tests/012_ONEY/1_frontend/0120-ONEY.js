@@ -15,12 +15,12 @@ casper.test.begin('Test Checkout ' + paymentType, function(test) {
     .then(function() {
         authentification.proceed(test);
         this.gotToHiPayConfiguration();
-        this.activateMethod("3xcb");
+        this.activateMethod("4xcb");
         this.waitForSelector('input[name="3xcb_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="3xcb_displayName"]', 'value');
+            label = this.getElementAttribute('input[name="4xcb_displayName"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="3xcb_displayName"]', "Input name exist");
+            test.assertExists('input[name="4xcb_displayName"]', "Input name exist");
         });
     })
     .then(function() {
@@ -33,11 +33,11 @@ casper.test.begin('Test Checkout ' + paymentType, function(test) {
                 test.assertExists('form#category_form .form-group table.table');
 
                 /* Test filling for default delivery method 'My Carrier' */
-                this.fillSelectors("#carrier-mapping form#category_form",
-                    {'input[name="ps_map_prep_eta_2"]': 1 },
-                    {'input[name="ps_map__delivery_eta_2"]': 1 },
-                    {'select[name="hipay_map_mode_2"]': "STORE" },
-                    {'select[name="hipay_map_shipping_2"]': "STANDARD" },
+                this.fillSelectors("#carrier-mapping form#category_form",{
+                    'input[name="ps_map_prep_eta_2"]': 1 ,
+                    'input[name="ps_map__delivery_eta_2"]': 1 ,
+                    'select[name="hipay_map_mode_2"]': "STORE" ,
+                    'select[name="hipay_map_shipping_2"]': "STANDARD" },
                     false
                 );
                 this.click('form#category_form div.panel-footer button[name="submitCarrierMapping"]');
@@ -96,7 +96,7 @@ casper.test.begin('Test Checkout ' + paymentType, function(test) {
         this.selectMethodInCheckout("Payer par " + label,true);
     })
     .then(function() {
-        this.fillPaymentFormularByPaymentProduct("3xcb");
+        this.fillPaymentFormularByPaymentProduct("4xcb");
     })
     .then(function() {
         this.orderResultSuccess(paymentType);

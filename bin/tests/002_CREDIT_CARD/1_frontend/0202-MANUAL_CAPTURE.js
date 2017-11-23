@@ -52,7 +52,7 @@ casper.test.begin('Test manual capture', function(test) {
             orderReference = casper.getOrderReference();
             cartID = casper.getCartId();
             orderID = casper.getOrderId();
-            this.processNotifications(true,false,false);
+            this.processNotifications(true,false,false,true);
         })
         .thenOpen(baseURL, function () {
             authentification.proceed(test);
@@ -139,7 +139,7 @@ casper.test.begin('Test manual capture', function(test) {
         test.assertExists("form#hipay_capture_form","Capture panel is shown");
 
         var qtyRemain= this.fetchText('table.table-item-hipay input[name="hipaycapture[1]"]+div').split('/')[1];
-        test.assert(qtyRemain == ' 3', "Qty remain to capture is 3!");;
+        test.assert(qtyRemain == ' 6', "Qty remain to capture is 6!");;
     })
     .then(function () {
         this.echo("Capture the last item ...", "INFO");
@@ -147,7 +147,7 @@ casper.test.begin('Test manual capture', function(test) {
             this.waitUntilVisible('table.table-item-hipay', function success() {
                 /* Capture 4 item and shipping fees */
                 this.fillSelectors("form#hipay_capture_form", {
-                    'input[name="hipaycapture[1]"]': 3,
+                    'input[name="hipaycapture[1]"]': 6,
                 }, false);
                 this.click('button[name="hipay_capture_basket_submit"]');
 

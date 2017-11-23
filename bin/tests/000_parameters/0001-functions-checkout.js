@@ -61,7 +61,7 @@ casper.test.begin('Functions', function(test) {
         }, 25000);
         this.waitForSelector('.product-add-to-cart button.add-to-cart', function success() {
             this.fillSelectors('form#add-to-cart-or-refresh', {
-                'input[name="qty"]': 6,
+                'input[name="qty"]': 9,
             }, false);
 
             this.click('.product-add-to-cart button.add-to-cart');
@@ -91,6 +91,7 @@ casper.test.begin('Functions', function(test) {
                 test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
             });
         });
+
 	};
 
     /* Fill personal Information*/

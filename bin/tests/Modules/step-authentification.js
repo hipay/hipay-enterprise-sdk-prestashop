@@ -13,14 +13,14 @@ exports.proceed = function proceed(test) {
                 test.info("Connected");
             }, function fail() {
                 test.assertExists(".error-msg", "Incorrect credentials !");
-            }, 20000);
+            }, 30000);
         }, function fail() {
             this.waitForUrl(/controller=/, function success() {
                 test.info("Already logged to admin panel !");
             }, function fail() {
                 test.assertUrlMatch(/controller=/, "Already connected");
             });
-        },10000);
+        },20000);
 
     });
 };
