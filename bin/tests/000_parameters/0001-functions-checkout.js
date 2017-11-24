@@ -53,45 +53,98 @@ casper.test.begin('Functions', function(test) {
     /* Choose item on featured product */
 	casper.selectItemAndOptions = function() {
         this.echo("Selecting item and its options...", "INFO");
-        this.waitForSelector('section.featured-products .products article:first-child a img', function success() {
-            this.click('section.featured-products .products article:first-child a img');
-        }, function fail() {
-            var altImg = this.getElementAttribute('section.featured-products .products article:first-child a img', 'alt');
-            test.assertExists('section.featured-products .products article:first-child a img', "'" + altImg + "' image exists");
-        }, 25000);
-        this.waitForSelector('.product-add-to-cart button.add-to-cart', function success() {
-            this.fillSelectors('form#add-to-cart-or-refresh', {
-                'input[name="qty"]': 9,
-            }, false);
 
-            this.click('.product-add-to-cart button.add-to-cart');
-        }, function fail() {
-            test.assertExists('.product-add-to-cart button.add-to-cart', "Button Product add exists");
-        }, 25000);
-
-        this.waitForSelector('#blockcart-modal', function success() {
-            this.click('#blockcart-modal .cart-content-btn a');
-            this.click('#blockcart-modal .cart-content-btn button');
-            test.info("Continue checkout ...");
-        }, function fail() {
-            test.assertExists("#blockcart-modal", "Modal exist");
-        });
-
-        casper.then(function() {
-            this.waitForSelector('nav.header-nav .header a', function success() {
-                this.click('nav.header-nav .header a');
-                test.info("Open cart detail");
+        if (psVersion == '1.6') {
+            this.waitForSelector('ul#blocknewproducts li:first-child a img', function success() {
+                this.click('ul#blocknewproducts li:first-child a img');
             }, function fail() {
-                test.assertExists("nav.header-nav .header a", "Cart button");
-            },15000);
+                var altImg = this.getElementAttribute('ul#blocknewproducts li:first-child a img', 'alt');
+                test.assertExists('ul#blocknewproducts li:first-child a img', "'" + altImg + "' image exists");
+            }, 25000);
 
-            this.waitForUrl(/controller=cart&action=show/, function success() {
-                this.click('.cart-summary .checkout a')
+            this.waitForSelector('form#buy_block', function success() {
+                this.fillSelectors('form#buy_block', {
+                    'input[name="qty"]': 9,
+                }, false);
+
+                this.click('p#add_to_cart button');
             }, function fail() {
-                test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
+                test.assertExists('p#add_to_cart button', "Button Product add exists");
+            }, 25000);
+
+            casper.thenClick('#layer_cart a',function () {
+                this.click('p#add_to_cart button');
+                this.sendKeys('#layer_cart', casper.page.event.key.Escape);
+                this.sendKeys('body', casper.page.event.key.Escape);
+                this.waitForSelector('#layer_cart', function success() {
+                    test.info("Continue checkout 1 ...");
+                    this.click('#layer_cart');
+                    this.click('div#page');
+                    this.evaluate(function () {
+                        return document.querySelector('#layer_cart div.button-container a').click;
+                    });
+                    test.info("Conti" +
+                        "nue checkout ...");
+                }, function fail() {
+
+                    test.assertExists("#layer_cart div.button-container a", "Modal exist");
+                });
+            })
+            .then(function () {
+                this.click('span.cross');
+                this.waitForSelector('li.step_current', function success() {
+                    this.click('nav.header-nav .header a');
+                    test.info("Open cart detail");
+                }, function fail() {
+                    test.assertExists("li.step_current", "Cart button");
+                }, 15000);
+
+                this.waitForUrl(/controller=cart&action=show/, function success() {
+                    this.click('.cart-summary .checkout a')
+                }, function fail() {
+                    test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
+                });
             });
-        });
+        } else if (psVersion == '1.7') {
+            this.waitForSelector('section.featured-products .products article:first-child a img', function success() {
+                this.click('section.featured-products .products article:first-child a img');
+            }, function fail() {
+                var altImg = this.getElementAttribute('section.featured-products .products article:first-child a img', 'alt');
+                test.assertExists('section.featured-products .products article:first-child a img', "'" + altImg + "' image exists");
+            }, 25000);
+            this.waitForSelector('.product-add-to-cart button.add-to-cart', function success() {
+                this.fillSelectors('form#add-to-cart-or-refresh', {
+                    'input[name="qty"]': 9,
+                }, false);
 
+                this.click('.product-add-to-cart button.add-to-cart');
+            }, function fail() {
+                test.assertExists('.product-add-to-cart button.add-to-cart', "Button Product add exists");
+            }, 25000);
+
+            this.waitForSelector('#blockcart-modal', function success() {
+                this.click('#blockcart-modal .cart-content-btn a');
+                this.click('#blockcart-modal .cart-content-btn button');
+                test.info("Continue checkout ...");
+            }, function fail() {
+                test.assertExists("#blockcart-modal", "Modal exist");
+            });
+
+            casper.then(function () {
+                this.waitForSelector('nav.header-nav .header a', function success() {
+                    this.click('nav.header-nav .header a');
+                    test.info("Open cart detail");
+                }, function fail() {
+                    test.assertExists("nav.header-nav .header a", "Cart button");
+                }, 15000);
+
+                this.waitForUrl(/controller=cart&action=show/, function success() {
+                    this.click('.cart-summary .checkout a')
+                }, function fail() {
+                    test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
+                });
+            });
+        }
 	};
 
     /* Fill personal Information*/

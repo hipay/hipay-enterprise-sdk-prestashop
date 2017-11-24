@@ -172,22 +172,42 @@ casper.test.begin('Functions', function(test) {
     /* Go to HiPay configuration panel  */
     casper.gotToHiPayConfiguration = function () {
         this.echo("Go to HiPay panel configuration", "INFO");
-        this.waitForSelector('ul.menu #subtab-AdminParentModulesSf a', function success() {
-            this.click('ul.menu #subtab-AdminParentModulesSf a');
-            this.waitForSelector(x('//a[text()="Modules installés"]'), function success() {
-                this.click(x('//a[text()="Modules installés"]'));
-                this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
-                    this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');
-                    test.info("Done");
+
+        if (psVersion == '1.6') {
+            this.waitForSelector('ul.menu #maintab-AdminParentModules > a', function success() {
+                this.click('ul.menu #maintab-AdminParentModules > a');
+                this.waitForSelector('table#module-list', function success() {
+                    this.waitForSelector(x('//a[contains(@href, "tab_module=payments_gateways&module_name=hipay_enterprise")][@class=" btn btn-default"]'), function success() {
+                        this.click(x('//a[contains(@href, "tab_module=payments_gateways&module_name=hipay_enterprise")][@class=" btn btn-default"]'));
+                        test.info("Done");
+                    }, function fail() {
+                        test.assertExists(x('//a[contains(@href, "tab_module=payments_gateways&module_name=hipay_enterprise")][@class=" btn btn-default"]'),"'Configuration' button exists");
+                    }, 15000);
                 }, function fail() {
-                    test.assertExists('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button',"'Configuration' button exists");
+                    test.assertExists('table#module-list', "Installed Modules admin page exists");
                 }, 15000);
             }, function fail() {
-                test.assertExists(x('//a[text()="Modules installés"]'), "Installed Modules admin page exists");
+                test.assertExists('ul.menu #maintab-AdminParentModules > a', "Modules admin page exists");
             }, 15000);
-        }, function fail() {
-            test.assertExists('ul.menu #subtab-AdminParentModulesSf a', "Modules admin page exists");
-        }, 15000);
+        } else if (psVersion == '1.7') {
+            this.waitForSelector('ul.menu #subtab-AdminParentModulesSf a', function success() {
+                this.click('ul.menu #subtab-AdminParentModulesSf a');
+                this.waitForSelector(x('//a[text()="Modules installés"]'), function success() {
+                    this.click(x('//a[text()="Modules installés"]'));
+                    this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
+                        this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');
+                        test.info("Done");
+                    }, function fail() {
+                        test.assertExists('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button',"'Configuration' button exists");
+                    }, 15000);
+                }, function fail() {
+                    test.assertExists(x('//a[text()="Modules installés"]'), "Installed Modules admin page exists");
+                }, 15000);
+            }, function fail() {
+                test.assertExists('ul.menu #subtab-AdminParentModulesSf a', "Modules admin page exists");
+            }, 15000);
+        }
+
     };
 
     /* Configure Operating mode  ( mode=api|hosted_page )  */
