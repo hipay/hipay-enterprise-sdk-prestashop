@@ -30,9 +30,9 @@ test:
     - ./prestashop.sh init-stage
   override:
     - sleep 400
-#    - curl --retry 10 --retry-delay 20 -v http://localhost:8086
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
-    - sh bin/tests/casper_run_circle.sh
+    - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/casper_run_circle.sh  0 ;; 1) sh bin/tests/casper_run_circle.sh 1 ;; esac:
+        parallel: true
   post:
     - sh ./bin/deployment/sonar.sh > /dev/null
 deployment:
