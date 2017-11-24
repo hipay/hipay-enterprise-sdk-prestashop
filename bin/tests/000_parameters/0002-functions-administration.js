@@ -172,7 +172,6 @@ casper.test.begin('Functions', function(test) {
     /* Go to HiPay configuration panel  */
     casper.gotToHiPayConfiguration = function () {
         this.echo("Go to HiPay panel configuration", "INFO");
-
         if (psVersion == '1.6') {
             this.waitForSelector('ul.menu #maintab-AdminParentModules > a', function success() {
                 this.click('ul.menu #maintab-AdminParentModules > a');

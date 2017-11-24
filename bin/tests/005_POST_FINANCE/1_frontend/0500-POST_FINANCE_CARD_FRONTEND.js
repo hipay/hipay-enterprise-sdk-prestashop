@@ -14,6 +14,8 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     casper.start(baseURL)
     .then(function() {
         authentification.proceed(test);
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.activateMethod("postfinance-card");
         this.waitForSelector('input[name="postfinance-card_displayName"]', function success() {

@@ -13,8 +13,10 @@ casper.test.begin('Test Checkout ' + paymentType + ' without Electronic Signatur
 
     casper.start(baseURL)
     /* Active SEPA payment method with electronic signature */
-    .then(function() {
+	.then(function() {
 		authentification.proceed(test);
+	})
+	.then(function() {
 		this.gotToHiPayConfiguration();
 		this.configureSettingsMode("hosted_page");
 		this.activateMethod("sdd");

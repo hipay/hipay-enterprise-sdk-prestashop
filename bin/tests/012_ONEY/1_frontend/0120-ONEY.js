@@ -14,6 +14,8 @@ casper.test.begin('Test Checkout ' + paymentType, function(test) {
     casper.start(baseURL)
     .then(function() {
         authentification.proceed(test);
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.activateMethod("4xcb");
         this.waitForSelector('input[name="3xcb_displayName"]', function success() {

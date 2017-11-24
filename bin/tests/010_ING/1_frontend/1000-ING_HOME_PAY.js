@@ -14,6 +14,8 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     casper.start(baseURL)
     .then(function() {
         authentification.proceed(test);
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.activateMethod("ing-homepay");
         this.waitForSelector('input[name="ing-homepay_displayName"]', function success() {
