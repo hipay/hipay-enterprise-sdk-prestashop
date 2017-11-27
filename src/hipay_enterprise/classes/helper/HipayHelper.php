@@ -459,7 +459,7 @@ class HipayHelper
 
             // get order id
             $orderId = $module->currentOrder;
-            $db->releaseSQLLock();
+            $db->releaseSQLLock('validateOrder');
 
             $captureType = array("order_id" => $orderId, "type" => $configHipay["payment"]["global"]["capture_mode"]);
 
@@ -468,6 +468,7 @@ class HipayHelper
             Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
+            $db->releaseSQLLock("validateOrder ( order exist  $orderId )");
         }
 
         if ($customer) {
@@ -496,5 +497,19 @@ class HipayHelper
             return 0;
         }
         return ($a["frontPosition"] < $b["frontPosition"]) ? -1 : 1;
+    }
+
+    /**
+     * Check if order has already been placed ( Without prestashop cache)
+     *
+     * @return bool result
+     */
+    public static function orderExists($cart_id)
+    {
+        if ($cart_id) {
+            $result = (bool)Db::getInstance()->getValue('SELECT count(*) FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int)$cart_id);
+            return $result;
+        }
+        return false;
     }
 }
