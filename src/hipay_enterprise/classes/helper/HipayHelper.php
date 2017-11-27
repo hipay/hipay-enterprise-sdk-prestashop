@@ -512,4 +512,24 @@ class HipayHelper
         }
         return false;
     }
+
+    /**
+     * Get a value from $_POST / $_GET
+     * if unavailable, take a default value
+     * Duplicate from Prestashop core, without anti-slashes handling
+     *
+     * @param string $key Value key
+     * @param mixed $default_value (optional)
+     * @return mixed Value
+     */
+    public static function getValue($key, $default_value = false)
+    {
+        if (!isset($key) || empty($key) || !is_string($key)) {
+            return false;
+        }
+
+        $ret = (isset($_POST[$key]) ? $_POST[$key] : (isset($_GET[$key]) ? $_GET[$key] : $default_value));
+
+        return $ret;
+    }
 }
