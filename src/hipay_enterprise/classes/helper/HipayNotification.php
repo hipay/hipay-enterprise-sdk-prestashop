@@ -204,9 +204,14 @@ class HipayNotification
         if ($this->cart->orderExists()) {
             $this->addOrderMessage();
             if ((int)$this->order->getCurrentState() != (int)$newState &&
-                !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true) &&
-                !$this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true)
+                (int) $this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
+                !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)
             ) {
+                // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
+                if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
+                     && ($newState == _PS_OS_PAYMENT_ )) {
+                    $newState = _PS_OS_OUTOFSTOCK_PAID_;
+                }
                 $this->changeOrderStatus($newState);
                 $return = true;
             }

@@ -22,6 +22,7 @@ MYSQL_HOST=mysql
 MYSQL_ROOT_PASSWORD=admin
 MYSQL_USER=root
 MYSQL_PASSWORD=admin
+MYSQL_ROOT_PASSWORD=admin
 
 #====================================================
 # Specific configuration for production
@@ -33,3 +34,13 @@ ENVIRONMENT=development
 # Conf for debugging
 #=====================================================
 XDEBUG_CONFIG=remote_host=172.16.44.35
+
+#====================================================
+# Credentials from your Hipay's Security Settings
+# In your Hipay's account, "Integration > Security Settings > Api Credential"
+#=====================================================
+HIPAY_API_USER_TEST=
+HIPAY_API_PASSWORD_TEST=
+HIPAY_TOKENJS_PUBLICKEY_TEST=
+HIPAY_TOKENJS_USERNAME_TEST=
+HIPAY_SECRET_PASSPHRASE_TEST=
