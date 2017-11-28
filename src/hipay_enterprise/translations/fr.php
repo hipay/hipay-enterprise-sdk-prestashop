@@ -10,7 +10,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_147b202e5d808b32bd8d1ea
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_41683156a02a5458061f1ceff3a7b7e4'] = 'ID de la transaction :';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_cab7966508bf13075ade294cdf147b53'] = 'Statut HiPay :';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';
-$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser ce mode de paiement.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
@@ -42,7 +42,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN incorrect';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser ce mode de paiement.';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
