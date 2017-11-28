@@ -1,13 +1,13 @@
 {
-  "name": "bnpp-3xcb",
+  "name": "bnpp-4xcb",
   "config": {
     "group": {
       "code": "bnpp",
       "label": "BNP Personal Finance"
     },
-    "displayNameBO": "3x Carte Bancaire - BNP Personal Finance",
-    "displayName": "3x Carte Bancaire - BNP Personal Finance",
-    "frontPosition": 3,
+    "displayNameBO": "4x Carte Bancaire - BNP Personal Finance",
+    "displayName": "4x Carte Bancaire - BNP Personal Finance",
+    "frontPosition": 35,
     "activated": 0,
     "canRefund": 1,
     "canManualCapture": 1,
@@ -33,7 +33,11 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "bnp_140_3x.jpg",
-    "additionalFields": {}
+    "logo": "bnp_140_4x.jpg",
+    "additionalFields": {},
+    "checkoutFieldsMandatory" : [
+      "phone",
+      "gender"
+    ]
   }
 }

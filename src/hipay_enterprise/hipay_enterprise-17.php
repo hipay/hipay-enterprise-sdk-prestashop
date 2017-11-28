@@ -89,7 +89,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $this->hipayConfigTool->getConfigHipay(),
                 $country,
                 $currency,
-                $params['cart']->getOrderTotal()
+                $params['cart']->getOrderTotal(),
+                $address,
+                $this->customer
             );
 
             if (!empty($sortedPaymentProducts)) {
@@ -135,11 +137,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
      * @param type $emptyCreditCard
      * @param type $i
      */
-    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i)
+    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i, $address)
     {
-
         $newOption = new PaymentOption();
-
         $this->context->smarty->assign(
             array(
                 'action' => $this->context->link->getModuleLink(
@@ -151,6 +151,15 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'localPaymentName' => $name
             )
         );
+
+        if (isset($paymentProduct["errorMsg"])) {
+            $this->context->smarty->assign(
+                array(
+                    'errorMsg' => $paymentProduct["errorMsg"]
+                )
+            );
+        }
+
         if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
             $this->hipayConfigTool->getPaymentGlobal()["operating_mode"] !== 'api' ||
             (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"])
