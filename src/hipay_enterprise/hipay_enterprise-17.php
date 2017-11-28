@@ -137,7 +137,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      * @param type $emptyCreditCard
      * @param type $i
      */
-    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i, $address)
+    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i)
     {
         $newOption = new PaymentOption();
         $this->context->smarty->assign(

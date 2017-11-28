@@ -30,7 +30,7 @@
                         {/if}
                     </span>
                 </a>
-                {if isset($paymentProduct.errorMsg)}
+                {if isset($paymentProduct.errorMsg) && !empty($paymentProduct.errorMsg)}
                     <div id="error-js-oc" style="" class="alert alert-danger">
                         <ol>
                             {foreach $paymentProduct.errorMsg as $msg}
