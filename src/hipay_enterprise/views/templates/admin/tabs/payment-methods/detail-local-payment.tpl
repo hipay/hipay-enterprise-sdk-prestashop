@@ -50,6 +50,8 @@
                                         value="{$method.displayName[$language.iso_code]}"
                                     {elseif isset($method.displayName) && !is_array($method.displayName)}
                                         value="{$method.displayName}"
+                                    {else}
+                                        value="{$method.displayName['en']}"
                                     {/if}
                             />
                         </div>
