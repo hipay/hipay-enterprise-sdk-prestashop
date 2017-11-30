@@ -73,7 +73,7 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
         $customerBillingInfo->phone = $this->getPhone();
 
         if ($this->payment_product == 'bnpp-3xcb' || $this->payment_product == 'bnpp-4xcb') {
-            $customerBillingInfo->phone =  preg_replace('/^(\+33)|(33)/','',$customerBillingInfo->phone);
+            $customerBillingInfo->phone =  preg_replace('/^(\+33)|(33)/','0',$customerBillingInfo->phone);
         }
 
         $customerBillingInfo->state = ($this->deliveryState) ? $this->deliveryState->name : '';
