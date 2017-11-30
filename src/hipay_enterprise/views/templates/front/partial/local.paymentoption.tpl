@@ -18,7 +18,14 @@
                    style="padding-left: 13px;">
                     <img src="{$domain|cat:$paymentProduct.payment_button|escape:'html':'UTF-8'}"
                          style="max-width: 160px;max-height: 50px;" alt="{$paymentProduct.displayName}"/>
-                    {l s='Pay by ' mod='hipay_enterprise' } {$paymentProduct.displayName}
+                    {l s='Pay by ' mod='hipay_enterprise' }
+                    {if isset($paymentProduct.displayName[$lang])}
+                        {$paymentProduct.displayName[$lang]}
+                    {elseif isset($paymentProduct.displayName) && !is_array($paymentProduct.displayName)}
+                        {$paymentProduct.displayName}
+                    {else}
+                        {$paymentProduct.displayName['en']}
+                    {/if}
                     <span>
                         {if $configHipay.payment.global.operating_mode != 'api'}
                             {if $configHipay.payment.global.display_hosted_page != 'iframe'}

@@ -33,7 +33,7 @@
                                            class="translatable-field lang-{$language.iso_code}"
                                             {if isset($config_hipay.payment.global.ccDisplayName[$language.iso_code])}
                                                 value="{$config_hipay.payment.global.ccDisplayName[$language.iso_code]}"
-                                            {elseif isset($config_hipay.payment.global.ccDisplayName)}
+                                            {elseif isset($config_hipay.payment.global.ccDisplayName) && !is_array($config_hipay.payment.global.ccDisplayName)}
                                                 value="{$config_hipay.payment.global.ccDisplayName}"
                                             {/if}
                                     />

@@ -48,7 +48,7 @@
                                    class="translatable-field lang-{$language.iso_code}"
                                     {if isset($method.displayName[$language.iso_code])}
                                         value="{$method.displayName[$language.iso_code]}"
-                                    {elseif isset($method.displayName)}
+                                    {elseif isset($method.displayName) && !is_array($method.displayName)}
                                         value="{$method.displayName}"
                                     {/if}
                             />

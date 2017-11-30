@@ -2,7 +2,10 @@
   "name": "przelewy24",
   "config": {
     "displayNameBO": "Przelewy24",
-    "displayName": "Przelewy24",
+    "displayName":  {
+      "fr": "Przelewy24",
+      "en": "Przelewy24"
+    },
     "frontPosition": 23,
     "activated": 0,
     "canRefund": 1,

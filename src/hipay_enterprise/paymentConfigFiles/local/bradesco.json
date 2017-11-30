@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Bradesco",
-    "displayName": "Bradesco",
+    "displayName":  {
+      "fr": "Bradesco",
+      "en": "Bradesco"
+    },
     "frontPosition": 12,
     "activated": 0,
     "canRefund": 0,
