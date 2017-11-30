@@ -29,5 +29,5 @@ prestashop17:
     - ./conf/env_file/stage/env17
 smtp:
   ports:
-    - "1018:1080"
+    - "1018:80"
 

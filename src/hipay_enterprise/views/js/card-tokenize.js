@@ -18,6 +18,18 @@ $(document).ready(function () {
     $('.card-js .expiry').attr('placeholder',i18nDateLocal);
 });
 
+$("#card-number").focus(function() {
+    $('#radio-no-token').prop('checked', true);
+});
+
+$('#radio-no-token').change(function() {
+    $('#credit-card-group').collapse('toggle');
+});
+
+$('#radio-with-token').change(function() {
+    $('#credit-card-group').collapse('hide');
+});
+
 function checkPaymentDate() {
     if ($(".expiry").val() === null || $(".expiry").val() === "") {
         $(".expiry").addClass("error-input-hp");
@@ -36,8 +48,7 @@ $("#tokenizerForm").submit(function (e) {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-
-        if ($("input[name=ccTokenHipay]:checked").length) {
+        if ($("#radio-with-token").prop("checked")) {
             // at least one of the radio buttons was checked
             $("#tokenizerForm").hide();
             $("#payment-loader-hp").show();
