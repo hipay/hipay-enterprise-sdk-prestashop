@@ -6,5 +6,5 @@ mysql:
   volumes:
     - ./data/:/var/lib/mysql
 smtp:
-  image: schickling/mailcatcher
+  image: hipay/mailcatcher:1.0.0
   container_name: smtp-hipay-enterprise

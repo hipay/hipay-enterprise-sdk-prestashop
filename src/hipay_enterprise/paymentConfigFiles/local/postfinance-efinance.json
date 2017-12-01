@@ -6,7 +6,10 @@
       "label": "PostFinance"
     },
     "displayNameBO": "PostFinance E-Finance",
-    "displayName": "PostFinance E-Finance",
+    "displayName":  {
+      "fr": "PostFinance E-Finance",
+      "en": "PostFinance E-Finance"
+    },
     "frontPosition": 22,
     "activated": 0,
     "canRefund": 1,

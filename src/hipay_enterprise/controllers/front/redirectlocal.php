@@ -77,6 +77,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 'cust_currency' => $cart->id_currency,
                 'currencies' => $this->module->getCurrency((int)$cart->id_currency),
                 'total' => $cart->getOrderTotal(true, Cart::BOTH),
+                'language' => $context->language->iso_code,
                 'this_path' => $this->module->getPathUri(),
                 'this_path_bw' => $this->module->getPathUri(),
                 'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
@@ -114,7 +115,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 // if electronic signature is on and payment force hpayment when electronic signature is on  OR form is submit OR there's no additional fields
                 if (Tools::isSubmit("localSubmit") ||
                     empty($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]) ||
-                    ($this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"])
+                    ( isset($this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"]) &&
+                    $this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"])
                 ) {
                     $path = $this->handlePaymentForm($params, $method);
                 } else {

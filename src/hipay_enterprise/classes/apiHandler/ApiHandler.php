@@ -348,7 +348,7 @@ class Apihandler
         //#################################################################
         $cart = $this->context->cart;
         $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
-        $this->db->setSQLLockForCart($cart->id);
+        $this->db->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
 
         HipayHelper::validateOrder(
             $this->module,
@@ -359,6 +359,6 @@ class Apihandler
             $params["methodDisplayName"]
         );
 
-        $this->db->releaseSQLLock();
+        $this->db->releaseSQLLock('callValidateOrder' . $cart->id);
     }
 }
