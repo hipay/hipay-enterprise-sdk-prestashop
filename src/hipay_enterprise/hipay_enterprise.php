@@ -732,6 +732,7 @@ class Hipay_enterprise extends PaymentModule
                 'hipayCarriers' => $hipayCarriers,
                 'mappedCarriers' => $mappedCarriers,
                 'lang' => Tools::strtolower($this->context->language->iso_code),
+                'languages' => Language::getLanguages(false),
                 'source' => $source,
                 'ps_round_total' => Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL
             )

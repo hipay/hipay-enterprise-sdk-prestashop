@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Caïxa",
-    "displayName": "Caïxa",
+    "displayName":  {
+      "fr": "Caïxa",
+      "en": "Caïxa"
+    },
     "frontPosition": 13,
     "activated": 0,
     "canRefund": 0,

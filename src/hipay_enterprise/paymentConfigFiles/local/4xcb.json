@@ -6,7 +6,10 @@
       "label": "Oney Facily Pay"
     },
     "displayNameBO": "4x Carte Bancaire - Facily Pay",
-    "displayName": "4x Carte Bancaire - Facily Pay",
+    "displayName":  {
+      "fr": "4x Carte Bancaire - Facily Pay",
+      "en": "4x Credit card - Facily Pay"
+    },
     "frontPosition": 5,
     "activated": 0,
     "canRefund": 1,

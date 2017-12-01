@@ -2,7 +2,10 @@
   "name": "sisal",
   "config": {
     "displayNameBO": "Sisal",
-    "displayName": "Sisal",
+    "displayName":  {
+      "fr": "Sisal",
+      "en": "Sisal"
+    },
     "frontPosition": 27,
     "activated": 0,
     "canRefund": 1,

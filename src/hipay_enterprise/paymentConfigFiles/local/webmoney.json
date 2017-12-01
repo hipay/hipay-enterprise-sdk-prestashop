@@ -2,7 +2,10 @@
   "name": "webmoney-transfert",
   "config": {
     "displayNameBO": "WebMoney Transfer",
-    "displayName": "WebMoney Transfer",
+    "displayName":  {
+      "fr": "WebMoney Transfer",
+      "en": "WebMoney Transfer"
+    },
     "frontPosition": 29,
     "activated": 0,
     "canRefund": 1,
