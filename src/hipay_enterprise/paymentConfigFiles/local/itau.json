@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Itau",
-    "displayName": "Itau",
+    "displayName":  {
+      "fr": "Itau",
+      "en": "Itau"
+    },
     "frontPosition": 17,
     "activated": 0,
     "canRefund": 0,

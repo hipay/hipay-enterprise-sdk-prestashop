@@ -2,7 +2,10 @@
   "name": "sdd",
   "config": {
     "displayNameBO": "SEPA Direct Debit",
-    "displayName": "SEPA Direct Debit",
+    "displayName":  {
+      "fr": "SEPA Direct Debit",
+      "en": "SEPA Direct Debit"
+    },
     "frontPosition": 26,
     "activated": 0,
     "canRefund": 1,

@@ -2,7 +2,10 @@
   "name": "sofort-uberweisung",
   "config": {
     "displayNameBO": "Sofort Überweisung",
-    "displayName": "Sofort Überweisung",
+    "displayName":  {
+      "fr": "Sofort Überweisung",
+      "en": "Sofort Überweisung"
+    },
     "frontPosition": 28,
     "activated": 0,
     "canRefund": 1,
