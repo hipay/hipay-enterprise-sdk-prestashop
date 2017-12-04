@@ -6,7 +6,10 @@
       "label": "PostFinance"
     },
     "displayNameBO": "PostFinance Card",
-    "displayName": "PostFinance Card",
+    "displayName":  {
+      "fr": "PostFinance Card",
+      "en": "PostFinance Card"
+    },
     "frontPosition": 21,
     "activated": 0,
     "canRefund": 1,

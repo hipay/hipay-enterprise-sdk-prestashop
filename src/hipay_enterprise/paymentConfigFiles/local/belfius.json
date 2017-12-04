@@ -2,7 +2,10 @@
   "name": "dexia-directnet",
   "config": {
     "displayNameBO": "Belfius Direct Net",
-    "displayName": "Belfius Direct Net",
+    "displayName":  {
+      "fr": "Belfius Direct Net",
+      "en": "Belfius Direct Net"
+    },
     "frontPosition": 10,
     "activated": 0,
     "canRefund": 0,

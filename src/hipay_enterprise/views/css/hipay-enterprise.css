@@ -2,7 +2,6 @@
     margin-top: 15px;
     margin-bottom: 15px;
     margin-left: 2.875rem;
-
 }
 
 .hipay-form-17 input, .hipay-form-17 select {
@@ -24,6 +23,24 @@
 
 .card-img {
     margin-bottom: 1.05em;
+}
+
+.hipay-form-17 .option_payment label {
+    font-size: .9375rem;
+    color: #7a7a7a;
+    display: inline-block!important;
+}
+
+.hipay-form-17 .option_payment.saved-card {
+    margin-left: 40px;
+}
+
+#save-credit-card {
+    margin-left:15px;
+}
+
+.group-card {
+    margin-top: 15px;
 }
 
 a.tooltips {

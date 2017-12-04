@@ -63,7 +63,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
             array(
                 _MODULE_DIR_ .
                 $this->name .
-                '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js')
+                '/lib/bower_components/hipay-fullservice-sdk-js/dist/hipay-fullservice-sdk.min.js'
+            )
         );
     }
 
@@ -89,7 +90,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $this->hipayConfigTool->getConfigHipay(),
                 $country,
                 $currency,
-                $params['cart']->getOrderTotal()
+                $params['cart']->getOrderTotal(),
+                $address,
+                $this->customer
             );
 
             if (!empty($sortedPaymentProducts)) {
@@ -137,9 +140,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      */
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $emptyCreditCard, &$i)
     {
-
         $newOption = new PaymentOption();
-
         $this->context->smarty->assign(
             array(
                 'action' => $this->context->link->getModuleLink(
@@ -151,6 +152,15 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'localPaymentName' => $name
             )
         );
+
+        if (isset($paymentProduct["errorMsg"])) {
+            $this->context->smarty->assign(
+                array(
+                    'errorMsg' => $paymentProduct["errorMsg"]
+                )
+            );
+        }
+
         if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
             $this->hipayConfigTool->getPaymentGlobal()["operating_mode"] !== 'api' ||
             (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"])
@@ -163,7 +173,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
         } else {
             $this->context->smarty->assign(
                 array(
-                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]["formFields"],
+                    'methodFields' => $this->hipayConfigTool->getLocalPayment(
+                    )[$name]["additionalFields"]["formFields"],
                     'language' => $this->context->language->language_code
                 )
             );
@@ -172,12 +183,25 @@ class HipayEnterpriseNew extends Hipay_enterprise
             'module:' . $this->name . '/views/templates/front/payment/ps17/paymentLocalForm-17.tpl'
         );
 
-        $newOption->setCallToActionText($this->l('Pay by') . " " . $paymentProduct["displayName"])
-                  ->setAction(
-                      $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true)
-                  )
-                  ->setModuleName('local_payment_hipay')
-                  ->setForm($paymentForm);
+        if (isset(
+            $paymentProduct["displayName"][$this->context->language->iso_code])
+        ) {
+            $displayName = $paymentProduct["displayName"][$this->context->language->iso_code];
+        } else if (
+            isset($paymentProduct["displayName"])
+            && !is_array($paymentProduct["displayName"])
+        ) {
+            $displayName = $paymentProduct["displayName"];
+        } else {
+            $displayName = $paymentProduct["displayName"]['en'];
+        }
+
+        $newOption->setCallToActionText($this->l('Pay by') . " " . $displayName)
+            ->setAction(
+                $this->context->link->getModuleLink($this->name, 'redirectlocal', array("method" => $name), true)
+            )
+            ->setModuleName('local_payment_hipay')
+            ->setForm($paymentForm);
 
         // if no credit card, we force ioBB input to be displayed
         if ($i == 0 && $emptyCreditCard) {
@@ -204,7 +228,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     $newOption->setCallToActionText(
                         $this->l('Pay by') . " " . $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]
                     )
-                              ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true));
+                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true));
                     if ($this->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                         $newOption->setAdditionalInformation("<p>" . $params['translation_checkout'] . "</p>");
                     }
@@ -235,12 +259,26 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'module:' . $this->name . '/views/templates/front/payment/ps17/paymentForm-17.tpl'
                     );
                     $newOption = new PaymentOption();
+
+                    if (isset(
+                        $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code])
+                    ) {
+                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code];
+                    } else if (
+                        isset($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
+                        && !is_array($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
+                    ) {
+                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
+                    } else {
+                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]['en'];
+                    }
+
                     $newOption->setCallToActionText(
-                        $this->l('Pay by') . " " . $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]
+                        $this->l('Pay by') . " " . $displayName
                     )
-                              ->setAdditionalInformation("")
-                              ->setModuleName("credit_card")
-                              ->setForm($paymentForm);
+                        ->setAdditionalInformation("")
+                        ->setModuleName("credit_card")
+                        ->setForm($paymentForm);
 
                     $paymentOptions[] = $newOption;
 

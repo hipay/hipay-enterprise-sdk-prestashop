@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Aura",
-    "displayName": "Aura",
+    "displayName":  {
+      "fr": "Aura",
+      "en": "Aura"
+    },
     "frontPosition": 6,
     "activated": 0,
     "canRefund": 0,

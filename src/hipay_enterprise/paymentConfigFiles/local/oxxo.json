@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Oxxo",
-    "displayName": "Oxxo",
+    "displayName":  {
+      "fr": "Oxxo",
+      "en": "Oxxo"
+    },
     "frontPosition": 19,
     "activated": 0,
     "canRefund": 0,

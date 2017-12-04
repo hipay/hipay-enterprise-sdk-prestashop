@@ -23,15 +23,46 @@
                 <div class="panel">
                     <div class="form-group">
                         <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
-                        <div class="col-lg-3">
-                            <div class="row">
-                                <input type="text" name="ccDisplayName"
-                                       value="{$config_hipay.payment.global.ccDisplayName}"/>
+                        {foreach from=$languages item=language key=id}
+                            <div class="col-lg-3 {if $languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
+                                 {if $id > 0}style="display: none" {/if}>
+
+                                <div class="row">
+                                    <input id="ccDisplayName-{$language.iso_code}" type="text"
+                                           name="ccDisplayName[{$language.iso_code}]"
+                                           class="translatable-field lang-{$language.iso_code}"
+                                            {if isset($config_hipay.payment.global.ccDisplayName[$language.iso_code])}
+                                                value="{$config_hipay.payment.global.ccDisplayName[$language.iso_code]}"
+                                            {elseif isset($config_hipay.payment.global.ccDisplayName) && !is_array($config_hipay.payment.global.ccDisplayName)}
+                                                value="{$config_hipay.payment.global.ccDisplayName}"
+                                            {else}
+                                                value="{$config_hipay.payment.global.ccDisplayName['en']}"
+                                            {/if}
+                                    />
+                                </div>
+
+                                <p class="help-block ">
+                                    {l s='Display name for payment by credit card on your checkout page.' mod='hipay_enterprise'}
+                                </p>
                             </div>
-                            <p class="help-block ">
-                                {l s='Display name for payment by credit card on your checkout page.' mod='hipay_enterprise'}
-                            </p>
-                        </div>
+                            {if $languages|count > 1}
+                                <div class="col-lg-2 translatable-field lang-{$language.iso_code} "
+                                     {if $id > 0}style="display: none" {/if}>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                            tabindex="-1">
+                                        {$language.iso_code}
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {foreach from=$languages item=language}
+                                            <li>
+                                                <a href="javascript:selectLanguageHipay('{$language.iso_code}');">{$language.name}</a>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            {/if}
+                        {/foreach}
                     </div>
                     <div class="form-group">
                         <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
@@ -170,4 +201,10 @@
         infoText: false
     });
     {/foreach}
+
+    function selectLanguageHipay(iso_code) {
+        $('.translatable-field').hide();
+        $('.lang-' + iso_code).show();
+    }
+
 </script>

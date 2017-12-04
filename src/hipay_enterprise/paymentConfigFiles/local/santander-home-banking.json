@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Santander HomeBanking",
-    "displayName": "Santander HomeBanking",
+    "displayName":  {
+      "fr": "Santander HomeBanking",
+      "en": "Santander HomeBanking"
+    },
     "frontPosition": 25,
     "activated": 0,
     "canRefund": 0,

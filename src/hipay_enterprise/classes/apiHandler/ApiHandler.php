@@ -128,9 +128,15 @@ class Apihandler
     {
         $this->baseParamsInit($params, false);
 
-        // All locals payment ar done with API Order
+        // All locals payment ar done with API Order (
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
-        $this->handleDirectOrder($params);
+
+        $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
+        if (key_exists("acceptHostedOrder",$configMethod) && $configMethod["acceptHostedOrder"]) {
+            $this->handleHostedPayment($params);
+        } else {
+            $this->handleDirectOrder($params);
+        }
     }
 
     /**
@@ -342,7 +348,7 @@ class Apihandler
         //#################################################################
         $cart = $this->context->cart;
         $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
-        $this->db->setSQLLockForCart($cart->id,'callValidateOrder' . $cart->id);
+        $this->db->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
 
         HipayHelper::validateOrder(
             $this->module,

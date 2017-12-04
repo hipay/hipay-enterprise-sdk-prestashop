@@ -103,6 +103,9 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Transaction ID: ');
         $fake = $this->l('HiPay status: ');
         $fake = $this->l('A payment transaction is awaiting validation for the order %s');
+        $fake = $this->l('Please enter your phone number to use this payment method.');
+        $fake = $this->l('Please inform your civility to use this method of payment.');
+        $fake = $this->l('Please check the information entered.');
     }
 
     public function getLogs()
@@ -299,6 +302,7 @@ class Hipay_enterprise extends PaymentModule
         $currency = new Currency((int)$params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
         $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
+        $customer = new Customer((int)$params['cart']->id_customer);
 
         $this->smarty->assign(
             array(
@@ -311,7 +315,9 @@ class Hipay_enterprise extends PaymentModule
                     $this->hipayConfigTool->getConfigHipay(),
                     $country,
                     $currency,
-                    $orderTotal
+                    $orderTotal,
+                    $address,
+                    $customer
                 ),
                 'lang' => Tools::strtolower($this->context->language->iso_code),
             )
@@ -732,6 +738,7 @@ class Hipay_enterprise extends PaymentModule
                 'hipayCarriers' => $hipayCarriers,
                 'mappedCarriers' => $mappedCarriers,
                 'lang' => Tools::strtolower($this->context->language->iso_code),
+                'languages' => Language::getLanguages(false),
                 'source' => $source,
                 'ps_round_total' => Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL
             )

@@ -6,7 +6,10 @@
       "label": "Oney Facily Pay"
     },
     "displayNameBO": "3x Carte Bancaire sans frais - Facily Pay",
-    "displayName": "3x Carte Bancaire sans frais - Facily Pay",
+    "displayName": {
+      "fr": "3x Carte Bancaire sans frais - Facily Pay",
+      "en": "3x Credit card without fees - Facily Pay"
+    },
     "frontPosition": 2,
     "activated": 0,
     "canRefund": 1,

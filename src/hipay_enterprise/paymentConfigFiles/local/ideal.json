@@ -2,7 +2,10 @@
   "name": "ideal",
   "config": {
     "displayNameBO": "IDEAL",
-    "displayName": "IDEAL",
+    "displayName":  {
+      "fr": "IDEAL",
+      "en": "IDEAL"
+    },
     "frontPosition": 15,
     "activated": 0,
     "canRefund": 1,
@@ -29,6 +32,7 @@
     "maxAmount": {
       "EUR": false
     },
+    "acceptHostedOrder": true,
     "logo": "ideal.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",
