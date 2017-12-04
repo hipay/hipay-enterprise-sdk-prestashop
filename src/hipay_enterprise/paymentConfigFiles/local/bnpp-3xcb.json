@@ -6,7 +6,10 @@
       "label": "BNP Personal Finance"
     },
     "displayNameBO": "3x Carte Bancaire - BNP Personal Finance",
-    "displayName": "3x Carte Bancaire - BNP Personal Finance",
+    "displayName":  {
+      "fr": "3x Carte Bancaire - BNP Personal Finance",
+      "en": "3x Carte Bancaire - BNP Personal Finance"
+    },
     "frontPosition": 30,
     "activated": 0,
     "canRefund": 1,
