@@ -286,9 +286,15 @@ class Apihandler
     private function handleDirectOrder($params, $cc = false)
     {
         if ($cc) {
-            $params["methodDisplayName"] = $this->configHipay["payment"]["credit_card"][$params["method"]]["displayName"];
+            $config = $this->configHipay["payment"]["credit_card"][$params["method"]];
         } else {
-            $params["methodDisplayName"] = $this->configHipay["payment"]["local_payment"][$params["method"]]["displayName"];
+            $config = $this->configHipay["payment"]["local_payment"][$params["method"]];
+        }
+
+        if (is_array($config["displayName"])) {
+            $params["methodDisplayName"] = $config["displayName"][$this->context->language->iso_code];
+        } else {
+            $params["methodDisplayName"] = $config["displayName"];
         }
 
         $response = ApiCaller::requestDirectPost($this->module, $params);

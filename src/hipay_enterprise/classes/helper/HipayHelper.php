@@ -32,15 +32,25 @@ class HipayHelper
         return true;
     }
 
-    public static function getPaymentProductName($cardBrand, $paymentProduct, $module)
+    public static function getPaymentProductName($cardBrand, $paymentProduct, $module, $language)
     {
         if (!$cardBrand) {
             if ($paymentProduct && $paymentProduct == 'credit_card') {
                 $paymentProduct = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
             } else if ($paymentProduct && isset($module->hipayConfigTool->getLocalPayment()[$paymentProduct])) {
-                $paymentProduct = $module->hipayConfigTool->getLocalPayment()[$paymentProduct]["displayName"];
+                $config = $paymentProduct = $module->hipayConfigTool->getLocalPayment()[$paymentProduct];
+                if (is_array($config["displayName"])) {
+                    $paymentProduct = $config["displayName"][$language];
+                } else {
+                    $paymentProduct = $config["displayName"];
+                }
             } elseif ($paymentProduct && isset($module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct])) {
-                $paymentProduct = $module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct]["displayName"];
+                $config = $paymentProduct = $module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct];
+                if (is_array($config["displayName"])) {
+                    $paymentProduct = $config["displayName"][$language];
+                } else {
+                    $paymentProduct = $config["displayName"];
+                }
             }
         } else {
             $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));

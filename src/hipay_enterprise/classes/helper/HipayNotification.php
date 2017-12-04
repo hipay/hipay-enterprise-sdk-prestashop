@@ -301,7 +301,7 @@ class HipayNotification
         }
         $paymentProduct = $this->transaction->getPaymentProduct();
 
-        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
+        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $this->context->language );
     }
 
     /**
