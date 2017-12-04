@@ -94,7 +94,7 @@ class HipayNotification
     public function processTransaction()
     {
         try {
-            $this->db->setSQLLockForCart($this->cart->id);
+            $this->db->setSQLLockForCart($this->cart->id, "ProcessTransaction for cart ID :" .  $this->cart->id);
             $this->log->logInfos(
                 "# ProcessTransaction for cart ID : " .
                 $this->cart->id .
@@ -185,11 +185,11 @@ class HipayNotification
             }
 
 
-            $this->db->releaseSQLLock();
+            $this->db->releaseSQLLock( "ProcessTransaction for cart ID :" .  $this->cart->id);
             // END SQL LOCK
             //#################################################################
         } catch (Exception $ex) {
-            $this->db->releaseSQLLock();
+            $this->db->releaseSQLLock( "ProcessTransaction for cart ID :" .  $this->cart->id);
         }
     }
 

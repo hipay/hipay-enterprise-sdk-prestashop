@@ -62,7 +62,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         // SQL LOCK
         //#################################################################
 
-        $db->setSQLLockForCart($objCart->id);
+        $db->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
 
         // If Gateway send payment product in redirection card brand
         $cardBrand = Tools::getValue('cardbrand');

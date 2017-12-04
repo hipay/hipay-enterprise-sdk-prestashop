@@ -459,7 +459,7 @@ class HipayHelper
 
             // get order id
             $orderId = $module->currentOrder;
-            $db->releaseSQLLock();
+            $db->releaseSQLLock('validateOrder :' . $cart->id);
 
             $captureType = array("order_id" => $orderId, "type" => $configHipay["payment"]["global"]["capture_mode"]);
 
