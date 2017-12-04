@@ -197,7 +197,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
      */
     private function getCustomerBillingInfo()
     {
-        $billingInfo = new CustomerBillingInfoFormatter($this->module, $this->cart);
+        $billingInfo = new CustomerBillingInfoFormatter($this->module, $this->cart, $this->params["method"]);
 
         return $billingInfo->generate();
     }

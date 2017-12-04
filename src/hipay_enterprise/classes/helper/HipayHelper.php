@@ -309,7 +309,9 @@ class HipayHelper
         $configHipay,
         $country,
         $currency,
-        $orderTotal = 1
+        $orderTotal = 1,
+        $address,
+        $customer
     ) {
         $activatedCreditCard = array();
         $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
@@ -328,7 +330,9 @@ class HipayHelper
             "local_payment",
             $country,
             $currency,
-            $orderTotal
+            $orderTotal,
+            $address,
+            $customer
         );
 
         $paymentProducts = array_merge($activatedCreditCard, $activatedLocalPayment);
@@ -355,7 +359,9 @@ class HipayHelper
         $paymentMethodType,
         $country,
         $currency,
-        $orderTotal = 1
+        $orderTotal = 1,
+        $address = null,
+        $customer = null
     ) {
         $context = Context::getContext();
         $activatedPayment = array();
@@ -381,6 +387,35 @@ class HipayHelper
                         $activatedPayment[$name]['payment_button'] = $module->getPath() .
                             'views/img/' .
                             $settings["logo"];
+
+                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"]) ?
+                            $module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"] : "";
+                        $fieldMandatory = array();
+                        if (!empty($checkoutFieldsMandatory)) {
+                            foreach ($checkoutFieldsMandatory as $field) {
+                                switch ($field) {
+                                    case "phone":
+                                        if (empty($address->{$field})) {
+                                            $fieldMandatory[] = $module->l('Please enter your phone number to use this payment method.');
+                                        }
+                                        if (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"',$address->{$field})) {
+                                            $fieldMandatory[] = $module->l('Please check the phone number entered.');
+                                        }
+                                        break;
+                                    case "gender":
+                                        if (empty($customer->id_gender)) {
+                                            $fieldMandatory[] = $module->l('Please inform your civility to use this method of payment.');
+                                        }
+                                        break;
+                                    default:
+                                        $fieldMandatory[] = $module->l('Please check the information entered.');
+                                        break;
+                                }
+                            }
+
+                            $activatedPayment[$name]['errorMsg'] =  $fieldMandatory;
+                        }
+
                     }
                 } else {
                     $activatedPayment[$name] = $settings;
@@ -532,4 +567,5 @@ class HipayHelper
 
         return $ret;
     }
+
 }
