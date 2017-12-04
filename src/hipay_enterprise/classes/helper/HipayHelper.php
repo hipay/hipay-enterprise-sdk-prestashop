@@ -407,8 +407,7 @@ class HipayHelper
                                     case "phone":
                                         if (empty($address->{$field})) {
                                             $fieldMandatory[] = $module->l('Please enter your phone number to use this payment method.');
-                                        }
-                                        if (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"',$address->{$field})) {
+                                        } else if (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"',$address->{$field})) {
                                             $fieldMandatory[] = $module->l('Please check the phone number entered.');
                                         }
                                         break;

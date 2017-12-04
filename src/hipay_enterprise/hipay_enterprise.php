@@ -106,6 +106,7 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Please enter your phone number to use this payment method.');
         $fake = $this->l('Please inform your civility to use this method of payment.');
         $fake = $this->l('Please check the information entered.');
+        $fake = $this->l('Please check the phone number entered.');
     }
 
     public function getLogs()
