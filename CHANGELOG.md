@@ -1,3 +1,9 @@
+# Version 2.0.5
+
+- Add payment method Bnp personal Finance
+- Add log for concurrent transactions
+- Override OrderExists method for concurrent notifications (Bug with prestashop cache)  
+
 # Version 2.0.4
 
 - Fix Product key for Prestashop addons
