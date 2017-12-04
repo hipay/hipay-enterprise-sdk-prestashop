@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Banco do brazil",
-    "displayName": "Banco do brazil",
+    "displayName":  {
+      "fr": "Banco do brazil",
+      "en": "Banco do brazil"
+    },
     "frontPosition": 8,
     "activated": 0,
     "canRefund": 0,

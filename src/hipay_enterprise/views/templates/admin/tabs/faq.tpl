@@ -20,59 +20,62 @@
         <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
                 <p>
-                    You need to generate <strong>API credentials</strong> to send requests to the HiPay Enterprise platform. To do so, go to the "Integration" section of your HiPay Enterprise back office, then to "Security Settings".
+                    {l s='You need to generate' mod='hipay_enterprise'}
+                    <strong>{l s='API credentials' mod='hipay_enterprise'}</strong> {l s='to send requests to the HiPay Enterprise platform. To do so, go to the "Integration" section of your HiPay Enterprise back office, then to "Security Settings".' mod='hipay_enterprise'}
                 </p>
                 <p>
-                To be sure that your credentials have the proper accessibility:
+                    {l s='To be sure that your credentials have the proper accessibility' mod='hipay_enterprise'}:
                 </p>
                 <p>
-                    - Scroll down to "Api credentials".
-                    - Click on the edit icon next to the credentials you want to use.
+                <ul>
+                    <li>{l s='Scroll down to "Api credentials".' mod='hipay_enterprise'}</li>
+                    <li>{l s='Click on the edit icon next to the credentials you want to use.' mod='hipay_enterprise'}</li>
+                </ul>
                 </p>
                 <p>
-                    <strong>Private credentials</strong>
+                    <strong>{l s='Private credentials' mod='hipay_enterprise'}</strong>
                 </p>
-                Your credentials must be granted to:
+                {l s='Your credentials must be granted to' mod='hipay_enterprise'}:
 
                 <p>
-                    <strong>Order</strong>
+                    <strong>{l s='Order' mod='hipay_enterprise'}</strong>
                 </p>
                 <ul>
-                    <li>Create a payment page</li>
-                    <li>Process an order through the API</li>
-                    <li>Get transaction informations</li>
+                    <li>{l s='Create a payment page' mod='hipay_enterprise'}</li>
+                    <li>{l s='Process an order through the API' mod='hipay_enterprise'}</li>
+                    <li>{l s='Get transaction informations' mod='hipay_enterprise'}</li>
                 </ul>
                 <p>
-                    <strong>Maintenance</strong>
+                    <strong>{l s='Maintenance' mod='hipay_enterprise'}</strong>
                 </p>
                 <ul>
-                    <li>Capture</li>
-                    <li>Refund</li>
-                    <li>Accept/Deny</li>
-                    <li>Cancel</li>
-                    <li>Finalize</li>
-                </ul>
-
-                <p>
-                    <strong>Public credentials</strong>
-                </p>
-                Your credentials must be granted to:
-
-                <p>
-                    <strong>Tokenization</strong>
-                </p>
-                <ul>
-                    <li>Tokenize a card</li>
+                    <li>{l s='Capture' mod='hipay_enterprise'}</li>
+                    <li>{l s='Refund' mod='hipay_enterprise'}</li>
+                    <li>{l s='Accept/Deny' mod='hipay_enterprise'}</li>
+                    <li>{l s='Cancel' mod='hipay_enterprise'}</li>
+                    <li>{l s='Finalize' mod='hipay_enterprise'}</li>
                 </ul>
 
                 <p>
-                    <strong>Order</strong>
+                    <strong>{l s='Public credentials' mod='hipay_enterprise'}</strong>
+                </p>
+                {l s='Your credentials must be granted to' mod='hipay_enterprise'}:
+
+                <p>
+                    <strong>{l s='Tokenization' mod='hipay_enterprise'}</strong>
+                </p>
+                <ul>
+                    <li>{l s='Tokenize a card' mod='hipay_enterprise'}</li>
+                </ul>
+
+                <p>
+                    <strong>{l s='Order' mod='hipay_enterprise'}</strong>
                 </p>
 
                 <ul>
-                    <li>Get transaction details with public credentials</li>
-                    <li>Process an order through the API with public credentials</li>
-                    <li>Create a payment page with public credentials</li>
+                    <li>{l s='Get transaction details with public credentials' mod='hipay_enterprise'}</li>
+                    <li>{l s='Process an order through the API with public credentials' mod='hipay_enterprise'}</li>
+                    <li>{l s='Create a payment page with public credentials' mod='hipay_enterprise'}</li>
                 </ul>
 
             </div>
@@ -87,18 +90,18 @@
         <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
                 <p>
-                    In the module configuration, go to “Modules > Modules & Services”.
-                    In the HiPay Enterprise configuration, click on the “Module Settings” tab.
+                    {l s='In the module configuration, go to “Modules > Modules & Services”.' mod='hipay_enterprise'}
+                    {l s='In the HiPay Enterprise configuration, click on the “Module Settings” tab.' mod='hipay_enterprise'}
                 </p>
                 <p>
-                    If your module is in Test mode, you can specify the IDs in the Test area. If it is in Production mode, do the same in the Production area.
+                    {l s='If your module is in Test mode, you can specify the IDs in the Test area. If it is in Production mode, do the same in the Production area.' mod='hipay_enterprise'}
                 </p>
                 <p>
-                    Enter the corresponding username, password and secret passphrase.
+                    {l s='Enter the corresponding username, password and secret passphrase.' mod='hipay_enterprise'}
                 </p>
-                Public credentials are mandatory if you do not use the payment form hosted by HiPay.
+                {l s='Public credentials are mandatory if you do not use the payment form hosted by HiPay.' mod='hipay_enterprise'}
 
-                After specifying these identifiers, make a test payment to check that they are valid and that they have the proper rights.
+                {l s='After specifying these identifiers, make a test payment to check that they are valid and that they have the proper rights.' mod='hipay_enterprise'}
             </div>
         </div>
     </div>
@@ -111,24 +114,24 @@
         <div id="collapseThree" class="panel-collapse collapse">
             <div class="panel-body">
                 <p>
-                First, check if the notification URL is correctly entered in your HiPay Enterprise back office.
-                In the configuration of the PrestaShop module, retrieve the callback URL in the "Module Settings" tab.
+                    {l s='First, check if the notification URL is correctly entered in your HiPay Enterprise back office.' mod='hipay_enterprise'}
+                    {l s='In the configuration of the PrestaShop module, retrieve the callback URL in the "Module Settings" tab.' mod='hipay_enterprise'}
                 </p>
                 <p>
-                Then, in your HiPay Enterprise back office, in the "Integration" section , click on "Notifications".
-                    <ul>
-                        <li>Notification URL: http: // www.[Your-domain.com] /index.php?fc=module&module=hipay_enterprise&controller=notify</li>
-                        <li>Request method: HTTP POST</li>
-                        <li>I want to be notified for the following transaction statuses: ALL</li>
-                    </ul>
+                    {l s='Then, in your HiPay Enterprise back office, in the "Integration" section , click on "Notifications".' mod='hipay_enterprise'}
+                <ul>
+                    <li>{l s='Notification URL: http: // www.[Your-domain.com] /index.php?fc=module&module=hipay_enterprise&controller=notify' mod='hipay_enterprise'}</li>
+                    <li>{l s='Request method: HTTP POST' mod='hipay_enterprise'}</li>
+                    <li>{l s='I want to be notified for the following transaction statuses: ALL' mod='hipay_enterprise'}</li>
+                </ul>
                 </p>
                 <p>
-                    Then make a test payment.
-                    From the "Notifications" section of your HiPay Enterprise back office, in the transaction details, you can also check the status of the call.
+                    {l s='Then make a test payment.' mod='hipay_enterprise'}
+                    {l s='From the "Notifications" section of your HiPay Enterprise back office, in the transaction details, you can also check the status of the call.' mod='hipay_enterprise'}
                 </p>
                 <p>
-                    If notifications are sent, there may be an internal module error.
-                    To check if an error occurred during the notification, check the hipay-error and hipay-callback logs.
+                    {l s='If notifications are sent, there may be an internal module error.' mod='hipay_enterprise'}
+                    {l s='To check if an error occurred during the notification, check the hipay-error and hipay-callback logs.' mod='hipay_enterprise'}
                 </p>
             </div>
         </div>
@@ -142,11 +145,11 @@
         <div id="collapseFour" class="panel-collapse collapse">
             <div class="panel-body">
                 <ul>
-                    <li>Make sure that your credentials are correctly set and that the module is in the mode you want (Test or Production).</li>
-                    <li>Check that the related payment methods are activated in your contract(s).</li>
-                    <li>Check the version of the installed module, and upgrade the module if the version is old.</li>
-                    <li>Check HiPay logs to see if any errors appear. Then send these logs to the HiPay Support team.</li>
-                    <li>Check that your servers are not behind a proxy. If so, provide the proxy information in the module configuration.</li>
+                    <li>{l s='Make sure that your credentials are correctly set and that the module is in the mode you want (Test or Production).' mod='hipay_enterprise'}</li>
+                    <li>{l s='Check that the related payment methods are activated in your contract(s).' mod='hipay_enterprise'}</li>
+                    <li>{l s='Check the version of the installed module, and upgrade the module if the version is old.' mod='hipay_enterprise'}</li>
+                    <li>{l s='Check HiPay logs to see if any errors appear. Then send these logs to the HiPay Support team.' mod='hipay_enterprise'}</li>
+                    <li>{l s='Check that your servers are not behind a proxy. If so, provide the proxy information in the module configuration.' mod='hipay_enterprise'}</li>
                 </ul>
             </div>
         </div>
@@ -160,8 +163,8 @@
         <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
                 <ul>
-                    <li>Check that the HiPay Enterprise module is properly set up with your currencies and your carriers in the “Improve > Payment > Preference” menu. When adding a carrier or a currency, you should always activate them in this setup screen.</li>
-                    <li>Check in the HiPay module configuration that the payment method(s) is/are enabled for test countries and currencies.</li>
+                    <li>{l s='Check that the HiPay Enterprise module is properly set up with your currencies and your carriers in the “Improve > Payment > Preference” menu. When adding a carrier or a currency, you should always activate them in this setup screen.' mod='hipay_enterprise'}</li>
+                    <li>{l s='Check in the HiPay module configuration that the payment method(s) is/are enabled for test countries and currencies.' mod='hipay_enterprise'}</li>
                 </ul>
             </div>
         </div>
@@ -174,8 +177,8 @@
         </div>
         <div id="collapseSix" class="panel-collapse collapse">
             <div class="panel-body">
-                If Oney payments do not work, check that the mappings for your categories and carriers are done correctly. This information is mandatory in the Oney payment workflow because the customer’s basket information is sent to the platform.
-                To help you with your mappings, please refer to the corresponding documentation on our Developer Portal: https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop_1-6-1-7/
+                {l s='If Oney payments do not work, check that the mappings for your categories and carriers are done correctly. This information is mandatory in the Oney payment workflow because the customer’s basket information is sent to the platform.' mod='hipay_enterprise'}
+                {l s='To help you with your mappings, please refer to the corresponding documentation on our Developer Portal: https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop_1-6-1-7/' mod='hipay_enterprise'}
             </div>
         </div>
     </div>
@@ -187,13 +190,13 @@
         </div>
         <div id="collapseSeven" class="panel-collapse collapse">
             <div class="panel-body">
-                If your module is configured as "Capture: Manual", you must make captures manually.
+                {l s='If your module is configured as "Capture: Manual", you must make captures manually.' mod='hipay_enterprise'}
 
                 <p>
-                    Two possibilities are offered to you: either from your HiPay Enterprise back office, or directly from the order form on your PrestaShop site.
+                    {l s='Two possibilities are offered to you: either from your HiPay Enterprise back office, or directly from the order form on your PrestaShop site.' mod='hipay_enterprise'}
                 </p>
-                To get the detailed procedure, please refer to the module documentation on our Developer Portal: https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop_1-6-1-7/
-         </div>
+                {l s='To get the detailed procedure, please refer to the module documentation on our Developer Portal: https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop_1-6-1-7/' mod='hipay_enterprise'}
+            </div>
         </div>
     </div>
 </div>

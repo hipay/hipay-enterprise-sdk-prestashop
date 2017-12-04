@@ -26,12 +26,13 @@ require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 class CustomerBillingInfoFormatter extends ApiFormatterAbstract
 {
 
-    public function __construct($module, $cart = false)
+    public function __construct($module, $cart = false, $payment_product = "")
     {
         parent::__construct($module, $cart);
         // fields only used for customer billing mapping
         $this->invoice = new Address((int)$this->cart->id_address_invoice);
         $this->country = new Country((int)$this->invoice->id_country);
+        $this->payment_product = $payment_product;
     }
 
     /**
@@ -70,6 +71,11 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
         $customerBillingInfo->zipcode = $this->invoice->postcode;
         $customerBillingInfo->country = $this->country->iso_code;
         $customerBillingInfo->phone = $this->getPhone();
+
+        if ($this->payment_product == 'bnpp-3xcb' || $this->payment_product == 'bnpp-4xcb') {
+            $customerBillingInfo->phone =  preg_replace('/^(\+33)|(33)/','0',$customerBillingInfo->phone);
+        }
+
         $customerBillingInfo->state = ($this->deliveryState) ? $this->deliveryState->name : '';
         $customerBillingInfo->recipientinfo = $this->store->name;
     }

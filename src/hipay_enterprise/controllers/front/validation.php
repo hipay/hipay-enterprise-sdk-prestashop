@@ -62,13 +62,13 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         // SQL LOCK
         //#################################################################
 
-        $db->setSQLLockForCart($objCart->id);
+        $db->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
 
         // If Gateway send payment product in redirection card brand
         $cardBrand = Tools::getValue('cardbrand');
         $paymentProduct = Tools::getValue('product');
 
-        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
+        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $context->language->iso_code);
 
         $this->module->getLogs()->logInfos("# Prepare Validate Order from Validation");
         HipayHelper::validateOrder(
