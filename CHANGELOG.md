@@ -1,3 +1,12 @@
+# Version 2.0.5
+
+- Add payment method **Bnp personal Finance**
+- Add log for concurrent transactions
+- Override "OrderExists" method for concurrent notifications (Bug with prestashop cache)  
+- Add translation support for payment method name in front-office. 
+- Add FAQ translation
+- Change form handling for passphrase
+
 # Version 2.0.4
 
 - Fix Product key for Prestashop addons
