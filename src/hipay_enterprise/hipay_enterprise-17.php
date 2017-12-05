@@ -221,14 +221,27 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setCCPaymentOptions(&$paymentOptions, $paymentProduct, $params)
     {
         if (!empty($paymentProduct["products"])) {
+            if (isset(
+                $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code])
+            ) {
+                $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code];
+            } else if (
+                isset($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
+                && !is_array($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
+            ) {
+                $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
+            } else {
+                $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]['en'];
+            }
+
             //displaying different forms depending of the operating mode chosen in the BO configuration
             switch ($this->hipayConfigTool->getPaymentGlobal()["operating_mode"]) {
                 case "hosted_page":
                     $newOption = new PaymentOption();
                     $newOption->setCallToActionText(
-                        $this->l('Pay by') . " " . $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]
-                    )
-                        ->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true));
+                        $this->l('Pay by') . " " . $displayName
+                    )->setAction($this->context->link->getModuleLink($this->name, 'redirect', array(), true));
+
                     if ($this->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                         $newOption->setAdditionalInformation("<p>" . $params['translation_checkout'] . "</p>");
                     }
@@ -259,19 +272,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'module:' . $this->name . '/views/templates/front/payment/ps17/paymentForm-17.tpl'
                     );
                     $newOption = new PaymentOption();
-
-                    if (isset(
-                        $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code])
-                    ) {
-                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$this->context->language->iso_code];
-                    } else if (
-                        isset($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
-                        && !is_array($this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])
-                    ) {
-                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
-                    } else {
-                        $displayName = $this->hipayConfigTool->getPaymentGlobal()["ccDisplayName"]['en'];
-                    }
 
                     $newOption->setCallToActionText(
                         $this->l('Pay by') . " " . $displayName
