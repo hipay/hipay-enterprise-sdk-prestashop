@@ -18,9 +18,17 @@ casper.test.begin('Test Checkout ' + paymentType + ' without Electronic Signatur
 	})
 	.then(function() {
 		this.gotToHiPayConfiguration();
+	})
+	.then(function() {
 		this.configureSettingsMode("hosted_page");
-		this.activateMethod("sdd");
-		this.setValueOptions("sdd_electronicSignature","0");
+	})
+	.then(function() {
+	this.activateMethod("sdd");
+	})
+	.then(function() {
+	this.setValueOptions("sdd_electronicSignature","0");
+	})
+		.then(function() {
 		this.waitForSelector('input[name="sdd_displayName"]', function success() {
 			label = this.getElementAttribute('input[name="sdd_displayName"]', 'value');
 			test.info("Display name in checkout should be :" + label);
