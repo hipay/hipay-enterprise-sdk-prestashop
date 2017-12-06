@@ -31,10 +31,10 @@ test:
   override:
     - sleep 350
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
-    - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/casper_run_circle.sh 0 ps17 ;; 1) sh bin/tests/casper_run_circle.sh 1 ps17 ;; esac:
-        parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/report-test.sh 0 ps17 ;; 1) sh bin/tests/report-test.sh 1 ps17 ;; esac:
-        parallel: true
+    - sh bin/tests/casper_run_circle.sh 0 ps17
+    - sh bin/tests/report-test.sh 0 ps17
+    - sh bin/tests/casper_run_circle.sh 1 ps17
+    - sh bin/tests/report-test.sh 1 ps17
   post:
     - cp bin/tests/report*.html $CIRCLE_ARTIFACTS/casper_report/
     - sh ./bin/deployment/sonar.sh > /dev/null
