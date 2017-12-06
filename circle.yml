@@ -29,9 +29,9 @@ test:
   pre:
     - ./prestashop.sh init-stage
   override:
-    - sleep 400
+    - sleep 350
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
-    - sh bin/tests/casper_run_circle.sh 1
+    - sh bin/tests/casper_run_circle.sh 1 ps17
   post:
     - cp bin/tests/report*.html $CIRCLE_ARTIFACTS/casper_report/
     - sh ./bin/deployment/sonar.sh > /dev/null
