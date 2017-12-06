@@ -24,69 +24,9 @@ casper.test.begin('Functions', function(test) {
         test.assertExists(x('//div[@class="message-item"]//div[@class="message-body"]//p[@class="message-item-text"][contains(., "Statut HiPay :' + status + '")]'), "Notification " + status + " is recorded per CMS !");
     };
 
-    /* Open and send notificatiosn to server */
-    casper.openAndExecNotifications = function(code) {
-        /* Open Notification tab and opening this notifications details */
-        casper.then(function() {
-            this.echo("Opening Notification details with status " + code + " .... ", "INFO");
-            this.openingNotif(code);
-        })
-        /* Get data from Notification with code */
-        .then(function() {
-            this.gettingData(code);
-        })
-        /* Execute shell script */
-        .then(function() {
-            this.execCommand(hash,false,pathGenerator);
-        })
-        /* Check CURL status code */
-        .then(function() {
-            this.checkCurl("200");
-        })
-    }
-
-    casper.processNotifications = function(authorize,request,capture,partial) {
-        casper.thenOpen(urlBackend,function() {
-            if (loginBackend == '' && passBackend == '') {
-                loginBackend = casper.cli.get('login-backend');
-                passBackend = casper.cli.get('pass-backend');
-            }
-
-            if (!casper.getCurrentUrl().match(/dashboard/)) {
-                this.logToHipayBackend(loginBackend,passBackend);
-            } else {
-                test.info("Already logged to HiPay backend");
-            }
-        })
-        /* Select sub-account use for test*/
-        .then(function() {
-            this.selectAccountBackend("OGONE_DEV");
-        })
-        /* Open Transactions tab */
-        .then(function() {
-            this.goToTabTransactions();
-        })
-        /* Search last created order */
-        .then(function() {
-            this.searchAndSelectOrder(cartID);
-        })
-        .then(function() {
-            if (authorize) {
-                this.openAndExecNotifications("116");
-            }
-        })
-        .then(function() {
-            if (request) {
-                this.openAndExecNotifications("117");
-            }
-        })
-        .then(function() {
-            if (capture) {
-                this.openAndExecNotifications("118");
-            }
-        })
+    casper.checkOrderStatus = function(authorize,request,capture,partial) {
         /* Open admin panel and access to details of this order */
-        .thenOpen(baseURL , function() {
+        casper.thenOpen(baseURL , function() {
             this.logToBackend();
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Checking status notifications in order ...", "INFO");

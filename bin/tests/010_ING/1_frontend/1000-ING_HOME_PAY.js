@@ -17,7 +17,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     })
     .then(function() {
         this.gotToHiPayConfiguration();
+    })
+    .then(function() {
         this.activateMethod("ing-homepay");
+    })
+    .then(function() {
         this.waitForSelector('input[name="ing-homepay_displayName"]', function success() {
             label = this.getElementAttribute('input[name="ing-homepay_displayName"]', 'value');
             test.info("Display name in checkout should be :" + label);

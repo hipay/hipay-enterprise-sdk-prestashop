@@ -17,7 +17,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     })
     .then(function() {
         this.gotToHiPayConfiguration();
+    })
+    .then(function() {
         this.activateMethod("postfinance-card");
+    })
+    .then(function() {
         this.waitForSelector('input[name="postfinance-card_displayName"]', function success() {
             label = this.getElementAttribute('input[name="postfinance-card_displayName"]', 'value');
             test.info("Display name in checkout should be :" + label);

@@ -17,6 +17,12 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 	.thenOpen(urlBackend,function() {
 		this.processNotifications(true,true,true,false);
 	})
+	.then(function() {
+		this.checkOrderStatus(true,true,true,false);
+	})
+	.then(function() {
+		this.checkNotifPrestashop("118");
+	})
 	.run(function() {
         test.done();
     });

@@ -17,7 +17,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     })
     .then(function() {
         this.gotToHiPayConfiguration();
+    })
+    .then(function() {
         this.activateMethod("sisal");
+    })
+    .then(function() {
         this.waitForSelector('input[name="sisal_displayName"]', function success() {
             label = this.getElementAttribute('input[name="sisal_displayName"]', 'value');
             test.info("Display name in checkout should be :" + label);
