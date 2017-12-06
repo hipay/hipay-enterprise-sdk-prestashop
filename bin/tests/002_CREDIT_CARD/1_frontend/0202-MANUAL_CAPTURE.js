@@ -23,7 +23,9 @@ casper.test.begin('Test manual capture', function(test) {
     casper.start(baseURL)
         .then(function () {
             currentBrandCC = "mastercard";
-            authentification.proceed(test);
+            this.logToBackend();
+        })
+        .then(function() {
             this.gotToHiPayConfiguration();
             this.configureSettingsMode("api");
         })
@@ -55,7 +57,7 @@ casper.test.begin('Test manual capture', function(test) {
             this.processNotifications(true,false,false,true);
         })
         .thenOpen(baseURL, function () {
-            authentification.proceed(test);
+            this.logToBackend();
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Open order detail  ...", "INFO");
                 this.click("li#subtab-AdminParentOrders a");
@@ -117,7 +119,7 @@ casper.test.begin('Test manual capture', function(test) {
         this.processNotifications(false,true,true,true);
     })
     .then(function () {
-        authentification.proceed(test);
+        this.logToBackend();
         this.waitForSelector("li#subtab-AdminOrders", function success() {
             this.echo("Open order detail  ...", "INFO");
             this.click("li#subtab-AdminParentOrders a");

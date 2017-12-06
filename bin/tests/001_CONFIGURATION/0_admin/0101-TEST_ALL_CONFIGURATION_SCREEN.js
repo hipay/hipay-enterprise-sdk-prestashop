@@ -17,7 +17,7 @@ casper.test.begin('Test admin configuration screens', function(test) {
     .then(function() {
         this.echo("Start test","INFO");
         if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
-           authentification.proceed(test);
+           this.logToBackend();
            this.gotToHiPayConfiguration();
         }
     })

@@ -16,7 +16,9 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + currentBrandCC, fu
     casper.start(baseURL)
     /* Active API Mode in Global Settings  */
     .then(function() {
-        authentification.proceed(test);
+        this.logToBackend();
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.configureSettingsMode("api");
         this.configureCaptureMode("automatic");

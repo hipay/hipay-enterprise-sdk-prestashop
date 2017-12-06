@@ -9,7 +9,7 @@ casper.test.begin('Activate cache for improve prestashop', function(test) {
 
     casper.start(baseURL)
     .then(function() {
-        authentification.proceed(test);
+        this.logToBackend();
     })
     .then(function(){
         this.echo("Activate cache to optimize response time","INFO");

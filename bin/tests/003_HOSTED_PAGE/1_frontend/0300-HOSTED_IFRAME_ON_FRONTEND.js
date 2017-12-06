@@ -16,7 +16,9 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe and ' + current
 	casper.start(baseURL)
     /* Active Hosted payment method with display iframe */
     .then(function() {
-        authentification.proceed(test);
+        this.logToBackend();
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.configureSettingsMode("hosted_page");
         this.configureHostedDisplay("iframe");

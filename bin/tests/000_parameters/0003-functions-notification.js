@@ -87,7 +87,7 @@ casper.test.begin('Functions', function(test) {
         })
         /* Open admin panel and access to details of this order */
         .thenOpen(baseURL , function() {
-            authentification.proceed(test);
+            this.logToBackend();
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Checking status notifications in order ...", "INFO");
                 this.click("li#subtab-AdminParentOrders a");

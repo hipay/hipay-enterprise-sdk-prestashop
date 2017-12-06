@@ -13,7 +13,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
 
     casper.start(baseURL)
     .then(function() {
-        authentification.proceed(test);
+        this.logToBackend();
         this.configureCaptureMode("automatic");
         this.gotToHiPayConfiguration();
         this.activateMethod("ideal");

@@ -13,7 +13,9 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
 
     casper.start(baseURL)
     .then(function() {
-        authentification.proceed(test);
+        this.logToBackend();
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
         this.activateMethod("sofort-uberweisung");
         this.waitForSelector('input[name="sofort-uberweisung_displayName"]', function success() {
