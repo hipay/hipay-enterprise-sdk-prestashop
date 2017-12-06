@@ -53,7 +53,7 @@ casper.test.begin('Functions', function(test) {
             }
 
             if (!casper.getCurrentUrl().match(/dashboard/)) {
-                this.logToBackend(loginBackend,passBackend);
+                this.logToHipayBackend(loginBackend,passBackend);
             } else {
                 test.info("Already logged to HiPay backend");
             }
