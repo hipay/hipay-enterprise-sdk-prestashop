@@ -7,14 +7,14 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 		hash = "",
 		output = "",
 		notif117 = true,
-		reload = false,
-		orderReference = casper.getOrderReference(),
-        cartID = casper.getCartId(),
-		orderID = casper.getOrderId();
+		reload = false;
 
 	/* Open URL to BackOffice HiPay TPP */
 	casper.start(urlBackend)
 	.thenOpen(urlBackend,function() {
+		orderReference = casper.getOrderReference();
+		cartID = casper.getCartId();
+		orderID = casper.getOrderId();
 		this.processNotifications(true,true,true,false);
 	})
 	.then(function() {
