@@ -3,7 +3,7 @@ machine:
     - docker
 dependencies:
   pre:
-    - sudo apt-get install sshpass
+    - sudo apt-get install sshpass mysql-client
     - wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
     - sudo tar xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2
     - sudo mv phantomjs-2.1.1-linux-x86_64 /home/ubuntu/bin/
@@ -32,6 +32,8 @@ test:
   override:
     - sleep 350
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
+    - case $CIRCLE_NODE_INDEX in 0) mysql -h 127.0.0.1 -P 3318 -u root -padmin prestashop17 -e "ALTER TABLE ps_cart AUTO_INCREMENT = 200" ;; esac:
+              parallel: true
     - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/casper_run_circle.sh 0 ps17;; 1) sh bin/tests/casper_run_circle.sh 1 ps17 ;; esac:
         parallel: true
     - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/report_test.sh 0 ps17;; 1) sh bin/tests/report_test.sh 1 ps17 ;; esac:
