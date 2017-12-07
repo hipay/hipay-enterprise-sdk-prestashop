@@ -27,7 +27,8 @@ dependencies:
     - sh ./bin/deployment/setup_sonar.sh
 test:
   pre:
-    - ./prestashop.sh init-stage
+    - case $CIRCLE_NODE_INDEX in 0) sh ./prestashop.sh init-stage;; 1) sh ./prestashop.sh init-stage ;; esac:
+            parallel: true
   override:
     - sleep 350
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
