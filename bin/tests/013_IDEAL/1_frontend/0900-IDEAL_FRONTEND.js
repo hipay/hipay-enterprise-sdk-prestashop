@@ -14,8 +14,14 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     casper.start(baseURL)
     .then(function() {
         this.logToBackend();
-        this.configureCaptureMode("automatic");
+    })
+    .then(function() {
         this.gotToHiPayConfiguration();
+    })
+    .then(function() {
+        this.configureCaptureMode("automatic");
+    })
+    .then(function() {
         this.activateMethod("ideal");
         this.configureSettingsMode("hosted_page");
         this.waitForSelector('input[name="ideal_displayName"]', function success() {
