@@ -53,7 +53,7 @@
                             <div class="col-lg-6 col-lg-offset-2">
                                 <div class="alert alert-info">
                                     {l s='Generated in your HiPay Enterprise back office' mod='hipay_enterprise'} (<a
-                                            title="BO Hipay" target="_blank" href="">https://merchant.hipay-tpp.com</a>)
+                                            title="BO Hipay" target="_blank" href="https://merchant.hipay-tpp.com">https://merchant.hipay-tpp.com</a>)
                                     via </br >
                                     <strong>"Integration” => “Security Settings” => “Api credentials” => “Credentials
                                         accessibility”</strong>, {l s='these API credentials are required to use the HiPay Enterprise module.'  mod='hipay_enterprise'}</br >
@@ -162,7 +162,7 @@
                             <div class="col-lg-6 col-lg-offset-2">
                                 <div class="alert alert-info">
                                     {l s='Generated in your HiPay Enterprise back office'  mod='hipay_enterprise'} (<a
-                                            title="BO Hipay" target="_blank" href="">https://merchant.hipay-tpp.com</a>)
+                                            title="BO Hipay" target="_blank" href="https://merchant.hipay-tpp.com">https://merchant.hipay-tpp.com</a>)
                                     via </br >
                                     <strong>"Integration” => “Security Settings” => “Api credentials” => “Credentials
                                         accessibility”</strong>, {l s='these API credentials are required to use the HiPay Enterprise module.'  mod='hipay_enterprise'}</br >
