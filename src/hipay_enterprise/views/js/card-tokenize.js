@@ -23,10 +23,10 @@ $("#card-number").focus(function() {
 });
 
 $('#radio-no-token').change(function() {
-    $('#credit-card-group').collapse('toggle');
+    $('#credit-card-group').collapse('show');
 });
 
-$('#radio-with-token').change(function() {
+$('.radio-with-token').change(function() {
     $('#credit-card-group').collapse('hide');
 });
 
@@ -48,7 +48,7 @@ $("#tokenizerForm").submit(function (e) {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-        if ($("#radio-with-token").prop("checked")) {
+        if ($(".radio-with-token:checked").length) {
             // at least one of the radio buttons was checked
             $("#tokenizerForm").hide();
             $("#payment-loader-hp").show();
