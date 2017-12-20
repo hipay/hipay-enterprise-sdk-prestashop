@@ -290,7 +290,7 @@ class HipayHelper
             );
         }
 
-        return 'paymentFormApi-16.tpl';
+        return 'payment/ps16/paymentFormApi-16.tpl';
     }
 
     /**
