@@ -36,7 +36,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.1.1';
+        $this->version = '2.1.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -106,7 +106,6 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Please inform your civility to use this method of payment.');
         $fake = $this->l('Please check the information entered.');
         $fake = $this->l('Please check the phone number entered.');
-        $fake = $this->l('Refused payment for order %s');
     }
 
     public function getLogs()

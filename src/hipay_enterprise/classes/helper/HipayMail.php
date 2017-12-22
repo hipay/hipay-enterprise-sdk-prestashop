@@ -64,9 +64,7 @@ class HipayMail
             $context,
             $module,
             $order,
-            $templateVars,
-            (int)$order->id_lang,
-            Configuration::get('PS_LANG_DEFAULT')
+            $templateVars
         );
     }
 
@@ -93,7 +91,6 @@ class HipayMail
         $emails = array($customer->email);
         $subject = $module->l('Refused payment for order %s');
 
-
         // === SEND EMAIL === //
         self::sendEmailHipay(
             'payment_deny',
@@ -103,8 +100,7 @@ class HipayMail
             $context,
             $module,
             $order,
-            $templateVars,
-            (int)$customer->id_lang
+            $templateVars
         );
     }
 
@@ -129,28 +125,22 @@ class HipayMail
         $context,
         $module,
         $order,
-        $templateVars,
-        $idLang
+        $templateVars
     ) {
-
-        if (_PS_VERSION_ >= '1.7') {
-            $subject = Context::getContext()->getTranslator()->trans(
-                $subject,
-                array($order->reference),
-                'Emails.Subject',
-                (int)$idLang
-            );
-        } else {
-            $subject = sprintf(Mail::l($subject, (int)$idLang), $order->reference);
-        }
+        // === GET DEFAULT ADMIN INFORMATIONS === ///
+        $idLang = Configuration::get('PS_LANG_DEFAULT');
 
         // === SEND EMAIL === ///
         foreach ($emailsTo as $email) {
-
             $mailSuccess = @Mail::Send(
                 (int)$idLang,
                 $template,
-                $subject . " " . $idLang,
+                Context::getContext()->getTranslator()->trans(
+                    $subject,
+                    array($order->reference),
+                    'Emails.Subject',
+                    (int)$idLang
+                ),
                 $templateVars,
                 $email,
                 '',
@@ -167,7 +157,7 @@ class HipayMail
             if (!$mailSuccess) {
                 $module->getLogs()->logErrors('An error occured during email sending to ' . $email);
             } else {
-                $module->getLogs()->logInfos("# Send Mail Payment deny to $email with $template");
+                $module->log->logInfos("# Send Mail Payment deny to $email with $template");
             }
         }
     }
