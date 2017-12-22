@@ -188,7 +188,7 @@ class HipayNotification
             $this->db->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
         } catch (Exception $ex) {
             $this->db->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
-            $this->logs->logException($ex);
+            $this->log->logException($ex);
         }
     }
 
@@ -208,7 +208,7 @@ class HipayNotification
             ) {
                 // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
                 if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
-                     && ($newState == _PS_OS_PAYMENT_ )) {
+                    && ($newState == _PS_OS_PAYMENT_ )) {
                     $newState = _PS_OS_OUTOFSTOCK_PAID_;
                 }
                 $this->changeOrderStatus($newState);
@@ -484,7 +484,7 @@ class HipayNotification
      */
     private function controleIfStatushistoryExist($paymentStatus, $orderState, $forceCtrl = false)
     {
-        $this->log->logInfos("# ControleIfStatushistoryExist " . $this->order->id . "Status " . $orderState);
+        $this->log->logInfos("# ControleIfStatushistoryExist Status " . $orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
             $this->log->logInfos("# ControleIfStatushistoryExist Status exist");

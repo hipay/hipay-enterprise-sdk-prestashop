@@ -33,6 +33,10 @@ class HipayConfig
     private $context;
     private $configHipay = array();
 
+    /**
+     * HipayConfig constructor.
+     * @param $module_instance
+     */
     public function __construct($module_instance)
     {
         $this->context = Context::getContext();
@@ -42,7 +46,8 @@ class HipayConfig
 
     /**
      * return config array
-     * @return type
+     *
+     * @return array
      */
     public function getConfigHipay()
     {
@@ -53,54 +58,78 @@ class HipayConfig
         return $this->configHipay;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPaymentGlobal()
     {
 
         return $this->getConfigHipay()["payment"]["global"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getPaymentCreditCard()
     {
 
         return $this->getConfigHipay()["payment"]["credit_card"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getLocalPayment()
     {
 
         return $this->getConfigHipay()["payment"]["local_payment"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAccountGlobal()
     {
 
         return $this->getConfigHipay()["account"]["global"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAccountSandbox()
     {
 
         return $this->getConfigHipay()["account"]["sandbox"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAccountProduction()
     {
 
         return $this->getConfigHipay()["account"]["production"];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFraud()
     {
 
         return $this->getConfigHipay()["fraud"];
     }
 
+
     /**
      *  save a specific key of the module config
-     * @param: string $key
-     * @param: mixed $value
-     * @return : bool
-     * */
+     *
+     * @param $key
+     * @param $value
+     * @return bool
+     * @throws Exception
+     */
     public function setConfigHiPay($key, $value)
     {
         // Use this function only if you have just one variable to update
@@ -155,6 +184,7 @@ class HipayConfig
      */
     public function updateConfig()
     {
+
         $configFields = array();
 
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
@@ -183,8 +213,94 @@ class HipayConfig
     }
 
     /**
+     * Update hipay config from JSON file
+     * Add new payment method or new parameters on module update
+     *
+     * @param array $keepParameters
+     * @throws Exception
+     */
+    public function updateFromJSONFile($keepParameters = array())
+    {
+        $this->module->getLogs()->logInfos("updateFromJSONFile ");
+
+        $shops = Shop::getShops(false);
+        foreach ($shops as $id => $shop) {
+
+            $this->module->getLogs()->logInfos(
+                "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
+            );
+
+            $configHipay = Tools::jsonDecode(
+                Configuration::get('HIPAY_CONFIG', null, $shop['id_shop_group'], $id),
+                true
+            );
+
+            $this->module->getLogs()->logInfos($configHipay['account']);
+
+            $this->module->getLogs()->logInfos("Retrieve JSON files ");
+
+            $paymentMethod = $this->insertPaymentsConfig("local/");
+
+            $this->diffJsonAndConfig($configHipay, $paymentMethod, $keepParameters, 'local_payment');
+
+            $paymentMethod = $this->insertPaymentsConfig("creditCard/");
+
+            $this->diffJsonAndConfig($configHipay, $paymentMethod, $keepParameters, 'credit_card');
+
+            $this->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
+        }
+    }
+
+    /**
+     * Override saved payment method config saved in DB with config from JSON
+     * Parameters in $keepParameters will not be override
+     *
+     * @param $configHipay
+     * @param $paymentMethod
+     * @param $keepParameters
+     * @param $paymentMethodType
+     */
+    private function diffJsonAndConfig(&$configHipay, $paymentMethod, $keepParameters, $paymentMethodType)
+    {
+        $this->module->getLogs()->logInfos("diffJsonAndConfig ");
+
+        // Add new payment Method
+        $configHipay["payment"][$paymentMethodType] = array_merge(
+            $configHipay["payment"][$paymentMethodType],
+            array_diff_key($paymentMethod, $configHipay["payment"][$paymentMethodType])
+        );
+
+        foreach ($paymentMethod as $key => $value) {
+            // Add new parameters to payment method
+            $configHipay["payment"][$paymentMethodType][$key] = array_merge(
+                $configHipay["payment"][$paymentMethodType][$key],
+                array_diff_key($paymentMethod[$key], $configHipay["payment"][$paymentMethodType][$key])
+            );
+
+            // remove old parameters
+            $configHipay["payment"][$paymentMethodType][$key] = array_diff_key(
+                $configHipay["payment"][$paymentMethodType][$key],
+                array_diff_key($configHipay["payment"][$paymentMethodType][$key], $paymentMethod[$key])
+            );
+
+            // preserve saved parameters in Database, only parameters not in $keepParameters[$key] will be override
+            $keep = (isset($keepParameters[$key])) ? $keepParameters[$key] : array();
+            $replace = array_diff_key($paymentMethod[$key], $keep);
+
+            // override parameters
+            $configHipay["payment"][$paymentMethodType][$key] = array_replace(
+                $configHipay["payment"][$paymentMethodType][$key],
+                $replace
+            );
+
+        }
+    }
+
+    /**
      * init module configuration
-     * @return : bool
+     *
+     * @return bool
+     * @throws Exception
      */
     private function insertConfigHiPay()
     {
@@ -260,11 +376,14 @@ class HipayConfig
 
     /**
      * Save initial module config
-     * @param : array $arrayHipay
      *
-     * @return : bool
-     * */
-    private function setAllConfigHiPay($arrayHipay = null)
+     * @param null $arrayHipay
+     * @param null $id_shop_group
+     * @param null $id_shop
+     * @return bool
+     * @throws Exception
+     */
+    private function setAllConfigHiPay($arrayHipay = null, $id_shop_group = null, $id_shop = null)
     {
         // use this function if you have a few variables to update
         if ($arrayHipay != null) {
@@ -274,8 +393,8 @@ class HipayConfig
         }
 
         // init multistore
-        $id_shop = (int)$this->context->shop->id;
-        $id_shop_group = (int)Shop::getContextShopGroupID();
+        $id_shop = (is_null($id_shop)) ? (int)$this->context->shop->id : $id_shop;
+        $id_shop_group = (is_null($id_shop_group)) ? (int)Shop::getContextShopGroupID() : $id_shop_group;
         if (Configuration::updateValue(
             'HIPAY_CONFIG',
             Tools::jsonEncode($for_json_hipay),
@@ -316,8 +435,10 @@ class HipayConfig
 
     /**
      * add specific payment config from JSON file
-     * @param type $file
-     * @return type
+     *
+     * @param $file
+     * @param $folderName
+     * @return array
      */
     private function addPaymentConfig($file, $folderName)
     {

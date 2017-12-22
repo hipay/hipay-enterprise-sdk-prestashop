@@ -1,3 +1,7 @@
+# Version 2.1.1
+
+- Fix error 500 on refused notification
+
 # Version 2.1.0
 
 - Fix link in PrestaShop BO (Module configuration page)

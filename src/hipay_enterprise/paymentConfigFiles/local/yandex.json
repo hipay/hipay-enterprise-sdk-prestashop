@@ -2,7 +2,7 @@
   "name": "yandex",
   "config": {
     "displayNameBO": "Yandex Money",
-    "displayName":  {
+    "displayName": {
       "fr": "Yandex Money",
       "en": "Yandex Money"
     },
@@ -29,6 +29,7 @@
     "minAmount": {
       "EUR": 0
     },
+    "test": {"eur" : 10},
     "maxAmount": {
       "EUR": false
     },
