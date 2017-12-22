@@ -188,7 +188,7 @@ class HipayNotification
             $this->db->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
         } catch (Exception $ex) {
             $this->db->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
-            $this->logs->logException($ex);
+            $this->log->logException($ex);
         }
     }
 
@@ -484,7 +484,7 @@ class HipayNotification
      */
     private function controleIfStatushistoryExist($paymentStatus, $orderState, $forceCtrl = false)
     {
-        $this->log->logInfos("# ControleIfStatushistoryExist " . $this->order->id . "Status " . $orderState);
+        $this->log->logInfos("# ControleIfStatushistoryExist Status " . $orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
             $this->log->logInfos("# ControleIfStatushistoryExist Status exist");

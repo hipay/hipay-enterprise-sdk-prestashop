@@ -14,6 +14,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2d2a9e31222bd2645ec042f
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisis.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
@@ -47,7 +48,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
-$_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement pour la commande %s est en attente de validation.';
+$_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Notification enregistrée envoyée par HiPay concernant un montant capturé de';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_dcff891b1393af8c2f13bcb13307d6dc'] = 'Notification enregistrée envoyée par HiPay concernant un montant remboursé de ';
@@ -404,12 +405,12 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_9354dc0b37176ebaf3ce2f
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_f1d3b424cd68795ecaa552883759aceb'] = 'Récapitulatif du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_879f6b8877752685a966564d072f498f'] = 'Votre panier est vide.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
-$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_d7a3b3bf767faf334c85f11c8ba678c8'] = 'Payer avec une carte de crédit sauvegardée';
-$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_b7d2f0f194257c6728603e53c60f8101'] = 'La demande a été rejetée à cause d\'une erreur de validation. Veuillez vérifier les informations de carte saisies.';
-$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_99938b17c91170dfb0c2f3f8bc9f2a85'] = 'Payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
+$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_d7a3b3bf767faf334c85f11c8ba678c8'] = 'Payer avec une carte de crédit sauvegardée';
+$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_b7d2f0f194257c6728603e53c60f8101'] = 'La demande a été rejetée à cause d\'une erreur de validation. Veuillez vérifier les informations de carte saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement One-click)';
+$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_99938b17c91170dfb0c2f3f8bc9f2a85'] = 'Payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est en cours de traitement. Merci de patienter.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_cddcf1bdadaa3a50e049409f5addb89b'] = 'Ce type de carte ou la devise de la commande ne sont pas pris en charge. Veuillez choisir un autre moyen de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformiframe-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
