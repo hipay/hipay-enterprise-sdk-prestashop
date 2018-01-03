@@ -130,14 +130,14 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_dd8366c780bd2ce22a842d638
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_63d5049791d9d79d86e9a108b0a999ca'] = 'Référence';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_df644ae155e79abf54175bd15d75f363'] = 'Nom du produit';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_6c957f72dc8cdacc75762f2cbdcdfaf2'] = 'Prix unitaire';
-$_MODULE['<{hipay_enterprise}prestashop>refund.partial_cc61945cbbf46721a053467c395c666f'] = 'Remboursé';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_cc61945cbbf46721a053467c395c666f'] = 'Rembourser';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_6ebde8a987c71dd0de0c9c2454147301'] = 'Qté à rembourser';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Livraison';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f111bfbf8b73344b9ef0c9a8da6b2779'] = 'Rembourser les frais de livraison';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Rembourser le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
-$_MODULE['<{hipay_enterprise}prestashop>refund.partial_76f0ed934de85cc7131910b32ede7714'] = 'Remboursé';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_76f0ed934de85cc7131910b32ede7714'] = 'Rembourser';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_29e9b3a618b4e1a0332dcf4e89139624'] = 'Êtes-vous sûr de vouloir rembourser cette commande ? ';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_170e56581f50a891010abea41cd8fea3'] = 'Le montant du remboursement doit être supérieur à zéro.';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_8277e2277acde3ac16e6bae1711ba57d'] = 'Le montant du remboursement doit être inférieur au montant restant à rembourser.';
