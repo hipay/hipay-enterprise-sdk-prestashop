@@ -10,9 +10,9 @@ prestashop16:
   ports:
     - "8086:80"
   links:
-     - smtp
-     - mysql
-   env_file:
+    - smtp
+    - mysql
+  env_file:
     - ./conf/env_file/stage/env
     - ./conf/env_file/stage/env16
 prestashop17:
