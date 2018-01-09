@@ -2,11 +2,14 @@ FROM prestashop/prestashop:1.7.2.2
 
 MAINTAINER support.wallet <support.wallet@hipay.com>
 
-COPY conf/sources /etc/apt/sources.d/
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.old
+RUN rm /etc/apt/sources.list
+
+COPY conf/sources.list /etc/apt/
 
 RUN apt-get update \
         && apt-get install -y ssmtp vim git cron libmemcached11 libmemcachedutil2 build-essential libmemcached-dev libz-dev \
-        && apt-get install -y nodejs npm php5-apcu \
+        && apt-get install -y nodejs npm php-apc \
         && npm install -g bower \
                 && ln -s /usr/bin/nodejs /usr/bin/node \
                 && echo '{ "allow_root": true }' > /root/.bowerrc \
