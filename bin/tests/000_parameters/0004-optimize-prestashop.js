@@ -16,9 +16,7 @@ casper.test.begin('Activate cache for improve prestashop', function(test) {
         this.waitForSelector('ul.menu #subtab-AdminPerformance', function success() {
             this.click('ul.menu li#subtab-AdminAdvancedParameters > a');
             this.waitForText('Informations de configuration', function() {
-
                 this.click('li#subtab-AdminPerformance > a');
-
                 this.waitForSelector('input[name="cache_active"]', function success() {
                     this.fillSelectors("form#configuration_form", {
                             'input[name="cache_active"]' : 1,

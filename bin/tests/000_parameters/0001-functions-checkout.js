@@ -52,7 +52,7 @@ casper.test.begin('Functions', function(test) {
 
     /* Choose item on featured product */
 	casper.selectItemAndOptions = function() {
-        this.echo("Selecting item and its options...", "INFO");
+        this.echo("Selecting item and its options with prestashop " + psVersion, "INFO");
 
         if (psVersion == '1.6') {
             this.waitForSelector('ul#blocknewproducts li:first-child a img', function success() {
@@ -68,30 +68,12 @@ casper.test.begin('Functions', function(test) {
                 }, false);
 
                 this.click('p#add_to_cart button');
+                test.info("Add Item to cart");
             }, function fail() {
                 test.assertExists('p#add_to_cart button', "Button Product add exists");
             }, 25000);
 
-            casper.thenClick('#layer_cart a',function () {
-                this.click('p#add_to_cart button');
-                this.sendKeys('#layer_cart', casper.page.event.key.Escape);
-                this.sendKeys('body', casper.page.event.key.Escape);
-                this.waitForSelector('#layer_cart', function success() {
-                    test.info("Continue checkout 1 ...");
-                    this.click('#layer_cart');
-                    this.click('div#page');
-                    this.evaluate(function () {
-                        return document.querySelector('#layer_cart div.button-container a').click;
-                    });
-                    test.info("Conti" +
-                        "nue checkout ...");
-                }, function fail() {
-
-                    test.assertExists("#layer_cart div.button-container a", "Modal exist");
-                });
-            })
-            .then(function () {
-                this.click('span.cross');
+            casper.thenOpen('http://localhost:8086/index.php?controller=order', function () {
                 this.waitForSelector('li.step_current', function success() {
                     this.click('nav.header-nav .header a');
                     test.info("Open cart detail");
