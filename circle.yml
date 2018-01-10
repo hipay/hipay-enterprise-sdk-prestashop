@@ -30,7 +30,7 @@ test:
     - case $CIRCLE_NODE_INDEX in 0) sh ./prestashop.sh init-stage;; 1) sh ./prestashop.sh init-stage ;; esac:
             parallel: true
   override:
-    - sleep 350
+    - sleep 400
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
     - case $CIRCLE_NODE_INDEX in 0) mysql -h 127.0.0.1 -P 3318 -u root -padmin prestashop17 -e "ALTER TABLE ps_cart AUTO_INCREMENT = 200" ;; esac:
               parallel: true
