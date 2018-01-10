@@ -13,6 +13,8 @@ printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP $DB_NAME   ${NC}\n"
 printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 /tmp/docker_run.sh
 
+apt-get install -y php-apc 
+
 #===================================#
 #       CUSTOMS CONFIGURATIONS
 #===================================#
