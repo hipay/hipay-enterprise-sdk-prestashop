@@ -34,9 +34,9 @@ test:
     - curl --retry 10 --retry-delay 20 -v http://localhost:8087
     - case $CIRCLE_NODE_INDEX in 0) mysql -h 127.0.0.1 -P 3318 -u root -padmin prestashop17 -e "ALTER TABLE ps_cart AUTO_INCREMENT = 200" ;; esac:
               parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/casper_run_circle.sh 0 ps17;; 1) sh bin/tests/casper_run_circle.sh 1 ps17 ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) echo 'waiting' 1) sh bin/tests/casper_run_circle.sh 1 ps17 ;; esac:
         parallel: true
-    - case $CIRCLE_NODE_INDEX in 0) sh bin/tests/report_test.sh 0 ps17;; 1) sh bin/tests/report_test.sh 1 ps17 ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) echo 'waiting'  1) sh bin/tests/report_test.sh 1 ps17 ;; esac:
         parallel: true
   post:
     - cp bin/tests/report*.html $CIRCLE_ARTIFACTS/casper_report/
