@@ -11,12 +11,12 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-function upgrade_module_2_1_0($module)
+function upgrade_module_2_1_2($module)
 {
 
     $log = $module->getLogs();
 
-    $log->logInfos("Upgrade to 2.1.0");
+    $log->logInfos("Upgrade to 2.1.2");
 
     $keepParameters = array(
         "visa" => array(

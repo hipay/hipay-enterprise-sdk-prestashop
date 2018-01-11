@@ -1,3 +1,7 @@
+# Version 2.1.2
+
+- Fix translations
+
 # Version 2.1.1
 
 - Fix error 500 on refused notification
