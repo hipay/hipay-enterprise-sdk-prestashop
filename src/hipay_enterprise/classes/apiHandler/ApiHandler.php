@@ -132,7 +132,7 @@ class Apihandler
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
         $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
-        if (key_exists("acceptHostedOrder",$configMethod) && $configMethod["acceptHostedOrder"]) {
+        if ($mode == Apihandler::HOSTEDPAGE && !empty($configMethod["additionalFields"])) {
             $this->handleHostedPayment($params);
         } else {
             $this->handleDirectOrder($params);
