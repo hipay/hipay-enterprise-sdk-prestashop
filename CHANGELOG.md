@@ -1,3 +1,7 @@
+# Version 2.1.3
+
+- Fix local payment with hosted order
+
 # Version 2.1.2
 
 - Fix translations
