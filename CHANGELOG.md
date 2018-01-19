@@ -1,3 +1,7 @@
+# Version 2.1.4
+
+- Fix: credit card block are displaying even if no credit card payment are activated
+
 # Version 2.1.3
 
 - Fix local payment with hosted order
