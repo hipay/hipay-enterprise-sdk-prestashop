@@ -32,7 +32,6 @@
     "maxAmount": {
       "EUR": false
     },
-    "acceptHostedOrder": true,
     "logo": "ideal.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",
