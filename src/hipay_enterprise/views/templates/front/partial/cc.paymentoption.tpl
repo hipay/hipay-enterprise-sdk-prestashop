@@ -24,7 +24,7 @@
                 {elseif isset($configHipay.payment.global.ccDisplayName) && !is_array($configHipay.payment.global.ccDisplayName)}
                     {$configHipay.payment.global.ccDisplayName}
                 {else}
-                    {$configHipay.payment.global.ccDisplayName['en']}
+                    {reset($configHipay.payment.global.ccDisplayName)}
                 {/if}
                 <span>
                     {if $configHipay.payment.global.operating_mode != 'api'}

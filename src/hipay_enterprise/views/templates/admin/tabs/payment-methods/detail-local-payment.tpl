@@ -51,7 +51,7 @@
                                     {elseif isset($method.displayName) && !is_array($method.displayName)}
                                         value="{$method.displayName}"
                                     {else}
-                                        value="{$method.displayName['en']}"
+                                        value="{reset($method.displayName)}"
                                     {/if}
                             />
                         </div>
