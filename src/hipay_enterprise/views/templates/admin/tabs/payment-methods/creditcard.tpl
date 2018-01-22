@@ -36,7 +36,7 @@
                                             {elseif isset($config_hipay.payment.global.ccDisplayName) && !is_array($config_hipay.payment.global.ccDisplayName)}
                                                 value="{$config_hipay.payment.global.ccDisplayName}"
                                             {else}
-                                                value="{reset($config_hipay.payment.global.ccDisplayName)}"
+                                                value="{$config_hipay.payment.global.ccDisplayName['en']}"
                                             {/if}
                                     />
                                 </div>

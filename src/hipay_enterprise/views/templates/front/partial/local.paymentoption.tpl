@@ -14,7 +14,7 @@
 {elseif isset($paymentProduct.displayName) && !is_array($paymentProduct.displayName)}
     {assign var="productName" value=$paymentProduct.displayName}
 {else}
-    {assign var="productName" value=reset($paymentProduct.displayName)}
+    {assign var="productName" value=$paymentProduct.displayName['en']}
 {/if}
 
 <div class="row">
