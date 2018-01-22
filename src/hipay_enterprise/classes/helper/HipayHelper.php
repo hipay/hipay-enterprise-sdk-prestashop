@@ -324,8 +324,7 @@ class HipayHelper
         $customer
     ) {
         $activatedCreditCard = array();
-        $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
-        $activatedCreditCard["credit_card"]["products"] = self::getActivatedPaymentByCountryAndCurrency(
+        $creditCards = self::getActivatedPaymentByCountryAndCurrency(
             $module,
             $configHipay,
             "credit_card",
@@ -333,6 +332,11 @@ class HipayHelper
             $currency,
             $orderTotal
         );
+        
+        if (!empty($creditCards)) {
+            $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
+            $activatedCreditCard["credit_card"]["products"] = $creditCards;
+        }
 
         $activatedLocalPayment = self::getActivatedPaymentByCountryAndCurrency(
             $module,
@@ -398,7 +402,8 @@ class HipayHelper
                             'views/img/' .
                             $settings["logo"];
 
-                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"]) ?
+                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment(
+                            )[$name]["checkoutFieldsMandatory"]) ?
                             $module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"] : "";
                         $fieldMandatory = array();
                         if (!empty($checkoutFieldsMandatory)) {
@@ -406,14 +411,18 @@ class HipayHelper
                                 switch ($field) {
                                     case "phone":
                                         if (empty($address->{$field})) {
-                                            $fieldMandatory[] = $module->l('Please enter your phone number to use this payment method.');
-                                        } else if (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"',$address->{$field})) {
+                                            $fieldMandatory[] = $module->l(
+                                                'Please enter your phone number to use this payment method.'
+                                            );
+                                        } else if (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"', $address->{$field})) {
                                             $fieldMandatory[] = $module->l('Please check the phone number entered.');
                                         }
                                         break;
                                     case "gender":
                                         if (empty($customer->id_gender)) {
-                                            $fieldMandatory[] = $module->l('Please inform your civility to use this method of payment.');
+                                            $fieldMandatory[] = $module->l(
+                                                'Please inform your civility to use this method of payment.'
+                                            );
                                         }
                                         break;
                                     default:
@@ -422,7 +431,7 @@ class HipayHelper
                                 }
                             }
 
-                            $activatedPayment[$name]['errorMsg'] =  $fieldMandatory;
+                            $activatedPayment[$name]['errorMsg'] = $fieldMandatory;
                         }
 
                     }
@@ -551,7 +560,9 @@ class HipayHelper
     public static function orderExists($cart_id)
     {
         if ($cart_id) {
-            $result = (bool)Db::getInstance()->getValue('SELECT count(*) FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int)$cart_id);
+            $result = (bool)Db::getInstance()->getValue(
+                'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
+            );
             return $result;
         }
         return false;
