@@ -267,7 +267,11 @@ class Apihandler
      */
     private function handleHostedPayment($params, $cart = false, $moto = false)
     {
-        Tools::redirect(ApiCaller::getHostedPaymentPage($this->module, $params, $cart, $moto));
+        try {
+            Tools::redirect(ApiCaller::getHostedPaymentPage($this->module, $params, $cart, $moto));
+        } catch (GatewayException $e) {
+            $e->handleException();
+        }
     }
 
     /**
@@ -277,7 +281,11 @@ class Apihandler
      */
     private function handleIframe($params)
     {
-        return ApiCaller::getHostedPaymentPage($this->module, $params);
+        try {
+            return ApiCaller::getHostedPaymentPage($this->module, $params);
+        } catch (GatewayException $e) {
+            $e->handleException();
+        }
     }
 
     /**
@@ -297,7 +305,11 @@ class Apihandler
             $params["methodDisplayName"] = $config["displayName"];
         }
 
-        $response = ApiCaller::requestDirectPost($this->module, $params);
+        try {
+            $response = ApiCaller::requestDirectPost($this->module, $params);
+        } catch (GatewayException $e) {
+            $e->handleException();
+        }
 
         $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
         $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
