@@ -5,6 +5,9 @@ image: aberthelot/gitlab-ci-base:jessie
 #variables:
 #  DOCKER_HOST: tcp://docker:2375
 
+#    - MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.hipayenterprisesdkprestashop_prestashop.IPAddress }}' hipay-enterprise-ps17-$CI_JOB_ID)
+#    - docker exec mysql-ps17-$CI_JOB_ID mysql -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST', domain_ssl = '$MASTER_HOST' "
+
 stages:
   - build
   - deploy
@@ -20,19 +23,19 @@ before_script:
     - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
     - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
     - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
-    - sed -i -e "s/{CI_JOB_ID\}/$CI_JOB_ID/" docker-compose.stage.yml
-    - ./prestashop.sh init-stage
-    - sleep 350
-#    - MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.hipayenterprisesdkprestashop_prestashop.IPAddress }}' hipay-enterprise-ps17-$CI_JOB_ID)
-#    - docker exec mysql-ps17-$CI_JOB_ID mysql -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST', domain_ssl = '$MASTER_HOST' "
-    - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
-    - curl --retry 10 --retry-delay 20 -v http://prestashop17
 
 casperjs-part1:
   stage: build
+  before_script:
+     - ./prestashop.sh init-stage
+     - sleep 350
+     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
+     - curl --retry 10 --retry-delay 20 -v http://prestashop17
   script:
   - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
   - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
+  after_script:
+  - ./prestashop.sh kill-stage
   tags:
   - prestashop
   allow_failure: false
@@ -42,11 +45,22 @@ casperjs-part1:
 
 #casperjs-part2:
 #  stage: build
+#  before_script:
+#     - ./prestashop.sh init-stage
+#     - sleep 350
+#     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
+#     - curl --retry 10 --retry-delay 20 -v http://prestashop17
 #  script:
 #  - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
+#  after_script:
+#  - ./prestashop.sh kill-stage
 #  tags:
 #  - prestashop
 #  allow_failure: false
 #  artifacts:
 #    paths:
-#   - bin/tests
+
+#deploy:
+#  stage: deploy
+#  script:
+#  - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CIRCLE_PROJECT_REPONAME $CIRCLE_BRANCH

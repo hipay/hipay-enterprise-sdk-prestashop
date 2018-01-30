@@ -51,6 +51,10 @@ if [ "$1" = 'init-stage' ] && [ "$2" = '' ];then
      docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
 fi
 
+if [ "$1" = 'kill-stage' ] && [ "$2" = '' ];then
+     docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
+     docker-compose -f docker-compose.yml -f docker-compose.stage.yml rm -fv
+fi
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
      docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml stop
      docker-compose -f docker-compose.yml -f  docker-compose-"$2".yml rm -fv
