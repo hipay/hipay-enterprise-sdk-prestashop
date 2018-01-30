@@ -116,7 +116,7 @@ casper.test.begin('Test manual capture', function(test) {
             }, 15000);
     })
     .then(function () {
-        this.processNotifications(false,true,true,true);
+        this.processNotifications(false,false,true,true);
     })
     .then(function () {
         this.logToBackend();
@@ -176,7 +176,7 @@ casper.test.begin('Test manual capture', function(test) {
         }, 15000);
     })
     .then(function () {
-        this.processNotifications(false,true,true,false);
+        this.processNotifications(false,false,true,false);
     })
     .run(function() {
         this.configureCaptureMode("automatic");

@@ -60,14 +60,14 @@ casper.test.begin('Functions', function(test) {
                     test.info("Connected");
                 }, function fail() {
                     test.assertExists(".error-msg", "Incorrect credentials !");
-                }, 40000);
+                }, 20000);
             }, function fail() {
                 this.waitForUrl(/controller=/, function success() {
                     test.info("Already logged to admin panel !");
                 }, function fail() {
                     test.assertUrlMatch(/controller=/, "Already connected");
                 });
-            },30000);
+            },15000);
         });
     };
 
