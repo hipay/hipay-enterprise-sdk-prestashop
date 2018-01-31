@@ -36,7 +36,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.0.4';
+        $this->version = '2.1.4';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -46,7 +46,6 @@ class Hipay_enterprise extends PaymentModule
 
         $this->bootstrap = true;
         $this->display = 'view';
-
         $this->displayName = $this->l('HiPay Enterprise');
         $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
         );
@@ -103,6 +102,11 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Transaction ID: ');
         $fake = $this->l('HiPay status: ');
         $fake = $this->l('A payment transaction is awaiting validation for the order %s');
+        $fake = $this->l('Please enter your phone number to use this payment method.');
+        $fake = $this->l('Please inform your civility to use this method of payment.');
+        $fake = $this->l('Please check the information entered.');
+        $fake = $this->l('Please check the phone number entered.');
+        $fake = $this->l('Refused payment for order %s');
     }
 
     public function getLogs()
@@ -136,9 +140,9 @@ class Hipay_enterprise extends PaymentModule
     public function uninstall()
     {
         return $this->uninstallAdminTab() &&
-            parent::uninstall() &&
-            HipayHelper::clearAccountData() &&
-            $this->deleteHipayTable();
+        parent::uninstall() &&
+        HipayHelper::clearAccountData() &&
+        $this->deleteHipayTable();
     }
 
     public function installHipay()
@@ -299,6 +303,7 @@ class Hipay_enterprise extends PaymentModule
         $currency = new Currency((int)$params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
         $this->context->controller->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js'));
+        $customer = new Customer((int)$params['cart']->id_customer);
 
         $this->smarty->assign(
             array(
@@ -311,7 +316,9 @@ class Hipay_enterprise extends PaymentModule
                     $this->hipayConfigTool->getConfigHipay(),
                     $country,
                     $currency,
-                    $orderTotal
+                    $orderTotal,
+                    $address,
+                    $customer
                 ),
                 'lang' => Tools::strtolower($this->context->language->iso_code),
             )
@@ -732,6 +739,7 @@ class Hipay_enterprise extends PaymentModule
                 'hipayCarriers' => $hipayCarriers,
                 'mappedCarriers' => $mappedCarriers,
                 'lang' => Tools::strtolower($this->context->language->iso_code),
+                'languages' => Language::getLanguages(false),
                 'source' => $source,
                 'ps_round_total' => Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL
             )

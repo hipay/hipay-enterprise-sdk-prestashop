@@ -2,7 +2,10 @@
   "name": "ing-homepay",
   "config": {
     "displayNameBO": "ING Home'Pay",
-    "displayName": "ING Home'Pay",
+    "displayName":  {
+      "fr": "ING Home'Pay",
+      "en": "ING Home'Pay"
+    },
     "frontPosition": 16,
     "activated": 0,
     "canRefund": 1,

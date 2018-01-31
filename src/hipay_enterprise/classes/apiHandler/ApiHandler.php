@@ -132,7 +132,8 @@ class Apihandler
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
         $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
-        if (key_exists("acceptHostedOrder",$configMethod) && $configMethod["acceptHostedOrder"]) {
+
+        if ($mode == Apihandler::HOSTEDPAGE && !empty($configMethod["additionalFields"])) {
             $this->handleHostedPayment($params);
         } else {
             $this->handleDirectOrder($params);
@@ -286,9 +287,15 @@ class Apihandler
     private function handleDirectOrder($params, $cc = false)
     {
         if ($cc) {
-            $params["methodDisplayName"] = $this->configHipay["payment"]["credit_card"][$params["method"]]["displayName"];
+            $config = $this->configHipay["payment"]["credit_card"][$params["method"]];
         } else {
-            $params["methodDisplayName"] = $this->configHipay["payment"]["local_payment"][$params["method"]]["displayName"];
+            $config = $this->configHipay["payment"]["local_payment"][$params["method"]];
+        }
+
+        if (is_array($config["displayName"])) {
+            $params["methodDisplayName"] = $config["displayName"][$this->context->language->iso_code];
+        } else {
+            $params["methodDisplayName"] = $config["displayName"];
         }
 
         $response = ApiCaller::requestDirectPost($this->module, $params);
@@ -348,7 +355,7 @@ class Apihandler
         //#################################################################
         $cart = $this->context->cart;
         $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
-        $this->db->setSQLLockForCart($cart->id);
+        $this->db->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
 
         HipayHelper::validateOrder(
             $this->module,
@@ -359,6 +366,6 @@ class Apihandler
             $params["methodDisplayName"]
         );
 
-        $this->db->releaseSQLLock();
+        $this->db->releaseSQLLock('callValidateOrder' . $cart->id);
     }
 }

@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Banamex",
-    "displayName": "Banamex",
+    "displayName":  {
+      "fr": "Banamex",
+      "en": "Banamex"
+    },
     "frontPosition": 7,
     "activated": 0,
     "canRefund": 0,

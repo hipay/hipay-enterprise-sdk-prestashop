@@ -14,6 +14,17 @@
       class="form-horizontal hipay-form-17" method="post" name="local"
       autocomplete="off">
     {assign "psVersion" "17"}
+
+    {if !empty($errorMsg)}
+        <div id="error-js-oc" style="" class="alert alert-danger">
+            <ol>
+                {foreach $errorMsg as $msg}
+                    <li class="error-oc">{$msg}</li>
+                {/foreach}
+            </ol>
+        </div>
+    {/if}
+
     {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
     <input class="ioBB" type="hidden" name="ioBB">
 </form>

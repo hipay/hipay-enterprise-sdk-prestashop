@@ -94,7 +94,7 @@ class HipayNotification
     public function processTransaction()
     {
         try {
-            $this->db->setSQLLockForCart($this->cart->id);
+            $this->db->setSQLLockForCart($this->cart->id ,"# ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logInfos(
                 "# ProcessTransaction for cart ID : " .
                 $this->cart->id .
@@ -185,11 +185,10 @@ class HipayNotification
             }
 
 
-            $this->db->releaseSQLLock();
-            // END SQL LOCK
-            //#################################################################
+            $this->db->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
         } catch (Exception $ex) {
-            $this->db->releaseSQLLock();
+            $this->db->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
+            $this->log->logException($ex);
         }
     }
 
@@ -204,9 +203,14 @@ class HipayNotification
         if (HipayHelper::orderExists($this->cart->id)) {
             $this->addOrderMessage();
             if ((int)$this->order->getCurrentState() != (int)$newState &&
-                !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true) &&
-                !$this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true)
+                (int) $this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
+                !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)
             ) {
+                // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
+                if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
+                    && ($newState == _PS_OS_PAYMENT_ )) {
+                    $newState = _PS_OS_OUTOFSTOCK_PAID_;
+                }
                 $this->changeOrderStatus($newState);
                 $return = true;
             }
@@ -296,7 +300,7 @@ class HipayNotification
         }
         $paymentProduct = $this->transaction->getPaymentProduct();
 
-        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module);
+        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $this->context->language );
     }
 
     /**
@@ -480,7 +484,7 @@ class HipayNotification
      */
     private function controleIfStatushistoryExist($paymentStatus, $orderState, $forceCtrl = false)
     {
-        $this->log->logInfos("# ControleIfStatushistoryExist " . $this->order->id . "Status " . $orderState);
+        $this->log->logInfos("# ControleIfStatushistoryExist Status " . $orderState);
 
         if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
             $this->log->logInfos("# ControleIfStatushistoryExist Status exist");

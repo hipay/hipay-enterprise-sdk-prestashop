@@ -40,4 +40,3 @@ services:
     container_name: smtp-test-$CI_JOB_ID
     networks:
       - prestashop
-

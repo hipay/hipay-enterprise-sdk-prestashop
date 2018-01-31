@@ -6,7 +6,10 @@
       "label": "Astropay"
     },
     "displayNameBO": "Santander Cash",
-    "displayName": "Santander Cash",
+    "displayName":  {
+      "fr": "Santander Cash",
+      "en": "Santander Cash"
+    },
     "frontPosition": 24,
     "activated": 0,
     "canRefund": 0,
