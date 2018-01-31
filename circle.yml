@@ -25,6 +25,7 @@ dependencies:
     - mkdir $CIRCLE_ARTIFACTS/screenshots
   override:
     - sh ./bin/deployment/setup_sonar.sh
+    - docker network create outside
 test:
   pre:
     - case $CIRCLE_NODE_INDEX in 0) sh ./prestashop.sh init-stage;; 1) sh ./prestashop.sh init-stage ;; esac:
