@@ -65,7 +65,7 @@ sonarqube:
     SONAR_URL: http://localhost:9000
     SONAR_ANALYSIS_MODE: issues
   script:
-  - gitlab-sonar-scanner
+  - /usr/bin/sonar-scanner-run.sh
 
 deploy:
  stage: deploy
