@@ -57,7 +57,29 @@ requests should be opened against that branch.
 
 ### Testing
 
-Any contributions should pass all tests.
+Functional tests are implemented and cover the main functionalities offered by the module.
+Before you make your pull request, make sure to run them and make sure they are all sucess.
+ 
+The tests were developed in CasperJS and PhantomJS.
+The CasperJS tests are located in / bin / tests
+
+In order to run the tests, you must install CasperJS and PhantomJS.
+
+Please refer to the installation instructions on the page [CasperJS](http://docs.casperjs.org/en/latest/installation.html)
+  
+
+Then to run the tests, run:
+  
+  -  Prestashop 1.7
+  ```
+  sudo ./prestashop.sh test 17
+  ```
+  
+  -  Prestashop 1.6
+  ```
+  sudo ./prestashop.sh test 16
+  ```
+ 
 
 ## Licensing
 

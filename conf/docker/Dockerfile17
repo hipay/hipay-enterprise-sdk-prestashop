@@ -1,9 +1,10 @@
-FROM prestashop/prestashop:1.7.2.0
+FROM prestashop/prestashop:1.7.2.2
 
 MAINTAINER support.wallet <support.wallet@hipay.com>
 
-RUN apt-get update \
-        && apt-get install -y ssmtp vim git cron \
+RUN apt-get update
+
+RUN apt-get install -y ssmtp vim git cron libmemcached11 libmemcachedutil2 libmemcached-dev libz-dev \
         && apt-get install -y nodejs npm \
         && npm install -g bower \
                 && ln -s /usr/bin/nodejs /usr/bin/node \
@@ -19,5 +20,9 @@ COPY src /var/www/html/modules
 RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
     && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh \
         && chmod 777 -R /tmp
+
+RUN pecl install memcached-2.2.0
+RUN echo extension=memcached.so >> /usr/local/etc/php/conf.d/memcached.ini
+
 
 ENTRYPOINT ["/tmp/entrypoint.sh"]
