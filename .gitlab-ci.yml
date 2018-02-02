@@ -65,6 +65,7 @@ sonarqube:
     SONAR_URL: http://localhost:19000
     SONAR_ANALYSIS_MODE: issues
   script:
+  - sleep 700
   - /usr/bin/sonar-scanner-run.sh
 
 deploy:
