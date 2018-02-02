@@ -83,7 +83,8 @@ sonarqube-reports:
 sync-github:
   stage: sync
   script:
-  - git fetch
+  - git fetch --all
+  - git branch -a
   - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
 
 deploy:
