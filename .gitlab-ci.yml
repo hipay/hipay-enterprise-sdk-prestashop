@@ -67,6 +67,15 @@ sonarqube:
   script:
   - /usr/bin/sonar-scanner-run.sh -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
 
+sonarqube-reports:
+  stage: analysis
+  image: ciricihq/gitlab-sonar-scanner
+  variables:
+    SONAR_URL: http://172.17.0.1:19000
+    SONAR_ANALYSIS_MODE: "publish"
+  script:
+  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
+
 deploy:
  stage: deploy
  script:
