@@ -66,7 +66,7 @@ sonarqube:
     SONAR_ANALYSIS_MODE: issues
     SONAR_LOGIN: $SONAR_LOGIN
   script:
-  - /usr/bin/sonar-scanner-run.sh
+  - /usr/bin/sonar-scanner-run.sh -Dsonar.login=$SONAR_LOGIN
 
 deploy:
  stage: deploy
