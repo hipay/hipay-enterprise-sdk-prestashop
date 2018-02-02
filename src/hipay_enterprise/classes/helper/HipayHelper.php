@@ -560,9 +560,11 @@ class HipayHelper
     public static function orderExists($cart_id)
     {
         if ($cart_id) {
+
             $result = (bool)Db::getInstance()->getValue(
                 'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
             );
+
             return $result;
         }
         return false;

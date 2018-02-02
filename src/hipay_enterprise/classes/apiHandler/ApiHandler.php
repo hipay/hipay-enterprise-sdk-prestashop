@@ -128,10 +128,11 @@ class Apihandler
     {
         $this->baseParamsInit($params, false);
 
-        // All locals payment ar done with API Order
+        // All locals payment ar done with API Order (
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
         $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
+
         if ($mode == Apihandler::HOSTEDPAGE && !empty($configMethod["additionalFields"])) {
             $this->handleHostedPayment($params);
         } else {
