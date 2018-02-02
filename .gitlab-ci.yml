@@ -84,7 +84,7 @@ sync-github:
   stage: sync
   script:
   - git fetch --all
-  - git branch -a
+  - echo $$CI_COMMIT_REF_NAME
   - git push origin $CI_COMMIT_REF_NAME https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
 
 deploy:
