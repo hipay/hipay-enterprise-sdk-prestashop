@@ -11,6 +11,7 @@ image: aberthelot/gitlab-ci-base:jessie
 stages:
   - build
   - analysis
+  - sync
   - deploy
 
 #casperjs-part1:
@@ -77,6 +78,11 @@ sonarqube-reports:
     SONAR_TOKEN: $SONAR_LOGIN
   script:
   - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+
+sync-github:
+  stage: sync
+  script:
+  - git push --mirror f8097c579e47dbc7fa1b2b6dd69a20845b1bd45a@github.com:hipay/hipay-enterprise-sdk-prestashop.git
 
 deploy:
  stage: deploy
