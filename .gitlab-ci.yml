@@ -57,7 +57,7 @@ stages:
 #  artifacts:
 #    paths:
 
- deploy:
-   stage: deploy
-   script:
-   - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
+deploy:
+ stage: deploy
+ script:
+  - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
