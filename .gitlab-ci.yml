@@ -65,6 +65,7 @@ sonarqube:
     SONAR_URL: http://172.17.0.1:19000
     SONAR_ANALYSIS_MODE: preview
   script:
+  - sleep 350
   - /usr/bin/sonar-scanner-run.sh -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
 
 sonarqube-reports:
