@@ -82,7 +82,7 @@ sonarqube-reports:
 sync-github:
   stage: sync
   script:
-  - git push --mirror legithubdeaymeric@$GITHUB_PASSWORD:hipay/hipay-enterprise-sdk-prestashop.git
+  - git push --mirror $GITHUB_PASSWORD@github.com:hipay/hipay-enterprise-sdk-prestashop.git
 
 deploy:
  stage: deploy
