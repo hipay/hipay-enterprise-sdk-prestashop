@@ -66,7 +66,7 @@ sonarqube:
     SONAR_ANALYSIS_MODE: preview
   script:
   - sleep 350
-  - /usr/bin/sonar-scanner-run.sh -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
+  - /usr/bin/sonar-scanner-run -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
 
 sonarqube-reports:
   stage: analysis
@@ -75,7 +75,7 @@ sonarqube-reports:
     SONAR_URL: http://172.17.0.1:19000
     SONAR_ANALYSIS_MODE: "publish"
   script:
-  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
+  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run -Dsonar.login=admin -Dsonar.password=X4JaUVbR7ke44x7Q
 
 deploy:
  stage: deploy
