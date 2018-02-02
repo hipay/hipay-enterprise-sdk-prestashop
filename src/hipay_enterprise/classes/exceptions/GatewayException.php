@@ -21,6 +21,10 @@
  */
 class GatewayException extends Exception
 {
+    private $context;
+    private $moduleInstance;
+
+
     /**
      * GatewayException constructor.
      *
@@ -33,6 +37,12 @@ class GatewayException extends Exception
     public function __construct($message = "", $code = 0, Throwable $previous = null, $context, $moduleInstance)
     {
         parent::__construct($message, $code, $previous);
-        HipayHelper::redirectToErrorPage($context, $moduleInstance);
+
+        $this->context = $context;
+        $this->moduleInstance = $moduleInstance;
+    }
+
+    public function handleException(){
+        HipayHelper::redirectToExceptionPage($this->context, $this->moduleInstance);
     }
 }

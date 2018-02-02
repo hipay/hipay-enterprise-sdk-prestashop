@@ -54,11 +54,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $mode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"];
         $method = Tools::getValue("method");
 
-        // check if hosted payment is forced
-        if ($this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]) {
-            $mode = Apihandler::HOSTEDPAGE;
-        }
-
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
         $params["method"] = $method;
 
@@ -77,7 +72,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 'cust_currency' => $cart->id_currency,
                 'currencies' => $this->module->getCurrency((int)$cart->id_currency),
                 'total' => $cart->getOrderTotal(true, Cart::BOTH),
-                'language' => $context->language->iso_code,
                 'this_path' => $this->module->getPathUri(),
                 'this_path_bw' => $this->module->getPathUri(),
                 'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
@@ -108,7 +102,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
                             $this->module->name .
-                            '/views/templates/front/paymentFormIframe-17' : 'paymentFormIframe-16') . '.tpl';
+                            '/views/templates/front/payment/ps17/paymentFormIframe-17'
+                            : 'payment/ps16/paymentFormIframe-16') . '.tpl';
                 }
                 break;
             case Apihandler::DIRECTPOST:
@@ -129,6 +124,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
                             'methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
                             'localPaymentName' => $method,
+                            'language' => $context->language->iso_code,
                             'methodFields' => $this->module->hipayConfigTool->getLocalPayment(
                             )[$method]["additionalFields"]["formFields"]
                         )

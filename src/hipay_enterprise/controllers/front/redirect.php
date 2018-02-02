@@ -211,7 +211,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     "issuer" => Tools::getValue('card-issuer'),
                     "country" => Tools::getValue('card-country'),
                 );
-
+                
                 $params = array(
                     "deviceFingerprint" => Tools::getValue('ioBB'),
                     "productlist" => $selectedCC,

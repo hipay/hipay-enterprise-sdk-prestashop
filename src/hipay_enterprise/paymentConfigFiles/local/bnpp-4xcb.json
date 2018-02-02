@@ -28,7 +28,6 @@
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
-    "forceHpayment": 0,
     "forceBasket": 1,
     "minAmount": {
       "EUR": 0
