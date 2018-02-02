@@ -136,7 +136,7 @@ $("#tokenizerForm").submit(function (e) {
                 // An error occurred
                 $("#error-js").show();
                 if (typeof errors.message != "undefined") {
-                    message = i18nBadRequest;
+                    var message = i18nBadRequest;
                     switch (errors.code) {
                         case 416:
                             message = i18nTokenisationError416;
