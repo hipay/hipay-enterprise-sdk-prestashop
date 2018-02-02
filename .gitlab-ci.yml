@@ -64,6 +64,7 @@ sonarqube:
   variables:
     SONAR_URL: http://172.17.0.1:19000
     SONAR_ANALYSIS_MODE: issues
+    SONAR_LOGIN: $SONAR_LOGIN
   script:
   - /usr/bin/sonar-scanner-run.sh
 
