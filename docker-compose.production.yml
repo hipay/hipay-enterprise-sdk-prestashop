@@ -12,8 +12,9 @@ services:
       - "com.hipay.circleci={circleci}"  
   prestashop16:
     container_name: {CONTAINER_NAME_WEB}
-    dockerfile: ./conf/docker/Dockerfile16
-    build: .
+    build:
+      context: .
+      dockerfile: ./conf/docker/Dockerfile16
     ports:
       - "{PORT_WEB}:80"
     links:
@@ -27,7 +28,9 @@ services:
       - "com.hipay.circleci={circleci}"
   prestashop17:
     container_name: {CONTAINER_NAME_WEB1}
-    dockerfile: ./conf/docker/Dockerfile17
+    build:
+      context: .
+      dockerfile: ./conf/docker/Dockerfile17
     build: .
     ports:
       - "{PORT_WEB1}:80"
