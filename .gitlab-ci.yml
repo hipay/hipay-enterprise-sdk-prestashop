@@ -62,7 +62,7 @@ sonarqube:
   stage: analysis
   image: ciricihq/gitlab-sonar-scanner
   variables:
-    SONAR_URL: http://localhost:9000
+    SONAR_URL: http://localhost:19000
     SONAR_ANALYSIS_MODE: issues
   script:
   - /usr/bin/sonar-scanner-run.sh
