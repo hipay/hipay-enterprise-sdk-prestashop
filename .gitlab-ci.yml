@@ -10,6 +10,7 @@ image: aberthelot/gitlab-ci-base:jessie
 
 stages:
   - build
+  - analysis
   - deploy
 
 #casperjs-part1:
@@ -56,6 +57,15 @@ stages:
 #  allow_failure: false
 #  artifacts:
 #    paths:
+
+sonarqube:
+  stage: analysis
+  image: ciricihq/gitlab-sonar-scanner
+  variables:
+    SONAR_URL: http://localhost:9000
+    SONAR_ANALYSIS_MODE: issues
+  script:
+  - gitlab-sonar-scanner
 
 deploy:
  stage: deploy
