@@ -28,7 +28,7 @@ var fs = require('fs'),
     	{ currency: 'USD', symbol: '$' }
     ],
     currentCurrency = allowedCurrencies[0],
-	labelPayByCard = 'Payer par Credit card',
+	labelPayByCard = 'Payer par Carte de crédit',
     generatedCPF = "373.243.176-26",
     admin_login = "demo@hipay.com",
 	admin_passwd = "hipay123";

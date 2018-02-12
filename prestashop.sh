@@ -51,6 +51,13 @@ if [ "$1" = 'init-stage' ] && [ "$2" = '' ];then
      docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
 fi
 
+if [ "$1" = 'init-stage-circle' ] && [ "$2" = '' ];then
+     docker-compose -f docker-compose.stage.circle.yml stop
+     docker-compose -f docker-compose.stage.circle.yml rm -fv
+     docker-compose -f docker-compose.stage.circle.yml build --no-cache
+     docker-compose -f docker-compose.stage.circle.yml up -d
+fi
+
 if [ "$1" = 'kill-stage' ] && [ "$2" = '' ];then
      docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
      docker-compose -f docker-compose.yml -f docker-compose.stage.yml rm -fv
