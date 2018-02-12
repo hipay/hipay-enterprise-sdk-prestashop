@@ -91,7 +91,6 @@ casper.test.begin('Test admin configuration screens', function(test) {
             test.assertExists('div#panel-local-payment #oney.active');
 
             test.assertExists('div#panel-local-payment #oney.active input[name="3xcb-no-fees_activated"]');
-            test.assertExists('div#panel-local-payment #oney.active input[name="3xcb-no-fees_displayName"]');
             test.assertExists('div#panel-local-payment #oney.active input[name="3xcb-no-fees_frontPosition"]');
             test.assertExists('div#panel-local-payment #oney.active input[name="3xcb-no-fees_minAmount[EUR]"]');
             test.assertExists('div#panel-local-payment #oney.active input[name="3xcb-no-fees_maxAmount[EUR]"]');
