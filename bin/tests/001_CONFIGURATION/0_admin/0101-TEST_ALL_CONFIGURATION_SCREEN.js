@@ -63,7 +63,6 @@ casper.test.begin('Test admin configuration screens', function(test) {
             test.assertExists('form#credit_card_form button[name="submitGlobalPaymentMethods"]');
             test.assertExists('div#panel-credit-card');
 
-            test.assertExists('form#credit_card_form input[name="ccDisplayName"]');
             test.assertExists('form#credit_card_form input[name="ccFrontPosition"]');
             test.assertExists('form#credit_card_form div#visa');
             test.assertExists('form#credit_card_form input[name="visa_activated"]');
