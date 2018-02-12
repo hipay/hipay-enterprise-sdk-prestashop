@@ -28,7 +28,6 @@
     "minAmount": {
       "EUR": 0
     },
-    "test": {"eur" : 10},
     "maxAmount": {
       "EUR": false
     },
