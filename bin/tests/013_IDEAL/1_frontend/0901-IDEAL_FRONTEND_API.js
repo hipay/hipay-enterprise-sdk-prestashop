@@ -74,10 +74,13 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     /* Fill IDeal formular */
     .then(function() {
         this.echo("Filling payment formular...", "INFO");
-        this.waitForUrl(/payment\/web\/pay/, function success() {
-            this.fillSelectors("form#form-payment", {
+        this.waitForUrl(/paymentscreen\/issuer/, function success() {
+
+/*            this.fillSelectors("form#form-payment", {
                 'select[name="issuer_bank_id"]': "TESTNL99"
-            }, true);
+            }, true);*/
+
+            this.click('button[value="ideal_TESTNL99"]');
 
             this.waitForUrl(/paymentscreen\/testmode/, function success() {
                 this.click('input[name="final_state"][value="paid"]');
