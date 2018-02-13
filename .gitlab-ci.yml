@@ -13,7 +13,7 @@ stages:
 #  - build
 #  - analysis
 #  - sync
-  - package
+ - package
 #  - deploy
 
 casperjs-part1:
