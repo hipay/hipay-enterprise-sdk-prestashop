@@ -22,7 +22,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
         this.activateMethod("dexia-directnet");
     })
     .then(function() {
-        this.waitForSelector('input[name="dexia-directnet_displayName"]', function success() {
+        this.waitForSelector('input[name="dexia-directnet_displayName[fr]"]', function success() {
             label = this.getElementAttribute('input[name="dexia-directnet_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
