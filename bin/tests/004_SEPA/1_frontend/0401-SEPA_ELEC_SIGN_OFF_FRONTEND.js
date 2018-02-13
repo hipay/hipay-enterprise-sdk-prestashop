@@ -21,11 +21,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Electronic Signature',
         this.configureSettingsMode("api");
         this.activateMethod("sdd");
         this.setValueOptions("sdd_electronicSignature","0");
-        this.waitForSelector('input[name="sdd_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="sdd_displayName"]', 'value');
+        this.waitForSelector('input[name="sdd_displayName[fr]"]', function success() {
+            label = this.getElementAttribute('input[name="sdd_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="sdd_displayName"]', "Input name exist");
+            test.assertExists('input[name="sdd_displayName[fr]"]', "Input name exist");
         });
     })
     .thenOpen(baseURL, function() {

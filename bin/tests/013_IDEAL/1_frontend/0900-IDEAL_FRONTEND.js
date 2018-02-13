@@ -24,11 +24,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     .then(function() {
         this.activateMethod("ideal");
         this.configureSettingsMode("hosted_page");
-        this.waitForSelector('input[name="ideal_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="ideal_displayName"]', 'value');
+        this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
+            label = this.getElementAttribute('input[name="ideal_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="ideal_displayName"]', "Input name exist");
+            test.assertExists('input[name="ideal_displayName[fr]"]', "Input name exist");
         });
     })
     .then(function() {

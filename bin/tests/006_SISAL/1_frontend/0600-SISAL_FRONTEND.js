@@ -22,11 +22,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
         this.activateMethod("sisal");
     })
     .then(function() {
-        this.waitForSelector('input[name="sisal_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="sisal_displayName"]', 'value');
+        this.waitForSelector('input[name="sisal_displayName[fr]"]', function success() {
+            label = this.getElementAttribute('input[name="sisal_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="sisal_displayName"]', "Input name exist");
+            test.assertExists('input[name="sisal_displayName[fr]"]', "Input name exist");
         });
     })
     .thenOpen(baseURL, function() {

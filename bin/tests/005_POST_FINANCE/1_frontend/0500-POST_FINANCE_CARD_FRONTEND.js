@@ -22,11 +22,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
         this.activateMethod("postfinance-card");
     })
     .then(function() {
-        this.waitForSelector('input[name="postfinance-card_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="postfinance-card_displayName"]', 'value');
+        this.waitForSelector('input[name="postfinance-card_displayName[fr]"]', function success() {
+            label = this.getElementAttribute('input[name="postfinance-card_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="postfinance-card_displayName"]', "Input name exist");
+            test.assertExists('input[name="postfinance-card_displayName[fr]"]', "Input name exist");
         });
     })
     .thenOpen(baseURL, function() {
