@@ -97,8 +97,8 @@ casper.test.begin('Functions', function(test) {
                 test.done();
             }, function fail() {
                 test.fail("Success payment (Pending status) doesn't exists.", 'WARNING');
-            }, 30000);
-        }, 30000);
+            }, 35000);
+        }, 35000);
 	};
 
     /* Check if error payment */

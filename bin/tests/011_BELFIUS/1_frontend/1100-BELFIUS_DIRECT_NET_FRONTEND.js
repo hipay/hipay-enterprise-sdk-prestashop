@@ -23,10 +23,10 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     })
     .then(function() {
         this.waitForSelector('input[name="dexia-directnet_displayName"]', function success() {
-            label = this.getElementAttribute('input[name="dexia-directnet_displayName"]', 'value');
+            label = this.getElementAttribute('input[name="dexia-directnet_displayName[fr]"]', 'value');
             test.info("Display name in checkout should be :" + label);
         }, function fail() {
-            test.assertExists('input[name="dexia-directnet_displayName"]', "Input name exist");
+            test.assertExists('input[name="dexia-directnet_displayName[fr]"]', "Input name exist");
         });
     })
     .thenOpen(baseURL, function() {
