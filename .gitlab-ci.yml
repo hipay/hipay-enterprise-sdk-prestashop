@@ -75,7 +75,7 @@ stages:
 package:
  stage: package
  before_script:
-  - apt-get install -y zip
+  - apt-get install -y zip sshpass
  script:
   - echo "Package module $CI_COMMIT_REF_SLUG"
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
