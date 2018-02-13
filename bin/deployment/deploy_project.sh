@@ -4,9 +4,8 @@ echo "Create Artifact project for project $CI_PROJECT_NAME and branch $GITHUB_BR
 docker exec deploy.hipay-pos-platform.com mkdir /deploy/project/artifactory/$CI_PROJECT_NAME/$BRANCH
 
 echo "Transfert Artifact project for project $CI_PROJECT_NAME and branch $GITHUB_BRANCH"
-pwd
 ls package-ready-for-prestashop/
-docker cp ./package-ready-for-prestashop/*.zip deploy.hipay-pos-platform.com:/deploy/project/artifactory/$CI_PROJECT_NAME/$BRANCH
+docker cp package-ready-for-prestashop/*.zip deploy.hipay-pos-platform.com:/deploy/project/artifactory/$CI_PROJECT_NAME/$BRANCH
 
 echo "Deploy project in artifactory"
 docker exec jira-artifactory-pi.hipay-pos-platform.com /tmp/jfrog rt u /deploy/project/artifactory/$CI_PROJECT_NAME/$BRANCH/*.zip $CI_PROJECT_NAME/snapshot/ \
