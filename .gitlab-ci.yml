@@ -81,9 +81,9 @@ package:
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
   - chmod u+x bin/deployment/deploy_project.sh
   - ./bin/deployment/deploy_project.sh
-  artifacts:
-    paths:
-    - ./package-ready-for-prestashop
+ artifacts:
+  paths:
+  - ./package-ready-for-prestashop
 
 #deploy:
 # stage: deploy
