@@ -16,53 +16,53 @@ stages:
  - package
 #  - deploy
 
-casperjs-part1:
-  stage: build
-  before_script:
-     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
-     - ./prestashop.sh init-stage
-     - sleep 350
-     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
-     - curl --retry 10 --retry-delay 20 -v http://prestashop17
-  script:
-  - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
-  - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
-  after_script:
-  - ./prestashop.sh kill-stage
-  tags:
-  - prestashop
-  allow_failure: false
-  artifacts:
-    paths:
-    - bin/tests
-
-sonarqube:
-  stage: analysis
-  image: ciricihq/gitlab-sonar-scanner
-  variables:
-    SONAR_URL: http://172.17.0.1:19000
-    SONAR_ANALYSIS_MODE: preview
-    SONAR_TOKEN: $SONAR_LOGIN
-  script:
-  - /usr/bin/sonar-scanner-run.sh
-
-sonarqube-reports:
-  stage: analysis
-  image: ciricihq/gitlab-sonar-scanner
-  variables:
-    SONAR_URL: http://172.17.0.1:19000
-    SONAR_ANALYSIS_MODE: "publish"
-    SONAR_TOKEN: $SONAR_LOGIN
-  script:
-  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+#casperjs-part1:
+#  stage: build
+#  before_script:
+#     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
+#     - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
+#     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
+#     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
+#     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
+#     - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
+#     - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
+#     - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
+#     - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
+#     - ./prestashop.sh init-stage
+#     - sleep 350
+#     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
+#     - curl --retry 10 --retry-delay 20 -v http://prestashop17
+#  script:
+#  - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
+#  - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
+#  after_script:
+#  - ./prestashop.sh kill-stage
+#  tags:
+#  - prestashop
+#  allow_failure: false
+#  artifacts:
+#    paths:
+#    - bin/tests
+#
+#sonarqube:
+#  stage: analysis
+#  image: ciricihq/gitlab-sonar-scanner
+#  variables:
+#    SONAR_URL: http://172.17.0.1:19000
+#    SONAR_ANALYSIS_MODE: preview
+#    SONAR_TOKEN: $SONAR_LOGIN
+#  script:
+#  - /usr/bin/sonar-scanner-run.sh
+#
+#sonarqube-reports:
+#  stage: analysis
+#  image: ciricihq/gitlab-sonar-scanner
+#  variables:
+#    SONAR_URL: http://172.17.0.1:19000
+#    SONAR_ANALYSIS_MODE: "publish"
+#    SONAR_TOKEN: $SONAR_LOGIN
+#  script:
+#  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
 
 #sync-github:
 #  stage: sync
@@ -79,7 +79,7 @@ package:
   - chmod u+x bin/deployment/deploy_project.sh
   - ./bin/deployment/deploy_project.sh
 
-deploy:
- stage: deploy
- script:
-  - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
+#deploy:
+# stage: deploy
+# script:
+#  - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
