@@ -9,6 +9,7 @@ image: aberthelot/gitlab-ci-base:jessie
 #    - MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.hipayenterprisesdkprestashop_prestashop.IPAddress }}' hipay-enterprise-ps17-$CI_JOB_ID)
 #    - docker exec mysql-ps17-$CI_JOB_ID mysql -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST', domain_ssl = '$MASTER_HOST' "
 
+
 stages:
 #  - build
 #  - analysis
@@ -73,6 +74,8 @@ stages:
 
 package:
  stage: package
+ before_script:
+  - apt-get install zip
  script:
   - echo "Package module $CI_COMMIT_REF_SLUG"
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
