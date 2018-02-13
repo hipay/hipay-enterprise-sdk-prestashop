@@ -10,10 +10,11 @@ image: aberthelot/gitlab-ci-base:jessie
 #    - docker exec mysql-ps17-$CI_JOB_ID mysql -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST', domain_ssl = '$MASTER_HOST' "
 
 stages:
-  - build
-  - analysis
-  - sync
-  - deploy
+#  - build
+#  - analysis
+#  - sync
+  - package
+#  - deploy
 
 casperjs-part1:
   stage: build
@@ -66,9 +67,17 @@ sonarqube-reports:
 #sync-github:
 #  stage: sync
 #  script:
-#  - git fetch --all
-#  - echo $CI_COMMIT_REF_NAME
+#  - git clone --mirror git@gitlab.hipay.org:pi-ecommerce/hipay-enterprise-sdk-prestashop.git
+#  - cd hipay-enterprise-sdk-prestashop
 #  - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
+
+package:
+ stage: package
+ script:
+  - echo "Package module $CI_COMMIT_REF_NAME"
+  - ./package-ready-for-prestashop/builder/module_builder.sh -v ${$CI_COMMIT_REF_NAME////-}
+  - chmod u+x bin/deployment/deploy_project.sh
+  - ./bin/deployment/deploy_project.sh
 
 deploy:
  stage: deploy
