@@ -75,12 +75,15 @@ stages:
 package:
  stage: package
  before_script:
-  - apt-get install zip
+  - apt-get install -y zip
  script:
   - echo "Package module $CI_COMMIT_REF_SLUG"
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
   - chmod u+x bin/deployment/deploy_project.sh
   - ./bin/deployment/deploy_project.sh
+  artifacts:
+    paths:
+    - ./package-ready-for-prestashop
 
 #deploy:
 # stage: deploy
