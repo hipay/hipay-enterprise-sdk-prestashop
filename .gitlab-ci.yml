@@ -74,8 +74,8 @@ stages:
 package:
  stage: package
  script:
-  - echo "Package module $CI_COMMIT_REF_NAME"
-  - ./package-ready-for-prestashop/builder/module_builder.sh -v ${$CI_COMMIT_REF_NAME////-}
+  - echo "Package module $CI_COMMIT_REF_SLUG"
+  - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
   - chmod u+x bin/deployment/deploy_project.sh
   - ./bin/deployment/deploy_project.sh
 
