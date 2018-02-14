@@ -1,4 +1,4 @@
-image: aberthelot/gitlab-ci-base:jessie
+image: hipay/gitlab-ci-base:jessie
 
 
 #services:
