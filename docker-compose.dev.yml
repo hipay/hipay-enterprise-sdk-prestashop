@@ -1,3 +1,5 @@
 mysql:
   ports:
     - "3318:3306"
+  env_file:
+    - ./conf/env_file/development/env
