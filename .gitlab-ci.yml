@@ -13,9 +13,9 @@ image: aberthelot/gitlab-ci-base:jessie
 stages:
  - build
  - analysis
-#  - sync
  - package
  - deploy
+ - sync
 
 casperjs-part1:
   stage: build
@@ -65,13 +65,6 @@ sonarqube-reports:
   script:
   - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
 
-#sync-github:
-#  stage: sync
-#  script:
-#  - git clone --mirror git@gitlab.hipay.org:pi-ecommerce/hipay-enterprise-sdk-prestashop.git
-#  - cd hipay-enterprise-sdk-prestashop
-#  - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
-
 package:
  stage: package
  before_script:
@@ -89,3 +82,10 @@ deploy:
  stage: deploy
  script:
   - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
+
+sync:
+  stage: sync
+  script:
+  - git clone --mirror git@gitlab.hipay.org:pi-ecommerce/hipay-enterprise-sdk-prestashop.git
+  - cd hipay-enterprise-sdk-prestashop.git
+  - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
