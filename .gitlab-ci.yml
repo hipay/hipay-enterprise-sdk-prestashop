@@ -36,8 +36,6 @@ casperjs-part1:
   script:
   - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
   - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
-  after_script:
-  - ./prestashop.sh kill-stage
   tags:
   - prestashop
   allow_failure: false
