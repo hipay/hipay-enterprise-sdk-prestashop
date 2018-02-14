@@ -28,29 +28,11 @@ dependencies:
     - docker network create outside
 test:
   pre:
-    - case $CIRCLE_NODE_INDEX in 0) sh ./prestashop.sh init-stage;; 1) sh ./prestashop.sh init-stage ;; esac:
-            parallel: true
+    - sh ./prestashop.sh init-stage;;
   override:
     - sleep 400
     - curl --retry 10 --retry-delay 20 -v http://prestashop17
-#### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#     TEST ARE NOW EXECUTED ON GITLAB CI
-#    - case $CIRCLE_NODE_INDEX in 0) mysql -h 127.0.0.1 -P 3318 -u root -padmin prestashop17 -e "ALTER TABLE ps_cart AUTO_INCREMENT = 200" ;; esac:
-#              parallel: true
-#    - case $CIRCLE_NODE_INDEX in 0) echo 'waiting' 1) sh bin/tests/casper_run_circle.sh 1 ps17 ;; esac:
-#        parallel: true
-#    - case $CIRCLE_NODE_INDEX in 0) echo 'waiting'  1) sh bin/tests/report_test.sh 1 ps17 ;; esac:
-#        parallel: true
-#  post:
-#    - cp bin/tests/report*.html $CIRCLE_ARTIFACTS/casper_report/
-#    - sh ./bin/deployment/sonar.sh > /dev/null
-deployment:
-  prod:
-    branch: /.*?/
-    tag: /.*?/
-    commands:
-      - ./package-ready-for-prestashop/builder/module_builder.sh -v ${CIRCLE_BRANCH////-}
-      - mkdir $CIRCLE_ARTIFACTS/package
-      - cp ./package-ready-for-prestashop/*.zip $CIRCLE_ARTIFACTS/package
-      - chmod u+x bin/deployment/deploy_project.sh
-      - ./bin/deployment/deploy_project.sh
+    - sh bin/tests/casper_run_circle.sh 2 ps17
+  post:
+    - cp bin/tests/report*.html $CIRCLE_ARTIFACTS/casper_report/
+    - sh ./bin/deployment/sonar.sh > /dev/null
