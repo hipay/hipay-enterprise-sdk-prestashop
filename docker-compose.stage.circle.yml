@@ -3,7 +3,7 @@ mysql:
   ports:
     - "3318:3306"
   env_file:
-    - ./conf/env_file/stage/env
+    - ./conf/env_file/stage_circle/env
 prestashop16:
   container_name: hipay-enterprise-shop-ps16-stage
   dockerfile: ./conf/docker/Dockerfile16
@@ -14,8 +14,8 @@ prestashop16:
     - smtp
     - mysql
   env_file:
-    - ./conf/env_file/stage/env
-    - ./conf/env_file/stage/env16
+    - ./conf/env_file/stage_circle/env
+    - ./conf/env_file/stage_circle/env16
 prestashop17:
   container_name: hipay-enterprise-shop-ps17-stage
   dockerfile: ./conf/docker/Dockerfile17
@@ -26,8 +26,8 @@ prestashop17:
     - smtp
     - mysql
   env_file:
-    - ./conf/env_file/stage/env
-    - ./conf/env_file/stage/env17
+    - ./conf/env_file/stage_circle/env
+    - ./conf/env_file/stage_circle/env17
 smtp:
   image: schickling/mailcatcher
   ports:
