@@ -87,3 +87,4 @@ sync:
   - git clone --mirror https://$GITLAB_USER:$GITLAB_PASSWORD@gitlab.hipay.org/pi-ecommerce/hipay-enterprise-sdk-prestashop.git
   - cd hipay-enterprise-sdk-prestashop.git
   - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
+  allow_failure: true
