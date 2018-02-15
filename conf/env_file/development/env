@@ -20,9 +20,6 @@ DB_PASSWD=admin
 #=====================================================
 MYSQL_HOST=mysql
 MYSQL_ROOT_PASSWORD=admin
-MYSQL_USER=roota
-MYSQL_PASSWORD=admin
-MYSQL_ROOT_PASSWORD=admin
 
 #====================================================
 # Specific configuration for production

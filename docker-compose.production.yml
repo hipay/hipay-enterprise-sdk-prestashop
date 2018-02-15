@@ -31,7 +31,6 @@ services:
     build:
       context: .
       dockerfile: ./conf/docker/Dockerfile17
-    build: .
     ports:
       - "{PORT_WEB1}:80"
     links:
