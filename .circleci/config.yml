@@ -6,6 +6,7 @@ jobs:
     environment:
       TZ: "/usr/share/zoneinfo/Europe/paris"
     steps:
+      - setup_remote_docker
       - run:
           name: Install dependencies
           command: |
