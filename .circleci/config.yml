@@ -61,7 +61,7 @@ jobs:
           command: |
             docker logs hipay-enterprise-shop-ps17-stage
             docker ps
-            MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.bridge.Gateway }}' hipay-enterprise-shop-ps17-stage)
+            MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.bridge.IPAddress }}' hipay-enterprise-shop-ps17-stage)
             docker exec mysql-stage mysql -h localhost -padmin -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST:8087', domain_ssl = '$MASTER_HOST:8087'"
             curl --retry 10 --retry-delay 20 -v http://$MASTER_HOST:8087
             sh bin/tests/casper_run_circle.sh 0 ps17 http://$MASTER_HOST:8087/
