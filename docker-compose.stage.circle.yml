@@ -1,21 +1,22 @@
 mysql:
+  container_name: mysql-stage
   image: mysql:5.6.23
   ports:
     - "3318:3306"
   env_file:
     - ./conf/env_file/stage_circle/env
-prestashop16:
-  container_name: hipay-enterprise-shop-ps16-stage
-  dockerfile: ./conf/docker/Dockerfile16
-  build: .
-  ports:
-    - "8086:80"
-  links:
-    - smtp
-    - mysql
-  env_file:
-    - ./conf/env_file/stage_circle/env
-    - ./conf/env_file/stage_circle/env16
+#prestashop16:
+#  container_name: hipay-enterprise-shop-ps16-stage
+#  dockerfile: ./conf/docker/Dockerfile16
+#  build: .
+#  ports:
+#    - "8086:80"
+#  links:
+#    - smtp
+#    - mysql
+#  env_file:
+#    - ./conf/env_file/stage_circle/env
+#    - ./conf/env_file/stage_circle/env16
 prestashop17:
   container_name: hipay-enterprise-shop-ps17-stage
   dockerfile: ./conf/docker/Dockerfile17
