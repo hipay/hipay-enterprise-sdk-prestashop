@@ -6,6 +6,7 @@ RUN apt-get update \
         && apt-get install -y ssmtp vim git cron \
         && apt-get install -y nodejs npm \
         && npm install -g bower \
+          && npm install -g casperjs@1.1.3 \
                 && ln -s /usr/bin/nodejs /usr/bin/node \
                 && echo '{ "allow_root": true }' > /root/.bowerrc \
                 && curl -sS https://getcomposer.org/installer | php -- --filename=composer -- --install-dir=/usr/local/bin \
@@ -14,6 +15,8 @@ RUN apt-get update \
                 &&  rm -rf /var/lib/apt/lists/*
 
 COPY conf /tmp
+
+COPY bin /var/www/html/bin
 
 COPY src /var/www/html/modules
 
