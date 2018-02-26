@@ -30,7 +30,7 @@ casperjs-part1:
      - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
      - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
      - ./prestashop.sh init-stage
-     - sleep 350
+     - sleep 400
      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
      - curl --retry 10 --retry-delay 20 -v http://prestashop17
   script:
