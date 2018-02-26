@@ -36,6 +36,7 @@ if [ ! -f /var/www/html/console/console.php ];then
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     cd /var/www/html/ \
     && git clone https://github.com/nenes25/prestashop_console.git console \
+    && rm composer.lock
     && cd console \
     && composer install
 
