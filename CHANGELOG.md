@@ -1,3 +1,7 @@
+# Version 2.1.5
+
+- Fix: Fix Js error
+
 # Version 2.1.4
 
 - Fix: credit card block are displaying even if no credit card payment are activated
