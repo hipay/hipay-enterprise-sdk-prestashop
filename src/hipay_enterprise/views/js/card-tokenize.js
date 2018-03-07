@@ -12,28 +12,30 @@
 
 $(document).ready(function () {
     $(".ioBB").val($("#ioBB").val());
-    $('<a href="#" class="tooltips">' + i18nCVCLabelLocal + '<span>' + i18nCVCTooltipLocal + '</span></a>').insertAfter('#cvc');
-    $('.card-js #card-number').attr('placeholder',i18nCardNumberLocal);
-    $('.card-js #the-card-name-id').attr('placeholder',i18nNameOnCardLocal);
-    $('.card-js .expiry').attr('placeholder',i18nDateLocal);
+    if ($("#credit-card-group").length) {
+        $('<a href="#" class="tooltips">' + i18nCVCLabelLocal + '<span>' + i18nCVCTooltipLocal + '</span></a>').insertAfter('#cvc');
+        $('.card-js #card-number').attr('placeholder', i18nCardNumberLocal);
+        $('.card-js #the-card-name-id').attr('placeholder', i18nNameOnCardLocal);
+        $('.card-js .expiry').attr('placeholder', i18nDateLocal);
+    }
 });
 
-$("#card-number").focus(function() {
+$("#card-number").focus(function () {
     $('#radio-no-token').prop('checked', true);
 });
 
-$('#radio-no-token').change(function() {
+$('#radio-no-token').change(function () {
     $('#credit-card-group').collapse('show');
 });
 
-$('.radio-with-token').change(function() {
+$('.radio-with-token').change(function () {
     $('#credit-card-group').collapse('hide');
 });
 
 function checkPaymentDate() {
     if ($(".expiry").val() === null || $(".expiry").val() === "") {
         $(".expiry").addClass("error-input-hp");
-        var pInsert = $("<span>"+i18nFieldIsMandatory+"</span>");
+        var pInsert = $("<span>" + i18nFieldIsMandatory + "</span>");
         $(".expiry").after(pInsert);
         pInsert.addClass("error-text-hp");
         return false;
