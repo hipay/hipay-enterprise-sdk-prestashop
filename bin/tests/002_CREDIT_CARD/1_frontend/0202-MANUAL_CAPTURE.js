@@ -54,7 +54,7 @@ casper.test.begin('Test manual capture', function(test) {
             orderReference = casper.getOrderReference();
             cartID = casper.getCartId();
             orderID = casper.getOrderId();
-            this.processNotifications(true,false,false,true);
+            this.processNotifications(true,false,false,true,"OGONE_DEV");
         })
         .thenOpen(baseURL, function () {
             this.logToBackend();
@@ -116,7 +116,7 @@ casper.test.begin('Test manual capture', function(test) {
             }, 15000);
     })
     .then(function () {
-        this.processNotifications(false,false,true,true);
+        this.processNotifications(false,false,true,true,"OGONE_DEV");
     })
     .then(function () {
         this.logToBackend();
@@ -176,7 +176,7 @@ casper.test.begin('Test manual capture', function(test) {
         }, 15000);
     })
     .then(function () {
-        this.processNotifications(false,false,true,false);
+        this.processNotifications(false,false,true,false,"OGONE_DEV");
     })
     .run(function() {
         this.configureCaptureMode("automatic");

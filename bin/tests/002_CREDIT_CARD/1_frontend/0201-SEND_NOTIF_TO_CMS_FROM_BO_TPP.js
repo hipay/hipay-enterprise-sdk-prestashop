@@ -15,7 +15,7 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 		orderReference = casper.getOrderReference();
 		cartID = casper.getCartId();
 		orderID = casper.getOrderId();
-		this.processNotifications(true,false,true,false);
+		this.processNotifications(true,false,true,false,"OGONE_DEV");
 	})
 	.then(function() {
 		this.checkOrderStatus(true,true,true,false);
