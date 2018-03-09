@@ -30,6 +30,46 @@ class ApiCaller
 {
 
     /**
+     *  Get Security Settings form Backend Hipay
+     *
+     * @param $moduleInstance
+     * @return string
+     * @throws GatewayException
+     */
+    public static function getSecuritySettings($moduleInstance, $plateform)
+    {
+        $isMoto = false;
+        try {
+            if ($plateform == HipayHelper::TEST_MOTO ||
+                $plateform == HipayHelper::PRODUCTION_MOTO) {
+                $isMoto = true;
+            }
+            // HiPay Gateway
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, $isMoto, $plateform );
+
+            $response = $gatewayClient->requestSecuritySettings();
+
+            $moduleInstance->getLogs()->logInfos("# RequestSecuritySettings for ${plateform}");
+
+            return $response;
+        } catch (Exception $e) {
+            $moduleInstance->getLogs()->logException($e);
+            throw new GatewayException(
+                'An error occured during request requestSecuritySettings. Please Retry later. Reason [' .
+                $e->getMessage() .
+                ']',
+                $e->getCode(),
+                null,
+                Context::getContext(),
+                $moduleInstance
+            );
+        }
+    }
+
+
+    /**
+
+    /**
      * return hosted payment page URL for forwarding
      * @param type $moduleInstance
      * @return type
@@ -84,9 +124,8 @@ class ApiCaller
             $moduleInstance->getLogs()->logRequest($orderRequest);
 
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-            $transaction = $gatewayClient->requestNewOrder($orderRequest);
+            return $gatewayClient->requestNewOrder($orderRequest);
 
-            return $transaction;
         } catch (Exception $e) {
             $db = new HipayDBQuery($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
@@ -150,11 +189,22 @@ class ApiCaller
     /**
      * create gateway client from config and client provider
      * @param type $moduleInstance
+     * @param boolean $moto
+     * @param boolean|string $forceConfig
      * @return \HiPay\Fullservice\Gateway\Client\GatewayClient
      */
-    private static function createGatewayClient($moduleInstance, $moto = false)
+    private static function createGatewayClient($moduleInstance, $moto = false, $forceConfig = false)
     {
-        $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
+        $sandbox = false;
+        if (!$forceConfig) {
+            $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
+        } else {
+            // Some calls do not take into account the general configuration (Security Settings)
+            if (is_string($forceConfig) && $forceConfig == HipayHelper::TEST ||
+                $forceConfig == HipayHelper::TEST_MOTO ) {
+                $sandbox = true;
+            }
+        }
 
         if ($moto &&
             !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]) &&
@@ -183,8 +233,6 @@ class ApiCaller
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
 
         //Create your gateway client
-        $gatewayClient = new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
-
-        return $gatewayClient;
+        return new \HiPay\Fullservice\Gateway\Client\GatewayClient($clientProvider);
     }
 }

@@ -36,6 +36,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         $this->name = 'notify';
         if ($this->module->active == false) {
             $this->module->getLogs()->logErrors('Notify : postProcess => Module Disable');
+            header('HTTP/1.1 403 Forbidden');
             die;
         }
 
@@ -60,11 +61,11 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $moto = true;
         }
 
-        if (!HipayHelper::checkSignature($signature, $this->module->hipayConfigTool->getConfigHipay(), true, $moto)) {
+        if (!HipayHelper::checkSignature($signature, $this->module,  true, $moto)) {
             $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
+            header('HTTP/1.1 403 Forbidden');
             die('Bad Callback initiated - signature');
         }
-
 
         $notificationHandler->processTransaction();
         die();

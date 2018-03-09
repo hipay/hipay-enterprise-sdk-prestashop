@@ -107,6 +107,10 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Please check the information entered.');
         $fake = $this->l('Please check the phone number entered.');
         $fake = $this->l('Refused payment for order %s');
+        $fake = $this->l('Hash Algorithm for %s was already set with %s');
+        $fake = $this->l('Hash Algorithm for %s has been syncrhonize with %s');
+        $fake = $this->l('Hash Algorithm for %s has not been updated : You must filled credentials.');
+
     }
 
     public function getLogs()
@@ -178,6 +182,7 @@ class Hipay_enterprise extends PaymentModule
             'AdminHiPayMoto',
             'AdminHiPayChallenge',
             'AdminHiPayConfig',
+            'AdminHiPaySynchronizeHashing'
         );
         return $this->createTabAdmin($class_names);
     }
@@ -208,6 +213,7 @@ class Hipay_enterprise extends PaymentModule
             'AdminHiPayMoto',
             'AdminHiPayChallenge',
             'AdminHiPayConfig',
+            'AdminHiPaySynchronizeHashing'
         );
         foreach ($class_names as $class_name) {
             $id_tab = (int)Tab::getIdFromClassName($class_name);
@@ -741,7 +747,11 @@ class Hipay_enterprise extends PaymentModule
                 'lang' => Tools::strtolower($this->context->language->iso_code),
                 'languages' => Language::getLanguages(false),
                 'source' => $source,
-                'ps_round_total' => Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL
+                'ps_round_total' => Configuration::get('PS_ROUND_TYPE') == Order::ROUND_TOTAL,
+                'ajax_url' => $this->context->link->getAdminLink('AdminModules'),
+                'url_site' => Tools::getHttpHost(true).__PS_BASE_URI__,
+                'syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
+                'syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing')
             )
         );
 

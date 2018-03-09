@@ -64,7 +64,7 @@ class Apihandler
         $params["moto"] = true;
         $params["iframe"] = false;
         $params["authentication_indicator"] = 0;
-        $params["productlist"] = $this->getCreditCardProductList(
+        $params["productlist"] = HipayHelper::getCreditCardProductList(
             $this->module,
             $this->configHipay,
             $deliveryCountry,
