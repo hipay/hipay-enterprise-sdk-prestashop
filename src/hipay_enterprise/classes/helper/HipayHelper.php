@@ -143,8 +143,11 @@ class HipayHelper
         $hashAlgorithm = $config["account"]["hash_algorithm"][$environment];
         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
 
+        // Temp for CI
+        $module->getLogs()->logInfos("# {$passphrase} {$hashAlgorithm}");
+
         if (!$isValidSignature && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)) {
-            $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for " + $environment);
+            $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for {$environment}");
             try {
                 if (HipayHelper::existCredentialForPlateform($module, $environment)) {
                     $hashAlgorithmAccount = ApiCaller::getSecuritySettings($module, $environment);
@@ -152,7 +155,7 @@ class HipayHelper
                         $configHash = $module->hipayConfigTool->getHashAlgorithm();
                         $configHash[$environment] = $hashAlgorithmAccount->getHashingAlgorithm();
                         $module->hipayConfigTool->setHashAlgorithm($configHash);
-                        $module->getLogs()->logInfos("# Hash Algorithm is now synced for " + $environment);
+                        $module->getLogs()->logInfos("# Hash Algorithm is now synced for {$environment}");
                         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithmAccount->getHashingAlgorithm());
                     }
                 }

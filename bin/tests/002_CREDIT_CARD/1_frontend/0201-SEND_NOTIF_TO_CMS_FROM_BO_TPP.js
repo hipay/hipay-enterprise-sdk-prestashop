@@ -18,6 +18,9 @@ casper.test.begin('Send Notification to Prestashop from TPP BackOffice via ' + p
 		this.processNotifications(true,false,true,false,"OGONE_DEV");
 	})
 	.then(function() {
+		this.wait(20000, function() {
+			// Temp for Debug CI
+		});
 		this.checkOrderStatus(true,true,true,false);
 	})
 	.then(function() {
