@@ -143,9 +143,6 @@ class HipayHelper
         $hashAlgorithm = $config["account"]["hash_algorithm"][$environment];
         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
 
-        // Temp for CI
-        $module->getLogs()->logInfos("# {$passphrase} {$hashAlgorithm}");
-
         if (!$isValidSignature && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)) {
             $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for {$environment}");
             try {
