@@ -24,7 +24,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + currentBrandCC, fu
     .then(function() {
         this.echo("Open Integration nav", "INFO");
         this.waitForUrl(/maccount/, function success() {
-            this.selectHashingAlgorithm("SHA51");
+            this.selectHashingAlgorithm("SHA1");
         }, function fail() {
             test.assertUrlMatch(/maccount/, "Dashboard page with account ID exists");
         })
