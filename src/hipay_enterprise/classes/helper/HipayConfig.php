@@ -387,7 +387,8 @@ class HipayConfig
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
                     "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
-                    "ccFrontPosition" => 1
+                    "ccFrontPosition" => 1,
+                    "send_url_notification" => 0
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()

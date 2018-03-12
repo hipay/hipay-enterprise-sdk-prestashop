@@ -148,6 +148,16 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->exception_url = $exception_url;
         $order->cancel_url = $cancel_url;
 
+        $config = $this->module->hipayConfigTool->getPaymentGlobal();
+        if ($config["send_url_notification"]) {
+            $order->notify_url = $this->context->link->getModuleLink(
+                $this->module->name,
+                'notify',
+                array(),
+                true
+            );
+        }
+
         $order->customerBillingInfo = $this->getCustomerBillingInfo();
         $order->customerShippingInfo = $this->getCustomerShippingInfo();
         $order->firstname = $this->customer->firstname;

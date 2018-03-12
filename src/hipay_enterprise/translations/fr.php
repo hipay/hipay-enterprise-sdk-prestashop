@@ -356,6 +356,8 @@ $_MODULE['<{hipay_enterprise}prestashop>global_6c1e9c72d62db61b99c2f2f489091a62'
 $_MODULE['<{hipay_enterprise}prestashop>global_2db69219312edb6a40f1db8f6bae16d7'] = 'Inférieur ou égal à ';
 $_MODULE['<{hipay_enterprise}prestashop>global_4c2a7b52c5f2651ccc48007d3c8e9f16'] = 'Égal à';
 $_MODULE['<{hipay_enterprise}prestashop>global_6ce14b8c89f6e674e2d56301d410c617'] = 'Différent de ';
+$_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
+$_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
 $_MODULE['<{hipay_enterprise}prestashop>local_63a9681ca50ce6ebf74c19defb9747af'] = 'Méthodes de paiement locales';
