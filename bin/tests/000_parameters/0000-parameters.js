@@ -17,7 +17,7 @@ var fs = require('fs'),
     cartID = 0,
     orderReference = 0,
 	headerModule = "../../Modules/",
-	urlBackend = "https://merchant.hipay-tpp.com/",
+	urlBackend = "https://stage-merchant.hipay-tpp.com/",
 	urlNotification = "index.php?fc=module&module=hipay_enterprise&controller=notify",
     authentification = require(headerModule + 'step-authentification'),
     mailcatcher = require(headerModule + 'step-mailcatcher'),
@@ -58,4 +58,3 @@ casper.test.begin('Parameters', function(test) {
 	casper.echo('Paramètres chargés !', 'INFO');
 	test.done();
 });
-	

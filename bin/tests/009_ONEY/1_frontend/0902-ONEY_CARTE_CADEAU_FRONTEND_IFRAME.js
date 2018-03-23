@@ -8,7 +8,7 @@
 
 var paymentType = "HiPay Enterprise carte cadeau Oney";
 
-casper.test.begin('Test Checkout ' + paymentType, function (test) {
+casper.test.begin('Test Checkout ' + paymentType + ' with Iframe' , function (test) {
     phantom.clearCookies();
 
     casper.start(baseURL)
