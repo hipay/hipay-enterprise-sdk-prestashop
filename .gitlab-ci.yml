@@ -34,9 +34,8 @@ casperjs-part1:
      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
      - curl --retry 10 --retry-delay 20 -v http://prestashop17
   script:
-   - echo "Skip tests"
-#  - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
-#  - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
+     - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
+     - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
   tags:
   - prestashop
   allow_failure: false
