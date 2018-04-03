@@ -56,7 +56,7 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
 
         if (!$this->moto) {
             $order->template = ($this->configHipay["payment"]["global"]["display_hosted_page"] !==
-                "iframe") ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
+                "iframe" || !$this->iframe) ? $this->configHipay["payment"]["global"]["iframe_hosted_page_template"] : "iframe-js";
         } else {
             $order->template = "basic-js";
         }

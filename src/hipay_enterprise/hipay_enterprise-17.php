@@ -163,7 +163,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
         if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
             $this->hipayConfigTool->getPaymentGlobal()["operating_mode"] !== 'api' ||
-            (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"])
+            (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"]) ||
+            (isset($paymentProduct["forceHpayment"]) && $paymentProduct["forceHpayment"])
         ) {
             $this->context->smarty->assign(
                 array(
