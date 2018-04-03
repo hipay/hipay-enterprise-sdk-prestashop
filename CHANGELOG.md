@@ -1,5 +1,9 @@
 # Version 2.1.5
 
+- Add Oney gift card payment support
+
+# Version 2.1.5
+
 - Fix: Fix Js error
 
 # Version 2.1.4
