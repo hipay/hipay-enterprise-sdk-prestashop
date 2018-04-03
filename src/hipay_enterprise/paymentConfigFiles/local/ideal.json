@@ -24,7 +24,6 @@
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
-    "forceHpayment": 0,
     "forceBasket": 0,
     "minAmount": {
       "EUR": 0
@@ -32,6 +31,7 @@
     "maxAmount": {
       "EUR": false
     },
+    "acceptHostedOrder": true,
     "logo": "ideal.png",
     "additionalFields": {
       "sdkClass": "HiPay\\Fullservice\\Gateway\\Request\\PaymentMethod\\IssuerBankIDPaymentMethod",

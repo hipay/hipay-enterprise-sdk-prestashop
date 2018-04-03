@@ -244,6 +244,22 @@ class HipayHelper
     }
 
     /**
+     * @param $context
+     * @param $moduleInstance
+     */
+    public static function redirectToExceptionPage($context, $moduleInstance)
+    {
+        $redirectUrl404 = $context->link->getModuleLink(
+            $moduleInstance->name,
+            'exception',
+            array('status_error' => 500),
+            true
+        );
+
+        Tools::redirect($redirectUrl404);
+    }
+
+    /**
      *
      *  Redirect customer in Error page
      *
@@ -255,15 +271,9 @@ class HipayHelper
      */
     public static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
     {
-        $redirectUrl404 = $context->link->getModuleLink(
-            $moduleInstance->name,
-            'exception',
-            array('status_error' => 500),
-            true
-        );
 
         if (_PS_VERSION_ >= '1.7') {
-            Tools::redirect($redirectUrl404);
+            self::redirectToExceptionPage($context, $moduleInstance);
         }
 
         if ($cart) {
@@ -332,7 +342,7 @@ class HipayHelper
             $currency,
             $orderTotal
         );
-        
+
         if (!empty($creditCards)) {
             $activatedCreditCard["credit_card"]["frontPosition"] = $configHipay["payment"]["global"]["ccFrontPosition"];
             $activatedCreditCard["credit_card"]["products"] = $creditCards;
@@ -560,9 +570,11 @@ class HipayHelper
     public static function orderExists($cart_id)
     {
         if ($cart_id) {
+
             $result = (bool)Db::getInstance()->getValue(
                 'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
             );
+
             return $result;
         }
         return false;

@@ -1,0 +1,43 @@
+{
+  "name": "carte-cadeau",
+  "config": {
+    "group": {
+      "code": "oney",
+      "label": "Oney Facily Pay"
+    },
+    "displayNameBO": "Oney CARTE CADEAU",
+    "displayName":  {
+      "fr": "Oney CARTE CADEAU",
+      "en": "Oney CARTE CADEAU"
+    },
+    "frontPosition": 31,
+    "activated": 0,
+    "canRefund": 0,
+    "canManualCapture": 1,
+    "currencies": [
+      "EUR"
+    ],
+    "countries": [
+      "FR"
+    ],
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "forceApiOrder": 1,
+    "forceBasket": 1,
+    "forceHpayment": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "oney-carte-cadeau.png",
+    "additionalFields": {}
+  }
+}

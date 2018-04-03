@@ -1,33 +1,42 @@
-mysql:
-  ports:
-    - "3318:3306"
-  env_file:
-    - ./conf/env_file/stage/env
-prestashop16:
-  container_name: hipay-enterprise-shop-ps16-stage
-  dockerfile: ./conf/docker/Dockerfile16
-  build: .
-  ports:
-    - "8086:80"
-  links:
-    - smtp
-    - mysql
-  env_file:
-    - ./conf/env_file/stage/env
-    - ./conf/env_file/stage/env16
-prestashop17:
-  container_name: hipay-enterprise-shop-ps17-stage
-  dockerfile: ./conf/docker/Dockerfile17
-  build: .
-  ports:
-    - "8087:80"
-  links:
-    - smtp
-    - mysql
-  env_file:
-    - ./conf/env_file/stage/env
-    - ./conf/env_file/stage/env17
-smtp:
-  ports:
-    - "1018:80"
+version: "2.1"
 
+networks:
+  prestashop:
+    internal: true
+  outside:
+    external: true
+
+services:
+  mysql:
+    container_name: mysql-ps17-$CI_JOB_ID
+    networks:
+      - prestashop
+    env_file:
+      - ./conf/env_file/stage/env
+  #prestashop16:
+  #  container_name: hipay-enterprise-ps17{BUILD_REF}
+  #  dockerfile: ./conf/docker/Dockerfile16
+  #  build: .
+  #  ports:
+  #    - "8186:80"
+  #  links:
+  #    - smtp
+  #    - mysql
+  #  env_file:
+  #    - ./conf/env_file/stage/env
+  #    - ./conf/env_file/stage/env16
+  prestashop17:
+    container_name: hipay-enterprise-ps17-$CI_JOB_ID
+    build:
+      context: .
+      dockerfile: ./conf/docker/Dockerfile17
+    env_file:
+      - ./conf/env_file/stage/env
+      - ./conf/env_file/stage/env17
+    networks:
+      - prestashop
+      - outside
+  smtp:
+    container_name: smtp-test-$CI_JOB_ID
+    networks:
+      - prestashop

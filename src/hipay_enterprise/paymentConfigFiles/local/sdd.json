@@ -26,7 +26,7 @@
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
-    "forceHpayment": 0,
+    "forceApiOrder": 1,
     "forceBasket": 0,
     "electronicSignature": 1,
     "minAmount": {

@@ -12,3 +12,5 @@ composer.lock
 .idea/
 gulpfile.ts
 node_modules/
+bin/tests/000_lib/bower_components
+bin/tests/000_lib/bower_components
