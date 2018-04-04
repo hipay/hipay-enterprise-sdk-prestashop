@@ -1,6 +1,8 @@
-# Version 2.1.5
+# Version 2.2.0
 
 - Add Oney gift card payment support
+- Add support for several hashing algorithm for notification
+- Add support for notify_url
 
 # Version 2.1.5
 
