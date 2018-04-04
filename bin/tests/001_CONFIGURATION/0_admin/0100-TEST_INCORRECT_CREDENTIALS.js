@@ -17,6 +17,7 @@ casper.test.begin('Test filling wrong credentials and pay ' + paymentType + ' wi
 
     casper.start(baseURL)
     .then(function() {
+
         if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
            this.logToBackend();
         }

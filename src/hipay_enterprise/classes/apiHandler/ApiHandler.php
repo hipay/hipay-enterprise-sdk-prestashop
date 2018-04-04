@@ -135,10 +135,25 @@ class Apihandler
 
         $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
 
-        if ( $mode == Apihandler::HOSTEDPAGE && !empty($configMethod["additionalFields"]) && !$this->forceApiOrder($configMethod)) {
+        if (
+            $mode == Apihandler::HOSTEDPAGE &&
+            ((!empty($configMethod["additionalFields"])
+                    && !$this->forceApiOrder($configMethod))
+                || $this->forceHpayment($configMethod))
+        ) {
             $this->handleHostedPayment($params);
-        } elseif($mode == Apihandler::IFRAME && !empty($configMethod["additionalFields"]) && !$this->forceApiOrder($configMethod)) {
+        } elseif (
+            $mode == Apihandler::IFRAME &&
+            ((!empty($configMethod["additionalFields"])
+                    && !$this->forceApiOrder($configMethod))
+                || $this->forceHpayment($configMethod))
+        ) {
             return $this->handleIframe($params);
+        } elseif (
+            $mode == Apihandler::DIRECTPOST
+            && $this->forceHpayment($configMethod)
+        ) {
+            return $this->handleHostedPayment($params);
         } else {
             $this->handleDirectOrder($params);
         }
@@ -290,6 +305,7 @@ class Apihandler
     private function handleHostedPayment($params, $cart = false, $moto = false)
     {
         try {
+            $params['iframe'] = false;
             Tools::redirect(ApiCaller::getHostedPaymentPage($this->module, $params, $cart, $moto));
         } catch (GatewayException $e) {
             $e->handleException();
@@ -417,9 +433,33 @@ class Apihandler
      * @param $configMethod
      * @return bool
      */
-    private function forceApiOrder($configMethod){
-        if(isset($configMethod["forceApiOrder"])){
-            return $configMethod["forceApiOrder"];
+    private function forceApiOrder($configMethod)
+    {
+        return (bool)$this->getMethodConfigField($configMethod, "forceApiOrder");
+    }
+
+    /**
+     * Check if payment method force Hpayment
+     *
+     * @param $configMethod
+     * @return bool
+     */
+    private function forceHpayment($configMethod)
+    {
+        return (bool)$this->getMethodConfigField($configMethod, "forceHpayment");
+    }
+
+    /**
+     * get Method config field
+     *
+     * @param $configMethod
+     * @param $field
+     * @return bool
+     */
+    private function getMethodConfigField($configMethod, $field)
+    {
+        if (isset($configMethod[$field])) {
+            return $configMethod[$field];
         }
 
         return false;

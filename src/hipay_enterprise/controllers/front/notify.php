@@ -41,13 +41,14 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         }
 
         $params = $_POST;
-        $transactionReference = $params["transaction_reference"];
+        $transactionReference = (isset($params["transaction_reference"])) ? $params["transaction_reference"] : '';
         // Process log from notification
         $this->module->getLogs()->logCallback($params);
 
         // Check if status is present in Post Data
         if (!isset($params['state']) && !isset($params['status'])) {
             $this->module->getLogs()->logErrors('Notify : Status not exist in Post DATA');
+            header("HTTP/1.0 500 Internal server error");
             die();
         }
 
