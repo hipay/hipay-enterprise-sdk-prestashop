@@ -144,6 +144,8 @@ class HipayConfigFormHandler
                 }
             }
 
+            $accountConfig["hash_algorithm"] = $this->module->hipayConfigTool->getHashAlgorithm();
+
             //save configuration
             $this->module->hipayConfigTool->setConfigHiPay("account", $accountConfig);
 

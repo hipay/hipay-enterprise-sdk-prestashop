@@ -14,7 +14,34 @@ function randNumbInRange(min, max) {
 
 casper.test.begin('Functions', function(test) {
 
-   casper.getOrderReference = function() {
+    casper.selectHashingAlgorithm = function(hashing) {
+        this.click('a.nav-integration');
+        this.waitForSelector('div.box-content a:nth-child(3)', function success() {
+            this.thenClick('div.box-content a:nth-child(3)', function() {
+                this.waitForUrl(/security/, function success() {
+                    this.echo("Selecting Hashing Algorithm", "INFO");
+                    this.fillSelectors('form.form-vertical', {
+                        'select[name="hash_algorithm"]': hashing,
+                    }, false);
+                    this.click('div.form-actions button[type="submit"]');
+
+                    this.waitForText('Settings have been successfully updated', function success() {
+                        test.info("Done");
+                    }, function fail() {
+                        test.assertExists('div.box-content a:nth-child(3)', "Security tab exists");
+                    });
+                }, function fail() {
+                    test.assertUrlMatch(/security/, "Security page exists");
+                });
+
+            });
+        }, function fail() {
+            test.assertExists('div.box-content a:nth-child(3)', "Security tab exists");
+        });
+    };
+
+
+    casper.getOrderReference = function() {
         return orderReference;
    };
 

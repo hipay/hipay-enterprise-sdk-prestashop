@@ -274,7 +274,32 @@
                     </div>
                 </div>
             </div>
-
+            <div class="form-group">
+                <label class="control-label col-lg-3">
+                    <span>
+                        {l s='Send url Notification' mod='hipay_enterprise'}
+                    </span>
+                </label>
+                <div class="col-lg-9">
+                    <div class="row">
+                    <span class="switch prestashop-switch fixed-width-lg">
+                        <input type="radio" name="send_url_notification"
+                               id="send_url_notification_switchmode_on" value="1"
+                               {if $config_hipay.payment.global.send_url_notification }checked="checked"{/if}>
+                        <label for="send_url_notification_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                        <input type="radio" name="send_url_notification"
+                               id="send_url_notification_switchmode_off" value="0"
+                               {if $config_hipay.payment.global.send_url_notification == false}checked="checked"{/if}>
+                        <label for="send_url_notification_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                        <a class="slide-button btn"></a>
+                    </span>
+                        <p class="help-block">
+                            <i class='icon icon-warning text-danger'></i>
+                            {l s='If so, then the URL of your site is sent during the payment and notifications will be sent to this URL. To use only for multi site.' mod='hipay_enterprise'}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div class="panel-footer">
