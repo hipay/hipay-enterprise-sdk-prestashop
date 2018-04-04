@@ -4,7 +4,9 @@ mysql:
     - "3318:3306"
   env_file:
     - ./conf/env_file/development/env
+  mem_limit: 500M
 smtp:
   image: schickling/mailcatcher
   ports:
     - "1018:1080"
+  mem_limit: 256M

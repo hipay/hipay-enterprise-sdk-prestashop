@@ -13,6 +13,8 @@
 
 require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
 
+use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
+
 /**
  * handle module configuration
  *
@@ -113,6 +115,24 @@ class HipayConfig
     }
 
     /**
+     * @param string $platform
+     * @return mixed
+     */
+    public function getHashAlgorithm()
+    {
+        return $this->getConfigHipay()["account"]["hash_algorithm"];
+    }
+
+    /**
+     * @param string $platform
+     * @return mixed
+     */
+    public function setHashAlgorithm($value)
+    {
+        return $this->setConfigHiPay("account",$value,"hash_algorithm");
+    }
+
+    /**
      * @return mixed
      */
     public function getFraud()
@@ -123,14 +143,15 @@ class HipayConfig
 
 
     /**
-     *  save a specific key of the module config
+     *  Save a specific key of the module config
      *
      * @param $key
      * @param $value
+     * @param $child
      * @return bool
      * @throws Exception
      */
-    public function setConfigHiPay($key, $value)
+    public function setConfigHiPay($key, $value, $child = null)
     {
         // Use this function only if you have just one variable to update
         // init multistore
@@ -140,8 +161,12 @@ class HipayConfig
         // the config is stacked in JSON
         $confHipay = Tools::jsonDecode(Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop), true);
 
-        $confHipay[$key] = $value;
-        //$confHipay = array_replace_recursive($confHipay,$value);
+        if (isset($child)) {
+            $confHipay[$key][$child] = $value;
+        } else {
+            $confHipay[$key] = $value;
+        }
+
         if (Configuration::updateValue(
             'HIPAY_CONFIG',
             Tools::jsonEncode($confHipay),
@@ -333,6 +358,12 @@ class HipayConfig
                     "api_moto_username_production" => "",
                     "api_moto_password_production" => "",
                     "api_moto_secret_passphrase_production" => ""
+                ),
+                "hash_algorithm" => array(
+                    "production" => HashAlgorithm::SHA1,
+                    "test" => HashAlgorithm::SHA1,
+                    "production_moto" => HashAlgorithm::SHA1,
+                    "test_moto" => HashAlgorithm::SHA1
                 )
             ),
             "payment" => array(
@@ -356,7 +387,8 @@ class HipayConfig
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
                     "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
-                    "ccFrontPosition" => 1
+                    "ccFrontPosition" => 1,
+                    "send_url_notification" => 0
                 ),
                 "credit_card" => array(),
                 "local_payment" => array()
@@ -369,7 +401,6 @@ class HipayConfig
         );
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
-
 
         return $this->setAllConfigHiPay($configFields);
     }

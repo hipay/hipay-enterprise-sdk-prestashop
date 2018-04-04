@@ -255,6 +255,111 @@
                     </div>
                 </div>
             </div>
+            <div class="panel" id="hashAlgorithm">
+                <div class="form-wrapper">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#collapseSandbox" aria-expanded="true"
+                           aria-controls="collapseSandbox">
+                            {l s='Hash Algorithm configuration' mod='hipay_enterprise'} <i id="chevronSand"
+                                                                                    class="pull-right chevron icon icon-chevron-up"></i>
+                        </a>
+                    </div>
+                    <div class="collapse in" id="collapseSandbox">
+                        <div class="form-group">
+                            <div class="col-lg-6 col-lg-offset-2">
+                                <div class="alert alert-info">
+                                    {l s='If the hash configuration is different than the one set in your Hipay back office, then the notifications will not work. Check that both values match.'  mod='hipay_enterprise'}
+                                 </div>
+                            </div>
+                        </div>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Hash Algorithm' mod='hipay_enterprise'}</h5>
+                        <div class="form-group">
+                            <label class="required control-label col-lg-2">
+                                {l s='Production' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                        <div class="">
+                                            <select name="hash_algorithm_production" class="col-lg-2" id="hash_algorithm_production" disabled="disabled">
+                                                <option value="SHA1"
+                                                        {if $config_hipay.account.hash_algorithm.production == "SHA1"}selected="selected" {/if} >SHA-1</option>
+                                                <option value="SHA256"
+                                                    {if $config_hipay.account.hash_algorithm.production == "SHA256"}selected="selected" {/if} >SHA-256</option>
+                                                <option value="SHA512"
+                                                        {if $config_hipay.account.hash_algorithm.production == "SHA512"}selected="selected" {/if} >SHA-512</option>
+                                            </select>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required control-label col-lg-2">
+                                {l s='Test' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="">
+                                        <select name="hash_algorithm_test" class="col-lg-2" id="hash_algorithm_test" disabled="disabled">
+                                            <option value="SHA1"
+                                                    {if $config_hipay.account.hash_algorithm.test == "SHA1"}selected="selected" {/if} >SHA-1</option>
+                                            <option value="SHA256"
+                                                {if $config_hipay.account.hash_algorithm.test == "SHA256"}selected="selected" {/if} >SHA-256</option>
+                                            <option value="SHA512"
+                                                    {if $config_hipay.account.hash_algorithm.test == "SHA512"}selected="selected" {/if} >SHA-512</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required control-label col-lg-2">
+                                {l s='MO/TO Production ' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="">
+                                        <select name="hash_algorithm_production_moto" class="col-lg-2" id="hash_algorithm_production_moto" disabled="disabled">
+                                            <option value="SHA1"
+                                                    {if $config_hipay.account.hash_algorithm.production_moto == "SHA1"}selected="selected" {/if} >SHA-1</option>
+                                            <option value="SHA256"
+                                                {if $config_hipay.account.hash_algorithm.production_moto == "SHA256"}selected="selected" {/if} >SHA-256</option>
+                                            <option value="SHA512"
+                                                    {if $config_hipay.account.hash_algorithm.production_moto == "SHA512"}selected="selected" {/if} >SHA-512</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required control-label col-lg-2">
+                                {l s='MO/TO Test' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="">
+                                        <select name="hash_algorithm_test_moto" class="col-lg-2" id="hash_algorithm_test_moto" disabled="disabled">
+                                            <option value="SHA1"
+                                                    {if $config_hipay.account.hash_algorithm.test_moto == "SHA1"}selected="selected" {/if} >SHA-1</option>
+                                            <option value="SHA256"
+                                                {if $config_hipay.account.hash_algorithm.test_moto == "SHA256"}selected="selected" {/if} >SHA-256</option>
+                                            <option value="SHA512"
+                                                    {if $config_hipay.account.hash_algorithm.test_moto == "SHA512"}selected="selected" {/if} >SHA-512</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-lg-2"></span>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <input type="button" value="{l s='Synchronize Hash Algorithm' mod='hipay_enterprise'}" id="synchronize-hash" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="panel" id="fieldset_0">
                 <div class="form-wrapper">
                     <div class="panel-heading">
@@ -337,29 +442,57 @@
         </div>
     </form>
 </div>
-<script>
 
-    $('#collapseProduction').on('shown.bs.collapse', function () {
-        $("#chevronProd").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-    });
+<script type="text/javascript">
+    $(document).ready(function() {
 
-    $('#collapseProduction').on('hidden.bs.collapse', function () {
-        $("#chevronProd").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-    });
+        function updateValueHashingAlgorithm(plaform,value) {
+            $("div#hashAlgorithm select#hash_algorithm_" + plaform).val(value);
+        }
 
-    $('#collapseSandbox').on('shown.bs.collapse', function () {
-        $("#chevronSand").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-    });
+        $('#synchronize-hash').on('click', function() {
+            if (confirm("{l s='Are you sure you want to sync the hashing configuration for notifications ?' mod='hipay_enterprise'}")) {
+                $.get('{$syncLink}&ajax=1&action=SynchronizeHashing',
+                        function (response) {
+                            for (var platform in response) {
+                                showSuccessMessage(response[platform].message);
+                                if (response[platform].hasOwnProperty("value")) {
+                                    updateValueHashingAlgorithm(platform, response[platform].value);
+                                }
+                            }
+                        }
+                )
+                        .fail(function () {
+                            showErrorMessage("{l s='An error has occured. Please try again' mod='hipay_enterprise'}");
+                        });
+            }
+        });
 
-    $('#collapseSandbox').on('hidden.bs.collapse', function () {
-        $("#chevronSand").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-    });
 
-    $('#collapseTechnical').on('shown.bs.collapse', function () {
-        $("#chevronTec").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-    });
+        $('#collapseProduction').on('shown.bs.collapse', function () {
+            $("#chevronProd").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+        });
 
-    $('#collapseTechnical').on('hidden.bs.collapse', function () {
-        $("#chevronTec").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+        $('#collapseProduction').on('hidden.bs.collapse', function () {
+            $("#chevronProd").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+        });
+
+        $('#collapseSandbox').on('shown.bs.collapse', function () {
+            $("#chevronSand").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+        });
+
+        $('#collapseSandbox').on('hidden.bs.collapse', function () {
+            $("#chevronSand").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+        });
+
+        $('#collapseTechnical').on('shown.bs.collapse', function () {
+            $("#chevronTec").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+        });
+
+        $('#collapseTechnical').on('hidden.bs.collapse', function () {
+            $("#chevronTec").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+        });
+
     });
 </script>
+

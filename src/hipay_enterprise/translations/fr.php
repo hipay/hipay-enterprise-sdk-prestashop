@@ -15,6 +15,9 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisis.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa118794cbb'] = 'L\'algorithme de hachage pour %s n\'a pas été mis à jour: Vous devez renseigner les informations d\'identification.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
@@ -44,8 +47,6 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN incorrect';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser cette méthode de paiement.';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';
@@ -75,6 +76,9 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_5bf54f627807f6a4247706d
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_39d2b7e414467c725ba2be7ff1d98602'] = 'Sélectionnez au moins un article à rembourser.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_170e56581f50a891010abea41cd8fea3'] = 'Le montant remboursé doit être supérieur à zéro.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_a87c213c9a08d3c38c5cc5876f1ea995'] = 'Le remboursement a été validé.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_85640588e13fe53dd5601fa118794cbb'] = 'L\'algorithme de hachage pour %s n\'a pas été mis à jour: Vous devez renseigner les informations d\'identification.';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_8a6a1ae7df2ffd93f8cb4ea79d944c99'] = 'Vous n\'avez aucune carte de crédit/débit sauvegardée.';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_3099e4792d8c7bf8970f8250b3d07715'] = 'Carte de crédit supprimée avec succès.';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_cea9a47d24ce678d0148ad6d9208f087'] = 'Cette carte de crédit n\'existe pas.';
@@ -189,6 +193,13 @@ $_MODULE['<{hipay_enterprise}prestashop>account_5f9e830e8d80c8c4e869029397fa1e0f
 $_MODULE['<{hipay_enterprise}prestashop>account_4584417f25864754ae43e281c6a770a4'] = 'Tokénisation (publique)';
 $_MODULE['<{hipay_enterprise}prestashop>account_304095b80b587b8a13cd16bd84267abc'] = 'Identifiants du compte MO/TO';
 $_MODULE['<{hipay_enterprise}prestashop>account_0d541e74cb2e3fa72f7d2e1eece61ef7'] = 'Configuration de test';
+$_MODULE['<{hipay_enterprise}prestashop>account_d8c8dad4bc0ce3a1fa50096362b0b0b2'] = 'Configuration du Hash';
+$_MODULE['<{hipay_enterprise}prestashop>account_5745b40a739a4019ac6d6948c55a1a23'] = 'Si la configuration du hachage est différente de celle définie dans votre back-office Hipay, les notifications ne fonctionneront pas. Vérifiez que les deux valeurs correspondent.';
+$_MODULE['<{hipay_enterprise}prestashop>account_c72f8a9b63ef41f2773b97c4abdaadcd'] = 'Hash Algorithm';
+$_MODULE['<{hipay_enterprise}prestashop>account_756d97bb256b8580d4d71ee0c547804e'] = 'Production ';
+$_MODULE['<{hipay_enterprise}prestashop>account_7a597b7dedd883eaf9ee43d8965eb774'] = 'MO/TO Production';
+$_MODULE['<{hipay_enterprise}prestashop>account_37a9a24f6bc095e7b7b8ba6a8174525e'] = 'MO/TO Test';
+$_MODULE['<{hipay_enterprise}prestashop>account_229395498ff67d76e793fb1522071daf'] = 'Synchroniser l\'algorithme de hachage';
 $_MODULE['<{hipay_enterprise}prestashop>account_c7a8a9825f7e58afce28e61957b4c9b0'] = 'Configuration technique';
 $_MODULE['<{hipay_enterprise}prestashop>account_6c4596f305a4adf4152bcabd10bf6cea'] = 'Si votre serveur est derrière un proxy, renseignez ces informations pour que les appels à la passerelle HiPay fonctionnent.';
 $_MODULE['<{hipay_enterprise}prestashop>account_c2ca16d048ec66e04bca283eab048ec2'] = 'Hôte';
@@ -196,6 +207,8 @@ $_MODULE['<{hipay_enterprise}prestashop>account_60aaf44d4b562252c04db7f98497e9aa
 $_MODULE['<{hipay_enterprise}prestashop>account_8f9bfe9d1345237cb3b2b205864da075'] = 'Utilisateur';
 $_MODULE['<{hipay_enterprise}prestashop>account_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>account_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
+$_MODULE['<{hipay_enterprise}prestashop>account_d8e89ebf3a6858465d367df3ca1ce25c'] = 'Êtes-vous sûr de vouloir synchroniser la configuration de hachage pour les notifications?';
+$_MODULE['<{hipay_enterprise}prestashop>account_716fbf64d49a2faa10cf8da0e29d745d'] = 'Une erreur est survenue. Veuillez réessayer';
 $_MODULE['<{hipay_enterprise}prestashop>carrier-mapping_e0772251a1bb5a178ea9440b9f814093'] = 'Vous devez mapper vos méthodes de livraison avec celles de HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>carrier-mapping_810bada0db657f83c8a218454f20be62'] = 'Le mapping des méthodes de livraison est obligatoire pour les méthodes de paiement Oney ou si vous activez l\'option \"Envoyer le panier du client\".';
 $_MODULE['<{hipay_enterprise}prestashop>carrier-mapping_b94184e1fa41e8b591c9aa8f9518851b'] = 'Mapping des méthodes de livraison';
@@ -343,6 +356,8 @@ $_MODULE['<{hipay_enterprise}prestashop>global_6c1e9c72d62db61b99c2f2f489091a62'
 $_MODULE['<{hipay_enterprise}prestashop>global_2db69219312edb6a40f1db8f6bae16d7'] = 'Inférieur ou égal à ';
 $_MODULE['<{hipay_enterprise}prestashop>global_4c2a7b52c5f2651ccc48007d3c8e9f16'] = 'Égal à';
 $_MODULE['<{hipay_enterprise}prestashop>global_6ce14b8c89f6e674e2d56301d410c617'] = 'Différent de ';
+$_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
+$_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
 $_MODULE['<{hipay_enterprise}prestashop>local_63a9681ca50ce6ebf74c19defb9747af'] = 'Méthodes de paiement locales';

@@ -23,6 +23,36 @@ class HipayHelper
 {
 
     /**
+     * @var string
+     */
+    const PRODUCTION = "production";
+
+    /**
+     * @var string
+     */
+    const PRODUCTION_MOTO = "production_moto";
+
+    /**
+     * @var string
+     */
+    const TEST = "test";
+
+    /**
+     * @var string
+     */
+    const TEST_MOTO = "test_moto";
+
+    /**
+     * @var array
+     */
+    public static $platforms = array(
+        self::PRODUCTION,
+        self::TEST,
+        self::PRODUCTION_MOTO,
+        self::TEST_MOTO
+    );
+
+    /**
      * Clear every single merchant account data
      * @return boolean
      */
@@ -88,34 +118,106 @@ class HipayHelper
     }
 
     /**
-     * Check if hipay server signature match post data + passphrase
+     * Check if HiPay server signature match post data + passphrase
+     *
      * @param type $signature
-     * @param type $config
+     * @param type $module Module Instance
      * @param type $fromNotification
      * @return boolean
      */
-    public static function checkSignature($signature, $config, $fromNotification = false, $moto = false)
+    public static function checkSignature($signature, $module, $fromNotification = false, $isMoto = false)
     {
-        $passphrase = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
-            : $config["account"]["production"]["api_secret_passphrase_production"];
-        $passphraseMoto = ($config["account"]["global"]["sandbox_mode"]) ? $config["account"]["sandbox"]["api_secret_passphrase_sandbox"]
-            : $config["account"]["production"]["api_secret_passphrase_production"];
+        $config = $module->hipayConfigTool->getConfigHipay();
 
-        if (empty($passphrase) && empty($signature)) {
-            return true;
+        // Init passphrase and Environment for production
+        $passphrase = $isMoto ? $config["account"]["production"]["api_moto_secret_passphrase_production"] : $config["account"]["production"]["api_secret_passphrase_production"];
+        $environment = $isMoto ? self::PRODUCTION_MOTO : self::PRODUCTION;
+
+        // Get Environment and passphrase for sandbox
+        if ($config["account"]["global"]["sandbox_mode"]) {
+            $environment = $isMoto ? self::TEST_MOTO : self::TEST;
+            $passphrase = $isMoto ? $config["account"]["sandbox"]["api_moto_secret_passphrase_sandbox"] : $config["account"]["sandbox"]["api_secret_passphrase_sandbox"];
         }
 
-        if ($fromNotification) {
-            $rawPostData = Tools::file_get_contents("php://input");
-            if ($signature == sha1($rawPostData . $passphrase) ||
-                ($moto && $signature == sha1($rawPostData . $passphraseMoto))
-            ) {
-                return true;
+        // Validate Signature with Hash
+        $hashAlgorithm = $config["account"]["hash_algorithm"][$environment];
+        $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
+
+        if (!$isValidSignature && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)) {
+            $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for {$environment}");
+            try {
+                if (HipayHelper::existCredentialForPlateform($module, $environment)) {
+                    $hashAlgorithmAccount = ApiCaller::getSecuritySettings($module, $environment);
+                    if ($hashAlgorithm != $hashAlgorithmAccount->getHashingAlgorithm()) {
+                        $configHash = $module->hipayConfigTool->getHashAlgorithm();
+                        $configHash[$environment] = $hashAlgorithmAccount->getHashingAlgorithm();
+                        $module->hipayConfigTool->setHashAlgorithm($configHash);
+                        $module->getLogs()->logInfos("# Hash Algorithm is now synced for {$environment}");
+                        $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithmAccount->getHashingAlgorithm());
+                    }
+                }
+            } catch (Exception $e) {
+                $module->getLogs()->logErrors(sprintf("Update hash failed for %s", $environment));
             }
-            return false;
         }
 
-        return false;
+        return $isValidSignature;
+    }
+
+    /**
+     * Test if credentials are filled for plateform ( If no exists then no synchronization )
+     *
+     * @return boolean True if Credentials are filled
+     */
+    public static function existCredentialForPlateform($module, $platform)
+    {
+        switch ($platform) {
+            case self::PRODUCTION:
+                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_username"]);
+                break;
+            case self::TEST:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()["api_username_sandbox"]);
+                break;
+            case self::PRODUCTION_MOTO:
+                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_moto_username"]);
+                break;
+            case self::TEST_MOTO:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]);
+                break;
+            default:
+                $exist = false;
+                break;
+        }
+
+        return $exist;
+    }
+
+    /**
+     * Return label from platform code
+     *
+     * @return string Label for plateform
+     */
+    public static function getLabelForPlatform($platform)
+    {
+        switch ($platform) {
+            case self::PRODUCTION:
+                $label = "Production";
+                break;
+            case self::TEST:
+                $label = "Test";
+                break;
+            case self::PRODUCTION_MOTO:
+                $label = "Production MO/TO";
+                break;
+            case self::TEST_MOTO:
+                $label = "Test MO/TO";
+                break;
+            default:
+                $label = "";
+                break;
+        }
+
+        return $label;
     }
 
     /**
@@ -151,7 +253,8 @@ class HipayHelper
      * @param type $carrier
      * @return string
      */
-    public static function getCarrierRef($carrier)
+    public
+    static function getCarrierRef($carrier)
     {
         $reference = $carrier->id . "-" . HipayHelper::slugify($carrier->name);
 
@@ -163,7 +266,8 @@ class HipayHelper
      * @param type $discount
      * @return string
      */
-    public static function getDiscountRef($discount)
+    public
+    static function getDiscountRef($discount)
     {
         if (!empty($discount["code"])) {
             $reference = $discount["code"];
@@ -179,7 +283,8 @@ class HipayHelper
      * @param type $text
      * @return string
      */
-    public static function slugify($text)
+    public
+    static function slugify($text)
     {
         // replace non letter or digits by -
         $text = preg_replace('#[^\\pL\d]+#u', '-', $text);
@@ -209,7 +314,8 @@ class HipayHelper
      *
      * @return string
      */
-    public static function getAdminUrl()
+    public
+    static function getAdminUrl()
     {
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $admin = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
@@ -227,7 +333,8 @@ class HipayHelper
      * @param type $page
      * @return type
      */
-    public static function getHipayToken($cartId, $page = 'validation.php')
+    public
+    static function getHipayToken($cartId, $page = 'validation.php')
     {
         return md5(Tools::getToken($page) . $cartId);
     }
@@ -238,7 +345,8 @@ class HipayHelper
      * @param type $page
      * @return type
      */
-    public static function getHipayAdminToken($tab, $orderID)
+    public
+    static function getHipayAdminToken($tab, $orderID)
     {
         return md5(Tools::getAdminTokenLite($tab) . $orderID);
     }
@@ -247,7 +355,8 @@ class HipayHelper
      * @param $context
      * @param $moduleInstance
      */
-    public static function redirectToExceptionPage($context, $moduleInstance)
+    public
+    static function redirectToExceptionPage($context, $moduleInstance)
     {
         $redirectUrl404 = $context->link->getModuleLink(
             $moduleInstance->name,
@@ -269,7 +378,8 @@ class HipayHelper
      * @param null $savedCC
      * @return string
      */
-    public static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
+    public
+    static function redirectToErrorPage($context, $moduleInstance, $cart = null, $savedCC = null)
     {
 
         if (_PS_VERSION_ >= '1.7') {
@@ -308,7 +418,8 @@ class HipayHelper
      *
      * @param type $context
      */
-    public static function resetMessagesHipay($context)
+    public
+    static function resetMessagesHipay($context)
     {
         $context->cookie->__set('hipay_errors', '');
         $context->cookie->__set('hipay_success', '');
@@ -324,7 +435,8 @@ class HipayHelper
      * @param int $orderTotal
      * @return array
      */
-    public static function getSortedActivatedPaymentByCountryAndCurrency(
+    public
+    static function getSortedActivatedPaymentByCountryAndCurrency(
         $module,
         $configHipay,
         $country,
@@ -332,7 +444,8 @@ class HipayHelper
         $orderTotal = 1,
         $address,
         $customer
-    ) {
+    )
+    {
         $activatedCreditCard = array();
         $creditCards = self::getActivatedPaymentByCountryAndCurrency(
             $module,
@@ -377,7 +490,8 @@ class HipayHelper
      * @param int $orderTotal
      * @return array
      */
-    public static function getActivatedPaymentByCountryAndCurrency(
+    public
+    static function getActivatedPaymentByCountryAndCurrency(
         $module,
         $configHipay,
         $paymentMethodType,
@@ -386,7 +500,8 @@ class HipayHelper
         $orderTotal = 1,
         $address = null,
         $customer = null
-    ) {
+    )
+    {
         $context = Context::getContext();
         $activatedPayment = array();
         foreach ($configHipay["payment"][$paymentMethodType] as $name => $settings) {
@@ -412,8 +527,7 @@ class HipayHelper
                             'views/img/' .
                             $settings["logo"];
 
-                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment(
-                            )[$name]["checkoutFieldsMandatory"]) ?
+                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"]) ?
                             $module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"] : "";
                         $fieldMandatory = array();
                         if (!empty($checkoutFieldsMandatory)) {
@@ -462,7 +576,8 @@ class HipayHelper
      * @param $currency
      * @return string
      */
-    public static function getCreditCardProductList($module, $configHipay, $deliveryCountry, $currency)
+    public
+    static function getCreditCardProductList($module, $configHipay, $deliveryCountry, $currency)
     {
         $creditCard = self::getActivatedPaymentByCountryAndCurrency(
             $module,
@@ -486,7 +601,8 @@ class HipayHelper
      * @param type $productName
      * @return type
      */
-    public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
+    public
+    static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
     {
         $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
@@ -554,7 +670,8 @@ class HipayHelper
      * @param type $b
      * @return int
      */
-    private static function cmpPaymentProduct($a, $b)
+    private
+    static function cmpPaymentProduct($a, $b)
     {
         if ($a["frontPosition"] == $b["frontPosition"]) {
             return 0;
@@ -567,7 +684,8 @@ class HipayHelper
      *
      * @return bool result
      */
-    public static function orderExists($cart_id)
+    public
+    static function orderExists($cart_id)
     {
         if ($cart_id) {
 
@@ -589,7 +707,8 @@ class HipayHelper
      * @param mixed $default_value (optional)
      * @return mixed Value
      */
-    public static function getValue($key, $default_value = false)
+    public
+    static function getValue($key, $default_value = false)
     {
         if (!isset($key) || empty($key) || !is_string($key)) {
             return false;

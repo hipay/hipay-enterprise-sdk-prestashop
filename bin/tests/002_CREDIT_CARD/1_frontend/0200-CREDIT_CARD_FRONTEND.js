@@ -14,6 +14,21 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + currentBrandCC, fu
     phantom.clearCookies();
 
     casper.start(baseURL)
+    .thenOpen(urlBackend, function() {
+        this.logToHipayBackend(loginBackend,passBackend);
+    })
+    .then(function() {
+        this.selectAccountBackend("OGONE_DEV");
+    })
+    /* Open Integration tab */
+    .then(function() {
+        this.echo("Open Integration nav", "INFO");
+        this.waitForUrl(/maccount/, function success() {
+            this.selectHashingAlgorithm("SHA1");
+        }, function fail() {
+            test.assertUrlMatch(/maccount/, "Dashboard page with account ID exists");
+        })
+    })
     /* Active API Mode in Global Settings  */
     .then(function() {
         this.logToBackend();
