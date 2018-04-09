@@ -21,7 +21,6 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
-$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous allez être redirigé vers une page de paiement externe. Veuillez ne pas rafraîchir la page pendant le processus.';
 $_MODULE['<{hipay_enterprise}prestashop>apihandler_36d106fda0d4944b026a68b55e9a8807'] = 'Une erreur est survenue pendant la requête de maintenance.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7fe'] = 'Email pour paiement frauduleux';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_2fb302ad440d0eade342f67f7cfcfb31'] = 'En copie';
@@ -47,6 +46,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisi.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';
@@ -338,6 +338,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_f292a2d958154cf06bc0339c6ae72840'
 $_MODULE['<{hipay_enterprise}prestashop>global_d7cfe6e13c9f24b30bbb8a7306845cab'] = 'Toutes les transactions seront automatiquement capturées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_77987fb829b11a87eb76803d31dfe377'] = 'Permet aux clients de sauvegarder leurs cartes pour les réutiliser.';
 $_MODULE['<{hipay_enterprise}prestashop>global_105fd50db93c10f27601854eff3d6e0d'] = 'Utiliser le paiement One-click';
+$_MODULE['<{hipay_enterprise}prestashop>global_f28227d24ce569749e2aa448a5c4f519'] = 'Le paiement One-Click n\'est disponible que pour le mode API';
 $_MODULE['<{hipay_enterprise}prestashop>global_d0ef6f754455dcb305eb26b3decbc401'] = 'Envoyer les données du panier lors des appels de l\'API HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'] = 'Envoi des données du panier du client';
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi sur le total\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
@@ -424,6 +425,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_25065e3ef9274f9b0e3088
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_d7a3b3bf767faf334c85f11c8ba678c8'] = 'Payer avec une carte de crédit sauvegardée';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_b7d2f0f194257c6728603e53c60f8101'] = 'La demande a été rejetée à cause d\'une erreur de validation. Veuillez vérifier les informations de carte saisies.';
+$_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_148b2bc3888ea4c45fb942c1f2d24005'] = 'Payez avec une nouvelle carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement One-click)';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_99938b17c91170dfb0c2f3f8bc9f2a85'] = 'Payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentformapi-16_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est en cours de traitement. Merci de patienter.';
