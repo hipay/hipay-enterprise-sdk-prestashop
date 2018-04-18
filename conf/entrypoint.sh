@@ -30,7 +30,7 @@ if [ ! -f /var/www/html/console/console.php ];then
     printf "\n${COLOR_SUCCESS}             INSTALLATION SDK JS         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     cd lib/ \
-    && bower install hipay-fullservice-sdk-js
+    && bower install hipay-fullservice-sdk-js#1.*
 
    
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
