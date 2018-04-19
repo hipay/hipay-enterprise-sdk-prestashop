@@ -148,6 +148,10 @@
                         <label for="card_token_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                         <a class="slide-button btn"></a>
                     </span>
+                    <p class="help-block">
+                        <i class='icon icon-warning text-danger'></i>
+                        {l s='One-Clik payment feature is only available in API mode' mod='hipay_enterprise'}
+                    </p>
                 </div>
             </div>
             <!-- SWITCH MODE END -->

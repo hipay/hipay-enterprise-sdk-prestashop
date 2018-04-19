@@ -1,3 +1,8 @@
+# Version 2.2.1
+
+- Fix : update Mastercard bin range
+- Fix : Add message to specify that Oneclick payment can only be used with Api mode
+
 # Version 2.2.0
 
 - Add Oney gift card payment support

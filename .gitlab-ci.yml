@@ -43,6 +43,9 @@ casperjs-part1:
   artifacts:
     paths:
     - bin/tests/errors
+  after_script:
+      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
+      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml rm -fv
 
 sonarqube:
   stage: analysis
