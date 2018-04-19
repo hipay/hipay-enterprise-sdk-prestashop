@@ -22,8 +22,8 @@
 class GatewayException extends Exception
 {
     private $context;
-    private $moduleInstance;
 
+    private $moduleInstance;
 
     /**
      * GatewayException constructor.
@@ -42,7 +42,8 @@ class GatewayException extends Exception
         $this->moduleInstance = $moduleInstance;
     }
 
-    public function handleException(){
+    public function handleException()
+    {
         HipayHelper::redirectToExceptionPage($this->context, $this->moduleInstance);
     }
 }
