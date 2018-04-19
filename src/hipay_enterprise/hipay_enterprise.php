@@ -30,6 +30,7 @@ class Hipay_enterprise extends PaymentModule
     public $_successes = array();
     public $currencies_titles = array();
     public $moduleCurrencies = array();
+    public $_technicalErrors = '';
 
     public function __construct()
     {
