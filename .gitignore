@@ -1,6 +1,7 @@
 data/
 web16/
 web17/
+conf/env_file/development/env
 src/hipay_enterprise/lib/vendor/
 src/hipay_enterprise/lib/bower_components/
 src/hipay_enterprise/logs/*.txt
@@ -14,3 +15,4 @@ gulpfile.ts
 node_modules/
 bin/tests/000_lib/bower_components
 bin/tests/000_lib/bower_components
+
