@@ -69,6 +69,11 @@ if [ ! -f /var/www/html/console/console.php ];then
     fi
 
     php console.php configuration:set HIPAY_CONFIG "$CONFIG"
+
+    if [ "$ENVIRONMENT" = "$ENV_PROD" ];then
+        php console.php  configuration:set PS_SSL_ENABLED 1
+    fi
+
     php console.php c:flush
 
     if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ];then
