@@ -1,3 +1,8 @@
+# Version 2.2.2
+
+- Fix : Credit card form autofill not filling properly
+- Fix : Bug with discount in basket (PHP7.1 silent conversion error)
+
 # Version 2.2.1
 
 - Fix : update Mastercard bin range

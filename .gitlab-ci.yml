@@ -1,15 +1,5 @@
 image: hipay/gitlab-ci-base:jessie
 
-
-#services:
-#  - docker:dind
-#variables:
-#  DOCKER_HOST: tcp://docker:2375
-
-#    - MASTER_HOST=$(docker inspect --format '{{ .NetworkSettings.Networks.hipayenterprisesdkprestashop_prestashop.IPAddress }}' hipay-enterprise-ps17-$CI_JOB_ID)
-#    - docker exec mysql-ps17-$CI_JOB_ID mysql -e "update prestashop17.ps_shop_url set domain = '$MASTER_HOST', domain_ssl = '$MASTER_HOST' "
-
-
 stages:
  - build
  - analysis

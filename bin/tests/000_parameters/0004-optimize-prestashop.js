@@ -17,23 +17,19 @@ casper.test.begin('Activate cache for improve prestashop', function(test) {
             this.click('ul.menu li#subtab-AdminAdvancedParameters > a');
             this.waitForText('Informations de configuration', function() {
                 this.click('li#subtab-AdminPerformance > a');
-                this.waitForSelector('input[name="cache_active"]', function success() {
-                    this.fillSelectors("form#configuration_form", {
-                            'input[name="cache_active"]' : 1,
-                            'input[name="caching_system"]': "CacheMemcached",
-                            'input[name="PS_CSS_THEME_CACHE"]': "1",
-                            'input[name="PS_JS_THEME_CACHE"]': "1",
-                            'input[name="PS_HTACCESS_CACHE_CONTROL"]': "1",
-                        }, false
+                this.waitForSelector('select[name="form[smarty][cache]"]', function success() {
+                    this.fillSelectors("form[name='form']", {
+                            'select[name="form[smarty][cache]"]' : 1,
+                            'select[name="form[smarty][caching_type]"]': "filesystem"
+                        }, true
                     );
-                    this.click('button[name="submitAddconfiguration"]');
                     this.waitForSelector('div.alert.alert-success', function success() {
                         test.info('Done');
                     }, function fail(){
                         test.assertExists('div.alert.alert-success','Update configuration success')
                     });
                 }, function fail() {
-                    test.assertExists('input[name="cache_active"]', "Cache exists");
+                    test.assertExists('select[name="form[smarty][cache]"]', "Cache exists");
                 }, 15000);
             }, function fail (){
                 test.assertTextExist('INFORMATIONS DE CONFIGURATION', "Configuration page exist");
