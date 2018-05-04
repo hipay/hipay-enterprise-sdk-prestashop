@@ -92,12 +92,22 @@ a:hover.tooltips span {
     border-left: 1px solid #d9d9d9 !important;
 }
 
+@-moz-document url-prefix() {
+    .card-js .expiry-month{
+        text-indent: 15px;
+    }
+
+    .card-js .expiry-year{
+        text-indent: 5%;
+    }
+}
+
 .card-js input:focus, .card-js select:focus {
     border-color: #66afe9 !important;
 }
 
 .card-js select option[hidden] {
-    color: #e5e5e5 !important;
+    color: #c8c8c8 !important;
 }
 
 @media screen and (max-width: 1200px) {
@@ -111,5 +121,15 @@ a:hover.tooltips span {
         width: 38%;
         margin-left: 2%;
         text-indent: 15%;
+    }
+
+    @-moz-document url-prefix() {
+        .card-js .expiry-month{
+            text-indent: 15px;
+        }
+
+        .card-js .expiry-year{
+            text-indent: 5%;
+        }
     }
 }
