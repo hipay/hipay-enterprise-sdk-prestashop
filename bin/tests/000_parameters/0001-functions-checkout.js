@@ -43,9 +43,8 @@ casper.test.begin('Functions', function(test) {
         this.fillSelectors('form#tokenizerForm', {
             'input[name="card-number"]': card,
             'input[name="card-holders-name"]': 'Mr Test',
-            'input[name="expiry-month"]': '02',
-            'input[name="expiry-year"]': '20',
-            'input[class="expiry"]': '02 / 20',
+            'select[name="expiry-month"]': '02',
+            'select[name="expiry-year"]': '20',
             'input[name="cvc"]': '500'
         }, false);
     };

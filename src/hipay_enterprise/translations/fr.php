@@ -403,6 +403,8 @@ $_MODULE['<{hipay_enterprise}prestashop>js.strings_ab46006a075d4237288ca235f0f68
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_931d3a3ad177dd96a28c9642fec11b01'] = 'Numéro de carte';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_f7c7b71c823f4afa44065aa411c40223'] = 'Nom sur la carte';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_26505a0eb1335c7011de6447c96d04eb'] = 'MM / AA';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_ad05f78187c942f9dd521605fa81f1ba'] = 'MM';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_0867f43e27585e019c13f7f4b7c4ab6b'] = 'AA';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_5ea7f231296949070013bc43715aae01'] = 'CVC';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_57ac36d61e6c554c83a0159d70a1f373'] = 'La date d\'expiration est incorrecte. Veuillez entrer une date ultérieure à la date actuelle.';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_3d68ca85b20bc6e3caba123a019cb109'] = 'Le code de vérification de la carte (CVC) est un code de sécurité à 3 chiffres qui se trouve généralement au dos de votre carte. Les cartes American Express disposent d\'un code à 4 chiffres situé sur le devant.';

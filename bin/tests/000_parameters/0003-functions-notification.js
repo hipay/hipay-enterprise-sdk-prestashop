@@ -36,7 +36,7 @@ casper.test.begin('Functions', function(test) {
                     this.waitForUrl(/AdminOrders&id_order/, function success() {
                         /* 1 - Check History status according the notifications */
                         if (capture && partial === false) {
-                            test.assertExists(x('//table[@class="table history-status row-margin-bottom"]//td[contains(., "Payment accepted")]'), "Notification process change order s status to Payment accepted");
+                            test.assertExists(x('//table[@class="table history-status row-margin-bottom"]//td[contains(., "Paiement accepté")]'), "Notification process change order s status to Payment accepted");
                         } else if ( capture && partial) {
                             test.assertExists(x('//table[@class="table history-status row-margin-bottom"]//td[contains(., "Capture partielle (HiPay)")]'), "Notification process change order s status to Capture partielle (HiPay)");
                         } else {

@@ -74,8 +74,8 @@ $("#tokenizerForm").submit(function (e) {
         var params = {
             card_number: $("#card-number").val(),
             cvc: $("#cvc").val(),
-            card_expiry_month: $("input[name=expiry-month]").val(),
-            card_expiry_year: $("input[name=expiry-year]").val(),
+            card_expiry_month: $("select[name=expiry-month]").val(),
+            card_expiry_year: $("select[name=expiry-year]").val(),
             card_holder: $("#the-card-name-id").val(),
             multi_use: multiUse
         };
