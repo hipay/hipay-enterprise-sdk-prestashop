@@ -11,7 +11,6 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-
 /**
  * Class AdminHiPaySynchronizeHashingController
  *
@@ -56,19 +55,28 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
             $labelPlatform = HipayHelper::getLabelForPlatform($platform);
             if (HipayHelper::existCredentialForPlateform($this->module, $platform)) {
                 $hashing = ApiCaller::getSecuritySettings($this->module, $platform);
+                $messages = array();
                 if ($configHash[$platform] == $hashing->getHashingAlgorithm()) {
-                    $messages[$platform][self::CODE_MESSAGE] =  sprintf($this->module->l('Hash Algorithm for %s was already set with %s'),
-                        $labelPlatform, $hashing->getHashingAlgorithm());
+                    $messages[$platform][self::CODE_MESSAGE] =  sprintf(
+                        $this->module->l('Hash Algorithm for %s was already set with %s'),
+                        $labelPlatform,
+                        $hashing->getHashingAlgorithm()
+                    );
                 } else {
                     $configHash[$platform] = $hashing->getHashingAlgorithm();
                     $this->module->hipayConfigTool->setHashAlgorithm($configHash);
-                    $messages[$platform][self::CODE_MESSAGE] =   sprintf($this->module->l('Hash Algorithm for %s has been syncrhonize with %s'),
-                    $labelPlatform, $hashing->getHashingAlgorithm());
+                    $messages[$platform][self::CODE_MESSAGE] =   sprintf(
+                        $this->module->l('Hash Algorithm for %s has been syncrhonize with %s'),
+                        $labelPlatform,
+                        $hashing->getHashingAlgorithm()
+                    );
                     $messages[$platform]["value"] = $hashing->getHashingAlgorithm();
                 }
             } else {
-                $messages[$platform][self::CODE_MESSAGE] =   sprintf($this->module->l('Hash Algorithm for %s has not been updated : You must filled credentials.'),
-                    $labelPlatform);
+                $messages[$platform][self::CODE_MESSAGE] =   sprintf(
+                    $this->module->l('Hash Algorithm for %s has not been updated : You must filled credentials.'),
+                    $labelPlatform
+                );
             }
         }
 

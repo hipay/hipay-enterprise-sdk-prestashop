@@ -78,3 +78,58 @@ a:hover.tooltips span {
     margin-left: -76px;
     z-index: 999;
 }
+
+.card-js .expiry-month{
+    text-indent: 30px;
+    width: 35%;
+    padding-left: 0px !important;
+}
+
+.card-js .expiry-year{
+    width: 30%;
+    margin-left: 2%;
+    text-indent: 15%;
+    border-left: 1px solid #d9d9d9 !important;
+}
+
+@-moz-document url-prefix() {
+    .card-js .expiry-month{
+        text-indent: 15px;
+    }
+
+    .card-js .expiry-year{
+        text-indent: 5%;
+    }
+}
+
+.card-js input:focus, .card-js select:focus {
+    border-color: #66afe9 !important;
+}
+
+.card-js select option[hidden] {
+    color: #c8c8c8 !important;
+}
+
+@media screen and (max-width: 1200px) {
+    .card-js .expiry-month{
+        text-indent: 30px;
+        width: 60%;
+        padding-left: 0px !important;
+    }
+
+    .card-js .expiry-year{
+        width: 38%;
+        margin-left: 2%;
+        text-indent: 15%;
+    }
+
+    @-moz-document url-prefix() {
+        .card-js .expiry-month{
+            text-indent: 15px;
+        }
+
+        .card-js .expiry-year{
+            text-indent: 5%;
+        }
+    }
+}

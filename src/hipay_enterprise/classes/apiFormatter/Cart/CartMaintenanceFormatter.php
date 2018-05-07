@@ -171,10 +171,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     private function getDiscountItem()
     {
-        $product_reference = "";
-        $name = "";
+        $product_reference = array();
+        $name = array();
         $unit_price = 0;
-        $discount_description = "";
+        $discount_description = array();
         $total_amount = 0;
 
         foreach ($this->discounts as $disc) {

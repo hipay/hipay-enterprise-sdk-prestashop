@@ -45,7 +45,7 @@ class ApiCaller
                 $isMoto = true;
             }
             // HiPay Gateway
-            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, $isMoto, $plateform );
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, $isMoto, $plateform);
 
             $response = $gatewayClient->requestSecuritySettings();
 
@@ -125,7 +125,6 @@ class ApiCaller
 
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             return $gatewayClient->requestNewOrder($orderRequest);
-
         } catch (Exception $e) {
             $db = new HipayDBQuery($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
@@ -201,7 +200,7 @@ class ApiCaller
         } else {
             // Some calls do not take into account the general configuration (Security Settings)
             if (is_string($forceConfig) && $forceConfig == HipayHelper::TEST ||
-                $forceConfig == HipayHelper::TEST_MOTO ) {
+                $forceConfig == HipayHelper::TEST_MOTO) {
                 $sandbox = true;
             }
         }
