@@ -1,3 +1,7 @@
+# Version 2.2.3
+
+- Fix : Bug on notification
+
 # Version 2.2.2
 
 - Fix : Credit card form autofill not filling properly
