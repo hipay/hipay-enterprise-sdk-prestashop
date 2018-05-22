@@ -75,8 +75,8 @@ if [ "$1" = 'restart' ];then
 fi
 
 if [ "$1" = 'kill' ];then
-     docker-compose -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
+     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/

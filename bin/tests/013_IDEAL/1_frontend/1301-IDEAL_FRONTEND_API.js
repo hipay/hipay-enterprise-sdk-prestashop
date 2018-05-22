@@ -47,7 +47,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
 
         this.waitForSelector('input#ideal-issuer_bank_id', function success() {
             this.fillSelectors('form#ideal-hipay', {
-                'input[name="issuer_bank_id"]': 'BNPAFRPPXXX WRONG',
+                'input[name="issuer_bank_id"]': 'INGBNL2A WRONG',
             }, false);
 
             this.click('form#conditions-to-approve input');
@@ -59,11 +59,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     })
     /* Fill IDeal formular */
     .then(function() {
-        this.echo("Filling CBusiness Identifier BIC...", "INFO");
+        this.echo("Filling Business Identifier BIC...", "INFO");
 
         this.waitForSelector('input#ideal-issuer_bank_id', function success() {
             this.fillSelectors('form#ideal-hipay', {
-                'input[name="issuer_bank_id"]': 'BNPAFRPPXXX',
+                'input[name="issuer_bank_id"]': 'INGBNL2A',
             }, false);
 
             this.click("div#payment-confirmation button");
@@ -74,25 +74,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with ' + typeCC, function(t
     /* Fill IDeal formular */
     .then(function() {
         this.echo("Filling payment formular...", "INFO");
-        this.waitForUrl(/paymentscreen\/issuer/, function success() {
-
-/*            this.fillSelectors("form#form-payment", {
-                'select[name="issuer_bank_id"]': "TESTNL99"
-            }, true);*/
-
-            this.click('button[value="ideal_TESTNL99"]');
-
-            this.waitForUrl(/paymentscreen\/testmode/, function success() {
-                this.click('input[name="final_state"][value="paid"]');
-                this.click('#footer button.button');
-                test.info("Done");
-
-            }, function fail() {
-                test.assertUrlMatch(/paymentscreen\/ideal\/testmode/, "Payment IDeal page exists");
-            }, 15000);
-        }, function fail() {
-            test.assertUrlMatch(/payment\/web\/pay/, "Payment page exists");
-        }, 20000);
+        this.payIDeal();
     })
     .then(function() {
         this.orderResultSuccess(paymentType);
