@@ -38,6 +38,11 @@ class HipayNotification
     protected $orderExist = false;
     protected $order = null;
 
+    /**
+     * HipayNotification constructor.
+     * @param $moduleInstance
+     * @param $data
+     */
     public function __construct($moduleInstance, $data)
     {
         $this->module = $moduleInstance;
@@ -57,9 +62,7 @@ class HipayNotification
             $this->log->logErrors('Bad Callback initiated, no cart ID found ');
             die('No cart found');
         }
-
         $this->cart = new Cart($this->transaction->getOrder()->getId());
-
         // check if cart is correctly loaded
         if (!Validate::isLoadedObject($this->cart)) {
             $this->log->logErrors('Bad Callback initiated, cart could not be initiated ');
@@ -68,20 +71,10 @@ class HipayNotification
 
         // forced shop
         Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
-
-        if (HipayHelper::orderExists($this->cart->id)) {
-            // can't use Order::getOrderByCartId 'cause add shop restrictions
-            $idOrder = $this->db->getOrderByCartId($this->cart->id);
-            if ($idOrder) {
-                $this->order = new Order((int)$idOrder);
-                $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
-            }
-        }
     }
 
     /**
-     *
-     * @return type
+     * @return mixed
      */
     public function getEci()
     {
@@ -90,17 +83,29 @@ class HipayNotification
 
     /**
      * Process notification
+     *
+     * @throws Exception
      */
     public function processTransaction()
     {
         try {
-            $this->db->setSQLLockForCart($this->cart->id ,"# ProcessTransaction for cart ID : " . $this->cart->id);
+            $this->db->setSQLLockForCart($this->cart->id, "# ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logInfos(
                 "# ProcessTransaction for cart ID : " .
                 $this->cart->id .
                 " and status " .
                 $this->transaction->getStatus()
             );
+
+            //Fix Bug where Order is created while transaction is processed
+            if (HipayHelper::orderExists($this->cart->id)) {
+                // can't use Order::getOrderByCartId 'cause add shop restrictions
+                $idOrder = $this->db->getOrderByCartId($this->cart->id);
+                if ($idOrder) {
+                    $this->order = new Order((int)$idOrder);
+                    $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
+                }
+            }
 
             switch ($this->transaction->getStatus()) {
                 // Do nothing - Just log the status and skip further processing
@@ -186,9 +191,10 @@ class HipayNotification
 
 
             $this->db->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             $this->db->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
-            $this->log->logException($ex);
+            $this->log->logException($e);
+            throw $e;
         }
     }
 
@@ -203,12 +209,13 @@ class HipayNotification
         if (HipayHelper::orderExists($this->cart->id)) {
             $this->addOrderMessage();
             if ((int)$this->order->getCurrentState() != (int)$newState &&
-                (int) $this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
+                (int)$this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
                 !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)
             ) {
                 // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
                 if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
-                    && ($newState == _PS_OS_PAYMENT_ )) {
+                    && ($newState == _PS_OS_PAYMENT_)
+                ) {
                     $newState = _PS_OS_OUTOFSTOCK_PAID_;
                 }
                 $this->changeOrderStatus($newState);
@@ -236,12 +243,16 @@ class HipayNotification
 
     /**
      * register order if don't exist
-     * @param type $state
+     *
+     * @param $state
+     * @return bool
+     * @throws Exception
+     * @throws PrestaShopException
      */
     private function registerOrder($state)
     {
         if (!HipayHelper::orderExists($this->cart->id)) {
-            $this->log->logInfos('Register New order: ' .$this->cart->id);
+            $this->log->logInfos('Register New order: ' . $this->cart->id);
             $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
 
             // init context
@@ -274,23 +285,25 @@ class HipayNotification
                 );
                 $this->order = new Order($this->module->currentOrder);
 
-                $captureType = array("order_id" => $this->order->id, "type" => $this->configHipay["payment"]["global"]["capture_mode"]);
+                $captureType = array(
+                    "order_id" => $this->order->id,
+                    "type" => $this->configHipay["payment"]["global"]["capture_mode"]
+                );
 
                 $this->db->setOrderCaptureType($captureType);
 
                 $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
-                $this->log->logException($e->getCode() . ' : ' . $e->getMessage());
-                return false;
+                $this->log->logException($e);
+                throw $e;
             }
         }
         return true;
     }
 
     /**
-     *
-     * @return type
+     * @return mixed
      */
     private function getPaymentProductName()
     {
@@ -300,11 +313,14 @@ class HipayNotification
         }
         $paymentProduct = $this->transaction->getPaymentProduct();
 
-        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $this->context->language );
+        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $this->context->language);
     }
 
     /**
      * create order payment line
+     *
+     * @param bool $refund
+     * @throws Exception
      */
     private function createOrderPayment($refund = false)
     {
@@ -346,8 +362,8 @@ class HipayNotification
     }
 
     /**
-     *
-     * @param type $orderPayment
+     * @param $orderPayment
+     * @throws Exception
      */
     private function setOrderPaymentData($orderPayment)
     {
@@ -361,15 +377,17 @@ class HipayNotification
                 $orderPayment->card_holder = $this->transaction->getPaymentMethod()->getCardHolder();
                 $orderPayment->update();
             }
-        } catch (Exception $ex) {
-            print_r($ex);
+        } catch (Exception $e) {
+            $this->log->logException($e);
+            throw $e;
         }
     }
 
     /**
      * Capture amount sent by notification
      *
-     * @return boolean
+     * @return bool
+     * @throws Exception
      */
     private function captureOrder()
     {
@@ -397,6 +415,7 @@ class HipayNotification
                 $this->db->setCaptureOrRefundOrder($captureData);
             } catch (Exception $e) {
                 $this->log->logException($e);
+                throw $e;
             }
         }
 
@@ -409,9 +428,10 @@ class HipayNotification
     }
 
     /**
-     *  Refund order
+     * Refund order
      *
      * @return bool
+     * @throws Exception
      */
     private function refundOrder()
     {
@@ -477,10 +497,11 @@ class HipayNotification
 
     /**
      * check if order is already at status "payment accepted"
-     * @param type $paymentStatus
-     * @param type $orderState
-     * @param type $forceCtrl
-     * @return boolean
+     *
+     * @param $paymentStatus
+     * @param $orderState
+     * @param bool $forceCtrl
+     * @return bool
      */
     private function controleIfStatushistoryExist($paymentStatus, $orderState, $forceCtrl = false)
     {
@@ -523,7 +544,9 @@ class HipayNotification
     /**
      * we rename transaction reference to distinct every captured amount when transaction is partially captured
      * every step of the capture is unique (id = {transacRef}-{CapturedAmount}). Prevent from duplicates or overwritting
+     *
      * @return string
+     * @throws Exception
      */
     private function setTransactionRefForPrestashop()
     {
@@ -540,15 +563,18 @@ class HipayNotification
                 $operationId = HipayHelper::generateOperationId($this->order, $operation, $transactionAttempt);
                 $ref .= "-" . $operationId;
             }
-        } catch (Exception $ex) {
-            $this->log->logException($ex);
+        } catch (Exception $e) {
+            $this->log->logException($e);
+            throw $e;
         }
         return $ref;
     }
 
     /**
      * notification send total captured amount, we want just the amount concerned by the notification
-     * @return type
+     *
+     * @param bool $refund
+     * @return int
      */
     private function getRealCapturedAmount($refund = false)
     {
