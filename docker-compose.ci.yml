@@ -1,0 +1,91 @@
+version: "3"
+
+networks:
+  traefik_traefik:
+    external: true
+  prestashop:
+    internal: true
+
+services:
+  prestashop16:
+    build:
+      context: .
+      dockerfile: ./conf/docker/Dockerfile16
+    image: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16
+    ports:
+      - "80"
+    networks:
+      - traefik_traefik
+      - prestashop
+    env_file:
+      - ./conf/env_file/production/env
+      - ./conf/env_file/production/env16
+    deploy:
+      labels:
+        - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com"
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik_traefik"
+      resources:
+        limits:
+          memory: 500M
+        reservations:
+          memory: 200M
+  prestashop17:
+      build:
+        context: .
+        dockerfile: ./conf/docker/Dockerfile17
+      image: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17
+      ports:
+        - "80"
+      networks:
+        - traefik_traefik
+        - prestashop
+      env_file:
+        - ./conf/env_file/production/env
+        - ./conf/env_file/production/env17
+      deploy:
+        labels:
+          - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com"
+          - "traefik.port=80"
+          - "traefik.docker.network=traefik_traefik"
+        resources:
+          limits:
+            memory: 500M
+          reservations:
+            memory: 200M
+  mysql:
+      image: mysql:5.7
+      ports:
+        - "3306"
+      env_file:
+        - ./conf/env_file/production/env
+      networks:
+        - traefik_traefik
+        - prestashop
+      deploy:
+        resources:
+          limits:
+            memory: 500M
+          reservations:
+            memory: 200M
+        labels:
+          - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mysql.hipay-pos-platform.com"
+          - "traefik.port=3306"
+          - "traefik.docker.network=traefik_traefik"
+  smtp:
+      image: schickling/mailcatcher
+      ports:
+        - "1080"
+      networks:
+        - traefik_traefik
+        - prestashop
+      deploy:
+        labels:
+          - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mail.hipay-pos-platform.com"
+          - "traefik.port=1080"
+          - "traefik.docker.network=traefik_traefik"
+        resources:
+          limits:
+            memory: 500M
+          reservations:
+            memory: 200M

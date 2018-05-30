@@ -13,18 +13,6 @@ services:
       - prestashop
     env_file:
       - ./conf/env_file/stage/env
-  #prestashop16:
-  #  container_name: hipay-enterprise-ps17{BUILD_REF}
-  #  dockerfile: ./conf/docker/Dockerfile16
-  #  build: .
-  #  ports:
-  #    - "8186:80"
-  #  links:
-  #    - smtp
-  #    - mysql
-  #  env_file:
-  #    - ./conf/env_file/stage/env
-  #    - ./conf/env_file/stage/env16
   prestashop17:
     container_name: hipay-enterprise-ps17-$CI_JOB_ID-RE
     build:
