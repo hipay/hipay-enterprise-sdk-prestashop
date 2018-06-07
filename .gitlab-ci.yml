@@ -1,42 +1,83 @@
 image: hipay/gitlab-ci-base:jessie
 
 stages:
+ - build-test
  - test
+ - clean-stack
  - analysis
  - package
  - build
  - deploy
  - sync
 
-casperjs:
+variables:
+  STACK_TEST_PS17_1: hipay-enterprise-ps17-${CI_PIPELINE_ID}-1
+  STACK_TEST_PS17_2: hipay-enterprise-ps17-${CI_PIPELINE_ID}-2
+
+#########################
+####  TEMPLATE      ####
+########################
+
+.test_template: &test_definition
   stage: test
-  before_script:
-     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
-     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/stage/env
-     - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
-     - ./prestashop.sh init-stage
-     - sleep 400
-     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
-     - curl --retry 10 --retry-delay 20 -v http://prestashop17
-  script:
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
   tags:
-    - prestashop
+      - prestashop
   allow_failure: false
+  before_script:
+    - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
+    - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/stage/env
+    - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
   artifacts:
     paths:
-    - bin/tests/errors
-  after_script:
-      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
-      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml rm -fv
+      - bin/tests/errors
+    when: always
+
+#########################
+####  JOBS          ####
+########################
+
+build-test:
+  stage: build-test
+  script:
+    - docker-compose -f docker-compose.stage.yml build --no-cache
+  tags:
+    - prestashop
+
+casperjs-17-part-1:
+  <<: *test_definition
+  script:
+    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_1}_prestashop17/" ./conf/env_file/stage/env17
+    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_1
+    - sleep 300
+    - docker service logs ${STACK_TEST_PS17_1}_prestashop17
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_1}_prestashop17
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${STACK_TEST_PS17_1}_prestashop17/
+
+casperjs-17-part-2:
+  <<: *test_definition
+  script:
+    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_2}_prestashop17/" ./conf/env_file/stage/env17
+    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_2
+    - sleep 300
+    - docker service logs ${STACK_TEST_PS17_2}_prestashop17
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_2}_prestashop17
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${STACK_TEST_PS17_2}_prestashop17/
+
+clean-stack-test:
+  stage: clean-stack
+  script:
+    - docker stack rm $STACK_TEST_PS17_1
+    - docker stack rm $STACK_TEST_PS17_2
+  tags:
+    - prestashop
+  when: always
 
 sonarqube:
   stage: analysis
