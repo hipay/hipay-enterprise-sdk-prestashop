@@ -59,6 +59,8 @@ casperjs-17-part-1:
     - docker service logs ${STACK_TEST_PS17_1}_prestashop17
     - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_1}_prestashop17
     - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${STACK_TEST_PS17_1}_prestashop17/
+  after_script:
+    - docker stack rm $STACK_TEST_PS17_1
 
 casperjs-17-part-2:
   <<: *test_definition
@@ -69,6 +71,8 @@ casperjs-17-part-2:
     - docker service logs ${STACK_TEST_PS17_2}_prestashop17
     - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_2}_prestashop17
     - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${STACK_TEST_PS17_2}_prestashop17/
+  after_script:
+      - docker stack rm $STACK_TEST_PS17_2
 
 clean-stack-test:
   stage: clean-stack
