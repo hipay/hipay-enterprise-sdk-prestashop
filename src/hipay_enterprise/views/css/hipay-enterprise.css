@@ -8,6 +8,10 @@
     background-color: #FDFDFD !important;
 }
 
+.hipay-form-17 input:disabled, .hipay-form-17 select:disabled {
+    background-color: #eee !important;
+}
+
 .error-input-hp {
     border-color: #ff4c4c !important;
 }
