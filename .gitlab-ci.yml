@@ -63,6 +63,11 @@ package:
   - apt-get install -y zip sshpass
  script:
   - echo "Package module $CI_COMMIT_REF_SLUG"
+  - cd src/hipay_enterprise
+  - composer install --no-dev
+  - cd lib/
+  - bower install hipay-fullservice-sdk-js#1.* --allow-root
+  - cd ../../..
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
   - chmod u+x bin/deployment/deploy_project.sh
   - ./bin/deployment/deploy_project.sh
