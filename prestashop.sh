@@ -28,25 +28,13 @@ if [ "$1" = '' ] || [ "$1" = '--help' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 mysql smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 mysql smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
-fi
-
-if [ "$1" = 'init-production' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml stop
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml rm -fv
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d
-fi
-
-if [ "$1" = 'init-stage' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml build --no-cache
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop16 prestashop17 mysql smtp
+     docker-compose -f docker-compose.dev.yml up -d prestashop16 prestashop17 mysql smtp
 fi
 
 if [ "$1" = 'init-stage-circle' ] && [ "$2" = '' ];then
@@ -57,33 +45,30 @@ if [ "$1" = 'init-stage-circle' ] && [ "$2" = '' ];then
 fi
 
 if [ "$1" = 'kill-stage' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
+     docker-compose -f docker-compose.stage.yml stop
 fi
+
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
-     docker-compose -f  docker-compose-"$2".yml stop
-     docker-compose -f  docker-compose-"$2".yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop"$2" mysql smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" mysql smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-     docker-compose -f  docker-compose-"$2".yml build --no-cache
-     docker-compose -f docker-compose-"$2".yml up  -d
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" mysql smtp
+     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" mysql smtp
 fi
 
 if [ "$1" = 'restart' ];then
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+     docker-compose -f docker-compose.dev.yml  stop prestashop16 prestashop17 mysql smtp
+     docker-compose -f docker-compose.dev.yml  up -d prestashop16 prestashop17 mysql smtp
 fi
 
 if [ "$1" = 'kill' ];then
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 mysql smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 mysql smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-fi
-
-if [ "$1" = 'up' ] && [ "$2" != '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
 fi
 
 if [ "$1" = 'exec' ] && [ "$2" != '' ];then

@@ -1,41 +1,87 @@
 image: hipay/gitlab-ci-base:jessie
 
 stages:
- - build
+ - build-test
+ - test
+ - clean-stack
  - analysis
  - package
+ - build
  - deploy
  - sync
 
-casperjs-part1:
-  stage: build
-  before_script:
-     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
-     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
-     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/stage/env
-     - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
-     - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
-     - ./prestashop.sh init-stage
-     - sleep 400
-     - docker-compose -f docker-compose.yml -f docker-compose.stage.yml logs
-     - curl --retry 10 --retry-delay 20 -v http://prestashop17
-  script:
-     - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop17/
-     - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop17/
+variables:
+  STACK_TEST_PS17_1: hipay-enterprise-ps17-${CI_PIPELINE_ID}-1
+  STACK_TEST_PS17_2: hipay-enterprise-ps17-${CI_PIPELINE_ID}-2
+
+#########################
+####  TEMPLATE      ####
+########################
+
+.test_template: &test_definition
+  stage: test
   tags:
-  - prestashop
+      - prestashop
   allow_failure: false
+  before_script:
+    - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
+    - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
+    - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/stage/env
+    - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
   artifacts:
     paths:
-    - bin/tests/errors
+      - bin/tests/errors
+    when: always
+
+#########################
+####  JOBS          ####
+########################
+
+build-test:
+  stage: build-test
+  script:
+    - docker-compose -f docker-compose.stage.yml build --no-cache
+  tags:
+    - prestashop
+
+casperjs-17-part-1:
+  <<: *test_definition
+  script:
+    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_1}_prestashop17/" ./conf/env_file/stage/env17
+    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_1
+    - sleep 300
+    - docker service logs ${STACK_TEST_PS17_1}_prestashop17
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_1}_prestashop17
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${STACK_TEST_PS17_1}_prestashop17/
   after_script:
-      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
-      - docker-compose -f docker-compose.yml -f docker-compose.stage.yml rm -fv
+    - docker stack rm $STACK_TEST_PS17_1
+
+casperjs-17-part-2:
+  <<: *test_definition
+  script:
+    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_2}_prestashop17/" ./conf/env_file/stage/env17
+    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_2
+    - sleep 300
+    - docker service logs ${STACK_TEST_PS17_2}_prestashop17
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_2}_prestashop17
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${STACK_TEST_PS17_2}_prestashop17/
+  after_script:
+      - docker stack rm $STACK_TEST_PS17_2
+
+clean-stack-test:
+  stage: clean-stack
+  script:
+    - docker stack rm $STACK_TEST_PS17_1
+    - docker stack rm $STACK_TEST_PS17_2
+  tags:
+    - prestashop
+  when: always
 
 sonarqube:
   stage: analysis
@@ -45,7 +91,9 @@ sonarqube:
     SONAR_ANALYSIS_MODE: preview
     SONAR_TOKEN: $SONAR_LOGIN
   script:
-  - /usr/bin/sonar-scanner-run.sh
+    - /usr/bin/sonar-scanner-run.sh
+  tags:
+    - prestashop
 
 sonarqube-reports:
   stage: analysis
@@ -55,7 +103,9 @@ sonarqube-reports:
     SONAR_ANALYSIS_MODE: "publish"
     SONAR_TOKEN: $SONAR_LOGIN
   script:
-  - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+    - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+  tags:
+    - prestashop
 
 package:
  stage: package
@@ -69,21 +119,47 @@ package:
   - bower install hipay-fullservice-sdk-js#1.* --allow-root
   - cd ../../..
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
-  - chmod u+x bin/deployment/deploy_project.sh
-  - ./bin/deployment/deploy_project.sh
+  - chmod u+x bin/deployment/deploy_package.sh
+  - ./bin/deployment/deploy_package.sh
  artifacts:
   paths:
-  - ./package-ready-for-prestashop
+    - ./package-ready-for-prestashop
+ tags:
+    - prestashop
 
-deploy:
- stage: deploy
- script:
-  - docker exec deploy.hipay-pos-platform.com /deploy/deploy_project.sh  $CI_PROJECT_NAME $CI_COMMIT_REF_NAME gitlab
+build:
+  stage: build
+  script:
+    - docker-compose -f docker-compose.ci.yml build --no-cache
+  tags:
+    - prestashop
+
+deploy2recette:
+  stage: deploy
+  before_script:
+     - sed -i -e "s/{HIPAY_API_USER_RECETTE\}/$HIPAY_API_USER_RE7/" ./conf/env_file/production/env
+     - sed -i -e "s/{HIPAY_API_PASSWORD_RECETTE\}/$HIPAY_API_PASSWORD_RE7/" ./conf/env_file/production/env
+     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_RECETTE\}/$HIPAY_TOKENJS_PUBLICKEY_RE7/" ./conf/env_file/production/env
+     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_RECETTE\}/$HIPAY_TOKENJS_USERNAME_RE7/" ./conf/env_file/production/env
+     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_RECETTE\}/$HIPAY_SECRET_PASSPHRASE_RE7/" ./conf/env_file/production/env
+     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com:1080/" ./conf/env_file/production/env16
+     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com:1080/" ./conf/env_file/production/env17
+     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/production/env
+  script:
+    - echo "deploy to pre-prod in Docker-Machine (recette and branches)"
+    - docker stack rm $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+    - chmod u+x bin/deployment/fix_stack_rm.sh
+    - ./bin/deployment/fix_stack_rm.sh $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG 60
+    - docker stack deploy -c docker-compose.ci.yml $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+  tags:
+    - prestashop
 
 sync:
   stage: sync
   script:
-  - git clone --mirror https://$GITLAB_USER:$GITLAB_PASSWORD@gitlab.hipay.org/pi-ecommerce/hipay-enterprise-sdk-prestashop.git
-  - cd hipay-enterprise-sdk-prestashop.git
-  - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
+    - git clone --mirror https://$GITLAB_USER:$GITLAB_PASSWORD@gitlab.hipay.org/pi-ecommerce/hipay-enterprise-sdk-prestashop.git
+    - cd hipay-enterprise-sdk-prestashop.git
+    - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
   allow_failure: true
+  tags:
+    - prestashop
