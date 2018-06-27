@@ -1,3 +1,7 @@
+# Version 2.2.4
+
+- Fix : Bug on BCMC card form
+
 # Version 2.2.3
 
 - Fix : Bug on notification

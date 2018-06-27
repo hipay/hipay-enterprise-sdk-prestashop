@@ -33,6 +33,6 @@
     (function () {
         hiPayInputControl.addInput('cc', 'card-number', 'creditcardnumber', true);
         hiPayInputControl.addInput('cc', 'the-card-name-id', null, true);
-        hiPayInputControl.addInput('cc', 'cvc', null, true);
+        hiPayInputControl.addInput('cc', 'cvc', 'cvc', true);
     })();
 </script>
