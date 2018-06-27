@@ -142,6 +142,9 @@ deploy2recette:
      - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/production/env
   script:
     - echo "deploy to pre-prod in Docker-Machine (recette and branches)"
+    - docker stack rm $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+    - chmod u+x bin/deployment/fix_stack_rm.sh
+    - ./bin/deployment/fix_stack_rm.sh $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG 60
     - docker stack deploy -c docker-compose.ci.yml $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
   tags:
     - prestashop
