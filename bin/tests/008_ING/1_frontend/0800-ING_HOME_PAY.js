@@ -12,16 +12,15 @@
 
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : IDEAL
+ *                       VALIDATION TEST METHOD : ING HOME PAY
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise iDeal";
+var paymentType = "HiPay Enterprise ING HOME PAY";
 
-casper.test.begin('Test Checkout ' + paymentType, function (test) {
-
+casper.test.begin('Test Checkout ' + paymentType , function(test) {
     var label;
 
     phantom.clearCookies();
@@ -34,22 +33,15 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             adminMod.gotToHiPayConfiguration(test);
         })
         .then(function () {
-            adminMod.activateMethod(test, "ideal");
+            adminMod.activateMethod(test, "ing-homepay");
         })
         .then(function () {
-            adminMod.configureOperatingMode(test, "hosted_page");
-            adminMod.configureHostedDisplay(test, "redirect");
-        })
-        .then(function () {
-            this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
-                label = this.getElementAttribute('input[name="ideal_displayName[fr]"]', 'value');
+            this.waitForSelector('input[name="ing-homepay_displayName[fr]"]', function success() {
+                label = this.getElementAttribute('input[name="ing-homepay_displayName[fr]"]', 'value');
                 test.info("Display name in checkout should be :" + label);
             }, function fail() {
-                test.assertExists('input[name="ideal_displayName[fr]"]', "Input name exist");
+                test.assertExists('input[name="ing-homepay_displayName[fr]"]', "Input name exist");
             });
-        })
-        .then(function () {
-            adminMod.activateLocalization(test, 'NL');
         })
         .thenOpen(baseURL, function () {
             checkoutMod.selectItemAndOptions(test);
@@ -58,7 +50,7 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.personalInformation(test);
         })
         .then(function () {
-            checkoutMod.billingInformation(test, 'NL');
+            checkoutMod.billingInformation(test, 'FR');
         })
         .then(function () {
             checkoutMod.shippingMethod(test);
@@ -67,7 +59,7 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
         .then(function () {
-            paymentLibHiPay.fillPaymentFormularByPaymentProduct("ideal", test);
+            paymentLibHiPay.fillPaymentFormularByPaymentProduct("ing-homepay", test);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);

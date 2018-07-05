@@ -25,11 +25,6 @@ services:
         - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com"
         - "traefik.port=80"
         - "traefik.docker.network=traefik_traefik"
-      resources:
-        limits:
-          memory: 500M
-        reservations:
-          memory: 200M
   prestashop17:
       build:
         context: .
@@ -48,11 +43,6 @@ services:
           - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com"
           - "traefik.port=80"
           - "traefik.docker.network=traefik_traefik"
-        resources:
-          limits:
-            memory: 500M
-          reservations:
-            memory: 200M
   mysql:
       image: mysql:5.7
       ports:
@@ -63,11 +53,6 @@ services:
         - traefik_traefik
         - prestashop
       deploy:
-        resources:
-          limits:
-            memory: 500M
-          reservations:
-            memory: 200M
         labels:
           - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mysql.hipay-pos-platform.com"
           - "traefik.port=3306"
@@ -84,8 +69,3 @@ services:
           - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mail.hipay-pos-platform.com"
           - "traefik.port=1080"
           - "traefik.docker.network=traefik_traefik"
-        resources:
-          limits:
-            memory: 500M
-          reservations:
-            memory: 200M

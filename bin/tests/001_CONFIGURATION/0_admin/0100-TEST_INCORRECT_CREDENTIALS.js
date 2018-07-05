@@ -1,3 +1,15 @@
+/**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 /**********************************************************************************************
  *
  *                       VALIDATION TEST METHOD : CREDIT CART (DIRECT)
@@ -7,88 +19,70 @@
  *  @Scenario   : Entering false identifiers and test a command via API (Credit card), if the payment fails then the test is successful
  *  @screen     : Module Settings
  *
-/**********************************************************************************************/
+ /**********************************************************************************************/
 
 var paymentType = "HiPay Enterprise Credit Card",
-    currentBrandCC = typeCC;
+    currentBrandCC = utilsHiPay.getTypeCC();
 
-casper.test.begin('Test filling wrong credentials and pay ' + paymentType + ' with ' + currentBrandCC, function(test) {
+casper.test.begin('Test filling wrong credentials and pay ' + paymentType + ' with ' + currentBrandCC, function (test) {
     phantom.clearCookies();
+    var initialCredential;
 
     casper.start(baseURL)
-    .then(function() {
+        .then(function () {
+            adminMod.logToBackend(test);
+        })
+        .then(function () {
+            adminMod.gotToHiPayConfiguration(test);
+        })
+        .then(function () {
+            this.echo("Filling wrong credentials in Module Settings", "INFO");
+            this.waitForSelector('form#account_form input[name="api_username_sandbox"]', function successful() {
+                initialCredential = adminMod.getCredentials();
+                test.info("Initial credential for api_username_sandbox was :" + initialCredential);
+                adminMod.fillCredentials(test, "WRONG CREDENTIALS");
 
-        if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
-           this.logToBackend();
-        }
-    })
-    .then(function(){
-        this.gotToHiPayConfiguration();
-    })
-    .then(function(){
-        this.configureSettingsMode("api");
-    })
-    .then(function() {
-        /* Fill wrong api user name in module Settings */
-        this.echo("Filling wrong credentials in Module Settings","INFO");
-        this.waitForSelector('form#account_form input[name="api_username_sandbox"]' , function successful() {
-            initialCredential = this.evaluate(function() { return document.querySelector('form#account_form input[name="api_username_sandbox"]').value; });
-            test.info("Initial credential for api_username_sandbox was :" + initialCredential);
-
-            this.fillSelectors('form#account_form', {
-                'input[name="api_username_sandbox"]': "WRONG CREDENTIALS",
-            }, false);
-            this.click('button[name="submitAccount"]');
-            this.waitForSelector('.alert.alert-success' , function success() {
-                test.info("Filling wrong credentials in Module SettingsTes : Done");
-            }, function fail(){
-                test.assertExists('.alert.alert-success', "'Success' alert exists ");
+            }, function fail() {
+                this.assertExists(
+                    'form#account_form input[name="api_username_sandbox"]',
+                    'Field "api_username_sandbox" exists'
+                );
             });
-        }, function fail() {
-            this.assertExists('form#account_form input[name="api_username_sandbox"]','Field "api_username_sandbox" exists')
+        })
+        .thenOpen(baseURL, function () {
+            checkoutMod.selectItemAndOptions(test);
+        })
+        .then(function () {
+            checkoutMod.personalInformation(test);
+        })
+        .then(function () {
+            checkoutMod.billingInformation(test, 'FR');
+        })
+        .then(function () {
+            checkoutMod.shippingMethod(test);
+        })
+        .then(function () {
+            checkoutMod.fillStepPayment();
+        })
+        .then(function () {
+            this.echo("Checking order error ... ", "INFO");
+            this.waitForSelector("form#tokenizerForm div#error-js ul li.error", function success() {
+                test.assertHttpStatus(200, "Correct HTTP Status Code 200");
+                test.assertExists("form#tokenizerForm div#error-js ul li.error", "Error message exists. Payment error");
+            }, function fail() {
+                test.assertExists("form#tokenizerForm div#error-js ul li.error", "Error message is not present");
+            }, 30000);
+        })
+        .thenOpen(baseURL, function () {
+            adminMod.logToBackend();
+            adminMod.gotToHiPayConfiguration();
+        })
+        .then(function () {
+            /* Restore credentials with initials credentials  */
+            this.echo("Restore true credentials in Module Settings");
+            adminMod.fillCredentials(test, initialCredential);
+        })
+        .run(function () {
+            test.done();
         });
-    })
-    .thenOpen(baseURL, function() {
-        this.selectItemAndOptions();
-    })
-    .then(function() {
-        this.personalInformation();
-    })
-    .then(function() {
-        this.billingInformation('FR');
-    })
-    .then(function() {
-        this.shippingMethod();
-    })
-    .then(function() {
-        this.fillStepPayment();
-    })
-    .then(function() {
-        this.orderResultError(paymentType);
-    })
-    .thenOpen(baseURL, function() {
-        this.logToBackend();
-        this.gotToHiPayConfiguration();
-    })
-    .then(function() {
-        /* Restore credentials with initials credentials  */
-        this.echo("Restore true credentials in Module Settings");
-        this.waitForSelector('form#account_form' , function success() {
-            this.fillSelectors('form#account_form', {
-                'input[name="api_username_sandbox"]': initialCredential,
-            }, false);
-            this.click('button[name="submitAccount"]');
-            this.waitForSelector('.alert.alert-success' , function success() {
-                test.info("Restore true credentials in Module Settings : Done");
-            }, function fail(){
-                test.assertExists('.alert.alert-success', "'Success' alert exists ");
-            });
-        }, function fail(){
-            test.assertExists('form#account_form', "Formular Module Settings alert exists ");
-        });
-
-    })
-    .run(function() {
-        test.done();
-    });
 });

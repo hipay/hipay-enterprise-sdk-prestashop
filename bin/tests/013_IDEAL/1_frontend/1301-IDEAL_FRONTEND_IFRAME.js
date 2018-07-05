@@ -20,7 +20,7 @@
 
 var paymentType = "HiPay Enterprise iDeal";
 
-casper.test.begin('Test Checkout ' + paymentType, function (test) {
+casper.test.begin('Test Checkout ' + paymentType + " with IFrame", function (test) {
 
     var label;
 
@@ -38,7 +38,7 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
         })
         .then(function () {
             adminMod.configureOperatingMode(test, "hosted_page");
-            adminMod.configureHostedDisplay(test, "redirect");
+            adminMod.configureHostedDisplay(test, "iframe");
         })
         .then(function () {
             this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
@@ -67,7 +67,11 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
         .then(function () {
-            paymentLibHiPay.fillPaymentFormularByPaymentProduct("ideal", test);
+            this.wait(10000, function () {
+                this.withFrame(0, function () {
+                    paymentLibHiPay.fillPaymentFormularByPaymentProduct("ideal", test);
+                });
+            });
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
