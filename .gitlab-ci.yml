@@ -151,6 +151,7 @@ deploy2recette:
     - chmod u+x bin/deployment/fix_stack_rm.sh
     - ./bin/deployment/fix_stack_rm.sh $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG 60
     - docker stack deploy -c docker-compose.ci.yml $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+  allow_failure: true
   tags:
     - pi-ecommerce
 
