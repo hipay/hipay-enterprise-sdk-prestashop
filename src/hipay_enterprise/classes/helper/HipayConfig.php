@@ -115,7 +115,6 @@ class HipayConfig
     }
 
     /**
-     * @param string $platform
      * @return mixed
      */
     public function getHashAlgorithm()
@@ -124,12 +123,13 @@ class HipayConfig
     }
 
     /**
-     * @param string $platform
-     * @return mixed
+     * @param $value
+     * @return bool
+     * @throws Exception
      */
     public function setHashAlgorithm($value)
     {
-        return $this->setConfigHiPay("account",$value,"hash_algorithm");
+        return $this->setConfigHiPay("account", $value, "hash_algorithm");
     }
 
     /**
@@ -334,7 +334,6 @@ class HipayConfig
                 "global" => array(
                     "sandbox_mode" => 1,
                     "host_proxy" => "",
-                    "host_proxy" => "",
                     "port_proxy" => "",
                     "user_proxy" => "",
                     "password_proxy" => ""
@@ -449,6 +448,7 @@ class HipayConfig
 
     /**
      * init local config
+     *
      * @return array
      */
     private function insertPaymentsConfig($folderName)

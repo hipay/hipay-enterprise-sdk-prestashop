@@ -66,13 +66,15 @@ class ApiCaller
         }
     }
 
-
-    /**
-
     /**
      * return hosted payment page URL for forwarding
-     * @param type $moduleInstance
-     * @return type
+     *
+     * @param $moduleInstance
+     * @param $params
+     * @param bool $cart
+     * @param bool $moto
+     * @return string
+     * @throws GatewayException
      */
     public static function getHostedPaymentPage($moduleInstance, $params, $cart = false, $moto = false)
     {
@@ -106,9 +108,11 @@ class ApiCaller
 
     /**
      * return transaction from Direct Post Api call
-     * @param type $moduleInstance
-     * @param type $cardToken
-     * @return type
+     *
+     * @param $moduleInstance
+     * @param $params
+     * @return \HiPay\Fullservice\Gateway\Model\Transaction|\HiPay\Fullservice\Model\AbstractModel
+     * @throws GatewayException
      */
     public static function requestDirectPost($moduleInstance, $params)
     {
@@ -143,9 +147,10 @@ class ApiCaller
     /**
      * Request capture or refund to HiPay API
      *
-     * @param type $moduleInstance
-     * @param type $params
-     * @return type
+     * @param $moduleInstance
+     * @param $params
+     * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel
+     * @throws GatewayException
      */
     public static function requestMaintenance($moduleInstance, $params)
     {
@@ -195,6 +200,8 @@ class ApiCaller
     private static function createGatewayClient($moduleInstance, $moto = false, $forceConfig = false)
     {
         $sandbox = false;
+        $proxy = array();
+
         if (!$forceConfig) {
             $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
         } else {
@@ -205,28 +212,34 @@ class ApiCaller
             }
         }
 
+        if ($moduleInstance->hipayConfigTool->getAccountGlobal()["host_proxy"] !== "") {
+            $proxy = array(
+                "host" => $moduleInstance->hipayConfigTool->getAccountGlobal()["host_proxy"],
+                "port" => $moduleInstance->hipayConfigTool->getAccountGlobal()["port_proxy"],
+                "user" => $moduleInstance->hipayConfigTool->getAccountGlobal()["user_proxy"],
+                "password" => $moduleInstance->hipayConfigTool->getAccountGlobal()["password_proxy"]
+            );
+        }
+
         if ($moto &&
             !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]) &&
             !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"])
         ) {
-            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox(
-            )["api_moto_username_sandbox"] : $moduleInstance->hipayConfigTool->getAccountProduction(
-            )["api_moto_username_production"];
-            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox(
-            )["api_moto_password_sandbox"] : $moduleInstance->hipayConfigTool->getAccountProduction(
-            )["api_moto_password_production"];
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"];
         } else {
-            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox(
-            )["api_username_sandbox"] : $moduleInstance->hipayConfigTool->getAccountProduction(
-            )["api_username_production"];
-            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox(
-            )["api_password_sandbox"] : $moduleInstance->hipayConfigTool->getAccountProduction(
-            )["api_password_production"];
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_username_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_password_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_password_production"];
         }
 
-        $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
+        $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE
+            : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
 
-        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username, $password, $env);
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username, $password, $env, null, $proxy);
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
