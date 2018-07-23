@@ -3,7 +3,7 @@ version: "3"
 networks:
   prestashop:
     internal: true
-  outside-overlay:
+  outside-pi-overlay:
     external: true
 
 services:
@@ -25,7 +25,7 @@ services:
       - ./conf/env_file/stage/env17
     networks:
       - prestashop
-      - outside-overlay
+      - outside-pi-overlay
   smtp:
     image: schickling/mailcatcher
     container_name: smtp-test-$CI_JOB_ID-RE

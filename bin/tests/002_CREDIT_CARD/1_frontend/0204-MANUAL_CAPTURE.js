@@ -1,3 +1,15 @@
+/**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 /**********************************************************************************************
  *
  *                         VALIDATION TEST ADMIN CONFIGURATION
@@ -7,15 +19,15 @@
  *  @Scenario   : Configure module for manual capture, process payment with credit card and make several capture
  *  @screen     : Order view ( Panel Capture HiPay )
  *
-/**********************************************************************************************/
+ /**********************************************************************************************/
 
 var paymentType = "HiPay Enterprise Credit Card",
-    currentBrandCC = typeCC;
+    currentBrandCC = utilsHiPay.getTypeCC();
 
-casper.test.begin('Test manual capture', function(test) {
+casper.test.begin('Test manual capture', function (test) {
     phantom.clearCookies();
 
-    casper.setFilter("page.confirm", function(msg) {
+    casper.setFilter("page.confirm", function (msg) {
         this.echo("Confirmation message " + msg, "INFO");
         return true;
     });
@@ -23,46 +35,53 @@ casper.test.begin('Test manual capture', function(test) {
     casper.start(baseURL)
         .then(function () {
             currentBrandCC = "mastercard";
-            this.logToBackend();
-        })
-        .then(function() {
-            this.gotToHiPayConfiguration();
-            this.configureSettingsMode("api");
+            adminMod.logToBackend(test);
         })
         .then(function () {
-            this.configureCaptureMode("manual");
+            adminMod.gotToHiPayConfiguration(test);
+            adminMod.configureCaptureMode(test, "manual");
         })
         .thenOpen(baseURL, function () {
-            this.selectItemAndOptions();
+            checkoutMod.selectItemAndOptions(test);
         })
         .then(function () {
-            this.personalInformation();
+            checkoutMod.personalInformation(test);
         })
         .then(function () {
-            this.billingInformation('FR');
+            checkoutMod.billingInformation(test, 'FR');
         })
         .then(function () {
-            this.shippingMethod();
+            checkoutMod.shippingMethod(test);
         })
         .then(function () {
-            this.fillStepPayment();
+            checkoutMod.fillStepPayment(test);
         })
         .then(function () {
-            this.orderResultSuccess(paymentType);
+            adminMod.orderResultSuccess(test);
         })
         .then(function () {
-            orderReference = casper.getOrderReference();
-            cartID = casper.getCartId();
-            orderID = casper.getOrderId();
-            this.processNotifications(true,false,false,true,"OGONE_DEV");
+            notificationLibHiPay.processNotifications(
+                test,
+                order.getCartId(),
+                true,
+                false,
+                false,
+                true,
+                "OGONE_DEV",
+                backendLibHiPay,
+                loginBackend,
+                passBackend,
+                baseURL,
+                urlNotification
+            );
         })
         .thenOpen(baseURL, function () {
-            this.logToBackend();
+            adminMod.logToBackend(test);
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Open order detail  ...", "INFO");
                 this.click("li#subtab-AdminParentOrders a");
                 this.waitForSelector("table.order", function success() {
-                    this.click(x('//td[contains(., "' + casper.getOrderReference() + '")]'));
+                    this.click(x('//td[contains(., "' + order.getReference() + '")]'));
                     this.waitForUrl(/AdminOrders&id_order/, function success() {
                         test.info("Order tab is ready for capture");
                     }, function fail() {
@@ -93,20 +112,18 @@ casper.test.begin('Test manual capture', function(test) {
 
                     this.click('button[name="hipay_capture_basket_submit"]');
 
-                    this.waitForAlert(function(response) {
-                        myAlert = {exists: true, value: response.data};
+                    this.waitForAlert(function () {
                         test.info("Alert received", "INFO");
                         return true;
-                    }, function fail () {
-                        myAlert = {exists: false};
+                    }, function fail() {
                         test.info("Alert not received", "INFO");
-                    },15000);
+                    }, 15000);
 
-                    this.waitForUrl(/controller=AdminOrders/, function(){
+                    this.waitForUrl(/controller=AdminOrders/, function () {
                         test.info("Capture done", "INFO");
                     }, function fail() {
-                        this.assertUrl(/controller=AdminOrders/,'Capture is in error')
-                    },15000);
+                        this.assertUrl(/controller=AdminOrders/, 'Capture is in error')
+                    }, 15000);
                 }, function fail() {
                     this.assertVisible('table.table-item-hipay');
                 });
@@ -114,72 +131,96 @@ casper.test.begin('Test manual capture', function(test) {
             }, function fail() {
                 test.assertUrlMatch(/AdminOrders/, "Order screen exists");
             }, 15000);
-    })
-    .then(function () {
-        this.processNotifications(false,false,true,true,"OGONE_DEV");
-    })
-    .then(function () {
-        this.logToBackend();
-        this.waitForSelector("li#subtab-AdminOrders", function success() {
-            this.echo("Open order detail  ...", "INFO");
-            this.click("li#subtab-AdminParentOrders a");
-            this.waitForSelector("table.order", function success() {
-                this.click(x('//td[contains(., "' + casper.getOrderReference() + '")]'));
-                this.waitForUrl(/AdminOrders&id_order/, function success() {
-                    test.info("Order tab is ready for capture");
+        })
+        .then(function () {
+            notificationLibHiPay.processNotifications(
+                test,
+                order.getCartId(),
+                false,
+                false,
+                true,
+                true,
+                "OGONE_DEV",
+                backendLibHiPay,
+                loginBackend,
+                passBackend,
+                baseURL,
+                urlNotification
+            );
+        })
+        .then(function () {
+            adminMod.logToBackend(test);
+            this.waitForSelector("li#subtab-AdminOrders", function success() {
+                this.echo("Open order detail  ...", "INFO");
+                this.click("li#subtab-AdminParentOrders a");
+                this.waitForSelector("table.order", function success() {
+                    this.click(x('//td[contains(., "' + order.getReference() + '")]'));
+                    this.waitForUrl(/AdminOrders&id_order/, function success() {
+                        test.info("Order tab is ready for capture");
+                    }, function fail() {
+                        test.assertUrlMatch(/AdminOrders&id_order/, "Order detail screen");
+                    }, 15000);
                 }, function fail() {
-                    test.assertUrlMatch(/AdminOrders&id_order/, "Order detail screen");
+                    test.assertUrlMatch(/AdminOrders/, "Order screen exists");
                 }, 15000);
+            })
+        })
+        .then(function () {
+            /* Check order is really in status partial capture */
+            test.assertExists("form#hipay_refund_form", "Refund panel is shown");
+            test.assertExists("form#hipay_capture_form", "Capture panel is shown");
+
+            var qtyRemain = this.fetchText('table.table-item-hipay input[name="hipaycapture[1]"]+div').split('/')[1];
+            test.assert(qtyRemain === ' 6', "Qty remain to capture is 6!");
+        })
+        .then(function () {
+            this.echo("Capture the last item ...", "INFO");
+            this.waitForSelector("form#hipay_capture_form", function success() {
+                this.waitUntilVisible('table.table-item-hipay', function success() {
+                    /* Capture 4 item and shipping fees */
+                    this.fillSelectors("form#hipay_capture_form", {
+                        'input[name="hipaycapture[1]"]': 6,
+                    }, false);
+                    this.click('button[name="hipay_capture_basket_submit"]');
+
+                    this.waitForAlert(function (response) {
+                        test.info("Alert received", "INFO");
+                        return true;
+                    }, function fail() {
+                        test.info("Alert not received", "INFO");
+                    }, 15000);
+
+                    this.waitForUrl(/controller=AdminOrders/, function () {
+                        test.info("Capture done", "INFO");
+                    }, function fail() {
+                        this.assertUrl(/controller=AdminOrders/, 'Capture is in error')
+                    }, 15000)
+
+                }, function fail() {
+                    this.assertVisible('table.table-item-hipay');
+                });
             }, function fail() {
                 test.assertUrlMatch(/AdminOrders/, "Order screen exists");
             }, 15000);
         })
-    })
-    .then(function () {
-        /* Check order is really in status partial capture */
-        test.assertExists("form#hipay_refund_form","Refund panel is shown");
-        test.assertExists("form#hipay_capture_form","Capture panel is shown");
-
-        var qtyRemain= this.fetchText('table.table-item-hipay input[name="hipaycapture[1]"]+div').split('/')[1];
-        test.assert(qtyRemain == ' 6', "Qty remain to capture is 6!");;
-    })
-    .then(function () {
-        this.echo("Capture the last item ...", "INFO");
-        this.waitForSelector("form#hipay_capture_form", function success() {
-            this.waitUntilVisible('table.table-item-hipay', function success() {
-                /* Capture 4 item and shipping fees */
-                this.fillSelectors("form#hipay_capture_form", {
-                    'input[name="hipaycapture[1]"]': 6,
-                }, false);
-                this.click('button[name="hipay_capture_basket_submit"]');
-
-                this.waitForAlert(function(response) {
-                    myAlert = {exists: true, value: response.data};
-                    test.info("Alert received", "INFO");
-                    return true;
-                }, function fail () {
-                    myAlert = {exists: false};
-                    test.info("Alert not received", "INFO");
-                },15000);
-
-                this.waitForUrl(/controller=AdminOrders/, function(){
-                    test.info("Capture done", "INFO");
-                }, function fail() {
-                    this.assertUrl(/controller=AdminOrders/,'Capture is in error')
-                },15000)
-
-            }, function fail() {
-                this.assertVisible('table.table-item-hipay');
-            });
-        }, function fail() {
-            test.assertUrlMatch(/AdminOrders/, "Order screen exists");
-        }, 15000);
-    })
-    .then(function () {
-        this.processNotifications(false,false,true,false,"OGONE_DEV");
-    })
-    .run(function() {
-        this.configureCaptureMode("automatic");
-        test.done();
-    });
+        .then(function () {
+            notificationLibHiPay.processNotifications(
+                test,
+                order.getCartId(),
+                false,
+                false,
+                true,
+                false,
+                "OGONE_DEV",
+                backendLibHiPay,
+                loginBackend,
+                passBackend,
+                baseURL,
+                urlNotification
+            );
+        })
+        .run(function () {
+            adminMod.configureCaptureMode(test, "automatic");
+            test.done();
+        });
 });

@@ -21,7 +21,7 @@ variables:
 .test_template: &test_definition
   stage: test
   tags:
-      - prestashop
+      - pi-ecommerce
   allow_failure: false
   before_script:
     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
@@ -48,7 +48,7 @@ build-test:
   script:
     - docker-compose -f docker-compose.stage.yml build --no-cache
   tags:
-    - prestashop
+    - pi-ecommerce
 
 casperjs-17-part-1:
   <<: *test_definition
@@ -80,7 +80,7 @@ clean-stack-test:
     - docker stack rm $STACK_TEST_PS17_1
     - docker stack rm $STACK_TEST_PS17_2
   tags:
-    - prestashop
+    - pi-ecommerce
   when: always
 
 sonarqube:
@@ -93,7 +93,7 @@ sonarqube:
   script:
     - /usr/bin/sonar-scanner-run.sh
   tags:
-    - prestashop
+    - pi-ecommerce
 
 sonarqube-reports:
   stage: analysis
@@ -105,7 +105,7 @@ sonarqube-reports:
   script:
     - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
   tags:
-    - prestashop
+    - pi-ecommerce
 
 package:
  stage: package
@@ -125,14 +125,14 @@ package:
   paths:
     - ./package-ready-for-prestashop
  tags:
-    - prestashop
+    - pi-ecommerce
 
 build:
   stage: build
   script:
     - docker-compose -f docker-compose.ci.yml build --no-cache
   tags:
-    - prestashop
+    - pi-ecommerce
 
 deploy2recette:
   stage: deploy
@@ -151,8 +151,9 @@ deploy2recette:
     - chmod u+x bin/deployment/fix_stack_rm.sh
     - ./bin/deployment/fix_stack_rm.sh $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG 60
     - docker stack deploy -c docker-compose.ci.yml $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+  allow_failure: true
   tags:
-    - prestashop
+    - pi-ecommerce
 
 sync:
   stage: sync
@@ -162,4 +163,4 @@ sync:
     - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
   allow_failure: true
   tags:
-    - prestashop
+    - pi-ecommerce
