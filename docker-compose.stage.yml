@@ -1,32 +1,22 @@
-version: "2.1"
+version: "3"
 
 networks:
   prestashop:
     internal: true
-  outside:
+  outside-pi-overlay:
     external: true
 
 services:
   mysql:
+    image: mysql:5.7
     container_name: mysql-ps17-$CI_JOB_ID-RE
     networks:
       - prestashop
     env_file:
       - ./conf/env_file/stage/env
-  #prestashop16:
-  #  container_name: hipay-enterprise-ps17{BUILD_REF}
-  #  dockerfile: ./conf/docker/Dockerfile16
-  #  build: .
-  #  ports:
-  #    - "8186:80"
-  #  links:
-  #    - smtp
-  #    - mysql
-  #  env_file:
-  #    - ./conf/env_file/stage/env
-  #    - ./conf/env_file/stage/env16
   prestashop17:
     container_name: hipay-enterprise-ps17-$CI_JOB_ID-RE
+    image: hipay-enterprise-ps17-$CI_COMMIT_REF_SLUG
     build:
       context: .
       dockerfile: ./conf/docker/Dockerfile17
@@ -35,8 +25,9 @@ services:
       - ./conf/env_file/stage/env17
     networks:
       - prestashop
-      - outside
+      - outside-pi-overlay
   smtp:
+    image: schickling/mailcatcher
     container_name: smtp-test-$CI_JOB_ID-RE
     networks:
       - prestashop

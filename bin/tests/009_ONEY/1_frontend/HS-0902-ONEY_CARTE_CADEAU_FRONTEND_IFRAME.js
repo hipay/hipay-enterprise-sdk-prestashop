@@ -1,3 +1,15 @@
+/**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 /**********************************************************************************************
  *
  *                       VALIDATION TEST METHOD : CARTE CADEAU ONEY
@@ -8,29 +20,33 @@
 
 var paymentType = "HiPay Enterprise carte cadeau Oney";
 
-casper.test.begin('Test Checkout ' + paymentType + ' with Iframe' , function (test) {
+casper.test.begin('Test Checkout ' + paymentType + ' with Iframe', function (test) {
+
+    var label;
+
     phantom.clearCookies();
 
     casper.start(baseURL)
         .then(function () {
-            this.refillOneyGiftCard();
+            utilsLibHiPay.refillOneyGiftCard(test);
         })
         .then(function () {
-            this.logToBackend();
+            adminMod.logToBackend(test);
         })
         .then(function () {
-            this.gotToHiPayConfiguration();
+            adminMod.gotToHiPayConfiguration(test);
         })
         .then(function () {
-            this.configureCaptureMode("automatic");
+            adminMod.configureCaptureMode(test, "automatic");
         })
         .then(function () {
-            this.configureSettingsMode("hosted");
-            this.configureHostedDisplay("redirect");
+            adminMod.configureOperatingMode(test, "hosted_page");
+            adminMod.configureHostedDisplay(test, "iframe");
         })
         .then(function () {
-            this.activateMethod("carte-cadeau");
-            this.configureSettingsMode("hosted_page");
+            adminMod.activateMethod(test, "carte-cadeau");
+        })
+        .then(function () {
             this.waitForSelector('input[name="carte-cadeau_displayName[fr]"]', function success() {
                 label = this.getElementAttribute('input[name="carte-cadeau_displayName[fr]"]', 'value');
                 test.info("Display name in checkout should be :" + label);
@@ -39,26 +55,29 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe' , function (te
             });
         })
         .thenOpen(baseURL, function () {
-            this.selectItemAndOptions();
+            checkoutMod.selectItemAndOptions(test);
         })
         .then(function () {
-            this.personalInformation();
+            checkoutMod.personalInformation(test);
         })
         .then(function () {
-            this.billingInformation('FR');
+            checkoutMod.billingInformation(test, 'FR');
         })
         .then(function () {
-            this.shippingMethod();
+            checkoutMod.shippingMethod(test);
         })
         .then(function () {
-            this.selectMethodInCheckout("Payer par " + label, true);
-        })
-        /* Fill carte-cadeau formular */
-        .then(function () {
-            this.fillPaymentFormularByPaymentProduct("carte-cadeau");
+            checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
         .then(function () {
-            this.orderResultSuccess(paymentType);
+            this.wait(10000, function () {
+                this.withFrame(0, function () {
+                    paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
+                });
+            });
+        })
+        .then(function () {
+            adminMod.orderResultSuccess(test);
         })
         .run(function () {
             test.done();

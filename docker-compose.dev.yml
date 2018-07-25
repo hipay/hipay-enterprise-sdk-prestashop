@@ -5,8 +5,43 @@ mysql:
   env_file:
     - ./conf/env_file/development/env
   mem_limit: 500M
+
 smtp:
   image: schickling/mailcatcher
   ports:
     - "1018:1080"
   mem_limit: 256M
+
+prestashop16:
+  container_name: hipay-enterprise-shop-ps16
+  dockerfile: ./conf/docker/Dockerfile16
+  build: .
+  ports:
+    - "8086:80"
+  links:
+    - smtp
+    - mysql
+  env_file:
+    - ./conf/env_file/development/env
+    - ./conf/env_file/development/env16
+  volumes:
+    - ./web16:/var/www/html
+    - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+  mem_limit: 500M
+
+prestashop17:
+ container_name: hipay-enterprise-shop-ps17
+ dockerfile: ./conf/docker/Dockerfile17
+ build: .
+ ports:
+   - "8087:80"
+ links:
+   - smtp
+   - mysql
+ env_file:
+   - ./conf/env_file/development/env
+   - ./conf/env_file/development/env17
+ volumes:
+   - ./web17:/var/www/html
+   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+ mem_limit: 500M

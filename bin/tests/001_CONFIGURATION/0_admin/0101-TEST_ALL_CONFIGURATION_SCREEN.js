@@ -1,3 +1,15 @@
+/**
+ * HiPay Enterprise SDK Prestashop
+ *
+ * 2017 HiPay
+ *
+ * NOTICE OF LICENSE
+ *
+ * @author    HiPay <support.tpp@hipay.com>
+ * @copyright 2017 HiPay
+ * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+ */
+
 /**********************************************************************************************
  *
  *                         VALIDATION TEST ADMIN CONFIGURATION
@@ -10,15 +22,18 @@
 /**********************************************************************************************/
 
 var paymentType = "HiPay Enterprise Credit Card",
-    currentBrandCC = typeCC;
+    currentBrandCC = utilsHiPay.getTypeCC();
 
 casper.test.begin('Test admin configuration screens', function(test) {
     casper.start(baseURL)
     .then(function() {
         this.echo("Start test","INFO");
-        if(typeof casper.cli.get('type-cc') == "undefined" && currentBrandCC == "visa" || typeof casper.cli.get('type-cc') != "undefined") {
-           this.logToBackend();
-           this.gotToHiPayConfiguration();
+        if(typeof casper.cli.get('type-cc') == "undefined"
+            && currentBrandCC == "visa"
+            || typeof casper.cli.get('type-cc') != "undefined")
+        {
+            adminMod.logToBackend();
+            adminMod.gotToHiPayConfiguration();
         }
     })
     .then(function() {
