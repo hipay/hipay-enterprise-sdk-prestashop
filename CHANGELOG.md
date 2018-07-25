@@ -1,3 +1,9 @@
+# Version 2.2.5
+
+- Improve CI 
+- Refactor functional tests
+- Fix : Proxy settings
+
 # Version 2.2.4
 
 - Fix : Bug on BCMC card form
