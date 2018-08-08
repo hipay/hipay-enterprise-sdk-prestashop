@@ -18,7 +18,7 @@ DB_PASSWD=admin
 #====================================================
 # Configuration for mysql container
 #=====================================================
-MYSQL_HOST=mysql
+MYSQL_HOST={DB_HOST}
 MYSQL_ROOT_PASSWORD=admin
 
 #====================================================

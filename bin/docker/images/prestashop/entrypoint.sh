@@ -19,7 +19,7 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 #===================================#
 if [ ! -f /var/www/html/console/console.php ];then
 
-    cp -f /tmp/apache2/mpm_prefork.conf /etc/apache2/mods-available/
+    cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
