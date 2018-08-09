@@ -65,6 +65,9 @@ if [ ! -f /var/www/html/console/console.php ];then
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ];then
         CONFIG=${CONFIG/'"send_url_notification":0'/'"send_url_notification":1'}
+    fi
+
+    if [ "$ENVIRONMENT" != "$ENV_DEVELOPMENT" ];then
         CONFIG=${CONFIG/'"test":"SHA1"'/'"test":"SHA512"'}
     fi
 
