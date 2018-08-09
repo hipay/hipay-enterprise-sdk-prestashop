@@ -7,8 +7,8 @@ networks:
     external: true
 
 services:
-  web17:
-    container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17
+  web:
+    container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web
     image: ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
     build:
       context: .
@@ -22,7 +22,7 @@ services:
       prestashop:
       outside:
         aliases:
-          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17
+          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web
   database:
     image: mysql:5.7
     container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database

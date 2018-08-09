@@ -49,52 +49,40 @@ build-test:
 test-casper-17-1:
   <<: *test_definition
   script:
-    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/" ./bin/docker/conf/test/env17
+    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/" ./bin/docker/conf/test/env17
     - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/test/env
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml stop
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml rm -fv
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml up -d
     - sleep 250
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml logs
-    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
   after_script:
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml stop
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml rm -fv
-    - /tools/docker-network-rm.sh ${PROJECT_NAME_TEST_PS17_1}_prestashop
-    - /tools/docker-rmi.sh ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
 test-casper-17-2:
   <<: *test_definition
   script:
-    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/" ./bin/docker/conf/test/env17
+    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/" ./bin/docker/conf/test/env17
     - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/test/env
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml stop
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml rm -fv
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml up -d
     - sleep 250
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml logs
-    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web17/
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
   after_script:
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml stop
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml rm -fv
-    - /tools/docker-network-rm.sh ${PROJECT_NAME_TEST_PS17_2}_prestashop
-    - /tools/docker-rmi.sh ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_2 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
 clean-stack-test:
   stage: clean-stack
   script:
     - echo "Clean remaining containers, network and images"
   after_script:
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml stop
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml rm -fv
-    - /tools/docker-network-rm.sh ${PROJECT_NAME_TEST_PS17_1}_prestashop
-    - /tools/docker-rmi.sh ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml stop
-    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml rm -fv
-    - /tools/docker-network-rm.sh ${PROJECT_NAME_TEST_PS17_2}_prestashop
-    - /tools/docker-rmi.sh ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_2 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
   tags:
     - pi-commerce-no-overlay
   when: always
@@ -169,12 +157,8 @@ deploy2recette:
      - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env16
      - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env17
      - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
-      # Substitute env variables which dont exists on the distant machine
-     - sed -i -e "s|\${DOCKER_STACK}|$DOCKER_STACK|g" docker-compose.acceptance.yml
-     - sed -i -e "s|\${DOCKER_SERVICE}|$DOCKER_SERVICE|g" docker-compose.acceptance.yml
-     - sed -i -e "s|\${CI_COMMIT_REF_SLUG}|$CI_COMMIT_REF_SLUG|g" docker-compose.acceptance.yml
-     - sed -i -e "s|\${CI_JOB_ID}|$CI_JOB_ID|g" docker-compose.acceptance.yml
-     - sed -i -e "s|\${REGISTRY_URL}|$REGISTRY_URL|g" docker-compose.acceptance.yml
+      # Substitute env variables which doesn't exists on the distant machine
+     - /tools/substitute-env-var.sh docker-compose.acceptance.yml
      # Change path for relative path to environment files
      - sed -i -e "s|bin/docker/conf/acceptance/env|env|g" docker-compose.acceptance.yml
      - sed -i -e "s|bin/docker/conf/acceptance/env16|env16|g" docker-compose.acceptance.yml
