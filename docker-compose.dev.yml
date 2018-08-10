@@ -1,9 +1,9 @@
-mysql:
+database:
   image: mysql:5.7
   ports:
     - "3318:3306"
   env_file:
-    - ./conf/env_file/development/env
+    - ./bin/docker/conf/development/env
   mem_limit: 500M
 
 smtp:
@@ -14,16 +14,16 @@ smtp:
 
 prestashop16:
   container_name: hipay-enterprise-shop-ps16
-  dockerfile: ./conf/docker/Dockerfile16
+  dockerfile: ./bin/docker/images/prestashop/Dockerfile16
   build: .
   ports:
     - "8086:80"
   links:
     - smtp
-    - mysql
+    - database
   env_file:
-    - ./conf/env_file/development/env
-    - ./conf/env_file/development/env16
+    - ./bin/docker/conf/development/env
+    - ./bin/docker/conf/development/env16
   volumes:
     - ./web16:/var/www/html
     - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
@@ -31,16 +31,16 @@ prestashop16:
 
 prestashop17:
  container_name: hipay-enterprise-shop-ps17
- dockerfile: ./conf/docker/Dockerfile17
+ dockerfile: ./bin/docker/images/prestashop/Dockerfile17
  build: .
  ports:
    - "8087:80"
  links:
    - smtp
-   - mysql
+   - database
  env_file:
-   - ./conf/env_file/development/env
-   - ./conf/env_file/development/env17
+   - ./bin/docker/conf/development/env
+   - ./bin/docker/conf/development/env17
  volumes:
    - ./web17:/var/www/html
    - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise

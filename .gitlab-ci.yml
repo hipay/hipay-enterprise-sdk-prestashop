@@ -11,8 +11,8 @@ stages:
  - sync
 
 variables:
-  STACK_TEST_PS17_1: hipay-enterprise-ps17-${CI_PIPELINE_ID}-1
-  STACK_TEST_PS17_2: hipay-enterprise-ps17-${CI_PIPELINE_ID}-2
+  PROJECT_NAME_TEST_PS17_1: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}-17-1
+  PROJECT_NAME_TEST_PS17_2: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}-17-2
 
 #########################
 ####  TEMPLATE      ####
@@ -21,19 +21,15 @@ variables:
 .test_template: &test_definition
   stage: test
   tags:
-      - pi-ecommerce
+      - pi-commerce-no-overlay
   allow_failure: false
   before_script:
-    - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./conf/env_file/stage/env
-    - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./conf/env_file/stage/env
-    - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./conf/env_file/stage/env
-    - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./conf/env_file/stage/env
-    - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./conf/env_file/stage/env
-    - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/stage/env
-    - sed -i -e "s/{LOGIN_BACKEND\}/$LOGIN_BACKEND/" ./conf/env_file/stage/test.env
-    - sed -i -e "s/{PASS_BACKEND\}/$PASS_BACKEND/" ./conf/env_file/stage/test.env
-    - sed -i -e "s/{LOGIN_PAYPAL\}/$LOGIN_PAYPAL/" ./conf/env_file/stage/test.env
-    - sed -i -e "s/{PASS_PAYPAL\}/$PASS_PAYPAL/" ./conf/env_file/stage/test.env
+    - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
+    - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
   artifacts:
     paths:
       - bin/tests/errors
@@ -46,41 +42,49 @@ variables:
 build-test:
   stage: build-test
   script:
-    - docker-compose -f docker-compose.stage.yml build --no-cache
+    - docker-compose -f docker-compose.test.yml build
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
-casperjs-17-part-1:
+test-casper-17-1:
   <<: *test_definition
   script:
-    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_1}_prestashop17/" ./conf/env_file/stage/env17
-    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_1
-    - sleep 300
-    - docker service logs ${STACK_TEST_PS17_1}_prestashop17
-    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_1}_prestashop17
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${STACK_TEST_PS17_1}_prestashop17/
+    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/" ./bin/docker/conf/test/env17
+    - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/test/env
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml stop
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml rm -fv
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml up -d
+    - sleep 250
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml logs
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
   after_script:
-    - docker stack rm $STACK_TEST_PS17_1
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
-casperjs-17-part-2:
+test-casper-17-2:
   <<: *test_definition
   script:
-    - sed -i -e "s/{PS_DOMAIN\}/${STACK_TEST_PS17_2}_prestashop17/" ./conf/env_file/stage/env17
-    - docker stack deploy -c docker-compose.stage.yml $STACK_TEST_PS17_2
-    - sleep 300
-    - docker service logs ${STACK_TEST_PS17_2}_prestashop17
-    - curl --retry 10 --retry-delay 20 -v http:\/\/${STACK_TEST_PS17_2}_prestashop17
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${STACK_TEST_PS17_2}_prestashop17/
+    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/" ./bin/docker/conf/test/env17
+    - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/test/env
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml stop
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml rm -fv
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml up -d
+    - sleep 250
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml logs
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web/
   after_script:
-      - docker stack rm $STACK_TEST_PS17_2
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_2 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
 clean-stack-test:
   stage: clean-stack
   script:
-    - docker stack rm $STACK_TEST_PS17_1
-    - docker stack rm $STACK_TEST_PS17_2
+    - echo "Clean remaining containers, network and images"
+  after_script:
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_2 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
   when: always
 
 sonarqube:
@@ -93,7 +97,7 @@ sonarqube:
   script:
     - /usr/bin/sonar-scanner-run.sh
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
 sonarqube-reports:
   stage: analysis
@@ -105,7 +109,7 @@ sonarqube-reports:
   script:
     - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
 package:
  stage: package
@@ -125,36 +129,45 @@ package:
   paths:
     - ./package-ready-for-prestashop
  tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
 build:
   stage: build
+  before_script:
+    - /tools/docker-rmi.sh ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-16:${CI_COMMIT_REF_SLUG}
+    - /tools/docker-rmi.sh ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-17:${CI_COMMIT_REF_SLUG}
   script:
-    - docker-compose -f docker-compose.ci.yml build --no-cache
+    - docker-compose -f docker-compose.acceptance.yml build
+    - docker-compose -f docker-compose.acceptance.yml push
+  after_script:
+    - docker rmi ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-16:${CI_COMMIT_REF_SLUG}
+    - docker rmi ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-17:${CI_COMMIT_REF_SLUG}
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
 deploy2recette:
   stage: deploy
   before_script:
-     - sed -i -e "s/{HIPAY_API_USER_RECETTE\}/$HIPAY_API_USER_RE7/" ./conf/env_file/production/env
-     - sed -i -e "s/{HIPAY_API_PASSWORD_RECETTE\}/$HIPAY_API_PASSWORD_RE7/" ./conf/env_file/production/env
-     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_RECETTE\}/$HIPAY_TOKENJS_PUBLICKEY_RE7/" ./conf/env_file/production/env
-     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_RECETTE\}/$HIPAY_TOKENJS_USERNAME_RE7/" ./conf/env_file/production/env
-     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_RECETTE\}/$HIPAY_SECRET_PASSPHRASE_RE7/" ./conf/env_file/production/env
-     - sed -i -e "s/{DB_HOST\}/${CI_COMMIT_REF_SLUG}-mysql/" ./conf/env_file/production/env
-     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/" ./conf/env_file/production/env16
-     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/" ./conf/env_file/production/env17
-     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./conf/env_file/production/env
+     - sed -i -e "s/{HIPAY_API_USER_RECETTE\}/$HIPAY_API_USER_RE7/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_API_PASSWORD_RECETTE\}/$HIPAY_API_PASSWORD_RE7/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_RECETTE\}/$HIPAY_TOKENJS_PUBLICKEY_RE7/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_RECETTE\}/$HIPAY_TOKENJS_USERNAME_RE7/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_RECETTE\}/$HIPAY_SECRET_PASSPHRASE_RE7/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env16
+     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env17
+     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
+      # Substitute env variables which doesn't exists on the distant machine
+     - /tools/substitute-env-var.sh docker-compose.acceptance.yml
+     # Change path for relative path to environment files
+     - sed -i -e "s|bin/docker/conf/acceptance/env|env|g" docker-compose.acceptance.yml
+     - sed -i -e "s|bin/docker/conf/acceptance/env16|env16|g" docker-compose.acceptance.yml
+     - sed -i -e "s|bin/docker/conf/acceptance/env17|env17|g" docker-compose.acceptance.yml
   script:
-    - echo "deploy to pre-prod in Docker-Machine (recette and branches)"
-    - docker stack rm $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
-    - chmod u+x bin/deployment/fix_stack_rm.sh
-    - ./bin/deployment/fix_stack_rm.sh $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG 60
-    - docker stack deploy -c docker-compose.ci.yml $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
+    - bash /tools/deployToDockerMachine.sh -e ./bin/docker/conf/acceptance/env -e ./bin/docker/conf/acceptance/env16 -e ./bin/docker/conf/acceptance/env17 -s docker-compose.acceptance.yml -n $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
   allow_failure: true
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay
 
 sync:
   stage: sync
@@ -164,4 +177,4 @@ sync:
     - git push --mirror https://$GITHUB_USER:$GITHUB_PASSWORD@github.com/hipay/hipay-enterprise-sdk-prestashop.git
   allow_failure: true
   tags:
-    - pi-ecommerce
+    - pi-commerce-no-overlay

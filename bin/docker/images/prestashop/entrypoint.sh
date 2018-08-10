@@ -19,7 +19,7 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 #===================================#
 if [ ! -f /var/www/html/console/console.php ];then
 
-    cp -f /tmp/apache2/mpm_prefork.conf /etc/apache2/mods-available/
+    cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
@@ -65,6 +65,9 @@ if [ ! -f /var/www/html/console/console.php ];then
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ];then
         CONFIG=${CONFIG/'"send_url_notification":0'/'"send_url_notification":1'}
+    fi
+
+    if [ "$ENVIRONMENT" != "$ENV_DEVELOPMENT" ];then
         CONFIG=${CONFIG/'"test":"SHA1"'/'"test":"SHA512"'}
     fi
 

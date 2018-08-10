@@ -1,0 +1,45 @@
+version: "3.3"
+
+networks:
+  prestashop:
+    internal: true
+  outside:
+    external: true
+
+services:
+  web:
+    container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web
+    image: ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile17
+    depends_on:
+      - database
+    env_file:
+      - ./bin/docker/conf/test/env
+      - ./bin/docker/conf/test/env17
+    networks:
+      prestashop:
+      outside:
+        aliases:
+          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web
+  database:
+    image: mysql:5.7
+    container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database
+    networks:
+      prestashop:
+        aliases:
+          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database
+    env_file:
+      - ./bin/docker/conf/test/env
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  smtp:
+    image: schickling/mailcatcher
+    container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_smtp
+    networks:
+      prestashop:
+        aliases:
+          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_smtp

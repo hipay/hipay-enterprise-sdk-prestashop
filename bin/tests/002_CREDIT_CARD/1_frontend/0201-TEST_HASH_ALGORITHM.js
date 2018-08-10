@@ -31,7 +31,7 @@ casper.test.begin('Change Hash Algorithm ' + paymentType + ' with ' + utilsHiPay
         .then(function () {
             this.echo("Open Integration nav", "INFO");
             this.waitForUrl(/maccount/, function success() {
-                backendLibHiPay.selectHashingAlgorithm(test, "SHA512");
+                backendLibHiPay.selectHashingAlgorithm(test, "SHA1");
             }, function fail() {
                 test.assertUrlMatch(/maccount/, "Dashboard page with account ID exists");
             });
@@ -49,7 +49,7 @@ casper.test.begin('Change Hash Algorithm ' + paymentType + ' with ' + utilsHiPay
                     return document.querySelector('select#hash_algorithm_test').value;
                 });
                 test.info("Initial Hashing Algorithm :" + current);
-                if (current != 'SHA1') {
+                if (current != 'SHA512') {
                     test.fail("Initial value is wrong for Hashing : " + current);
                 }
                 this.thenClick('input#synchronize-hash', function () {
@@ -57,7 +57,7 @@ casper.test.begin('Change Hash Algorithm ' + paymentType + ' with ' + utilsHiPay
                         var newHashingAlgo = this.evaluate(function () {
                             return document.querySelector('select#hash_algorithm_test').value;
                         });
-                        if (newHashingAlgo != 'SHA512') {
+                        if (newHashingAlgo != 'SHA1') {
                             test.fail("Synchronize doesn't work : " + current);
                         } else {
                             test.info("Done");
@@ -85,35 +85,6 @@ casper.test.begin('Change Hash Algorithm ' + paymentType + ' with ' + utilsHiPay
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
-        })
-        .then(function () {
-            notificationLibHiPay.processNotifications(
-                test,
-                order.getCartId(),
-                true,
-                false,
-                true,
-                false,
-                "OGONE_DEV",
-                backendLibHiPay,
-                loginBackend,
-                passBackend,
-                baseURL,
-                urlNotification
-            );
-        })
-        .thenOpen(urlBackend)
-        .then(function () {
-            backendLibHiPay.selectAccountBackend(test, "OGONE_DEV");
-        })
-        /* Open Integration tab */
-        .then(function () {
-            this.echo("Open Integration nav", "INFO");
-            this.waitForUrl(/maccount/, function success() {
-                backendLibHiPay.selectHashingAlgorithm("SHA1");
-            }, function fail() {
-                test.assertUrlMatch(/maccount/, "Dashboard page with account ID exists");
-            });
         })
         .run(function () {
             test.done();
