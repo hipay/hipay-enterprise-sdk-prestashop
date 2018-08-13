@@ -34,6 +34,7 @@ services:
     networks:
       - traefik_traefik
       - prestashop
+      - outside-pi-overlay
     env_file:
       - ./bin/docker/conf/acceptance/env
       - ./bin/docker/conf/acceptance/env17
