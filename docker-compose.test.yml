@@ -22,7 +22,7 @@ services:
       prestashop:
       outside:
         aliases:
-          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_web
+          - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web
   database:
     image: mysql:5.7
     container_name: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database
