@@ -455,7 +455,12 @@
                 $.get('{$syncLink}&ajax=1&action=SynchronizeHashing',
                         function (response) {
                             for (var platform in response) {
-                                showSuccessMessage(response[platform].message);
+                                if(response[platform].status == "success") {
+                                    showSuccessMessage(response[platform].message);
+                                }else{
+                                    showErrorMessage(response[platform].message);
+                                }
+
                                 if (response[platform].hasOwnProperty("value")) {
                                     updateValueHashingAlgorithm(platform, response[platform].value);
                                 }
