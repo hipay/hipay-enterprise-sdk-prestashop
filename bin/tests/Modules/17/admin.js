@@ -86,13 +86,11 @@ exports.activateCache = function activateCache(test) {
 exports.gotToHiPayConfiguration = function gotToHiPayConfiguration(test) {
     casper.then(function () {
         this.echo("Go to HiPay panel configuration 1.7", "INFO");
+        this.waitForSelector('ul.main-menu #subtab-AdminParentModulesSf a', function success() {
+            this.click('ul.main-menu #subtab-AdminParentModulesSf a');
 
-        this.waitForSelector('ul.menu #subtab-AdminParentModulesSf a', function success() {
-            this.click('ul.menu #subtab-AdminParentModulesSf a');
-
-            this.waitForSelector('#head_tabs .tab:nth-child(2)', function success() {
-                this.click('#head_tabs .tab:nth-child(2)');
-
+            this.waitForSelector('#subtab-AdminModulesSf a', function success() {
+                this.click('#subtab-AdminModulesSf a');
                 this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
                     this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');
                     this.echo("Done", "INFO");
@@ -102,13 +100,11 @@ exports.gotToHiPayConfiguration = function gotToHiPayConfiguration(test) {
                 }, 15000);
 
             }, function fail() {
-                test.assertExists(x('//a[text()="Modules installés"]'), "Installed Modules admin page exists");
+                test.assertExists('subtab-AdminModulesSf a', "Modules admin page exists");
             }, 15000);
-
         }, function fail() {
             test.assertExists('ul.menu #subtab-AdminParentModulesSf a', "Modules admin page exists");
         }, 15000);
-
     })
 };
 
@@ -328,11 +324,11 @@ exports.activateLocalization = function activateLocalization(test, locale) {
             this.click('#subtab-AdminInternational a');
             this.click('#subtab-AdminParentLocalization a');
             this.waitForSelector('select[name="iso_localization_pack"]', function success() {
-                this.fillSelectors("form#configuration_form_4",
+                this.fillSelectors("form#configuration_form",
                     {'select[name="iso_localization_pack"]': locale.toLowerCase()},
                     false
                 );
-                this.click('form#configuration_form_4 button[name="submitLocalizationPack"]');
+                this.click('form#configuration_form button[name="submitLocalizationPack"]');
                 this.waitForSelector('.alert.alert-success', function success() {
                     this.echo("Import Done ", "COMMENT");
                     /* Associate Payment module with locale */

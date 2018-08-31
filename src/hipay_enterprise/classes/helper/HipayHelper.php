@@ -173,13 +173,13 @@ class HipayHelper
     {
         switch ($platform) {
             case self::PRODUCTION:
-                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_username"]);
+                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_username_production"]);
                 break;
             case self::TEST:
                 $exist = !empty($module->hipayConfigTool->getAccountSandbox()["api_username_sandbox"]);
                 break;
             case self::PRODUCTION_MOTO:
-                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_moto_username"]);
+                $exist = !empty($module->hipayConfigTool->getAccountProduction()["api_moto_username_production"]);
                 break;
             case self::TEST_MOTO:
                 $exist = !empty($module->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]);
