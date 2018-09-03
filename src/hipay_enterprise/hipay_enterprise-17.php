@@ -14,6 +14,7 @@
 require_once(dirname(__FILE__) . '/classes/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/classes/apiHandler/ApiHandler.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -161,9 +162,17 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
         }
 
+        $mode = $this->hipayConfigTool->getPaymentGlobal()["operating_mode"];
+
+        if (
+            isset($this->hipayConfigTool->getLocalPayment()[$name]["forceApiOrder"]) &&
+            $this->hipayConfigTool->getLocalPayment()[$name]["forceApiOrder"]
+        ) {
+            $mode = Apihandler::DIRECTPOST;
+        }
+
         if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
-            $this->hipayConfigTool->getPaymentGlobal()["operating_mode"] !== 'api' ||
-            (isset($paymentProduct["electronicSignature"]) && $paymentProduct["electronicSignature"]) ||
+            $mode !== Apihandler::DIRECTPOST ||
             (isset($paymentProduct["forceHpayment"]) && $paymentProduct["forceHpayment"])
         ) {
             $this->context->smarty->assign(

@@ -12,15 +12,16 @@
 
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : IDEAL
+ *                       VALIDATION TEST METHOD : SEPA DIRECT DEBIT
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise iDeal";
+var paymentType = "HiPay Enterprise SEPA Direct Debit";
 
 casper.test.begin('Test Checkout ' + paymentType, function (test) {
+
     phantom.clearCookies();
 
     var label;
@@ -33,21 +34,19 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             adminMod.gotToHiPayConfiguration(test);
         })
         .then(function () {
-            adminMod.activateMethod(test, "ideal");
+            adminMod.activateMethod(test, "sdd");
         })
         .then(function () {
-            adminMod.configureOperatingMode(test, "api");
+            adminMod.configureOperatingMode(test, "hosted_page");
+            adminMod.configureHostedDisplay(test, "redirect");
         })
         .then(function () {
             this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
-                label = this.getElementAttribute('input[name="ideal_displayName[fr]"]', 'value');
+                label = this.getElementAttribute('input[name="sdd_displayName[fr]"]', 'value');
                 test.info("Display name in checkout should be :" + label);
             }, function fail() {
-                test.assertExists('input[name="ideal_displayName[fr]"]', "Input name exist");
+                test.assertExists('input[name="sdd_displayName[fr]"]', "Input name exist");
             });
-        })
-        .then(function () {
-            adminMod.activateLocalization(test, 'NL');
         })
         .thenOpen(baseURL, function () {
             checkoutMod.selectItemAndOptions(test);
@@ -56,7 +55,7 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.personalInformation(test);
         })
         .then(function () {
-            checkoutMod.billingInformation(test, 'NL');
+            checkoutMod.billingInformation(test, 'FR');
         })
         .then(function () {
             checkoutMod.shippingMethod(test);
@@ -65,37 +64,23 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, false);
         })
         .then(function () {
-            this.echo("Filling Business Identifier BIC with wrong value...", "INFO");
+            this.echo("Filling SEPA Formular ...", "INFO");
 
-            this.waitForSelector('input#ideal-issuer_bank_id', function success() {
-                this.fillSelectors('form#ideal-hipay', {
-                    'input[name="issuer_bank_id"]': 'INGBNL2A WRONG'
+            this.waitUntilVisible('#sdd-hipay', function success() {
+                this.fillSelectors('form#sdd-hipay', {
+                    'select[name="gender"]': "1",
+                    'input[name="firstname"]': "TEST",
+                    'input[name="lastname"]': "TEST",
+                    'input[name="iban"]': parametersLibHiPay.ibanNumber.fr,
+                    'input[name="issuer_bank_id"]': parametersLibHiPay.bicNumber.fr,
+                    'input[name="bank_name"]': "BANK TEST"
                 }, false);
 
                 this.click('form#conditions-to-approve input');
                 this.click("div#payment-confirmation button");
-                test.assertTextExists('BIC incorrect', 'Validation error done');
             }, function fail() {
-                test.assertExists('input#ideal-issuer_bank_id', "Field Business Identifier exists");
+                test.assertExists('#sdd-hipay', "Field Business Identifier exists");
             });
-        })
-        /* Fill IDeal formular */
-        .then(function () {
-            this.echo("Filling Business Identifier BIC...", "INFO");
-
-            this.waitForSelector('input#ideal-issuer_bank_id', function success() {
-                this.fillSelectors('form#ideal-hipay', {
-                    'input[name="issuer_bank_id"]': 'INGBNL2A'
-                }, false);
-
-                this.click("div#payment-confirmation button");
-            }, function fail() {
-                test.assertExists('input#ideal-issuer_bank_id', "Field Business Identifier exists");
-            });
-        })
-        .then(function () {
-            this.echo("Filling payment formular...", "INFO");
-            paymentLibHiPay.payIDeal(test);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
@@ -103,4 +88,5 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
         .run(function () {
             test.done();
         });
+
 });

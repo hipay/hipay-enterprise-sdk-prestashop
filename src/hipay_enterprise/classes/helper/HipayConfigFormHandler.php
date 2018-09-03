@@ -308,7 +308,6 @@ class HipayConfigFormHandler
                 "minAmount",
                 "maxAmount",
                 "displayName",
-                "electronicSignature",
                 "frontPosition"
             );
 

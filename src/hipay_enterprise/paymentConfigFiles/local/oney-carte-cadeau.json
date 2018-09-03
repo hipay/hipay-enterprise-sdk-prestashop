@@ -28,8 +28,8 @@
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
-    "forceApiOrder": 1,
     "forceBasket": 1,
+    "forceApiOrder": 0,
     "forceHpayment": 1,
     "minAmount": {
       "EUR": 0
