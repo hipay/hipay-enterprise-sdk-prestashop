@@ -1,3 +1,9 @@
+# Version 2.2.6
+
+- [#64](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/64) Fix issue [#64] 
+- Remove electronic signature from SDD
+- Fix : Js error on backend notification pop-up
+
 # Version 2.2.5
 
 - Improve CI 
