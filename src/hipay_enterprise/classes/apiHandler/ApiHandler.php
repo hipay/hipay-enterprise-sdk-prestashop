@@ -137,16 +137,18 @@ class Apihandler
 
         if (
             $mode == Apihandler::HOSTEDPAGE &&
-            ((!empty($configMethod["additionalFields"])
-                    && !$this->forceApiOrder($configMethod))
-                || $this->forceHpayment($configMethod))
+            (
+                (!empty($configMethod["additionalFields"]) && !$this->forceApiOrder($configMethod))
+                || $this->forceHpayment($configMethod)
+            )
         ) {
             $this->handleHostedPayment($params);
         } elseif (
             $mode == Apihandler::IFRAME &&
-            ((!empty($configMethod["additionalFields"])
-                    && !$this->forceApiOrder($configMethod))
-                || $this->forceHpayment($configMethod))
+            (
+                (!empty($configMethod["additionalFields"]) && !$this->forceApiOrder($configMethod))
+                || $this->forceHpayment($configMethod)
+            )
         ) {
             return $this->handleIframe($params);
         } elseif (
