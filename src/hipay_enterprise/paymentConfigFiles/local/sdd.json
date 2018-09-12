@@ -21,7 +21,6 @@
       "displayName",
       "minAmount",
       "maxAmount",
-      "electronicSignature",
       "countries"
     ],
     "countrySelectorReadOnly": 0,

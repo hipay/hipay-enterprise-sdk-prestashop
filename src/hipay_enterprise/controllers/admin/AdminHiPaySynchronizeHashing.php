@@ -23,10 +23,10 @@
  */
 class AdminHiPaySynchronizeHashingController extends ModuleAdminController
 {
-    /**
-     *
-     */
+
     const CODE_MESSAGE = "message";
+
+    const CODE_STATUS = "status";
 
     /**
      * AdminHiPaySynchronizeHashingController constructor.
@@ -44,9 +44,9 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
     }
 
     /**
-     *  Synchronize Hashing from each platform
+     * Synchronize Hashing from each platform
      *
-     * @return void
+     * @throws GatewayException
      */
     public function displayAjaxSynchronizeHashing()
     {
@@ -54,26 +54,43 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
         foreach (HipayHelper::$platforms as $platform) {
             $labelPlatform = HipayHelper::getLabelForPlatform($platform);
             if (HipayHelper::existCredentialForPlateform($this->module, $platform)) {
-                $hashing = ApiCaller::getSecuritySettings($this->module, $platform);
                 $messages = array();
-                if ($configHash[$platform] == $hashing->getHashingAlgorithm()) {
-                    $messages[$platform][self::CODE_MESSAGE] =  sprintf(
-                        $this->module->l('Hash Algorithm for %s was already set with %s'),
+
+                try {
+                    $hashing = ApiCaller::getSecuritySettings($this->module, $platform);
+
+                    if ($configHash[$platform] == $hashing->getHashingAlgorithm()) {
+                        $messages[$platform][self::CODE_STATUS] = "success";
+                        $messages[$platform][self::CODE_MESSAGE] = sprintf(
+                            $this->module->l('Hash Algorithm for %s was already set with %s'),
+                            $labelPlatform,
+                            $hashing->getHashingAlgorithm()
+                        );
+                    } else {
+                        $configHash[$platform] = $hashing->getHashingAlgorithm();
+                        $this->module->hipayConfigTool->setHashAlgorithm($configHash);
+                        $messages[$platform][self::CODE_STATUS] = "success";
+                        $messages[$platform][self::CODE_MESSAGE] = sprintf(
+                            $this->module->l('Hash Algorithm for %s has been syncrhonize with %s'),
+                            $labelPlatform,
+                            $hashing->getHashingAlgorithm()
+                        );
+                        $messages[$platform]["value"] = $hashing->getHashingAlgorithm();
+                    }
+
+                } catch (Exception $e) {
+                    $messages[$platform][self::CODE_STATUS] = "error";
+                    $messages[$platform][self::CODE_MESSAGE] = sprintf(
+                        $this->module->l('An error occurred for %s : %s'),
                         $labelPlatform,
-                        $hashing->getHashingAlgorithm()
+                        $e->getMessage()
                     );
-                } else {
-                    $configHash[$platform] = $hashing->getHashingAlgorithm();
-                    $this->module->hipayConfigTool->setHashAlgorithm($configHash);
-                    $messages[$platform][self::CODE_MESSAGE] =   sprintf(
-                        $this->module->l('Hash Algorithm for %s has been syncrhonize with %s'),
-                        $labelPlatform,
-                        $hashing->getHashingAlgorithm()
-                    );
-                    $messages[$platform]["value"] = $hashing->getHashingAlgorithm();
+
                 }
+
             } else {
-                $messages[$platform][self::CODE_MESSAGE] =   sprintf(
+                $messages[$platform][self::CODE_STATUS] = "error";
+                $messages[$platform][self::CODE_MESSAGE] = sprintf(
                     $this->module->l('Hash Algorithm for %s has not been updated : You must filled credentials.'),
                     $labelPlatform
                 );

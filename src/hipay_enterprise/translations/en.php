@@ -310,7 +310,6 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_bc9e270b7b1a09eeac7
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b4bc22cc77824a64935fb2032a8e2109'] = 'Payment page positioning';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b16854ceee6fb9499c2ad3aac40d539e'] = 'Minimum order amount';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_abcac9aebb2505b3cf76c42e1bfbe8f7'] = 'Maximum order amount';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_956b5676820293d94b94b70bccd1cf8f'] = 'Enable electronic signature';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_fa31b6e88cdc95eab570d83db23e2c3d'] = 'Activated currencies';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_4107daf5746a644e08bca169bf6eba65'] = 'This currency is not activated in your PrestaShop shop.';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_9e0bb754171ca97e4fb8e0dd8ccdef64'] = 'Activated countries';
