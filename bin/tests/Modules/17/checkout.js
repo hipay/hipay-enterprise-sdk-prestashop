@@ -254,15 +254,15 @@ exports.fillStepPayment = function fillStepPayment(test) {
             this.clickLabel(labelPayByCard, 'span');
 
             if (currentBrandCC == 'visa') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, '666');
             } else if (currentBrandCC == 'cb' || currentBrandCC == "mastercard") {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, '666');
             } else if (currentBrandCC == 'amex') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '666');
             } else if (currentBrandCC == 'visa_3ds') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, '666');
             } else if (currentBrandCC == 'maestro') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, '');
             }
             this.click('form#conditions-to-approve input');
             this.click("div#payment-confirmation button");
@@ -278,13 +278,13 @@ exports.fillStepPayment = function fillStepPayment(test) {
  *
  * @param card
  */
-function fillFormPaymentHipayCC(card) {
+function fillFormPaymentHipayCC(card, cvv) {
     casper.fillSelectors('form#tokenizerForm', {
         'input[name="card-number"]': card,
         'input[name="card-holders-name"]': 'Mr Test',
         'select[name="expiry-month"]': '02',
         'select[name="expiry-year"]': '20',
-        'input[name="cvc"]': '500'
+        'input[name="cvc"]': cvv
     }, false);
 }
 

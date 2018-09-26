@@ -312,7 +312,11 @@ function checkCVC(element) {
 
     var myCard = $('.card-js');
 
-    if (myCard.CardJs('cardType') !== "Bcmc" && !checkNotEmptyField(element)) {
+    if (
+        myCard.CardJs('cardType') !== "Bcmc"
+        && myCard.CardJs('cardType') !== "Maestro"
+        && !checkNotEmptyField(element)
+    ) {
         return false;
     }
 
