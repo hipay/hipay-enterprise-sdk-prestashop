@@ -243,7 +243,7 @@ exports.shippingMethod = function shippingMethod(test) {
  *
  * @param test
  */
-exports.fillStepPayment = function fillStepPayment(test) {
+exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
     casper.then(function () {
         this.echo(
             "Choosing payment method and filling 'Payment Information' formular with " + currentBrandCC + "...",
@@ -254,19 +254,21 @@ exports.fillStepPayment = function fillStepPayment(test) {
             this.clickLabel(labelPayByCard, 'span');
 
             if (currentBrandCC == 'visa') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, hostedFields);
             } else if (currentBrandCC == 'cb' || currentBrandCC == "mastercard") {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, hostedFields);
             } else if (currentBrandCC == 'amex') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, hostedFields);
             } else if (currentBrandCC == 'visa_3ds') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, hostedFields);
             } else if (currentBrandCC == 'maestro') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, hostedFields);
             }
-            this.click('form#conditions-to-approve input');
-            this.click("div#payment-confirmation button");
-            this.echo("Done", "COMMENT");
+            this.wait(10000, function () {
+                this.click('form#conditions-to-approve input');
+                this.click("div#payment-confirmation button");
+                this.echo("Done", "COMMENT");
+            });
 
         }, function fail() {
             test.assertVisible("section#checkout-payment-step", "'Payment Information' formular exists");
@@ -278,14 +280,29 @@ exports.fillStepPayment = function fillStepPayment(test) {
  *
  * @param card
  */
-function fillFormPaymentHipayCC(card) {
-    casper.fillSelectors('form#tokenizerForm', {
-        'input[name="card-number"]': card,
-        'input[name="card-holders-name"]': 'Mr Test',
-        'select[name="expiry-month"]': '02',
-        'select[name="expiry-year"]': '20',
-        'input[name="cvc"]': '500'
-    }, false);
+function fillFormPaymentHipayCC(card, hostedFields) {
+    if (hostedFields) {
+        casper.withFrame(0, function () {
+            casper.sendKeys('input[name="ccname"]', 'Mr Test');
+        });
+        casper.withFrame(1, function () {
+            casper.sendKeys('input[name="cardnumber"]', card);
+        });
+        casper.withFrame(2, function () {
+            casper.sendKeys('input[name="cc-exp"]', '06/21');
+        });
+        casper.withFrame(3, function () {
+            casper.sendKeys('input[name="cvc"]', '666');
+        });
+    } else {
+        casper.fillSelectors('form#tokenizerForm', {
+            'input[name="card-number"]': card,
+            'input[name="card-holders-name"]': 'Mr Test',
+            'select[name="expiry-month"]': '02',
+            'select[name="expiry-year"]': '20',
+            'input[name="cvc"]': '500'
+        }, false);
+    }
 }
 
 /**

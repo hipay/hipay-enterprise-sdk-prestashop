@@ -12,15 +12,15 @@
 
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : IDEAL
+ *                       VALIDATION TEST METHOD : CARTE CADEAU ONEY
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise iDeal";
+var paymentType = "HiPay Enterprise carte cadeau Oney";
 
-casper.test.begin('Test Checkout ' + paymentType + " with IFrame", function (test) {
+casper.test.begin('Test Checkout ' + paymentType, function (test) {
 
     var label;
 
@@ -28,28 +28,31 @@ casper.test.begin('Test Checkout ' + paymentType + " with IFrame", function (tes
 
     casper.start(baseURL)
         .then(function () {
+            utilsLibHiPay.refillOneyGiftCard(test);
+        })
+        .then(function () {
             adminMod.logToBackend(test);
         })
         .then(function () {
             adminMod.gotToHiPayConfiguration(test);
         })
         .then(function () {
-            adminMod.activateMethod(test, "ideal");
+            adminMod.configureCaptureMode(test, "automatic");
         })
         .then(function () {
-            adminMod.configureOperatingMode(test, "hosted_page");
-            adminMod.configureHostedDisplay(test, "iframe");
+            adminMod.configureOperatingMode(test, "direct_post");
         })
         .then(function () {
-            this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
-                label = this.getElementAttribute('input[name="ideal_displayName[fr]"]', 'value');
+            adminMod.activateMethod(test, "carte-cadeau");
+            adminMod.setConfigLocal(test, "carte-cadeau", "iframe", "0");
+        })
+        .then(function () {
+            this.waitForSelector('input[name="carte-cadeau_displayName[fr]"]', function success() {
+                label = this.getElementAttribute('input[name="carte-cadeau_displayName[fr]"]', 'value');
                 test.info("Display name in checkout should be :" + label);
             }, function fail() {
-                test.assertExists('input[name="ideal_displayName[fr]"]', "Input name exist");
+                test.assertExists('input[name="carte-cadeau_displayName[fr]"]', "Input name exist");
             });
-        })
-        .then(function () {
-            adminMod.activateLocalization(test, 'NL');
         })
         .thenOpen(baseURL, function () {
             checkoutMod.selectItemAndOptions(test);
@@ -58,7 +61,7 @@ casper.test.begin('Test Checkout ' + paymentType + " with IFrame", function (tes
             checkoutMod.personalInformation(test);
         })
         .then(function () {
-            checkoutMod.billingInformation(test, 'NL');
+            checkoutMod.billingInformation(test, 'FR');
         })
         .then(function () {
             checkoutMod.shippingMethod(test);
@@ -66,23 +69,8 @@ casper.test.begin('Test Checkout ' + paymentType + " with IFrame", function (tes
         .then(function () {
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
-        /* Fill IDeal formular */
         .then(function () {
-            this.echo("Filling Business Identifier BIC...", "INFO");
-
-            this.waitForSelector('input#ideal-issuer_bank_id', function success() {
-                this.fillSelectors('form#ideal-hipay', {
-                    'input[name="issuer_bank_id"]': 'INGBNL2A'
-                }, false);
-
-                this.click("div#payment-confirmation button");
-            }, function fail() {
-                test.assertExists('input#ideal-issuer_bank_id', "Field Business Identifier exists");
-            });
-        })
-        .then(function () {
-            this.echo("Filling payment formular...", "INFO");
-            paymentLibHiPay.payIDeal(test);
+            paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);

@@ -28,13 +28,6 @@ if [ ! -f /var/www/html/console/console.php ];then
     && composer install --no-dev
 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    printf "\n${COLOR_SUCCESS}             INSTALLATION SDK JS         ${NC}\n"
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    cd lib/ \
-    && bower install hipay-fullservice-sdk-js#1.*
-
-
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     cd /var/www/html/ \

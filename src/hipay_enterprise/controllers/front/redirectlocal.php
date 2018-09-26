@@ -14,6 +14,7 @@
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayFormControl.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/OperatingMode.php');
 
 /**
  * Class Hipay_enterpriseRedirectlocalModuleFrontController
@@ -52,7 +53,6 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             Tools::redirect('index.php?controller=order');
         }
 
-        $mode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"];
         $method = Tools::getValue("method");
 
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
@@ -83,31 +83,36 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             )
         );
 
+        $mode = OperatingMode::DIRECT_POST_API;
+
         if (
-            isset($this->module->hipayConfigTool->getLocalPayment()[$method]["forceApiOrder"]) &&
-            $this->module->hipayConfigTool->getLocalPayment()[$method]["forceApiOrder"]
+            isset($this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]) &&
+            $this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]
         ) {
-            $mode = Apihandler::DIRECTPOST;
+            $mode = OperatingMode::HOSTED_PAGE_API;
         }
 
 
         switch ($mode) {
-            case Apihandler::HOSTEDPAGE:
-                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                    $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
-                } else {
+            case OperatingMode::HOSTED_PAGE_API:
+                if (
+                    isset($this->module->hipayConfigTool->getLocalPayment()[$method]['iframe'])
+                    && $this->module->hipayConfigTool->getLocalPayment()[$method]['iframe']
+                ) {
                     $context->smarty->assign(
                         array(
-                            'url' => $this->apiHandler->handleLocalPayment(Apihandler::IFRAME, $params)
+                            'url' => $this->apiHandler->handleLocalPayment(OperatingMode::HOSTED_PAGE_IFRAME, $params)
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
                             $this->module->name .
                             '/views/templates/front/payment/ps17/paymentFormIframe-17'
                             : 'payment/ps16/paymentFormIframe-16') . '.tpl';
+                } else {
+                    $this->apiHandler->handleLocalPayment(OperatingMode::HOSTED_PAGE_API, $params);
                 }
                 break;
-            case Apihandler::DIRECTPOST:
+            case OperatingMode::DIRECT_POST_API:
                 if (Tools::isSubmit("localSubmit") ||
                     empty($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"])
                 ) {
@@ -178,7 +183,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 return $path;
             }
         }
-        $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
+        $this->apiHandler->handleLocalPayment(OperatingMode::DIRECT_POST_API, $params);
     }
 
     /**

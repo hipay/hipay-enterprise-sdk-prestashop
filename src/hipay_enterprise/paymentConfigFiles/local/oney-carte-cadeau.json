@@ -24,13 +24,14 @@
       "displayName",
       "minAmount",
       "maxAmount",
-      "countries"
+      "countries",
+      "iframe"
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "forceBasket": 1,
-    "forceApiOrder": 0,
     "forceHpayment": 1,
+    "iframe": 0,
     "minAmount": {
       "EUR": 0
     },

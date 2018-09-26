@@ -31,10 +31,8 @@
                     {l s='Pay by ' mod='hipay_enterprise' } {$productName}
 
                     <span>
-                        {if $configHipay.payment.global.operating_mode != 'api' && $configHipay.payment.global.display_hosted_page != 'iframe'}
-                            {if !isset($paymentProduct.forceApiOrder)}
-                                <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
-                            {/if}
+                        {if empty($paymentProduct.additionalFields)}
+                            <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                         {/if}
                         {if isset($hipay_prod) && (!$hipay_prod)}
                             <em>{l s='(sandbox / test mode)' mod='hipay_enterprise'}</em>

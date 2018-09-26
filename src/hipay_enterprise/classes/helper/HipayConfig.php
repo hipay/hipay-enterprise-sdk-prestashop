@@ -11,7 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/enums/ThreeDS.php');
 
 use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
 
@@ -25,12 +26,6 @@ use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
  */
 class HipayConfig
 {
-    const THREE_D_S_DISABLED = 0;
-    const THREE_D_S_TRY_ENABLE_ALL = 1;
-    const THREE_D_S_TRY_ENABLE_RULES = 2;
-    const THREE_D_S_FORCE_ENABLE_ALL = 3;
-    const THREE_D_S_FORCE_ENABLE_RULES = 4;
-
     private $jsonFilesPath;
     private $context;
     private $configHipay = array();
@@ -65,7 +60,6 @@ class HipayConfig
      */
     public function getPaymentGlobal()
     {
-
         return $this->getConfigHipay()["payment"]["global"];
     }
 
@@ -74,7 +68,6 @@ class HipayConfig
      */
     public function getPaymentCreditCard()
     {
-
         return $this->getConfigHipay()["payment"]["credit_card"];
     }
 
@@ -83,7 +76,6 @@ class HipayConfig
      */
     public function getLocalPayment()
     {
-
         return $this->getConfigHipay()["payment"]["local_payment"];
     }
 
@@ -92,7 +84,6 @@ class HipayConfig
      */
     public function getAccountGlobal()
     {
-
         return $this->getConfigHipay()["account"]["global"];
     }
 
@@ -101,7 +92,6 @@ class HipayConfig
      */
     public function getAccountSandbox()
     {
-
         return $this->getConfigHipay()["account"]["sandbox"];
     }
 
@@ -110,7 +100,6 @@ class HipayConfig
      */
     public function getAccountProduction()
     {
-
         return $this->getConfigHipay()["account"]["production"];
     }
 
@@ -137,7 +126,6 @@ class HipayConfig
      */
     public function getFraud()
     {
-
         return $this->getConfigHipay()["fraud"];
     }
 
@@ -209,7 +197,6 @@ class HipayConfig
      */
     public function updateConfig()
     {
-
         $configFields = array();
 
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
@@ -250,7 +237,6 @@ class HipayConfig
 
         $shops = Shop::getShops(false);
         foreach ($shops as $id => $shop) {
-
             $this->module->getLogs()->logInfos(
                 "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
             );
@@ -272,8 +258,127 @@ class HipayConfig
 
             $this->diffJsonAndConfig($configHipay, $paymentMethod, $keepParameters, 'credit_card');
 
+            $this->updatePaymentGlobal($configHipay);
+
             $this->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
+
+
         }
+    }
+
+    /**
+     * Update Global Payment config with new default values
+     *
+     * @param $configHipay
+     */
+    private function updatePaymentGlobal(&$configHipay){
+        $defaultConfig = $this->getDefaultConfig();
+
+        // add new fields
+        $configHipay["payment"]["global"] = array_merge(
+            $configHipay["payment"]["global"],
+            array_diff_key($defaultConfig["payment"]["global"], $configHipay["payment"]["global"])
+        );
+
+        // update operating_mode with new format
+        switch($configHipay["payment"]["global"]["operating_mode"]){
+            case "api":
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::DIRECT_POST;
+                break;
+            case "hosted_page":
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::HOSTED_PAGE;
+                break;
+        }
+    }
+
+    /**
+     * Get base config value
+     *
+     * @return array
+     */
+    private function getDefaultConfig()
+    {
+        return array(
+            "account" => array(
+                "global" => array(
+                    "sandbox_mode" => 1,
+                    "host_proxy" => "",
+                    "port_proxy" => "",
+                    "user_proxy" => "",
+                    "password_proxy" => ""
+                ),
+                "sandbox" => array(
+                    "api_username_sandbox" => "",
+                    "api_password_sandbox" => "",
+                    "api_tokenjs_username_sandbox" => "",
+                    "api_tokenjs_password_publickey_sandbox" => "",
+                    "api_secret_passphrase_sandbox" => "",
+                    "api_moto_username_sandbox" => "",
+                    "api_moto_password_sandbox" => "",
+                    "api_moto_secret_passphrase_sandbox" => ""
+                ),
+                "production" => array(
+                    "api_username_production" => "",
+                    "api_password_production" => "",
+                    "api_tokenjs_username_production" => "",
+                    "api_tokenjs_password_publickey_production" => "",
+                    "api_secret_passphrase_production" => "",
+                    "api_moto_username_production" => "",
+                    "api_moto_password_production" => "",
+                    "api_moto_secret_passphrase_production" => ""
+                ),
+                "hash_algorithm" => array(
+                    "production" => HashAlgorithm::SHA1,
+                    "test" => HashAlgorithm::SHA1,
+                    "production_moto" => HashAlgorithm::SHA1,
+                    "test_moto" => HashAlgorithm::SHA1
+                )
+            ),
+            "payment" => array(
+                "global" => array(
+                    "operating_mode" => OperatingMode::DIRECT_POST,
+                    "iframe_hosted_page_template" => "basic-js",
+                    "display_card_selector" => 0,
+                    "display_hosted_page" => "redirect",
+                    "css_url" => "",
+                    "activate_3d_secure" => ThreeDS::THREE_D_S_DISABLED,
+                    "3d_secure_rules" => array(
+                        array(
+                            "field" => "total_price",
+                            "operator" => ">",
+                            "value" => 100,
+                        )
+                    ),
+                    "hosted_fields_style" => array(
+                        "base" => array(
+                            "color" => "#000000",
+                            "fontFamily" => "Roboto",
+                            "fontSize" => "15px",
+                            "fontWeight" => "400",
+                            "placeholderColor" => "#999999",
+                            "caretColor" => "#00ADE9",
+                            "iconColor" => "#00ADE9",
+
+                        )
+                    ),
+                    "capture_mode" => "automatic",
+                    "card_token" => 0,
+                    "activate_basket" => 1,
+                    "log_infos" => 1,
+                    "regenerate_cart_on_decline" => 1,
+                    "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
+                    "ccFrontPosition" => 1,
+                    "send_url_notification" => 0
+                ),
+                "credit_card" => array(),
+                "local_payment" => array()
+            ),
+            "fraud" => array(
+                "payment_fraud_email_sender" => (string)Configuration::get('PS_SHOP_EMAIL'),
+                "send_payment_fraud_email_copy_to" => "",
+                "send_payment_fraud_email_copy_method" => "bcc"
+            )
+        );
     }
 
     /**
@@ -317,7 +422,6 @@ class HipayConfig
                 $configHipay["payment"][$paymentMethodType][$key],
                 $replace
             );
-
         }
     }
 
@@ -329,75 +433,7 @@ class HipayConfig
      */
     private function insertConfigHiPay()
     {
-        $configFields = array(
-            "account" => array(
-                "global" => array(
-                    "sandbox_mode" => 1,
-                    "host_proxy" => "",
-                    "port_proxy" => "",
-                    "user_proxy" => "",
-                    "password_proxy" => ""
-                ),
-                "sandbox" => array(
-                    "api_username_sandbox" => "",
-                    "api_password_sandbox" => "",
-                    "api_tokenjs_username_sandbox" => "",
-                    "api_tokenjs_password_publickey_sandbox" => "",
-                    "api_secret_passphrase_sandbox" => "",
-                    "api_moto_username_sandbox" => "",
-                    "api_moto_password_sandbox" => "",
-                    "api_moto_secret_passphrase_sandbox" => ""
-                ),
-                "production" => array(
-                    "api_username_production" => "",
-                    "api_password_production" => "",
-                    "api_tokenjs_username_production" => "",
-                    "api_tokenjs_password_publickey_production" => "",
-                    "api_secret_passphrase_production" => "",
-                    "api_moto_username_production" => "",
-                    "api_moto_password_production" => "",
-                    "api_moto_secret_passphrase_production" => ""
-                ),
-                "hash_algorithm" => array(
-                    "production" => HashAlgorithm::SHA1,
-                    "test" => HashAlgorithm::SHA1,
-                    "production_moto" => HashAlgorithm::SHA1,
-                    "test_moto" => HashAlgorithm::SHA1
-                )
-            ),
-            "payment" => array(
-                "global" => array(
-                    "operating_mode" => Apihandler::DIRECTPOST,
-                    "iframe_hosted_page_template" => "basic-js",
-                    "display_card_selector" => 0,
-                    "display_hosted_page" => "redirect",
-                    "css_url" => "",
-                    "activate_3d_secure" => HipayConfig::THREE_D_S_DISABLED,
-                    "3d_secure_rules" => array(
-                        array(
-                            "field" => "total_price",
-                            "operator" => ">",
-                            "value" => 100,
-                        )
-                    ),
-                    "capture_mode" => "automatic",
-                    "card_token" => 0,
-                    "activate_basket" => 1,
-                    "log_infos" => 1,
-                    "regenerate_cart_on_decline" => 1,
-                    "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
-                    "ccFrontPosition" => 1,
-                    "send_url_notification" => 0
-                ),
-                "credit_card" => array(),
-                "local_payment" => array()
-            ),
-            "fraud" => array(
-                "payment_fraud_email_sender" => (string)Configuration::get('PS_SHOP_EMAIL'),
-                "send_payment_fraud_email_copy_to" => "",
-                "send_payment_fraud_email_copy_method" => "bcc"
-            )
-        );
+        $configFields = $this->getDefaultConfig();
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 

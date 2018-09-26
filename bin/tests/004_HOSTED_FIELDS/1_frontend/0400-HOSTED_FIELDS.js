@@ -12,46 +12,27 @@
 
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : CARTE CADEAU ONEY
+ *                       VALIDATION TEST METHOD : HOSTED FIELDS
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise carte cadeau Oney";
+var paymentType = "HiPay Enterprise Hosted Fields",
+    currentBrandCC = utilsHiPay.getTypeCC(),
+    file_path = "004_HOSTED_FIELDS/1_frontend/0400-HOSTED_FIELDS.js";
 
-casper.test.begin('Test Checkout ' + paymentType, function (test) {
-
-    var label;
-
+casper.test.begin('Test Checkout ' + paymentType + ' and ' + currentBrandCC, function (test) {
     phantom.clearCookies();
 
     casper.start(baseURL)
-        .then(function () {
-            utilsLibHiPay.refillOneyGiftCard(test);
-        })
+    /* Active Hosted payment method with display iframe */
         .then(function () {
             adminMod.logToBackend(test);
         })
         .then(function () {
             adminMod.gotToHiPayConfiguration(test);
-        })
-        .then(function () {
-            adminMod.configureCaptureMode(test, "automatic");
-        })
-        .then(function () {
-            adminMod.configureOperatingMode(test, "api");
-        })
-        .then(function () {
-            adminMod.activateMethod(test, "carte-cadeau");
-        })
-        .then(function () {
-            this.waitForSelector('input[name="carte-cadeau_displayName[fr]"]', function success() {
-                label = this.getElementAttribute('input[name="carte-cadeau_displayName[fr]"]', 'value');
-                test.info("Display name in checkout should be :" + label);
-            }, function fail() {
-                test.assertExists('input[name="carte-cadeau_displayName[fr]"]', "Input name exist");
-            });
+            adminMod.configureOperatingMode(test, "hosted_fields");
         })
         .thenOpen(baseURL, function () {
             checkoutMod.selectItemAndOptions(test);
@@ -65,14 +46,22 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
         .then(function () {
             checkoutMod.shippingMethod(test);
         })
+        /* Fill payment formular inside iframe */
         .then(function () {
-            checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
-        })
-        .then(function () {
-            paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
+            this.wait(1000, function () {
+                checkoutMod.fillStepPayment(test, true);
+            });
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
+
+            /* Test it again with another card type */
+            if (currentBrandCC == 'visa') {
+                utilsHiPay.testOtherTypeCC(test, file_path, 'mastercard');
+            }
+            if (currentBrandCC == 'mastercard') {
+                utilsHiPay.testOtherTypeCC(test, file_path, 'maestro');
+            }
         })
         .run(function () {
             test.done();

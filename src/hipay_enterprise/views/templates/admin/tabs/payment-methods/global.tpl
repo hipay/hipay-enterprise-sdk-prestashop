@@ -25,81 +25,37 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <select name="operating_mode" class="col-lg-2" id="operating_mode">
-                            <option value="api"
-                                    {if $config_hipay.payment.global.operating_mode == "api"}selected="selected" {/if} >{l s='Api' mod='hipay_enterprise'}</option>
+                            <option value="direct_post"
+                                    {if $config_hipay.payment.global.operating_mode.UXMode == "direct_post"}selected="selected" {/if} >{l s='Direct Post' mod='hipay_enterprise'}</option>
                             <option value="hosted_page"
-                                    {if $config_hipay.payment.global.operating_mode == "hosted_page"}selected="selected" {/if} >{l s='Hosted page' mod='hipay_enterprise'}</option>
+                                    {if $config_hipay.payment.global.operating_mode.UXMode == "hosted_page"}selected="selected" {/if} >{l s='Hosted page' mod='hipay_enterprise'}</option>
+                            <option value="hosted_fields"
+                                    {if $config_hipay.payment.global.operating_mode.UXMode == "hosted_fields"}selected="selected" {/if} >{l s='Hosted Fields' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                     <p class="help-block">
                     <ul class="hipay-notice-list">
                         <li><b>Api</b>
-                            : {l s='The customer will fill his bank information directly on merchants' mod='hipay_enterprise'}
+                            : {l s='The customer will fill his bank information directly on merchants website' mod='hipay_enterprise'}
                         </li>
-                        <li><b>Hosted</b>
-                            :{l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}
+                        <li><b>Hosted Page</b>
+                            : {l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}
+                        </li>
+                        <li><b>Hosted Fields</b>
+                            : {l s='The customer will fill his bank information directly on merchants website but fields are hosted by HiPay. This mode is only available for credit card, other payement method will be handled in the API mode' mod='hipay_enterprise'}
                         </li>
                     </ul>
                     </p>
                 </div>
             </div>
-            <div id="hostedconf">
-                <div class="form-group">
-                    <label class="control-label col-lg-3">
-                        <span>
-                            {l s='Display Hosted Page' mod='hipay_enterprise'}
-                        </span>
-                    </label>
-                    <div class="col-lg-2">
-                        <select name="display_hosted_page" class="" id="display_hosted_page">
-                            <option value="redirect"
-                                    {if $config_hipay.payment.global.display_hosted_page == "redirect"}selected="selected" {/if} >{l s='Redirect' mod='hipay_enterprise'}</option>
-                            <option value="iframe"
-                                    {if $config_hipay.payment.global.display_hosted_page == "iframe"}selected="selected" {/if} >{l s='Iframe' mod='hipay_enterprise'}</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- SWITCH MODE START -->
-                <div class="form-group">
-                    <label class="control-label col-lg-3">
-                        <span class="label-tooltip"
-                              data-toggle="tooltip"
-                              data-html="true"
-                              title=""
-                              data-original-title="{l s='Display card selector on iFrame or hosted page.' mod='hipay_enterprise'}">
-                            {l s='Display card selector' mod='hipay_enterprise'}
-                        </span>
-                    </label>
-                    <div class="col-lg-9">
-                        <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="display_card_selector" id="card_selector_switchmode_on" value="1"
-                                   {if $config_hipay.payment.global.display_card_selector }checked="checked"{/if}>
-                            <label for="card_selector_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                            <input type="radio" name="display_card_selector" id="card_selector_switchmode_off" value="0"
-                                   {if $config_hipay.payment.global.display_card_selector == false}checked="checked"{/if}>
-                            <label for="card_selector_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
-                            <a class="slide-button btn"></a>
-                        </span>
-                    </div>
-                </div>
-                <!-- SWITCH MODE END -->
+            {* Hosted Page Form *}
+            {include file='../partials/hosted_page.forms.partial.tpl'}
+            {*/ Hosted Page Form /*}
 
-                <div class="form-group">
-                    <label class="control-label col-lg-3">
-                        <span>
-                            {l s='CSS url' mod='hipay_enterprise'}
-                        </span>
-                    </label>
-                    <div class="col-lg-4">
-                        <input class="form-control" type="text" name="css_url"
-                               value="{$config_hipay.payment.global.css_url}">
-                        <p class="help-block">
-                            {l s='URL to your CSS (style sheet) to customize your hosted page or iFrame (Important: the HTTPS protocol is required).' mod='hipay_enterprise'}
-                        </p>
-                    </div>
-                </div>
-            </div>
+            {* Hosted Fields Form *}
+            {include file='../partials/hosted_fields.forms.partial.tpl'}
+            {*/ Hosted Fields Form /*}
 
             <div class="form-group">
                 <label class="control-label col-lg-3">
@@ -229,55 +185,9 @@
                     </span>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="control-label col-lg-3">
-                    {l s='Activate 3-D Secure' mod='hipay_enterprise'}
-                </label>
-                <div class="col-lg-9">
-                    <select name="activate_3d_secure" class="col-lg-3" id="activate_3d_secure">
-                        <option value="0"
-                                {if $config_hipay.payment.global.activate_3d_secure == "0"}selected="selected" {/if} >{l s='Disabled' mod='hipay_enterprise'}</option>
-                        <option value="1"
-                                {if $config_hipay.payment.global.activate_3d_secure == "1"}selected="selected" {/if} >{l s='Try to enable for all transactions' mod='hipay_enterprise'}</option>
-                        <option value="2"
-                                {if $config_hipay.payment.global.activate_3d_secure == "2"}selected="selected" {/if} >{l s='Try to enable for configured 3ds rules' mod='hipay_enterprise'}</option>
-                        <option value="3"
-                                {if $config_hipay.payment.global.activate_3d_secure == "3"}selected="selected" {/if} >{l s='Force for configured 3ds rules' mod='hipay_enterprise'}</option>
-                        <option value="4"
-                                {if $config_hipay.payment.global.activate_3d_secure == "4"}selected="selected" {/if} >{l s='Force for all transactions' mod='hipay_enterprise'}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="panel col-lg-offset-3" id="3ds-rules">
-                <h5><i class="icon icon-credit-card"></i> {l s='3-D secure rules' mod='hipay_enterprise'}</h5>
-                <hr/>
-                <div class="form-group">
-                    <div class="col-lg-3">
-                        <input type="text" readonly name="3d_secure_rules[total_price][field]" value="total_price">
-                    </div>
-                    <div class="col-lg-2">
-                        <select name="3d_secure_rules[total_price][operator]" id="3d_secure_rules">
-                            <option value=">"
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == ">"}selected="selected" {/if} >{l s='Greater than' mod='hipay_enterprise'}</option>
-                            <option value=">="
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == ">="}selected="selected" {/if} >{l s='Greater than or equals to' mod='hipay_enterprise'}</option>
-                            <option value="<"
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == "<"}selected="selected" {/if} >{l s='Lower than' mod='hipay_enterprise'}</option>
-                            <option value="<="
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == "<="}selected="selected" {/if} >{l s='Lower than or equals to' mod='hipay_enterprise'}</option>
-                            <option value="=="
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == "=="}selected="selected" {/if} >{l s='Equals to' mod='hipay_enterprise'}</option>
-                            <option value="!="
-                                    {if $config_hipay.payment.global.3d_secure_rules[0].operator|@html_entity_decode == "!="}selected="selected" {/if} >{l s='Not equals to' mod='hipay_enterprise'}</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-3">
-                        <input type="text" name="3d_secure_rules[total_price][value]"
-                               value="{$config_hipay.payment.global.3d_secure_rules[0].value}">
-                    </div>
-                </div>
-            </div>
+            {* 3DS Form *}
+            {include file='../partials/3ds.forms.partial.tpl'}
+            {*/ 3DS Form /*}
             <div class="form-group">
                 <label class="control-label col-lg-3">
                     <span>
@@ -320,17 +230,31 @@
 
 <script>
     $(document).ready(function () {
-        if ($("#operating_mode").val() == "api") {
+
+        // Display or hide specific input for hosted_page or Hosted_fields
+        if ($("#operating_mode").val() == "hosted_page") {
+            $("#hostedfieldsconf").hide();
+        } else if ($("#operating_mode").val() == "hosted_fields") {
             $("#hostedconf").hide();
+        } else {
+            $("#hostedconf").hide();
+            $("#hostedfieldsconf").hide();
         }
+
         $("#operating_mode").change(function () {
-            if ($("#operating_mode").val() == "api") {
-                $("#hostedconf").hide();
-            } else {
+            if ($("#operating_mode").val() == "hosted_page") {
                 $("#hostedconf").show();
+                $("#hostedfieldsconf").hide();
+            } else if ($("#operating_mode").val() == "hosted_fields") {
+                $("#hostedconf").hide();
+                $("#hostedfieldsconf").show();
+            } else {
+                $("#hostedconf").hide();
+                $("#hostedfieldsconf").hide();
             }
         });
 
+        //Display 3ds config form
         if ($("#activate_3d_secure").val() == "0") {
             $("#3ds-rules").hide();
         }
