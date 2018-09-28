@@ -60,7 +60,7 @@ casper.test.begin('Test admin configuration screens', function(test) {
             test.info("Panel 'Module Settings' is correct");
         }, function fail() {
             test.assertExists('form#account_form', "Formular Module Settings exists");
-        });
+        }, 35000);
     })
     .then(function() {
         /* Panel Payment method */
