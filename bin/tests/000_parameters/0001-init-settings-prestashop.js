@@ -45,7 +45,7 @@ casper.test.begin('Activate cache to improve prestashop performances', function
         })
         .then(function () {
             this.echo("Activate cache to optimize response time", "INFO");
-            //  adminMod.activateCache(test);
+       //     adminMod.activateCache(test);
             return true;
         })
         .run(function () {

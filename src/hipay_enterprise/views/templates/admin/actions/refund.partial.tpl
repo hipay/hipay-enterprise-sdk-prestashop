@@ -12,7 +12,7 @@
 <fieldset>
     <legend>{l s='Refund this order'  mod='hipay_enterprise'}</legend>
     <p><b>{l s='Amount that can be refunded' mod='hipay_enterprise' } :</b> <span class="badge badge-success">
-                {displayPrice price=$refundableAmountDisplay currency=$id_currency}</span></p>
+                {displayPrice price=$refundableAmount currency=$id_currency}</span></p>
     <p class="help-block">
         <sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}
     </p>
@@ -111,7 +111,7 @@
                         </td>
                         <td>
                             {if $shippingCost > 0 }
-                                {if ($capturedFees && !$refundedFees) || ($stillToCaptureDisplay <= 0 && !$refundedFees)}
+                                {if ($capturedFees && !$refundedFees) || ($stillToCapture <= 0 && !$refundedFees)}
                                     <input id="refund-fee" data-amount="{$amountFees}" type="checkbox"
                                            name="hipay_refund_fee">
                                     {l s='Refund fee(s)'  mod='hipay_enterprise'}

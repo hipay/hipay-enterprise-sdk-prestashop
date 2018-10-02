@@ -130,20 +130,30 @@ class HipayHelper
         $config = $module->hipayConfigTool->getConfigHipay();
 
         // Init passphrase and Environment for production
-        $passphrase = $isMoto ? $config["account"]["production"]["api_moto_secret_passphrase_production"] : $config["account"]["production"]["api_secret_passphrase_production"];
-        $environment = $isMoto ? self::PRODUCTION_MOTO : self::PRODUCTION;
+        $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_MOTO) ?
+            $config["account"]["production"]["api_moto_secret_passphrase_production"]
+            : $config["account"]["production"]["api_secret_passphrase_production"];
+
+        $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_MOTO) ?
+            self::PRODUCTION_MOTO : self::PRODUCTION;
 
         // Get Environment and passphrase for sandbox
         if ($config["account"]["global"]["sandbox_mode"]) {
-            $environment = $isMoto ? self::TEST_MOTO : self::TEST;
-            $passphrase = $isMoto ? $config["account"]["sandbox"]["api_moto_secret_passphrase_sandbox"] : $config["account"]["sandbox"]["api_secret_passphrase_sandbox"];
+            $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
+                self::TEST_MOTO : self::TEST;
+            $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
+                $config["account"]["sandbox"]["api_moto_secret_passphrase_sandbox"]
+                : $config["account"]["sandbox"]["api_secret_passphrase_sandbox"];
         }
 
         // Validate Signature with Hash
         $hashAlgorithm = $config["account"]["hash_algorithm"][$environment];
         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
 
-        if (!$isValidSignature && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)) {
+        if (
+            !$isValidSignature
+            && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)
+        ) {
             $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for {$environment}");
             try {
                 if (HipayHelper::existCredentialForPlateform($module, $environment)) {
@@ -153,7 +163,10 @@ class HipayHelper
                         $configHash[$environment] = $hashAlgorithmAccount->getHashingAlgorithm();
                         $module->hipayConfigTool->setHashAlgorithm($configHash);
                         $module->getLogs()->logInfos("# Hash Algorithm is now synced for {$environment}");
-                        $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithmAccount->getHashingAlgorithm());
+                        $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature(
+                            $passphrase,
+                            $hashAlgorithmAccount->getHashingAlgorithm()
+                        );
                     }
                 }
             } catch (Exception $e) {
@@ -577,13 +590,14 @@ class HipayHelper
 
     /**
      * Create order from successfull HiPay transaction
-     * @param type $module
-     * @param type $context
-     * @param type $configHipay
-     * @param type $db
-     * @param type $cart
-     * @param type $productName
-     * @return type
+     *
+     * @param $module
+     * @param $context
+     * @param $configHipay
+     * @param $db
+     * @param $cart
+     * @param $productName
+     * @throws PrestaShopException
      */
     public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
     {
@@ -696,5 +710,29 @@ class HipayHelper
         $ret = (isset($_POST[$key]) ? $_POST[$key] : (isset($_GET[$key]) ? $_GET[$key] : $default_value));
 
         return $ret;
+    }
+
+    /**
+     * Calculate refunded or captured amount from Order Payments
+     *
+     * @param $order
+     * @param bool $refund
+     * @return float|int
+     */
+    public static function getOrderPaymentAmount($order, $refund = false)
+    {
+        $orderPayments = $order->getOrderPaymentCollection();
+        $amount = 0;
+
+        foreach ($orderPayments as $payment) {
+            // negative Order Payments are refunds
+            if ($payment->amount < 0 && $refund) {
+                $amount += $payment->amount;
+            } elseif ($payment->amount > 0 && !$refund) {
+                $amount += $payment->amount;
+            }
+        }
+
+        return abs($amount);
     }
 }
