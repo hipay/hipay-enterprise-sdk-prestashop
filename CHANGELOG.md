@@ -1,3 +1,7 @@
+# Version 2.2.7
+
+- Fix : unnecessary mandatory CVV for Maestro card
+
 # Version 2.2.6
 
 - [#64](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/64) Fix issue [#64] 

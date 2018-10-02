@@ -20,12 +20,12 @@
 
     <div class="row">
         <label class="col-lg-4">{l s='Amount already captured' mod='hipay_enterprise'}</label><span
-                class="badge {if $refundableAmountDisplay > 0}badge-warning{else}badge-success{/if}">{displayPrice price=$refundableAmountDisplay currency=$id_currency}</span>
+                class="badge {if $capturedAmount > 0}badge-warning{else}badge-success{/if}">{displayPrice price=$capturedAmount currency=$id_currency}</span>
     </div>
     <div class="row">
         <label class="col-lg-4">{l s='Amount still to be captured' mod='hipay_enterprise'}</label><span
-                class="badge {if $stillToCaptureDisplay > 0}badge-warning{else}badge-success{/if}">
-                {displayPrice price=$stillToCaptureDisplay currency=$id_currency}</span>
+                class="badge {if $stillToCapture > 0}badge-warning{else}badge-success{/if}">
+                {displayPrice price=$stillToCapture currency=$id_currency}</span>
     </div>
     <p class="help-block">
         <sup>*</sup> {l s='Amount will be updated once the capture will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}

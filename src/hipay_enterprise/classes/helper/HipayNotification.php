@@ -200,8 +200,11 @@ class HipayNotification
 
     /**
      * update order status or create order if it doesn't exist
-     * @param type $newState
-     * @return boolean
+     *
+     * @param $newState
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     private function updateOrderStatus($newState)
     {
@@ -395,7 +398,9 @@ class HipayNotification
 
         $this->db->deleteOrderPaymentDuplicate($this->order->reference);
 
-        if ($this->transaction->getOperation() == null) {
+        // If Capture is originated in the TPP BO the Operation field is null
+        // Otherwise transaction has already been saved
+        if ($this->transaction->getOperation() == null && $this->transaction->getAttemptId() < 2) {
             try {
                 $maintenanceData = new HipayMaintenanceData($this->module);
                 // retrieve number of capture or refund request
@@ -442,15 +447,22 @@ class HipayNotification
         if (HipayHelper::orderExists($this->cart->id)) {
             $this->addOrderMessage();
 
-            if ($this->transaction->getOperation() == null) {
-                //save capture items and quantity in prestashop
+            // If Capture is originated in the TPP BO the Operation field is null
+            // Otherwise transaction has already been saved
+            if ($this->transaction->getOperation() == null && $this->transaction->getAttemptId() < 2) {
+                //save refund items and quantity in prestashop
+                $maintenanceData = new HipayMaintenanceData($this->module);
+                // retrieve number of capture or refund request
+                $transactionAttempt = $maintenanceData->getNbOperationAttempt('BO_TPP', $this->order->id);
+
                 $captureData = array(
                     "hp_ps_order_id" => $this->order->id,
                     "hp_ps_product_id" => 0,
                     "operation" => 'BO_TPP',
                     "type" => 'BO',
                     "quantity" => 1,
-                    "amount" => 0
+                    "amount" => 0,
+                    'attempt_number' => $transactionAttempt + 1
                 );
 
                 $this->db->setCaptureOrRefundOrder($captureData);
@@ -461,7 +473,7 @@ class HipayNotification
                 return true;
             }
 
-            // if transaction doesn't exist we create an order payment (if multiple capture, 1 line by amount captured)
+            // if transaction doesn't exist we create an order payment (if multiple refund, 1 line by amount refunded)
             if ($this->db->countOrderPayment($this->order->reference, $this->setTransactionRefForPrestashop()) == 0) {
                 $this->createOrderPayment(true);
 
@@ -484,7 +496,10 @@ class HipayNotification
 
     /**
      * change order status
-     * @param type $newState
+     *
+     * @param $newState
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     private function changeOrderStatus($newState)
     {
@@ -543,7 +558,7 @@ class HipayNotification
 
     /**
      * we rename transaction reference to distinct every captured amount when transaction is partially captured
-     * every step of the capture is unique (id = {transacRef}-{CapturedAmount}). Prevent from duplicates or overwritting
+     * every step of the capture is unique (id = {transacRef}-{transactionAttempt}). Prevent from duplicates or overwritting
      *
      * @return string
      * @throws Exception
@@ -578,12 +593,10 @@ class HipayNotification
      */
     private function getRealCapturedAmount($refund = false)
     {
-        $amount = $this->transaction->getCapturedAmount() - $this->order->getTotalPaid();
+        $amount = $this->transaction->getCapturedAmount() - HipayHelper::getOrderPaymentAmount($this->order);
 
         if ($refund) {
-            $amount = -1 *
-                ($this->order->getTotalPaid() -
-                    ($this->transaction->getCapturedAmount() - $this->transaction->getRefundedAmount()));
+            $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount($this->order, true));
         }
 
         return $amount;
