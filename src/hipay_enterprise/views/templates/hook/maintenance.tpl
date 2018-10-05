@@ -43,7 +43,7 @@
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}
-                {if  !$showMoto && !$showChallenge && !($showCapture && $stillToCapture > 0 && $manualCapture) && !($showRefund && $alreadyCaptured && $refundableAmount > 0) }
+                {if  !$showMoto && !$showChallenge && !$showCapture && !$showRefund}
                     <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
                     {if $refundRequestedOS }
                         <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>

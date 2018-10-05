@@ -58,9 +58,11 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
     protected function setCustomData(&$request, $cart, $params)
     {
         $this->module->getLogs()->logInfos('# Process Custom Data Hipay ');
+        // getSummaryDetails Needs customer in context since 1.7.4.2
+        $customer = new Customer($cart->id_customer);
+        Context::getContext()->customer = $customer;
         $cartSummary = $cart->getSummaryDetails();
 
-        $customer = new Customer($cartSummary["delivery"]->id_customer);
         $group = new Group($customer->id_default_group);
         $iframe = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe") ? 1 : 0;
 

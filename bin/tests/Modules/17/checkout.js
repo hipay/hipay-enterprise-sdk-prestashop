@@ -34,7 +34,7 @@ exports.selectItemAndOptions = function selectItemAndOptions(test) {
                     "'" + altImg + "' image exists"
                 );
             }
-            , 25000
+            , 50000
         );
     });
 };
@@ -54,8 +54,7 @@ function selectItemForCart(test) {
         },
         function fail() {
             test.assertExists('.product-add-to-cart button.add-to-cart', "Button Product add exists")
-        },
-        25000
+        }, 50000
     );
 }
 
@@ -80,7 +79,7 @@ function addProductToCart(test) {
         },
         function fail() {
             test.assertExists("#blockcart-modal", "Modal exist")
-        }
+        }, 50000
     );
 }
 
@@ -102,13 +101,13 @@ function submitCart(test) {
 
             }, function fail() {
                 test.assertUrlMatch(/index.php?controller=cart&action=show/, 'Cart detail');
-            });
+            }, 50000);
 
         },
         function fail() {
             test.assertExists("nav.header-nav .header a", "Cart button")
         }
-        , 15000
+        , 50000
     );
 }
 
@@ -135,7 +134,7 @@ exports.personalInformation = function personalInformation(test) {
 
         }, function fail() {
             test.assertVisible("div#checkout-guest-form form#customer-form", "'Personal information' formular exists");
-        }, 15000);
+        }, 50000);
     });
 };
 
@@ -167,7 +166,7 @@ exports.billingInformation = function billingInformation(test, country) {
                 "#checkout-addresses-step .js-address-form form",
                 "'Billing Information' formular exists"
             );
-        }, 30000);
+        }, 50000);
     });
 };
 
@@ -231,7 +230,7 @@ exports.shippingMethod = function shippingMethod(test) {
                 "section#checkout-delivery-step div.delivery-options-list input#delivery_option_2",
                 "'Shipping Method' formular or delivery option exists"
             );
-        }, 20000);
+        }, 50000);
     });
 };
 
@@ -254,15 +253,15 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
             this.clickLabel(labelPayByCard, 'span');
 
             if (currentBrandCC == 'visa') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, '666');
             } else if (currentBrandCC == 'cb' || currentBrandCC == "mastercard") {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, '666');
             } else if (currentBrandCC == 'amex') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '666');
             } else if (currentBrandCC == 'visa_3ds') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, '666');
             } else if (currentBrandCC == 'maestro') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, '');
             }
             this.wait(10000, function () {
                 this.click('form#conditions-to-approve input');
@@ -272,7 +271,7 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
 
         }, function fail() {
             test.assertVisible("section#checkout-payment-step", "'Payment Information' formular exists");
-        }, 15000);
+        }, 50000);
     });
 };
 
@@ -280,29 +279,14 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
  *
  * @param card
  */
-function fillFormPaymentHipayCC(card, hostedFields) {
-    if (hostedFields) {
-        casper.withFrame(0, function () {
-            casper.sendKeys('input[name="ccname"]', 'Mr Test');
-        });
-        casper.withFrame(1, function () {
-            casper.sendKeys('input[name="cardnumber"]', card);
-        });
-        casper.withFrame(2, function () {
-            casper.sendKeys('input[name="cc-exp"]', '06/21');
-        });
-        casper.withFrame(3, function () {
-            casper.sendKeys('input[name="cvc"]', '666');
-        });
-    } else {
-        casper.fillSelectors('form#tokenizerForm', {
-            'input[name="card-number"]': card,
-            'input[name="card-holders-name"]': 'Mr Test',
-            'select[name="expiry-month"]': '02',
-            'select[name="expiry-year"]': '20',
-            'input[name="cvc"]': '500'
-        }, false);
-    }
+function fillFormPaymentHipayCC(card, cvv) {
+    casper.fillSelectors('form#tokenizerForm', {
+        'input[name="card-number"]': card,
+        'input[name="card-holders-name"]': 'Mr Test',
+        'select[name="expiry-month"]': '02',
+        'select[name="expiry-year"]': '20',
+        'input[name="cvc"]': cvv
+    }, false);
 }
 
 /**
@@ -323,6 +307,6 @@ exports.selectMethodInCheckout = function selectMethodInCheckout(test, labelMeth
             this.echo("Done", "COMMENT");
         }, function fail() {
             test.assertVisible("section#checkout-payment-step", "'Payment Information' formular exists");
-        }, 10000);
+        }, 50000);
     });
 };

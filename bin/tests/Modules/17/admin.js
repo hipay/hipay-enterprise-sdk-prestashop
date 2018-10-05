@@ -28,14 +28,14 @@ exports.logToBackend = function logToBackend(test) {
                 this.echo("Connected", "INFO");
             }, function fail() {
                 test.assertExists(".error-msg", "Incorrect credentials !");
-            }, 20000);
+            }, 50000);
         }, function fail() {
             this.waitForUrl(/controller=/, function success() {
                 this.echo("Already logged to admin panel !", "INFO");
             }, function fail() {
                 test.assertUrlMatch(/controller=/, "Already connected");
-            });
-        }, 15000);
+            }, 50000);
+        }, 50000);
     });
 };
 
@@ -45,8 +45,8 @@ exports.logToBackend = function logToBackend(test) {
  */
 exports.activateCache = function activateCache(test) {
     casper.then(function () {
-        this.waitForSelector('ul.menu #subtab-AdminPerformance', function success() {
-            this.click('ul.menu li#subtab-AdminAdvancedParameters > a');
+        this.waitForSelector('ul.main-menu #subtab-AdminPerformance', function success() {
+            this.click('ul.main-menu li#subtab-AdminAdvancedParameters > a');
 
             this.waitForText('Informations de configuration', function () {
                 this.click('li#subtab-AdminPerformance > a');
@@ -62,19 +62,19 @@ exports.activateCache = function activateCache(test) {
                         this.echo("Done", "INFO");
                     }, function fail() {
                         test.assertExists('div.alert.alert-success', 'Update configuration success')
-                    });
+                    }, 50000);
 
                 }, function fail() {
                     test.assertExists('select[name="form[smarty][cache]"]', "Cache exists");
-                }, 15000);
+                }, 50000);
 
             }, function fail() {
                 test.assertTextExist('INFORMATIONS DE CONFIGURATION', "Configuration page exist");
-            });
+            }, 50000);
 
         }, function fail() {
-            test.assertExists('ul.menu #subtab-AdminPerformance', "Performance page exists");
-        }, 15000);
+            test.assertExists('ul.main-menu #subtab-AdminPerformance', "Performance page exists");
+        }, 50000);
 
     });
 };
@@ -97,14 +97,14 @@ exports.gotToHiPayConfiguration = function gotToHiPayConfiguration(test) {
 
                 }, function fail() {
                     test.assertExists('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', "'Configuration' button exists");
-                }, 15000);
+                }, 50000);
 
             }, function fail() {
                 test.assertExists('subtab-AdminModulesSf a', "Modules admin page exists");
-            }, 15000);
+            }, 50000);
         }, function fail() {
             test.assertExists('ul.menu #subtab-AdminParentModulesSf a', "Modules admin page exists");
-        }, 15000);
+        }, 50000);
     })
 };
 
@@ -130,15 +130,15 @@ exports.configureOperatingMode = function configureOperatingMode(test, mode) {
                     this.echo("Configure settings mode : Done", "INFO");
                 }, function fail() {
                     test.assertExists('.alert.alert-success', "'Success' alert exists ");
-                });
+                }, 50000);
 
             }, function fail() {
                 test.assertExists('form#credit_card_form', "'Credit card' form exists ");
-            }, 10000);
+            }, 50000);
 
         }, function fail() {
             test.assertExists('ul.hipay-enterprise li a[href="#payment_form"]', "Modules admin page exists");
-        }, 20000);
+        }, 50000);
     })
 };
 
@@ -160,11 +160,11 @@ exports.fillCredentials = function fillCredentials(test, username) {
 
             }, function fail() {
                 test.assertExists('.alert.alert-success', "'Success' alert exists ");
-            });
+            }, 50000);
 
         }, function fail() {
             this.assertExists('form#account_form input[name="api_username_sandbox"]', 'Field "api_username_sandbox" exists')
-        });
+        }, 50000);
     });
 };
 
@@ -203,15 +203,15 @@ exports.configureCaptureMode = function configureCaptureMode(test, mode) {
 
                 }, function fail() {
                     test.assertExists('.alert.alert-success', "'Success' alert exists ");
-                });
+                }, 50000);
 
             }, function fail() {
                 test.assertExists('form#credit_card_form', "'Credit card' form exists ");
-            }, 10000);
+            }, 50000);
 
         }, function fail() {
             test.assertExists(x('//span[text()="Modules"]'), "Modules admin page exists");
-        }, 10000);
+        }, 50000);
     });
 };
 
@@ -233,8 +233,8 @@ exports.orderResultSuccess = function orderResultSuccess(test) {
                 test.done();
             }, function fail() {
                 test.fail("Success payment (Pending status) doesn't exists.", 'WARNING');
-            }, 35000);
-        }, 35000);
+            }, 50000);
+        }, 50000);
     });
 };
 
@@ -258,13 +258,13 @@ exports.configureHostedDisplay = function configureHostedDisplay(test, type) {
                     this.echo("Configure settings mode : Done ", "COMMENT");
                 }, function fail() {
                     test.assertExists('.alert.alert-success', "'Success' alert exists ");
-                });
+                }, 50000);
             }, function fail() {
                 test.assertExists('form#credit_card_form', "'Credit card' form exists ");
-            }, 10000);
+            }, 50000);
         }, function fail() {
             test.assertExists(x('//span[text()="Modules"]'), "Modules admin page exists");
-        }, 10000);
+        }, 50000);
     });
 };
 
@@ -315,13 +315,13 @@ function setValueOptions(test, code, value) {
                     this.echo("Done ", "COMMENT");
                 }, function fail() {
                     test.assertExists('.alert.alert-success', "'Success' alert exists ");
-                });
+                }, 50000);
             }, function fail() {
                 test.assertExists('form#local_payment_for', "'Credit card' form exists ");
-            }, 10000);
+            }, 50000);
         }, function fail() {
             test.assertExists(x('//span[text()="Modules"]'), "Modules admin page exists");
-        }, 10000);
+        }, 50000);
     });
 }
 
@@ -371,16 +371,16 @@ exports.activateLocalization = function activateLocalization(test, locale) {
                             }
                         }, function fail() {
                             test.assertExists('form#form_country', "Form country exists");
-                        }, 15000);
+                        }, 50000);
                     });
                 }, function fail() {
                     test.assertExists('.success', "'Import pack localization failed' button exists");
-                }, 30000);
+                }, 50000);
             }, function fail() {
                 test.assertExists('select[name="iso_localization_pack"]', "Localization input exists");
-            }, 35000);
+            }, 50000);
         }, function fail() {
             test.assertExists('#subtab-AdminParentLocalization a', "Modules admin page exists");
-        }, 30000);
+        }, 50000);
     });
 };
