@@ -15,7 +15,7 @@ require_once(dirname(__FILE__) . '/classes/apiCaller/ApiCaller.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/classes/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__) . '/classes/helper/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/classes/helper/enums/UXMode.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -219,8 +219,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
 
             switch ($uxMode) {
-                case OperatingMode::DIRECT_POST_UX:
-                case OperatingMode::HOSTED_FIELDS_UX:
+                case UXMode::DIRECT_POST:
+                case UXMode::HOSTED_FIELDS:
                     // set credit card for one click
                     $this->ccToken = new HipayCCToken($this);
                     $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
@@ -288,7 +288,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
 
             switch ($uxMode) {
-                case OperatingMode::DIRECT_POST_UX:
+                case UXMode::DIRECT_POST:
                     $this->context->controller->registerJavascript(
                         'card-js',
                         'modules/' . $this->name . '/views/js/card-js.min.js'
@@ -298,7 +298,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'modules/' . $this->name . '/views/js/card-tokenize.js'
                     );
                     break;
-                case OperatingMode::HOSTED_FIELDS_UX:
+                case UXMode::HOSTED_FIELDS:
                     $this->context->controller->registerJavascript(
                         'hosted-fields',
                         'modules/' . $this->name . '/views/js/hosted-fields.js'

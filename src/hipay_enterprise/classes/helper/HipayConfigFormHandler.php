@@ -200,7 +200,7 @@ class HipayConfigFormHandler
                 } elseif ($key == "operating_mode" &&
                     Tools::getValue("operating_mode")
                 ) {
-                    $fieldValue = $this->getOperatingMode(Tools::getValue("operating_mode"));
+                    $fieldValue = OperatingMode::getOperatingMode(Tools::getValue("operating_mode"));
                 } else {
                     $fieldValue = Tools::getValue($key);
                 }
@@ -503,25 +503,4 @@ class HipayConfigFormHandler
             $this->module->_errors[] = $this->module->l($e->getMessage());
         }
     }
-
-    /**
-     * Get real operating mode from Form data
-     *
-     * @param $name
-     * @return array
-     */
-    private function getOperatingMode($name)
-    {
-        switch ($name) {
-            case OperatingMode::DIRECT_POST_UX:
-                return OperatingMode::DIRECT_POST;
-            case OperatingMode::HOSTED_PAGE_UX:
-                return OperatingMode::HOSTED_PAGE;
-            case OperatingMode::HOSTED_FIELDS_UX:
-                return OperatingMode::HOSTED_FIELDS;
-            default:
-                return OperatingMode::HOSTED_PAGE;
-        }
-    }
-
 }

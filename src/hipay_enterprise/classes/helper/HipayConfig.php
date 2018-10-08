@@ -12,6 +12,7 @@
  */
 
 require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/enums/UXMode.php');
 require_once(dirname(__FILE__) . '/enums/ThreeDS.php');
 
 use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
@@ -283,10 +284,10 @@ class HipayConfig
         // update operating_mode with new format
         switch($configHipay["payment"]["global"]["operating_mode"]){
             case "api":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::DIRECT_POST;
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::DIRECT_POST);
                 break;
             case "hosted_page":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::HOSTED_PAGE;
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::HOSTED_PAGE);
                 break;
         }
     }
@@ -336,7 +337,7 @@ class HipayConfig
             ),
             "payment" => array(
                 "global" => array(
-                    "operating_mode" => OperatingMode::DIRECT_POST,
+                    "operating_mode" => OperatingMode::getOperatingMode(UXMode::DIRECT_POST),
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "display_hosted_page" => "redirect",
