@@ -19,7 +19,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoForm
 require_once(dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php');
 require_once(dirname(__FILE__) . '/../helper/HipayDBQuery.php');
 require_once(dirname(__FILE__) . '/../helper/HipayHelper.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;
@@ -79,8 +79,10 @@ class Apihandler
      * @param string $mode
      * @param array $params
      * @return string
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-    public function handleCreditCard($mode = OperatingMode::HOSTED_PAGE_API, $params = array())
+    public function handleCreditCard($mode = ApiMode::HOSTED_PAGE, $params = array())
     {
         $this->baseParamsInit($params);
         $cart = $this->context->cart;
@@ -89,11 +91,11 @@ class Apihandler
         $currency = new Currency((int)$cart->id_currency);
 
         switch ($mode) {
-            case OperatingMode::DIRECT_POST_API:
+            case ApiMode::DIRECT_POST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
                 $this->handleDirectOrder($params, true);
                 break;
-            case OperatingMode::HOSTED_PAGE_IFRAME:
+            case ApiMode::HOSTED_PAGE_IFRAME:
                 $params["productlist"] = HipayHelper::getCreditCardProductList(
                     $this->module,
                     $this->configHipay,
@@ -101,7 +103,7 @@ class Apihandler
                     $currency
                 );
                 return $this->handleIframe($params);
-            case OperatingMode::HOSTED_PAGE_API:
+            case ApiMode::HOSTED_PAGE:
                 $params["productlist"] = HipayHelper::getCreditCardProductList(
                     $this->module,
                     $this->configHipay,
@@ -122,20 +124,20 @@ class Apihandler
      * @param array $params
      * @return string
      */
-    public function handleLocalPayment($mode = OperatingMode::HOSTED_PAGE_API, $params = array())
+    public function handleLocalPayment($mode = ApiMode::HOSTED_PAGE, $params = array())
     {
         $this->baseParamsInit($params, false);
 
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
         switch($mode){
-            case OperatingMode::DIRECT_POST_API:
+            case ApiMode::DIRECT_POST:
                 return $this->handleDirectOrder($params);
                 break;
-            case OperatingMode::HOSTED_PAGE_API:
+            case ApiMode::HOSTED_PAGE:
                 return $this->handleHostedPayment($params);
                 break;
-            case OperatingMode::HOSTED_PAGE_IFRAME:
+            case ApiMode::HOSTED_PAGE_IFRAME:
                 return $this->handleIframe($params);
                 break;
         }

@@ -12,7 +12,6 @@
  */
 
 require_once(dirname(__FILE__) . '/../classes/helper/HipayDBQuery.php');
-require_once(dirname(__FILE__) . '/../classes/helper/enums/OperatingMode.php');
 
 function upgrade_module_2_3_0($module)
 {

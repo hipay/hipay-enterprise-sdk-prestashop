@@ -15,7 +15,8 @@ require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/enums/ThreeDS.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/UXMode.php');
 
 /**
  * Class Hipay_enterprisePendingModuleFrontController
@@ -76,10 +77,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
 
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
-            case OperatingMode::HOSTED_PAGE_API:
+            case ApiMode::HOSTED_PAGEI:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $this->apiHandler->handleCreditCard(
-                        OperatingMode::HOSTED_PAGE_API,
+                        ApiMode::HOSTED_PAGE,
                         array(
                             "method" => "credit_card",
                             "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
@@ -87,7 +88,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     );
                 }
                 break;
-            case OperatingMode::DIRECT_POST_API:
+            case ApiMode::DIRECT_POST:
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC);
                 } elseif (Tools::getValue('ccTokenHipay')) {
@@ -137,12 +138,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
-            case OperatingMode::HOSTED_PAGE_UX:
+            case UXMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] !== "redirect") {
                     $this->context->smarty->assign(
                         array(
                             'url' => $this->apiHandler->handleCreditCard(
-                                OperatingMode::HOSTED_PAGE_IFRAME,
+                                ApiMode::HOSTED_PAGE_IFRAME,
                                 array(
                                     "method" => "credit_card",
                                     "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
@@ -156,8 +157,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             : 'payment/ps16/paymentFormIframe-16') . '.tpl';
                 }
                 break;
-            case OperatingMode::DIRECT_POST_UX:
-            case OperatingMode::HOSTED_FIELDS_UX:
+            case UXMode::DIRECT_POST:
+            case UXMode::HOSTED_FIELDS:
                 $this->context->smarty->assign(
                     array(
                         'status_error' => '200', // Force to ok for first call
@@ -199,7 +200,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 "method" => $tokenDetails['brand'],
                 "authentication_indicator" => $this->setAuthenticationIndicator($cart)
             );
-            $this->apiHandler->handleCreditCard(OperatingMode::DIRECT_POST_API, $params);
+            $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
         } else {
             if (_PS_VERSION_ >= '1.7') {
                 $redirectUrl = $context->link->getModuleLink(
@@ -220,7 +221,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                 )
             );
-            return 'payment/ps16/paymentForm-' . OperatingMode::DIRECT_POST_UX . '-16.tpl';
+            return 'payment/ps16/paymentForm-' . UXMode::DIRECT_POST . '-16.tpl';
         }
     }
 
@@ -266,7 +267,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     }
                 }
 
-                $this->apiHandler->handleCreditCard(OperatingMode::DIRECT_POST_API, $params);
+                $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {
                 $this->module->getLogs()->logException($e);
                 return HipayHelper::redirectToErrorPage($context, $this->module, $cart, $savedCC);
@@ -295,13 +296,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $uxMode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["UXMode"];
         //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
-            case OperatingMode::DIRECT_POST_UX:
+            case UXMode::DIRECT_POST:
                 $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/strings.js'));
                 $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js'));
                 $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/card-js.min.css'));
                 $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/form-input-control.js'));
                 break;
-            case OperatingMode::HOSTED_FIELDS_UX:
+            case UXMode::HOSTED_FIELDS:
                 $this->addJS(array(_MODULE_DIR_ . 'hipay_enterprise/views/js/hosted-fields.js'));
                 break;
         }
