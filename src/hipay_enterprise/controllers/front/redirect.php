@@ -77,7 +77,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
 
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
-            case ApiMode::HOSTED_PAGEI:
+            case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $this->apiHandler->handleCreditCard(
                         ApiMode::HOSTED_PAGE,
@@ -289,7 +289,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/hipay-enterprise.css'));
         $this->context->controller->addJS(
             array(
-                'https://pi-hostedfields-demo-release-ec-400.hipay-pos-platform.com/js/sdkjs.js'
+                'https://pi-hostedfields-develop.hipay-pos-platform.com/js/sdkjs.js'
             )
         );
 

@@ -326,7 +326,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
             $this->context->controller->registerJavascript(
                 'hipay-sdk-js',
-                'https://pi-hostedfields-feature-ec-397.hipay-pos-platform.com/js/sdkjs.js',
+                'http://stage-libs.hipay.com/js/sdkjs.js',
                 ['server' => 'remote', 'position' => 'bottom', 'priority' => 20]
             );
         }
