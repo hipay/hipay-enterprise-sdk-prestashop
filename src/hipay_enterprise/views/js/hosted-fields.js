@@ -78,11 +78,7 @@ function initHostedFields() {
             }
         },
         styles: {
-            base: style.base,
-            invalid: {
-                color: "#D50000",
-                caretColor: "#D50000"
-            }
+            base: style.base
         }
     };
 

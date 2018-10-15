@@ -23,37 +23,23 @@ require_once(dirname(__FILE__) . '/UXMode.php');
  */
 class OperatingMode
 {
+    const DIRECT_POST = array('UXMode' => UXMode::DIRECT_POST, 'APIMode' => ApiMode::DIRECT_POST);
 
-    const DIRECT_POST_UX = 'direct_post';
+    const HOSTED_PAGE = array('UXMode' => UXMode::HOSTED_PAGE, 'APIMode' => ApiMode::HOSTED_PAGE);
 
-    const HOSTED_PAGE_UX = 'hosted_page';
-
-    const HOSTED_FIELDS_UX = 'hosted_fields';
-
-    const DIRECT_POST_API = 'direct_post';
-
-    const HOSTED_PAGE_API = 'hosted';
-
-    const HOSTED_PAGE_IFRAME = 'iframe';
-
-    const DIRECT_POST = array('UXMode' => self::DIRECT_POST_UX, 'APIMode' => self::DIRECT_POST_API);
-
-    const HOSTED_PAGE = array('UXMode' => self::HOSTED_PAGE_UX, 'APIMode' => self::HOSTED_PAGE_API);
-
-    const HOSTED_FIELDS = array('UXMode' => self::HOSTED_FIELDS_UX, 'APIMode' => self::DIRECT_POST_API);
+    const HOSTED_FIELDS = array('UXMode' => UXMode::HOSTED_FIELDS, 'APIMode' => ApiMode::DIRECT_POST);
 
     public static function getOperatingMode($mode)
     {
         switch ($mode) {
             case UXMode::DIRECT_POST:
-                return array('UXMode' => UXMode::DIRECT_POST, 'APIMode' => ApiMode::DIRECT_POST);
+                return self::DIRECT_POST;
             case UXMode::HOSTED_PAGE:
-                return array('UXMode' => UXMode::HOSTED_PAGE, 'APIMode' => ApiMode::HOSTED_PAGE);
+                return self::HOSTED_PAGE;
             case UXMode::HOSTED_FIELDS:
-                return array('UXMode' => UXMode::HOSTED_FIELDS, 'APIMode' => ApiMode::DIRECT_POST);
+                return self::HOSTED_FIELDS;
             default:
-                return array('UXMode' => UXMode::HOSTED_PAGE, 'APIMode' => ApiMode::HOSTED_PAGE);
+                return self::HOSTED_PAGE;
         }
     }
-
 }

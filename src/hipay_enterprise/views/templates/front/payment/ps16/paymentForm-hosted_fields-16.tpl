@@ -25,8 +25,8 @@
           action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}"
           class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm"
           autocomplete="off">
-        <div class="order_carrier_content box">
-            <h2 class="page-subheading">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
+        <div class="order_carrier_content">
+            <h2 class="hipay-form-16-title">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
             {include file="$hipay_enterprise_tpl_dir/front/partial/paymentError.tpl"}
             <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </h5>
 
@@ -51,7 +51,7 @@
                 {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-hosted-fields.tpl"}
 
                 {if $confHipay.payment.global.card_token && !$is_guest}
-                    <div class="checkbox">
+                    <div class="checkbox one-click" >
                     <span for="newsletter">
                         <div class="checker" id="uniform-newsletter">
                             <span class="">

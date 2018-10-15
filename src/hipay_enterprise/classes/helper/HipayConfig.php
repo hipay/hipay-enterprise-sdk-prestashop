@@ -356,7 +356,7 @@ class HipayConfig
                             "fontFamily" => "Roboto",
                             "fontSize" => "15px",
                             "fontWeight" => "400",
-                            "placeholderColor" => "#999999",
+                            "placeholderColor" => "",
                             "caretColor" => "#00ADE9",
                             "iconColor" => "#00ADE9",
 
