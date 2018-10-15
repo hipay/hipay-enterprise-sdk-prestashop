@@ -253,15 +253,15 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
             this.clickLabel(labelPayByCard, 'span');
 
             if (currentBrandCC == 'visa') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, '666');
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa, '666', hostedFields);
             } else if (currentBrandCC == 'cb' || currentBrandCC == "mastercard") {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, '666');
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, '666', hostedFields);
             } else if (currentBrandCC == 'amex') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '666');
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '666', hostedFields);
             } else if (currentBrandCC == 'visa_3ds') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, '666');
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, '666', hostedFields);
             } else if (currentBrandCC == 'maestro') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, '');
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.maestro, '', hostedFields);
             }
             this.wait(10000, function () {
                 this.click('form#conditions-to-approve input');
@@ -278,15 +278,32 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
 /**
  *
  * @param card
+ * @param cvv
+ * @param hostedFields
  */
-function fillFormPaymentHipayCC(card, cvv) {
-    casper.fillSelectors('form#tokenizerForm', {
-        'input[name="card-number"]': card,
-        'input[name="card-holders-name"]': 'Mr Test',
-        'select[name="expiry-month"]': '02',
-        'select[name="expiry-year"]': '20',
-        'input[name="cvc"]': cvv
-    }, false);
+function fillFormPaymentHipayCC(card, cvv, hostedFields) {
+    if (hostedFields) {
+        casper.withFrame(0, function () {
+            casper.sendKeys('input[name="ccname"]', 'Mr Test');
+        });
+        casper.withFrame(1, function () {
+            casper.sendKeys('input[name="cardnumber"]', card);
+        });
+        casper.withFrame(2, function () {
+            casper.sendKeys('input[name="cc-exp"]', '06/21');
+        });
+        casper.withFrame(3, function () {
+            casper.sendKeys('input[name="cvc"]', cvv);
+        });
+    } else {
+        casper.fillSelectors('form#tokenizerForm', {
+            'input[name="card-number"]': card,
+            'input[name="card-holders-name"]': 'Mr Test',
+            'select[name="expiry-month"]': '02',
+            'select[name="expiry-year"]': '20',
+            'input[name="cvc"]': cvv
+        }, false);
+    }
 }
 
 /**
