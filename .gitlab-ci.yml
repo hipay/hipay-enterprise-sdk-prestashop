@@ -119,6 +119,7 @@ package:
   - echo "Package module $CI_COMMIT_REF_SLUG"
   - cd src/hipay_enterprise
   - composer install --no-dev
+  - cd ../..
   - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
   - chmod u+x bin/deployment/deploy_package.sh
   - ./bin/deployment/deploy_package.sh
