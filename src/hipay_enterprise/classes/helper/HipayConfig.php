@@ -272,7 +272,8 @@ class HipayConfig
      *
      * @param $configHipay
      */
-    private function updatePaymentGlobal(&$configHipay){
+    private function updatePaymentGlobal(&$configHipay)
+    {
         $defaultConfig = $this->getDefaultConfig();
 
         // add new fields
@@ -282,7 +283,7 @@ class HipayConfig
         );
 
         // update operating_mode with new format
-        switch($configHipay["payment"]["global"]["operating_mode"]){
+        switch ($configHipay["payment"]["global"]["operating_mode"]) {
             case "api":
                 $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::DIRECT_POST);
                 break;
@@ -400,6 +401,11 @@ class HipayConfig
             $configHipay["payment"][$paymentMethodType],
             array_diff_key($paymentMethod, $configHipay["payment"][$paymentMethodType])
         );
+
+        // remove deprecated payment method
+        foreach (array_diff_key($configHipay["payment"][$paymentMethodType], $paymentMethod) as $removeKey => $item) {
+            unset($configHipay["payment"][$paymentMethodType][$removeKey]);
+        }
 
         foreach ($paymentMethod as $key => $value) {
             // Add new parameters to payment method

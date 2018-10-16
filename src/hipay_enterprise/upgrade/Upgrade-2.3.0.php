@@ -233,7 +233,7 @@ function upgrade_module_2_3_0($module)
             "currencies" => "",
             "countries" => ""
         ),
-        "klarna" => array(
+        "klarnainvoice" => array(
             "displayName" => "",
             "frontPosition" => "",
             "minAmount" => "",
