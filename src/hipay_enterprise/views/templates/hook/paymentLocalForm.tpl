@@ -33,5 +33,9 @@
 
     </script>
 {else}
-    <p>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
+    {if $iframe}
+        <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
+    {else}
+        <p>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
+    {/if}
 {/if}

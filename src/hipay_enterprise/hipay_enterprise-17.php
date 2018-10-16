@@ -143,11 +143,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
         if (empty($this->hipayConfigTool->getLocalPayment()[$name]["additionalFields"]) ||
             isset($paymentProduct["forceHpayment"]) && $paymentProduct["forceHpayment"]
         ) {
-            $this->context->smarty->assign(
-                array(
-                    'methodFields' => array()
-                )
-            );
+            $iframe = false;
+
+            if (
+                isset($this->hipayConfigTool->getLocalPayment()[$name]["iframe"])
+                && $this->hipayConfigTool->getLocalPayment()[$name]["iframe"]
+            ) {
+                $iframe = true;
+            }
+
+            $this->context->smarty->assign(array('methodFields' => array(), 'iframe' => $iframe));
         } else {
             $this->context->smarty->assign(
                 array(

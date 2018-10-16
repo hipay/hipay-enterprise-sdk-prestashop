@@ -304,7 +304,6 @@ $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_4c2a7b52c5f2651ccc4800
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_6ce14b8c89f6e674e2d56301d410c617'] = 'Différent de ';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_08deed15263aa7d966a8a8a01e4d4ac1'] = 'Style des champs hebergés';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_b9b8fa143b21bb5d29dc4de5794f0dd5'] = 'Configuration du style des champs hebergés';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_cb5feb1b7314637725a2e73bdc9f7295'] = 'Coleur';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_e4a113b3a517f62528bd2258c1ebd09d'] = 'Afficher la page hébergée';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_4202ef115ebede37eb22297113f5fb32'] = 'Redirection';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a025e05161bb17cbab898f0e77b09a2b'] = 'iFrame';
@@ -477,6 +476,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_00145286278
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est en cours de traitement. Merci de patienter.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_755e746151fd31031acf6a0e611efd6f'] = 'Ce type de carte ou la devise de la commande ne sont pas pris en charge. Veuillez choisir un autre moyen de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous allez être redirigé vers la page de paiement HiPay pour effectuer le paiement de la commande.';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_bd6963a84800b01d6639adc5c407fcf4'] = 'Confirmez votre commande pour accéder à la page de paiement';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_0ca2b5535330f021917c16883385ed15'] = 'Récapitulatif du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_2758fccb8c7506009717e9834717c238'] = 'Votre commande a été annulée.';
@@ -525,6 +525,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted-fields_9993039cea3e46
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted-fields_931d3a3ad177dd96a28c9642fec11b01'] = 'Numéro de carte';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted-fields_95b16127e70e8a90220404fb48343182'] = 'Date d\'exp.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted-fields_5ea7f231296949070013bc43715aae01'] = 'CVV';
+$_MODULE['<{hipay_enterprise}prestashop>paymentlocalform_bd6963a84800b01d6639adc5c407fcf4'] = 'Confirmez votre commande pour accéder à la page de paiement';
 $_MODULE['<{hipay_enterprise}prestashop>paymentlocalform_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous allez être redirigé vers une page de paiement externe. Veuillez ne pas actualiser la page pendant le processus.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentreturn_bddd470742bc2329733e489ed05a8ba1'] = 'Votre commande a été effectuée.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentreturn_b2f40690858b404ed10e62bdf422c704'] = 'Montant';

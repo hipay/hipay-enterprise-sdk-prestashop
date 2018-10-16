@@ -35,13 +35,13 @@
                     </div>
                     <p class="help-block">
                     <ul class="hipay-notice-list">
-                        <li><b>Api</b>
+                        <li><b>{l s='Direct Post' mod='hipay_enterprise'}</b>
                             : {l s='The customer will fill his bank information directly on merchants website' mod='hipay_enterprise'}
                         </li>
-                        <li><b>Hosted Page</b>
+                        <li><b>{l s='Hosted page' mod='hipay_enterprise'}</b>
                             : {l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}
                         </li>
-                        <li><b>Hosted Fields</b>
+                        <li><b>{l s='Hosted Fields' mod='hipay_enterprise'}</b>
                             : {l s='The customer will fill his bank information directly on merchants website but fields are hosted by HiPay. This mode is only available for credit card, other payement method will be handled in the API mode' mod='hipay_enterprise'}
                         </li>
                     </ul>
