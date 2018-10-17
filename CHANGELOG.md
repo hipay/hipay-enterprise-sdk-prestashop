@@ -1,3 +1,8 @@
+# Version 2.3.0
+
+- Add support for hosted fields
+- Fix : switch klarna to klarnainvoice 
+
 # Version 2.2.7
 
 - Fix : unnecessary mandatory CVV for Maestro card
