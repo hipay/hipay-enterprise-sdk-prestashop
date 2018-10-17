@@ -60,24 +60,6 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe and ' + current
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
-
-            /* Test it again with another card type */
-            if (currentBrandCC == 'visa') {
-                utilsHiPay.testOtherTypeCC(file_path, 'mastercard');
-            }
-            if (currentBrandCC == 'mastercard') {
-                // Waiting AMEX for test account
-                //casper.testOtherTypeCC(file_path, 'AMEX');
-            }
-            if (currentBrandCC == 'mastercard') {
-                utilsHiPay.testOtherTypeCC(file_path, 'maestro');
-            }
-            if (currentBrandCC == 'maestro') {
-                utilsHiPay.testOtherTypeCC(file_path, 'visa_3ds');
-            }
-            if (currentBrandCC == 'visa_3ds') {
-                utilsHiPay.testOtherTypeCC(file_path, '');
-            }
         })
         .run(function () {
             test.done();

@@ -279,6 +279,19 @@ exports.activateMethod = function activateMethod(test, code) {
 };
 
 /**
+ * Set config for Payment local method with code
+ *
+ * @param test
+ * @param code
+ * @param field
+ * @param value
+ */
+exports.setConfigLocal = function activateMethod(test, code, field, value) {
+    var field = code + "_" + field;
+    setValueOptions(test, field, value);
+};
+
+/**
  * Set value for options payment for local
  *
  * @param test

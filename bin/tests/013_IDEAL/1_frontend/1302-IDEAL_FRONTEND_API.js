@@ -36,7 +36,7 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             adminMod.activateMethod(test, "ideal");
         })
         .then(function () {
-            adminMod.configureOperatingMode(test, "api");
+            adminMod.configureOperatingMode(test, "direct_post");
         })
         .then(function () {
             this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {

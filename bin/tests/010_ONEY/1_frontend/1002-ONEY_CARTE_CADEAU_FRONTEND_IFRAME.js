@@ -12,21 +12,24 @@
 
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : SEPA DIRECT DEBIT
+ *                       VALIDATION TEST METHOD : CARTE CADEAU ONEY
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise SEPA Direct Debit";
+var paymentType = "HiPay Enterprise carte cadeau Oney";
 
-casper.test.begin('Test Checkout ' + paymentType, function (test) {
-
-    phantom.clearCookies();
+casper.test.begin('Test Checkout ' + paymentType + ' with Iframe', function (test) {
 
     var label;
 
+    phantom.clearCookies();
+
     casper.start(baseURL)
+        .then(function () {
+            utilsLibHiPay.refillOneyGiftCard(test);
+        })
         .then(function () {
             adminMod.logToBackend(test);
         })
@@ -34,17 +37,20 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             adminMod.gotToHiPayConfiguration(test);
         })
         .then(function () {
-            adminMod.activateMethod(test, "sdd");
+            adminMod.configureCaptureMode(test, "automatic");
         })
         .then(function () {
-            adminMod.configureOperatingMode(test, "api");
+            adminMod.activateMethod(test, "carte-cadeau");
         })
         .then(function () {
-            this.waitForSelector('input[name="ideal_displayName[fr]"]', function success() {
-                label = this.getElementAttribute('input[name="sdd_displayName[fr]"]', 'value');
+            adminMod.setConfigLocal(test, "carte-cadeau", "iframe", "1");
+        })
+        .then(function () {
+            this.waitForSelector('input[name="carte-cadeau_displayName[fr]"]', function success() {
+                label = this.getElementAttribute('input[name="carte-cadeau_displayName[fr]"]', 'value');
                 test.info("Display name in checkout should be :" + label);
             }, function fail() {
-                test.assertExists('input[name="sdd_displayName[fr]"]', "Input name exist");
+                test.assertExists('input[name="carte-cadeau_displayName[fr]"]', "Input name exist");
             });
         })
         .thenOpen(baseURL, function () {
@@ -60,25 +66,13 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
             checkoutMod.shippingMethod(test);
         })
         .then(function () {
-            checkoutMod.selectMethodInCheckout(test, "Payer par " + label, false);
+            checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
         .then(function () {
-            this.echo("Filling SEPA Formular ...", "INFO");
-
-            this.waitUntilVisible('#sdd-hipay', function success() {
-                this.fillSelectors('form#sdd-hipay', {
-                    'select[name="gender"]': "1",
-                    'input[name="firstname"]': "TEST",
-                    'input[name="lastname"]': "TEST",
-                    'input[name="iban"]': parametersLibHiPay.ibanNumber.fr,
-                    'input[name="issuer_bank_id"]': parametersLibHiPay.bicNumber.fr,
-                    'input[name="bank_name"]': "BANK TEST"
-                }, false);
-
-                this.click('form#conditions-to-approve input');
-                this.click("div#payment-confirmation button");
-            }, function fail() {
-                test.assertExists('#sdd-hipay', "Field Business Identifier exists");
+            this.wait(10000, function () {
+                this.withFrame(0, function () {
+                    paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
+                });
             });
         })
         .then(function () {
@@ -87,5 +81,4 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
         .run(function () {
             test.done();
         });
-
 });

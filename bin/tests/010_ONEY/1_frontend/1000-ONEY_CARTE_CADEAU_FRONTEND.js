@@ -20,7 +20,7 @@
 
 var paymentType = "HiPay Enterprise carte cadeau Oney";
 
-casper.test.begin('Test Checkout ' + paymentType + ' with Iframe', function (test) {
+casper.test.begin('Test Checkout ' + paymentType, function (test) {
 
     var label;
 
@@ -41,10 +41,11 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe', function (tes
         })
         .then(function () {
             adminMod.configureOperatingMode(test, "hosted_page");
-            adminMod.configureHostedDisplay(test, "iframe");
+            adminMod.configureHostedDisplay(test, "redirect");
         })
         .then(function () {
             adminMod.activateMethod(test, "carte-cadeau");
+            adminMod.setConfigLocal(test, "carte-cadeau", "iframe", "0");
         })
         .then(function () {
             this.waitForSelector('input[name="carte-cadeau_displayName[fr]"]', function success() {
@@ -70,11 +71,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe', function (tes
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
         .then(function () {
-            this.wait(10000, function () {
-                this.withFrame(0, function () {
-                    paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
-                });
-            });
+            paymentLibHiPay.fillPaymentFormularByPaymentProduct("carte-cadeau", test);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);

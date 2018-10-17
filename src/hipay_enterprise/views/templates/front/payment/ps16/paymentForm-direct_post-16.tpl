@@ -10,7 +10,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 
-{include file="$hipay_enterprise_tpl_dir/../front/partial/js.strings.tpl"}
+{include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 {capture name=path}{l s='Payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
 
@@ -27,39 +27,17 @@
           autocomplete="off">
         <div class="order_carrier_content box">
             <h2 class="page-subheading">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
-            {include file="$hipay_enterprise_tpl_dir/../front/partial/paymentError.tpl"}
+            {include file="$hipay_enterprise_tpl_dir/front/partial/paymentError.tpl"}
             <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </h5>
+
             {if $confHipay.payment.global.card_token}
-                {if $savedCC}
-                    {* <h2 class="page-subheading">{l s='Pay with a saved credit card' mod='hipay_enterprise'}</h2> *}
-                    <div id="error-js-oc" style="display:none" class="alert alert-danger">
-                        <p>There is 1 error</p>
-                        <ol>
-                            <li class="error-oc"></li>
-                        </ol>
-                    </div>
-                    {if $status_error_oc == '400'}
-                        <div class="alert alert-danger">
-                            <p>There is 1 error</p>
-                            <ol>
-                                <li>{l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_enterprise'}</li>
-                            </ol>
-                        </div>
-                    {/if}
-
-                    {foreach $savedCC as $cc}
-                        <div class="">
-                            <input type="radio" name="ccTokenHipay" class="radio-with-token" checked="checked" value="{$cc.token}"/>
-                            <label for="ccTokenHipay">
-                                <img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/>
-                                {$cc.pan} ({"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year})
-                                - {$cc.card_holder}
-                            </label>
-                        </div>
-                    {/foreach}
-                {/if}
+                {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/oneclick.tpl"}
             {/if}
-
+            <div id="error-js" style="display:none" class="alert alert-danger">
+                <ul>
+                    <li class="error"></li>
+                </ul>
+            </div>
             {if $savedCC &&  $confHipay.payment.global.card_token}
                 <div class="option_payment">
                 <span class="custom-radio">
@@ -70,7 +48,7 @@
                 </div>
             {/if}
             <div id="credit-card-group" >
-                {include file="$hipay_enterprise_tpl_dir/paymentForm.tpl"}
+                {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-direct-post.tpl"}
 
                 {if $confHipay.payment.global.card_token && !$is_guest}
                     <div class="checkbox">
@@ -106,8 +84,9 @@
         {if $savedCC &&  $confHipay.payment.global.card_token}
             $('#credit-card-group').collapse('hide');
         {/if}
+        var lang = "{$lang_iso}";
         var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
-        var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
+        var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
         var myPaymentMethodSelected = true;
         {if $confHipay.account.global.sandbox_mode}
         var api_tokenjs_mode = "stage";
