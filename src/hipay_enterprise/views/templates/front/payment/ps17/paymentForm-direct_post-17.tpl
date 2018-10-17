@@ -14,36 +14,7 @@
       class="form-horizontal hipay-form-17" method="post"
       name="tokenizerForm" autocomplete="off">
     {if $confHipay.payment.global.card_token}
-        {if $savedCC}
-            <div class="option_payment saved-card"><label for="radio-with-token"><strong>{l s='Pay with a saved credit card' mod='hipay_enterprise'}</strong></label></div>
-            <div id="error-js-oc" style="display:none" class="alert alert-danger">
-                <span>There is 1 error</span>
-                <ol>
-                    <li class="error-oc"></li>
-                </ol>
-            </div>
-            {foreach $savedCC as $cc}
-                <div class="form-group row group-card">
-                    <div class="col-md-1">
-                        <span class="custom-radio">
-                            <input type="radio" class="radio-with-token" name="ccTokenHipay" checked="checked" value="{$cc.token}"/>
-                            <span></span>
-                        </span>
-                    </div>
-                    <div class="col-md-5">
-                            <div class="row">
-                                <label for="radio-with-token">
-                                    <span class="hipay-img col-md-2 col-xs-3"><img class="card-img" src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
-                                    <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>
-                                    <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'  mod='hipay_enterprise'}
-                                        : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>
-                                    <span class="hipay-card-holder col-md-10 col-xs-9">{$cc.card_holder}</span>
-                                </label>
-                            </div>
-                    </div>
-                </div>
-            {/foreach}
-        {/if}
+        {include file="$hipay_enterprise_tpl_dir/front/partial/ps17/oneclick.tpl"}
     {/if}
     <div id="error-js" style="display:none" class="alert alert-danger">
         <ul>
@@ -54,19 +25,20 @@
     {if $savedCC &&  $confHipay.payment.global.card_token}
         <div class="option_payment">
                 <span class="custom-radio">
-                    <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken" />
+                    <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken"/>
                     <span></span>
                 </span>
             <label for="radio-no-token"><strong>{l s='Pay with a new credit card' mod='hipay_enterprise'}</strong></label>
         </div>
     {/if}
-    <div id="credit-card-group" class="form-group group-card  {if $savedCC &&  $confHipay.payment.global.card_token}collapse{/if}">
+    <div id="credit-card-group"
+         class="form-group group-card  {if $savedCC &&  $confHipay.payment.global.card_token}collapse{/if}">
         <div class="row">
             {if $savedCC}
-            <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
             {/if}
             <div class="col-md-11">
-                {include file="$hipay_enterprise_tpl_dir/hook/paymentForm.tpl"}
+                {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-direct-post.tpl"}
 
                 {if $confHipay.payment.global.card_token && !$is_guest }
                     <div class="row">
@@ -91,11 +63,12 @@
 
     var activatedCreditCard = [];
     {foreach $activatedCreditCard as $cc}
-        activatedCreditCard.push("{$cc}");
+    activatedCreditCard.push("{$cc}");
     {/foreach}
-
-    var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}";
+    var lang = "{$language.iso_code}";
+    var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;
+
     function setSelectedPaymentMethod() {
         $(".payment-options").change(function () {
             myPaymentMethodSelected = $(".payment-options").find("input[data-module-name='credit_card']").is(":checked");

@@ -112,7 +112,7 @@ class HipayDBQuery
         $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CC_TOKEN_TABLE . '`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `customer_id` INT(10) UNSIGNED NOT NULL,
-                `token` VARCHAR(45) NOT NULL,
+                `token` VARCHAR(255) NOT NULL,
                 `brand` VARCHAR(255) NOT NULL,
                 `pan` VARCHAR(20)  NOT NULL,
                 `card_holder` VARCHAR(255) NOT NULL,

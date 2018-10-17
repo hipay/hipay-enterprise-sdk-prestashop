@@ -56,6 +56,26 @@ casper.test.begin('Parameters', function (test) {
         casper.echo('Tests réussis : ' + test.currentSuite.passes.length, 'WARNING');
     });
 
+    //debug
+    // casper.on('remote.message', function(message) {
+    //     this.echo('remote message caught: ' + message);
+    // });
+    //
+    // casper.on("resource.error", function(resourceError) {
+    //     this.echo("Resource error: " + "Error code: "+resourceError.errorCode+" ErrorString: "+resourceError.errorString+" url: "+resourceError.url+" id: "+resourceError.id, "ERROR");
+    // });
+    //
+    // casper.on("page.error", function(msg, trace) {
+    //     this.echo("Error: " + msg, "ERROR");
+    // });
+    //
+    // casper.on('resource.received', function(resource) {
+    //     var status = resource.status;
+    //     if(status >= 400) {
+    //         casper.log('Resource ' + resource.url + ' failed to load (' + status + ')', 'error');
+    //     }
+    // });
+
     /* Set default viewportSize and UserAgent */
     casper.userAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36');
     casper.options.viewportSize = {width: defaultViewPortSizes["width"], height: defaultViewPortSizes["height"]};

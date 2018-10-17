@@ -27,7 +27,7 @@
                     {reset($configHipay.payment.global.ccDisplayName)}
                 {/if}
                 <span>
-                    {if $configHipay.payment.global.operating_mode != 'api'}
+                    {if $configHipay.payment.global.operating_mode.UXMode != 'direct_post' && $configHipay.payment.global.operating_mode.UXMode != 'hosted_fields'}
                         {if $configHipay.payment.global.display_hosted_page != 'iframe'}
                             <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                         {/if}

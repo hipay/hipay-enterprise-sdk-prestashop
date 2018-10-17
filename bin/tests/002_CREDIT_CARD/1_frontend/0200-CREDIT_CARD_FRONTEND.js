@@ -45,22 +45,10 @@ casper.test.begin('Test Checkout HiPay Enterprise Credit Card with ' + currentBr
 
             /* Test it again with another card type */
             if (currentBrandCC == 'visa') {
-                utilsHiPay.testOtherTypeCC(test, file_path, 'visa_3ds');
-            }
-            if (currentBrandCC == 'mastercard') {
-                // Waiting AMEX for test account
-                //casper.testOtherTypeCC(file_path, 'AMEX');
+                utilsHiPay.testOtherTypeCC(test, file_path, 'mastercard');
             }
             if (currentBrandCC == 'mastercard') {
                 utilsHiPay.testOtherTypeCC(test, file_path, 'maestro');
-            }
-
-            if (currentBrandCC == 'maestro') {
-                utilsHiPay.testOtherTypeCC(test, file_path, 'visa_3ds');
-            }
-
-            if (currentBrandCC == 'visa_3ds') {
-                utilsHiPay.testOtherTypeCC(test, file_path, '');
             }
         })
         .run(function () {

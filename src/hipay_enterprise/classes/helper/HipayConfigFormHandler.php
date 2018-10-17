@@ -11,6 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+
 /**
  * Handle config form data savings
  *
@@ -90,12 +92,14 @@ class HipayConfigFormHandler
                         "If sandbox api MO/TO username is filled sandbox api MO/TO password is mandatory"
                     );
                     return false;
-                } else if ($key == "api_secret_passphrase_sandbox" || $key == "api_moto_secret_passphrase_sandbox") {
-                    $fieldValue = HipayHelper::getValue($key);
-                    $accountConfig["sandbox"][$key] = $fieldValue;
                 } else {
-                    $fieldValue = Tools::getValue($key);
-                    $accountConfig["sandbox"][$key] = $fieldValue;
+                    if ($key == "api_secret_passphrase_sandbox" || $key == "api_moto_secret_passphrase_sandbox") {
+                        $fieldValue = HipayHelper::getValue($key);
+                        $accountConfig["sandbox"][$key] = $fieldValue;
+                    } else {
+                        $fieldValue = Tools::getValue($key);
+                        $accountConfig["sandbox"][$key] = $fieldValue;
+                    }
                 }
             }
 
@@ -135,12 +139,14 @@ class HipayConfigFormHandler
                         "If production api MO/TO username is filled production api MO/TO password is mandatory"
                     );
                     return false;
-                } else if ($key == "api_secret_passphrase_production" || $key == "api_moto_secret_passphrase_production") {
-                    $fieldValue = HipayHelper::getValue($key);
-                    $accountConfig["production"][$key] = $fieldValue;
                 } else {
-                    $fieldValue = Tools::getValue($key);
-                    $accountConfig["production"][$key] = $fieldValue;
+                    if ($key == "api_secret_passphrase_production" || $key == "api_moto_secret_passphrase_production") {
+                        $fieldValue = HipayHelper::getValue($key);
+                        $accountConfig["production"][$key] = $fieldValue;
+                    } else {
+                        $fieldValue = Tools::getValue($key);
+                        $accountConfig["production"][$key] = $fieldValue;
+                    }
                 }
             }
 
@@ -191,6 +197,10 @@ class HipayConfigFormHandler
                 ) {
                     $this->module->_errors[] = $this->module->l("CSS url needs to be a valid https url.");
                     return false;
+                } elseif ($key == "operating_mode" &&
+                    Tools::getValue("operating_mode")
+                ) {
+                    $fieldValue = OperatingMode::getOperatingMode(Tools::getValue("operating_mode"));
                 } else {
                     $fieldValue = Tools::getValue($key);
                 }
@@ -299,9 +309,7 @@ class HipayConfigFormHandler
                 "local_payment" => array()
             );
 
-            //requirement : input name in tpl must be the same that name of indexes in $this->configHipay
-
-            $keySaved = array(
+            $keySavedBase = array(
                 "activated",
                 "currencies",
                 "countries",
@@ -312,6 +320,7 @@ class HipayConfigFormHandler
             );
 
             foreach ($this->module->hipayConfigTool->getLocalPayment() as $card => $conf) {
+                $keySaved = array_merge($conf["displayConfigurationFields"], $keySavedBase);
                 foreach ($conf as $key => $value) {
                     //prevent specific fields from being updated
                     if (in_array($key, $keySaved)) {

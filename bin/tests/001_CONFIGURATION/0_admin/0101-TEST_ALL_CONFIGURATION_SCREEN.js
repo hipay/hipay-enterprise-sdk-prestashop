@@ -94,7 +94,7 @@ casper.test.begin('Test admin configuration screens', function(test) {
             test.assertExists('div#panel-local-payment a[href="#giropay"]');
             test.assertExists('div#panel-local-payment a[href="#ideal"]');
             test.assertExists('div#panel-local-payment a[href="#ing-homepay"]');
-            test.assertExists('div#panel-local-payment a[href="#klarna"]');
+            test.assertExists('div#panel-local-payment a[href="#klarnainvoice"]');
             test.assertExists('div#panel-local-payment a[href="#paypal"]');
             test.assertExists('div#panel-local-payment a[href="#postfinance"]');
             test.assertExists('div#panel-local-payment a[href="#przelewy24"]');

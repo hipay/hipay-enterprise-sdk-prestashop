@@ -40,7 +40,7 @@ casper.test.begin('Activate cache to improve prestashop performances', function
         })
         .then(function () {
             adminMod.gotToHiPayConfiguration(test);
-            adminMod.configureOperatingMode(test, "api");
+            adminMod.configureOperatingMode(test, "direct_post");
             adminMod.configureCaptureMode(test, "automatic");
         })
         .then(function () {

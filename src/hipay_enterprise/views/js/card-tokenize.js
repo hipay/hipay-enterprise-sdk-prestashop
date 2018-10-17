@@ -50,14 +50,9 @@ $("#tokenizerForm").submit(function (e) {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-        if ($(".radio-with-token:checked").length) {
-            // at least one of the radio buttons was checked
-            $("#tokenizerForm").hide();
-            $("#payment-loader-hp").show();
-            $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
-
-            form.submit();
-            return true; // allow whatever action would normally happen to continue
+        if (isOneClickSelected()) {
+            oneClickSelected(form);
+            return true; // allow whatever action that would normally happen to continue
         }
 
         var formErrors = !hiPayInputControl.checkControl("cc");
@@ -70,58 +65,33 @@ $("#tokenizerForm").submit(function (e) {
         if ($("#saveTokenHipay").is(":checked")) {
             multiUse = 1;
         }
+
+
         //set param for Api call
         var params = {
-            card_number: $("#card-number").val(),
+            cardNumber: $("#card-number").val().replace(/ /g, ''),
             cvc: $("#cvc").val(),
-            card_expiry_month: $("select[name=expiry-month]").val(),
-            card_expiry_year: $("select[name=expiry-year]").val(),
-            card_holder: $("#the-card-name-id").val(),
-            multi_use: multiUse
+            expiryMonth: $("select[name=expiry-month]").val(),
+            expiryYear: $("select[name=expiry-year]").val(),
+            cardHolder: $("#the-card-name-id").val(),
+            multiUse: multiUse
         };
-        HiPay.setTarget(api_tokenjs_mode); // default is production/live
 
-        HiPay.setCredentials(api_tokenjs_username, api_tokenjs_password_publickey);
+        var hipay = HiPay({
+            username: api_tokenjs_username,
+            password: api_tokenjs_password_publickey,
+            environment: api_tokenjs_mode,
+            lang: lang
+        });
 
-        HiPay.create(params,
-            function (result) {
-                // The card has been successfully tokenized
-                var token = result.token;
-                var brand = "";
-                if (result.hasOwnProperty("domestic_network")) {
-                    brand = result.domestic_network;
-                } else {
-                    brand = result.brand;
-                }
-                var pan = result.pan;
-                var card_expiry_month = result.card_expiry_month;
-                var card_expiry_year = result.card_expiry_year;
-                var card_holder = result.card_holder;
-                var issuer = result.issuer;
-                var country = result.country;
 
-                if (activatedCreditCard.indexOf(brand.toLowerCase().replace(" ", "-")) !== -1) {
+        hipay.tokenize(params).then(function (result) {
 
-                    $("#tokenizerForm").hide();
-                    $("#payment-loader-hp").show();
-                    $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
+                if (isCardTypeOk(result)) {
 
-                    // set tokenization response
-                    $("#card-token").val(token);
-                    $("#card-brand").val(brand);
-                    $("#card-pan").val(pan);
-                    $("#card-holder").val($("#the-card-name-id").val());
-                    $("#card-expiry-month").val(card_expiry_month);
-                    $("#card-expiry-year").val(card_expiry_year);
-                    $("#card-issuer").val(issuer);
-                    $("#card-country").val(country);
-
-                    // we empty the form so we don't send credit card informations to the server
-                    $("#card-number").val("");
-                    $("#cvc").val("");
-                    $("input[name=expiry-month]").val("");
-                    $("input[name=expiry-year]").val("");
-                    $("#the-card-name-id").val("");
+                    clearCCForm();
+                    displayLoadingDiv();
+                    afterTokenization(result);
 
                     //submit the form
                     form.submit();
@@ -133,21 +103,8 @@ $("#tokenizerForm").submit(function (e) {
                     return false;
                 }
 
-            },
-            function (errors) {
-                // An error occurred
-                $("#error-js").show();
-                if (typeof errors.message != "undefined") {
-                    var message = i18nBadRequest;
-                    switch (errors.code) {
-                        case 416:
-                            message = i18nTokenisationError416;
-                            break;
-                    }
-                    $(".error").text(message);
-                } else {
-                    $(".error").text(i18nBadRequest);
-                }
+            }, function (errors) {
+                displaySecureVaultErrors(errors);
                 return false;
             }
         );

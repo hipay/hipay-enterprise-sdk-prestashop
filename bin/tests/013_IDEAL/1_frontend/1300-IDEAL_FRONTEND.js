@@ -66,8 +66,23 @@ casper.test.begin('Test Checkout ' + paymentType, function (test) {
         .then(function () {
             checkoutMod.selectMethodInCheckout(test, "Payer par " + label, true);
         })
+        /* Fill IDeal formular */
         .then(function () {
-            paymentLibHiPay.fillPaymentFormularByPaymentProduct("ideal", test);
+            this.echo("Filling Business Identifier BIC...", "INFO");
+
+            this.waitForSelector('input#ideal-issuer_bank_id', function success() {
+                this.fillSelectors('form#ideal-hipay', {
+                    'input[name="issuer_bank_id"]': 'INGBNL2A'
+                }, false);
+
+                this.click("div#payment-confirmation button");
+            }, function fail() {
+                test.assertExists('input#ideal-issuer_bank_id', "Field Business Identifier exists");
+            });
+        })
+        .then(function () {
+            this.echo("Filling payment formular...", "INFO");
+            paymentLibHiPay.payIDeal(test);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);

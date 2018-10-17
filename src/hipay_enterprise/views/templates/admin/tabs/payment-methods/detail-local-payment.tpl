@@ -85,6 +85,28 @@
             </div>
         </div>
         <br/>
+        {if "iframe"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">
+                        {l s='Iframe' mod='hipay_enterprise'}
+                    </label>
+                    <div class="col-lg-9">
+                    <span class="switch prestashop-switch fixed-width-lg">
+                        <input type="radio" name="{$key}_iframe"
+                               id="{$key}_iframe_on" value="1"
+                               {if $method.iframe }checked="checked"{/if} >
+                        <label for="{$key}_iframe_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                        <input type="radio" name="{$key}_iframe"
+                               id="{$key}_iframe_off" value="0"
+                               {if $method.iframe == false }checked="checked"{/if} >
+                        <label for="{$key}_iframe_off">{l s='No' mod='hipay_enterprise'}</label>
+                        <a class="slide-button btn"></a>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        {/if}
         {if "minAmount"|in_array:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
