@@ -316,7 +316,12 @@ class HipayNotification
         }
         $paymentProduct = $this->transaction->getPaymentProduct();
 
-        return HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $this->context->language);
+        return HipayHelper::getPaymentProductName(
+            $cardBrand,
+            $paymentProduct,
+            $this->module,
+            $this->context->language->iso_code
+        );
     }
 
     /**
@@ -596,7 +601,8 @@ class HipayNotification
         $amount = $this->transaction->getCapturedAmount() - HipayHelper::getOrderPaymentAmount($this->order);
 
         if ($refund) {
-            $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount($this->order, true));
+            $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount($this->order,
+                        true));
         }
 
         return $amount;
