@@ -283,16 +283,16 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
  */
 function fillFormPaymentHipayCC(card, cvv, hostedFields) {
     if (hostedFields) {
-        casper.withFrame(0, function () {
+        casper.withFrame(1, function () {
             casper.sendKeys('input[name="ccname"]', 'Mr Test');
         });
-        casper.withFrame(1, function () {
+        casper.withFrame(2, function () {
             casper.sendKeys('input[name="cardnumber"]', card);
         });
-        casper.withFrame(2, function () {
+        casper.withFrame(3, function () {
             casper.sendKeys('input[name="cc-exp"]', '06/21');
         });
-        casper.withFrame(3, function () {
+        casper.withFrame(4, function () {
             casper.sendKeys('input[name="cvc"]', cvv);
         });
     } else {
