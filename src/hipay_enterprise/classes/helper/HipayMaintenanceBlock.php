@@ -424,7 +424,7 @@ class HipayMaintenanceBlock
 
         if (
             (isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
-                && !(bool)$this->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
+                && !(bool)$this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
             ||
             (isset($this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct])
                 && !(bool)$this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct][$label])
