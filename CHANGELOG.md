@@ -1,3 +1,7 @@
+# Version 2.3.1
+
+- Fix : refund for local payment method
+ 
 # Version 2.3.0
 
 - Add support for hosted fields
