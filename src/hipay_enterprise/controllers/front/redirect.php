@@ -289,7 +289,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $this->addCSS(array(_MODULE_DIR_ . 'hipay_enterprise/views/css/hipay-enterprise.css'));
         $this->context->controller->addJS(
             array(
-                'https://libs.hipay.com/js/sdkjs.js'
+                $this->module->hipayConfigTool->getPaymentGlobal()['sdk_js_url']
             )
         );
 

@@ -331,7 +331,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
             $this->context->controller->registerJavascript(
                 'hipay-sdk-js',
-                'https://libs.hipay.com/js/sdkjs.js',
+                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
                 ['server' => 'remote', 'position' => 'bottom', 'priority' => 20]
             );
         }
