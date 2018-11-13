@@ -242,6 +242,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'activatedCreditCard' => array_keys($paymentProduct["products"]),
                             'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'is_guest' => $this->customer->is_guest,
+                            'customerFirstName' => $this->customer->firstname,
+                            'customerLastName' => $this->customer->lastname
                         )
                     );
 

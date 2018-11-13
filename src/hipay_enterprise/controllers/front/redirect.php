@@ -92,8 +92,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC);
                 } elseif (Tools::getValue('ccTokenHipay')) {
-                    $path = $this->apiSavedCC(Tools::getValue('ccTokenHipay'), $this->currentCart, $this->savedCC,
-                        $this->context);
+                    $path = $this->apiSavedCC(
+                        Tools::getValue('ccTokenHipay'),
+                        $this->currentCart,
+                        $this->savedCC,
+                        $this->context
+                    );
                     return $this->setTemplate($path);
                 }
         }
@@ -166,6 +170,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         'cart_id' => $this->currentCart->id,
                         'savedCC' => $this->savedCC,
                         'is_guest' => $this->customer->is_guest,
+                        'customerFirstName' => $this->customer->firstname,
+                        'customerLastName' => $this->customer->lastname,
                         'amount' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
                         'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
                     )
@@ -196,6 +202,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 "deviceFingerprint" => Tools::getValue('ioBB'),
                 "productlist" => $tokenDetails['brand'],
                 "cardtoken" => $tokenDetails['token'],
+                "card_holder" => $tokenDetails['card_holder'],
                 "oneClick" => true,
                 "method" => $tokenDetails['brand'],
                 "authentication_indicator" => $this->setAuthenticationIndicator($cart)
@@ -236,33 +243,36 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     private function apiNewCC($cart, $context, $customer, $savedCC)
     {
-        $selectedCC = Tools::strtolower(str_replace(" ", "-", Tools::getValue('card-brand')));
+        $selectedCC = Tools::getValue('card-brand');
 
         if (in_array($selectedCC, array_keys($this->creditCard))) {
             try {
-                $card = array(
-                    "token" => Tools::getValue('card-token'),
-                    "brand" => $selectedCC,
-                    "pan" => Tools::getValue('card-pan'),
-                    "card_holder" => Tools::getValue('card-holder'),
-                    "card_expiry_month" => Tools::getValue('card-expiry-month'),
-                    "card_expiry_year" => Tools::getValue('card-expiry-year'),
-                    "issuer" => Tools::getValue('card-issuer'),
-                    "country" => Tools::getValue('card-country'),
-                );
 
                 $params = array(
                     "deviceFingerprint" => Tools::getValue('ioBB'),
                     "productlist" => $selectedCC,
                     "cardtoken" => Tools::getValue('card-token'),
                     "method" => $selectedCC,
-                    "authentication_indicator" => $this->setAuthenticationIndicator($cart)
+                    "authentication_indicator" => $this->setAuthenticationIndicator($cart),
+                    "card_holder" => Tools::getValue('card-holder'),
                 );
 
                 if (!$customer->is_guest && Tools::isSubmit('saveTokenHipay')) {
                     $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[$selectedCC];
 
                     if (isset($configCC['recurring']) && $configCC['recurring']) {
+
+                        $card = array(
+                            "token" => Tools::getValue('card-token'),
+                            "brand" => $selectedCC,
+                            "pan" => Tools::getValue('card-pan'),
+                            "card_holder" => Tools::getValue('card-holder'),
+                            "card_expiry_month" => Tools::getValue('card-expiry-month'),
+                            "card_expiry_year" => Tools::getValue('card-expiry-year'),
+                            "issuer" => Tools::getValue('card-issuer'),
+                            "country" => Tools::getValue('card-country'),
+                        );
+
                         $this->ccToken->saveCCToken($cart->id_customer, $card);
                     }
                 }

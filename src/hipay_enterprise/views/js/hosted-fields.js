@@ -63,7 +63,9 @@ function initHostedFields() {
         multi_use: oneClick,
         fields: {
             cardHolder: {
-                selector: "hipayHF-card-holder"
+                selector: "hipayHF-card-holder",
+                defaultFirstname: cardHolderFirstName,
+                defaultLastname: cardHolderLastName,
             },
             cardNumber: {
                 selector: "hipayHF-card-number"
