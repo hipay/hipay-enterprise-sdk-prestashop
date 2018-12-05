@@ -39,7 +39,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];
-        $this->cardHolder = $params["card_holder"];
+        $this->cardHolder = (isset($params["card_holder"])) ? $params["card_holder"] : '';
     }
 
     /**
