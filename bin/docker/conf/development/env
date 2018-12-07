@@ -30,7 +30,7 @@ ENVIRONMENT=development
 #====================================================
 # Conf for debugging
 #=====================================================
-XDEBUG_CONFIG=remote_host=172.19.0.1
+XDEBUG_CONFIG=remote_host=172.17.0.1
 
 #====================================================
 # Credentials from your Hipay's Security Settings
