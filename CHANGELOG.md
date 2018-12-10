@@ -1,3 +1,45 @@
+# Version 2.3.2
+
+- Fix : Refund and capture with an update of product price or discount
+
+# Version 2.3.1
+
+- Fix : refund for local payment method
+ 
+# Version 2.3.0
+
+- Add support for hosted fields
+- Fix : switch klarna to klarnainvoice 
+
+# Version 2.2.7
+
+- Fix : unnecessary mandatory CVV for Maestro card
+
+# Version 2.2.6
+
+- [#64](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/64) Fix issue [#64] 
+- Remove electronic signature from SDD
+- Fix : Js error on backend notification pop-up
+
+# Version 2.2.5
+
+- Improve CI 
+- Refactor functional tests
+- Fix : Proxy settings
+
+# Version 2.2.4
+
+- Fix : Bug on BCMC card form
+
+# Version 2.2.3
+
+- Fix : Bug on notification
+
+# Version 2.2.2
+
+- Fix : Credit card form autofill not filling properly
+- Fix : Bug with discount in basket (PHP7.1 silent conversion error)
+
 # Version 2.2.1
 
 - Fix : update Mastercard bin range

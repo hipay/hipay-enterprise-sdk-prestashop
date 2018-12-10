@@ -112,7 +112,7 @@ class HipayDBQuery
         $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CC_TOKEN_TABLE . '`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `customer_id` INT(10) UNSIGNED NOT NULL,
-                `token` VARCHAR(45) NOT NULL,
+                `token` VARCHAR(255) NOT NULL,
                 `brand` VARCHAR(255) NOT NULL,
                 `pan` VARCHAR(20)  NOT NULL,
                 `card_holder` VARCHAR(255) NOT NULL,
@@ -266,9 +266,9 @@ class HipayDBQuery
      * start sql transaction
      * @param int $cartId
      */
-    public function setSQLLockForCart($cartId,$origin)
+    public function setSQLLockForCart($cartId, $origin)
     {
-        $this->logs->logInfos('# Start LockSQL  for id_cart = ' . $cartId . 'in :' . $origin );
+        $this->logs->logInfos('# Start LockSQL  for id_cart = ' . $cartId . 'in :' . $origin);
 
         $sql = 'begin;';
         $sql .= 'SELECT id_cart FROM ' . _DB_PREFIX_ . 'cart WHERE id_cart = ' . pSQL((int)$cartId) . ' FOR UPDATE;';
@@ -277,7 +277,7 @@ class HipayDBQuery
             $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_cart = ' . $cartId);
             die('Lock not initiated');
         }
-        $this->logs->logInfos('# LockSQL for id_cart = ' . $cartId . 'in :' . $origin . ' is now free' );
+        $this->logs->logInfos('# LockSQL for id_cart = ' . $cartId . 'in :' . $origin . ' is now free');
     }
 
     /**
@@ -514,8 +514,10 @@ class HipayDBQuery
 
     /**
      * return if  order already captured from hipay transaction
-     * @param type $orderId
-     * @return boolean
+     *
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function alreadyCaptured($orderId)
     {

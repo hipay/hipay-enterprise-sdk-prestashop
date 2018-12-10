@@ -19,6 +19,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoForm
 require_once(dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php');
 require_once(dirname(__FILE__) . '/../helper/HipayDBQuery.php');
 require_once(dirname(__FILE__) . '/../helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;
@@ -35,10 +36,6 @@ class Apihandler
 {
     private $module;
     private $context;
-
-    const IFRAME = 'iframe';
-    const HOSTEDPAGE = 'hosted_page';
-    const DIRECTPOST = 'api';
 
     public function __construct($moduleInstance, $contextInstance)
     {
@@ -82,8 +79,10 @@ class Apihandler
      * @param string $mode
      * @param array $params
      * @return string
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-    public function handleCreditCard($mode = Apihandler::HOSTEDPAGE, $params = array())
+    public function handleCreditCard($mode = ApiMode::HOSTED_PAGE, $params = array())
     {
         $this->baseParamsInit($params);
         $cart = $this->context->cart;
@@ -92,12 +91,11 @@ class Apihandler
         $currency = new Currency((int)$cart->id_currency);
 
         switch ($mode) {
-            case Apihandler::DIRECTPOST:
+            case ApiMode::DIRECT_POST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
                 $this->handleDirectOrder($params, true);
                 break;
-            case Apihandler::IFRAME:
-                $params["iframe"] = true;
+            case ApiMode::HOSTED_PAGE_IFRAME:
                 $params["productlist"] = HipayHelper::getCreditCardProductList(
                     $this->module,
                     $this->configHipay,
@@ -105,8 +103,7 @@ class Apihandler
                     $currency
                 );
                 return $this->handleIframe($params);
-            case Apihandler::HOSTEDPAGE:
-                $params["iframe"] = true;
+            case ApiMode::HOSTED_PAGE:
                 $params["productlist"] = HipayHelper::getCreditCardProductList(
                     $this->module,
                     $this->configHipay,
@@ -127,35 +124,22 @@ class Apihandler
      * @param array $params
      * @return string
      */
-    public function handleLocalPayment($mode = Apihandler::HOSTEDPAGE, $params = array())
+    public function handleLocalPayment($mode = ApiMode::HOSTED_PAGE, $params = array())
     {
         $this->baseParamsInit($params, false);
 
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
-        $configMethod = $this->module->hipayConfigTool->getLocalPayment()[$params['method']];
-
-        if (
-            $mode == Apihandler::HOSTEDPAGE &&
-            ((!empty($configMethod["additionalFields"])
-                    && !$this->forceApiOrder($configMethod))
-                || $this->forceHpayment($configMethod))
-        ) {
-            $this->handleHostedPayment($params);
-        } elseif (
-            $mode == Apihandler::IFRAME &&
-            ((!empty($configMethod["additionalFields"])
-                    && !$this->forceApiOrder($configMethod))
-                || $this->forceHpayment($configMethod))
-        ) {
-            return $this->handleIframe($params);
-        } elseif (
-            $mode == Apihandler::DIRECTPOST
-            && $this->forceHpayment($configMethod)
-        ) {
-            return $this->handleHostedPayment($params);
-        } else {
-            $this->handleDirectOrder($params);
+        switch($mode){
+            case ApiMode::DIRECT_POST:
+                return $this->handleDirectOrder($params);
+                break;
+            case ApiMode::HOSTED_PAGE:
+                return $this->handleHostedPayment($params);
+                break;
+            case ApiMode::HOSTED_PAGE_IFRAME:
+                return $this->handleIframe($params);
+                break;
         }
     }
 
@@ -320,6 +304,7 @@ class Apihandler
     private function handleIframe($params)
     {
         try {
+            $params['iframe'] = true;
             return ApiCaller::getHostedPaymentPage($this->module, $params);
         } catch (GatewayException $e) {
             $e->handleException();
@@ -425,17 +410,6 @@ class Apihandler
         );
 
         $this->db->releaseSQLLock('callValidateOrder' . $cart->id);
-    }
-
-    /**
-     * Check if payment method force api order
-     *
-     * @param $configMethod
-     * @return bool
-     */
-    private function forceApiOrder($configMethod)
-    {
-        return (bool)$this->getMethodConfigField($configMethod, "forceApiOrder");
     }
 
     /**

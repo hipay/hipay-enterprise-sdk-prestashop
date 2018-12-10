@@ -135,10 +135,10 @@ class CartFormatter extends ApiFormatterAbstract
      */
     private function getDiscountItem()
     {
-        $product_reference = "";
-        $name = "";
+        $product_reference = array();
+        $name = array();
         $unit_price = 0;
-        $discount_description = "";
+        $discount_description = array();
         $total_amount = 0;
 
         foreach ($this->cart->getCartRules() as $disc) {

@@ -14,6 +14,7 @@
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayFormControl.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 
 /**
  * Class Hipay_enterpriseRedirectlocalModuleFrontController
@@ -28,7 +29,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
     /**
      * display payment form API/Iframe/HostedPage(PS16)
-     * @return type
+     *
+     * @throws PrestaShopException
      */
     public function initContent()
     {
@@ -51,20 +53,12 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             Tools::redirect('index.php?controller=order');
         }
 
-        $mode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"];
         $method = Tools::getValue("method");
 
         $params["deviceFingerprint"] = Tools::getValue('ioBB');
         $params["method"] = $method;
 
-        // set authentication_indicator depending if lectronic signature is on or not
-        if (isset($this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"]) &&
-            $this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"]
-        ) {
-            $params["authentication_indicator"] = 1;
-        } else {
-            $params["authentication_indicator"] = 0;
-        }
+        $params["authentication_indicator"] = 0;
 
         $context->smarty->assign(
             array(
@@ -89,29 +83,38 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
             )
         );
 
+        $mode = ApiMode::DIRECT_POST;
+
+        if (
+            isset($this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]) &&
+            $this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]
+        ) {
+            $mode = ApiMode::HOSTED_PAGE;
+        }
+
 
         switch ($mode) {
-            case Apihandler::HOSTEDPAGE:
-                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                    $this->apiHandler->handleLocalPayment(Apihandler::HOSTEDPAGE, $params);
-                } else {
+            case ApiMode::HOSTED_PAGE:
+                if (
+                    isset($this->module->hipayConfigTool->getLocalPayment()[$method]['iframe'])
+                    && $this->module->hipayConfigTool->getLocalPayment()[$method]['iframe']
+                ) {
                     $context->smarty->assign(
                         array(
-                            'url' => $this->apiHandler->handleLocalPayment(Apihandler::IFRAME, $params)
+                            'url' => $this->apiHandler->handleLocalPayment(ApiMode::HOSTED_PAGE_IFRAME, $params)
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
                             $this->module->name .
                             '/views/templates/front/payment/ps17/paymentFormIframe-17'
                             : 'payment/ps16/paymentFormIframe-16') . '.tpl';
+                } else {
+                    $this->apiHandler->handleLocalPayment(ApiMode::HOSTED_PAGE, $params);
                 }
                 break;
-            case Apihandler::DIRECTPOST:
-                // if electronic signature is on and payment force hpayment when electronic signature is on  OR form is submit OR there's no additional fields
+            case ApiMode::DIRECT_POST:
                 if (Tools::isSubmit("localSubmit") ||
-                    empty($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]) ||
-                    ( isset($this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"]) &&
-                    $this->module->hipayConfigTool->getLocalPayment()[$method]["electronicSignature"])
+                    empty($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"])
                 ) {
                     $path = $this->handlePaymentForm($params, $method);
                 } else {
@@ -125,8 +128,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             'methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
                             'localPaymentName' => $method,
                             'language' => $context->language->iso_code,
-                            'methodFields' => $this->module->hipayConfigTool->getLocalPayment(
-                            )[$method]["additionalFields"]["formFields"]
+                            'methodFields' => $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"]
                         )
                     );
                     $path = 'payment/ps16/paymentLocalForm-16.tpl';
@@ -145,8 +147,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $cart = $context->cart;
         // if form submit
         if (Tools::isSubmit("localSubmit")) {
-            foreach ($this->module->hipayConfigTool->getLocalPayment(
-            )[$method]["additionalFields"]["formFields"] as $name => $field) {
+            foreach ($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"] as $name => $field) {
                 $params[$name] = Tools::getValue($name);
             }
 
@@ -174,8 +175,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                         'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
                         'methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
                         'localPaymentName' => $method,
-                        'methodFields' => $this->module->hipayConfigTool->getLocalPayment(
-                        )[$method]["additionalFields"]["formFields"],
+                        'methodFields' => $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"],
                         'formErrors' => $errors
                     )
                 );
@@ -183,7 +183,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 return $path;
             }
         }
-        $this->apiHandler->handleLocalPayment(Apihandler::DIRECTPOST, $params);
+        $this->apiHandler->handleLocalPayment(ApiMode::DIRECT_POST, $params);
     }
 
     /**

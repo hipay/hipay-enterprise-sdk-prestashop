@@ -1,0 +1,6 @@
+#====================================================
+# Specific configuration for Prestashop 1.6
+#=====================================================
+PS_VERSION=1.6.1.16
+PS_DOMAIN={PS_DOMAIN}
+DB_NAME=prestashop16

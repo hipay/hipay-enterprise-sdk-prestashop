@@ -1,0 +1,91 @@
+version: "3.3"
+
+networks:
+  traefik_traefik:
+    external: true
+  outside-pi-overlay:
+    external: true
+  prestashop:
+    internal: true
+
+services:
+  web16:
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile16
+    image: ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-16:${CI_COMMIT_REF_SLUG}
+    networks:
+      - traefik_traefik
+      - prestashop
+      - outside-pi-overlay
+    env_file:
+      - ./bin/docker/conf/acceptance/env
+      - ./bin/docker/conf/acceptance/env16
+    labels:
+      - "com.hipay.ir.publish=1"
+      - "com.hipay.ir.name=1.6"
+      - "com.hipay.ir.branch=${CI_COMMIT_REF_SLUG}"
+      - "com.hipay.ir.gitlab.feature.link=${CI_PROJECT_URL}/tree/${CI_COMMIT_REF_NAME}"
+      - "com.hipay.ir.gitlab.org=pi-ecommerce"
+      - "com.hipay.ir.gitlab.project=hipay-enterprise-sdk-prestashop"
+      - "com.hipay.ir.admin.url=${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/admin-hipay"
+      - "com.hipay.ir.url=${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com"
+    deploy:
+      labels:
+        - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com"
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik_traefik"
+  web17:
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile17
+    image: ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-17:${CI_COMMIT_REF_SLUG}
+    networks:
+      - traefik_traefik
+      - prestashop
+      - outside-pi-overlay
+    env_file:
+      - ./bin/docker/conf/acceptance/env
+      - ./bin/docker/conf/acceptance/env17
+    labels:
+      - "com.hipay.ir.publish=1"
+      - "com.hipay.ir.name=1.7"
+      - "com.hipay.ir.branch=${CI_COMMIT_REF_SLUG}"
+      - "com.hipay.ir.gitlab.feature.link=${CI_PROJECT_URL}/tree/${CI_COMMIT_REF_NAME}"
+      - "com.hipay.ir.gitlab.org=pi-ecommerce"
+      - "com.hipay.ir.gitlab.project=hipay-enterprise-sdk-prestashop"
+      - "com.hipay.ir.admin.url=${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/admin-hipay"
+      - "com.hipay.ir.url=${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com"
+    deploy:
+      labels:
+        - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com"
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik_traefik"
+  database:
+      image: mysql:5.7
+      env_file:
+        - ./bin/docker/conf/acceptance/env
+      networks:
+        prestashop:
+          aliases:
+            - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database
+  smtp:
+      image: schickling/mailcatcher
+      networks:
+        traefik_traefik:
+        prestashop:
+          aliases:
+            - ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_smtp
+      labels:
+        - "com.hipay.ir.publish=1"
+        - "com.hipay.ir.name=mail"
+        - "com.hipay.ir.branch=${CI_COMMIT_REF_SLUG}"
+        - "com.hipay.ir.gitlab.feature.link=${CI_PROJECT_URL}/tree/${CI_COMMIT_REF_NAME}"
+        - "com.hipay.ir.gitlab.org=pi-ecommerce"
+        - "com.hipay.ir.gitlab.project=hipay-enterprise-sdk-prestashop"
+        - "com.hipay.ir.url=${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mail.hipay-pos-platform.com"
+      deploy:
+        labels:
+          - "traefik.frontend.rule=Host:${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-mail.hipay-pos-platform.com"
+          - "traefik.port=1080"
+          - "traefik.docker.network=traefik_traefik"

@@ -28,62 +28,36 @@ if [ "$1" = '' ] || [ "$1" = '--help' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml build --no-cache
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml up -d prestashop16 prestashop17 database smtp
 fi
 
-if [ "$1" = 'init-production' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml stop
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml rm -fv
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml build --no-cache
-     docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d
-fi
-
-if [ "$1" = 'init-stage' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml build --no-cache
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml up -d
-fi
-
-if [ "$1" = 'init-stage-circle' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.stage.circle.yml stop
-     docker-compose -f docker-compose.stage.circle.yml rm -fv
-     docker-compose -f docker-compose.stage.circle.yml build --no-cache
-     docker-compose -f docker-compose.stage.circle.yml up -d
-fi
-
-if [ "$1" = 'kill-stage' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose.stage.yml stop
-fi
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
-     docker-compose -f  docker-compose-"$2".yml stop
-     docker-compose -f  docker-compose-"$2".yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-     docker-compose -f  docker-compose-"$2".yml build --no-cache
-     docker-compose -f docker-compose-"$2".yml up  -d
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" mysql smtp
+     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database smtp
 fi
 
 if [ "$1" = 'restart' ];then
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose.dev.yml -f docker-compose-16.yml -f docker-compose-17.yml up -d
+     docker-compose -f docker-compose.dev.yml  stop prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml  up -d prestashop16 prestashop17 database smtp
 fi
 
 if [ "$1" = 'kill' ];then
-     docker-compose -f docker-compose-16.yml -f docker-compose-17.yml stop
-     docker-compose -f docker-compose-16.yml -f docker-compose-17.yml rm -fv
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database smtp
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
-fi
-
-if [ "$1" = 'up' ] && [ "$2" != '' ];then
-     docker-compose -f docker-compose.yml -f docker-compose-"$2".yml up  -d
 fi
 
 if [ "$1" = 'exec' ] && [ "$2" != '' ];then
@@ -118,7 +92,7 @@ if [ "$1" = 'test' ]; then
    fi
 
    cd bin/tests/000_lib
-   bower install hipay-casperjs-lib#develop --allow-root
+   npm install
    cd ../../../;
 
    if [ "$2" = '17' ]; then
@@ -129,5 +103,5 @@ if [ "$1" = 'test' ]; then
     PRESTASHOP_VERSION=1.6
    fi
 
-   casperjs test $pathLibHipay $pathPreFile ${pathDir}/[0-1]*/[0-9][0-9][0-9][0-9]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false
+   casperjs test $pathPreFile ${pathDir}/[0-1]*/[0-0][4-4][0-0][0-0]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
 fi

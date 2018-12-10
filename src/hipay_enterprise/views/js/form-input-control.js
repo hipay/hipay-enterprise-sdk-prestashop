@@ -308,6 +308,26 @@ function checkCCNumber(element) {
  * @param {type} element
  * @returns {Boolean}
  */
+function checkCVC(element) {
+
+    var myCard = $('.card-js');
+
+    if (
+        myCard.CardJs('cardType') !== "Bcmc"
+        && myCard.CardJs('cardType') !== "Maestro"
+        && !checkNotEmptyField(element)
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
 function checkCPF(element) {
 
     if (!checkNotEmptyField(element)) {
@@ -355,6 +375,8 @@ function typeControlCheck(input) {
             return checkBic(element);
         case "creditcardnumber":
             return checkCCNumber(element);
+        case "cvc":
+            return checkCVC(element);
         case "cpf":
             return checkCPF(element);
         case "curp-cpn":

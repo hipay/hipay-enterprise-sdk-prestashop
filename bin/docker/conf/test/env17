@@ -1,0 +1,6 @@
+#====================================================
+# Specific configuration for Prestashop 1.7
+#=====================================================
+PS_VERSION=1.7.2.0
+PS_DOMAIN={PS_DOMAIN}
+DB_NAME=prestashop17

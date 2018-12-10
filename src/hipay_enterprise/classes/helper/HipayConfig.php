@@ -11,7 +11,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/enums/UXMode.php');
+require_once(dirname(__FILE__) . '/enums/ThreeDS.php');
 
 use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
 
@@ -25,12 +27,6 @@ use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
  */
 class HipayConfig
 {
-    const THREE_D_S_DISABLED = 0;
-    const THREE_D_S_TRY_ENABLE_ALL = 1;
-    const THREE_D_S_TRY_ENABLE_RULES = 2;
-    const THREE_D_S_FORCE_ENABLE_ALL = 3;
-    const THREE_D_S_FORCE_ENABLE_RULES = 4;
-
     private $jsonFilesPath;
     private $context;
     private $configHipay = array();
@@ -65,7 +61,6 @@ class HipayConfig
      */
     public function getPaymentGlobal()
     {
-
         return $this->getConfigHipay()["payment"]["global"];
     }
 
@@ -74,7 +69,6 @@ class HipayConfig
      */
     public function getPaymentCreditCard()
     {
-
         return $this->getConfigHipay()["payment"]["credit_card"];
     }
 
@@ -83,7 +77,6 @@ class HipayConfig
      */
     public function getLocalPayment()
     {
-
         return $this->getConfigHipay()["payment"]["local_payment"];
     }
 
@@ -92,7 +85,6 @@ class HipayConfig
      */
     public function getAccountGlobal()
     {
-
         return $this->getConfigHipay()["account"]["global"];
     }
 
@@ -101,7 +93,6 @@ class HipayConfig
      */
     public function getAccountSandbox()
     {
-
         return $this->getConfigHipay()["account"]["sandbox"];
     }
 
@@ -110,12 +101,10 @@ class HipayConfig
      */
     public function getAccountProduction()
     {
-
         return $this->getConfigHipay()["account"]["production"];
     }
 
     /**
-     * @param string $platform
      * @return mixed
      */
     public function getHashAlgorithm()
@@ -124,12 +113,13 @@ class HipayConfig
     }
 
     /**
-     * @param string $platform
-     * @return mixed
+     * @param $value
+     * @return bool
+     * @throws Exception
      */
     public function setHashAlgorithm($value)
     {
-        return $this->setConfigHiPay("account",$value,"hash_algorithm");
+        return $this->setConfigHiPay("account", $value, "hash_algorithm");
     }
 
     /**
@@ -137,7 +127,6 @@ class HipayConfig
      */
     public function getFraud()
     {
-
         return $this->getConfigHipay()["fraud"];
     }
 
@@ -209,7 +198,6 @@ class HipayConfig
      */
     public function updateConfig()
     {
-
         $configFields = array();
 
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
@@ -250,7 +238,6 @@ class HipayConfig
 
         $shops = Shop::getShops(false);
         foreach ($shops as $id => $shop) {
-
             $this->module->getLogs()->logInfos(
                 "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
             );
@@ -272,68 +259,51 @@ class HipayConfig
 
             $this->diffJsonAndConfig($configHipay, $paymentMethod, $keepParameters, 'credit_card');
 
+            $this->updatePaymentGlobal($configHipay);
+
             $this->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
+
+
         }
     }
 
     /**
-     * Override saved payment method config saved in DB with config from JSON
-     * Parameters in $keepParameters will not be override
+     * Update Global Payment config with new default values
      *
      * @param $configHipay
-     * @param $paymentMethod
-     * @param $keepParameters
-     * @param $paymentMethodType
      */
-    private function diffJsonAndConfig(&$configHipay, $paymentMethod, $keepParameters, $paymentMethodType)
+    private function updatePaymentGlobal(&$configHipay)
     {
-        $this->module->getLogs()->logInfos("diffJsonAndConfig ");
+        $defaultConfig = $this->getDefaultConfig();
 
-        // Add new payment Method
-        $configHipay["payment"][$paymentMethodType] = array_merge(
-            $configHipay["payment"][$paymentMethodType],
-            array_diff_key($paymentMethod, $configHipay["payment"][$paymentMethodType])
+        // add new fields
+        $configHipay["payment"]["global"] = array_merge(
+            $configHipay["payment"]["global"],
+            array_diff_key($defaultConfig["payment"]["global"], $configHipay["payment"]["global"])
         );
 
-        foreach ($paymentMethod as $key => $value) {
-            // Add new parameters to payment method
-            $configHipay["payment"][$paymentMethodType][$key] = array_merge(
-                $configHipay["payment"][$paymentMethodType][$key],
-                array_diff_key($paymentMethod[$key], $configHipay["payment"][$paymentMethodType][$key])
-            );
-
-            // remove old parameters
-            $configHipay["payment"][$paymentMethodType][$key] = array_diff_key(
-                $configHipay["payment"][$paymentMethodType][$key],
-                array_diff_key($configHipay["payment"][$paymentMethodType][$key], $paymentMethod[$key])
-            );
-
-            // preserve saved parameters in Database, only parameters not in $keepParameters[$key] will be override
-            $keep = (isset($keepParameters[$key])) ? $keepParameters[$key] : array();
-            $replace = array_diff_key($paymentMethod[$key], $keep);
-
-            // override parameters
-            $configHipay["payment"][$paymentMethodType][$key] = array_replace(
-                $configHipay["payment"][$paymentMethodType][$key],
-                $replace
-            );
-
+        // update operating_mode with new format
+        switch ($configHipay["payment"]["global"]["operating_mode"]) {
+            case "api":
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::DIRECT_POST);
+                break;
+            case "hosted_page":
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::HOSTED_PAGE);
+                break;
         }
     }
 
     /**
-     * init module configuration
+     * Get base config value
      *
-     * @return bool
-     * @throws Exception
+     * @return array
      */
-    private function insertConfigHiPay()
+    private function getDefaultConfig()
     {
-        $configFields = array(
+        return array(
             "account" => array(
                 "global" => array(
                     "sandbox_mode" => 1,
-                    "host_proxy" => "",
                     "host_proxy" => "",
                     "port_proxy" => "",
                     "user_proxy" => "",
@@ -368,17 +338,29 @@ class HipayConfig
             ),
             "payment" => array(
                 "global" => array(
-                    "operating_mode" => Apihandler::DIRECTPOST,
+                    "operating_mode" => OperatingMode::getOperatingMode(UXMode::DIRECT_POST),
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "display_hosted_page" => "redirect",
                     "css_url" => "",
-                    "activate_3d_secure" => HipayConfig::THREE_D_S_DISABLED,
+                    "activate_3d_secure" => ThreeDS::THREE_D_S_DISABLED,
                     "3d_secure_rules" => array(
                         array(
                             "field" => "total_price",
                             "operator" => ">",
                             "value" => 100,
+                        )
+                    ),
+                    "hosted_fields_style" => array(
+                        "base" => array(
+                            "color" => "#000000",
+                            "fontFamily" => "Roboto",
+                            "fontSize" => "15px",
+                            "fontWeight" => "400",
+                            "placeholderColor" => "",
+                            "caretColor" => "#00ADE9",
+                            "iconColor" => "#00ADE9",
+
                         )
                     ),
                     "capture_mode" => "automatic",
@@ -399,6 +381,66 @@ class HipayConfig
                 "send_payment_fraud_email_copy_method" => "bcc"
             )
         );
+    }
+
+    /**
+     * Override saved payment method config saved in DB with config from JSON
+     * Parameters in $keepParameters will not be override
+     *
+     * @param $configHipay
+     * @param $paymentMethod
+     * @param $keepParameters
+     * @param $paymentMethodType
+     */
+    private function diffJsonAndConfig(&$configHipay, $paymentMethod, $keepParameters, $paymentMethodType)
+    {
+        $this->module->getLogs()->logInfos("diffJsonAndConfig ");
+
+        // Add new payment Method
+        $configHipay["payment"][$paymentMethodType] = array_merge(
+            $configHipay["payment"][$paymentMethodType],
+            array_diff_key($paymentMethod, $configHipay["payment"][$paymentMethodType])
+        );
+
+        // remove deprecated payment method
+        foreach (array_diff_key($configHipay["payment"][$paymentMethodType], $paymentMethod) as $removeKey => $item) {
+            unset($configHipay["payment"][$paymentMethodType][$removeKey]);
+        }
+
+        foreach ($paymentMethod as $key => $value) {
+            // Add new parameters to payment method
+            $configHipay["payment"][$paymentMethodType][$key] = array_merge(
+                $configHipay["payment"][$paymentMethodType][$key],
+                array_diff_key($paymentMethod[$key], $configHipay["payment"][$paymentMethodType][$key])
+            );
+
+            // remove old parameters
+            $configHipay["payment"][$paymentMethodType][$key] = array_diff_key(
+                $configHipay["payment"][$paymentMethodType][$key],
+                array_diff_key($configHipay["payment"][$paymentMethodType][$key], $paymentMethod[$key])
+            );
+
+            // preserve saved parameters in Database, only parameters not in $keepParameters[$key] will be override
+            $keep = (isset($keepParameters[$key])) ? $keepParameters[$key] : array();
+            $replace = array_diff_key($paymentMethod[$key], $keep);
+
+            // override parameters
+            $configHipay["payment"][$paymentMethodType][$key] = array_replace(
+                $configHipay["payment"][$paymentMethodType][$key],
+                $replace
+            );
+        }
+    }
+
+    /**
+     * init module configuration
+     *
+     * @return bool
+     * @throws Exception
+     */
+    private function insertConfigHiPay()
+    {
+        $configFields = $this->getDefaultConfig();
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 
@@ -449,6 +491,7 @@ class HipayConfig
 
     /**
      * init local config
+     *
      * @return array
      */
     private function insertPaymentsConfig($folderName)

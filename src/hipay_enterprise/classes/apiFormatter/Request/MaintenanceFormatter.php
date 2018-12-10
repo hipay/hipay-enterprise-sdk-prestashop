@@ -39,12 +39,12 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"] : false;
         $this->captureRefundDiscount = (isset($params["capture_refund_discount"])) ? $params["capture_refund_discount"] : false;
         $this->refundItems = (isset($params["refundItems"])) ? $params["refundItems"] : false;
-        $this->context     = Context::getContext();
+        $this->context = Context::getContext();
         $this->order = (isset($params["order"])) ? new Order($params["order"]) : false;
         $this->operation = (isset($params["operation"])) ? $params["operation"] : false;
         $this->db = new HipayDBQuery($module);
         $this->cart = ($this->order) ? new Cart($this->order->id_cart) : false;
-        $currency   = ($this->order) ?new Currency($this->cart->id_currency): null;
+        $currency = ($this->order) ? new Currency($this->cart->id_currency) : null;
         $this->context->currency = $currency;
         $this->maintenanceData = $maintenanceData;
     }
@@ -83,14 +83,24 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         );
         //if there's a basket
         if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
-            $params = array("products" => array(), "discounts" => $this->cart->getCartRules(), "order" => $this->order,
-                "captureRefundFee" => $this->captureRefundFee, "captureRefundDiscount" => $this->captureRefundDiscount,
-                "operation" => $this->operation, "transactionAttempt" => $transactionAttempt);
-            foreach ($this->cart->getProducts() as $item) {
+            $params = array(
+                "products" => array(),
+                "discounts" => $this->order->getCartRules(),
+                "order" => $this->order,
+                "cart" => $this->cart,
+                "captureRefundFee" => $this->captureRefundFee,
+                "captureRefundDiscount" => $this->captureRefundDiscount,
+                "operation" => $this->operation,
+                "transactionAttempt" => $transactionAttempt
+            );
+            foreach ($this->order->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
-                    $params["products"][] = array("item" => $item, "quantity" => $this->refundItems[$item["id_product"]]);
+                    $params["products"][] = array(
+                        "item" => $item,
+                        "quantity" => $this->refundItems[$item["id_product"]]
+                    );
                 } elseif ($this->refundItems == "full") {
-                    $params["products"][] = array("item" => $item, "quantity" => $item["cart_quantity"]);
+                    $params["products"][] = array("item" => $item, "quantity" => $item["product_quantity"]);
                 }
             }
 
@@ -106,6 +116,18 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
 
             $maintenance->amount = Tools::ps_round($maintenance->amount, 3);
             $maintenance->basket = $maintenance->basket->toJson();
+        }else{
+            // save transaction in db even if it is a no basket transaction
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => 0,
+                "operation" => $this->operation,
+                "type" => 'good',
+                "attempt_number" => $transactionAttempt + 1,
+                "quantity" => 0,
+                "amount" => $maintenance->amount
+            );
+            $this->maintenanceData->addItem($captureData);
         }
     }
 }

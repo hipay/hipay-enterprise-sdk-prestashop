@@ -48,6 +48,11 @@ class HipayLogs
 
         // Init base path for logs
         $this->basePath = _PS_ROOT_DIR_ . '/app/logs/';
+
+        if (!file_exists($this->basePath)) {
+            $this->basePath = _PS_ROOT_DIR_ . '/var/logs/';
+        }
+
         if (!file_exists($this->basePath)) {
             $this->basePath = _PS_ROOT_DIR_ . '/log/';
         }
