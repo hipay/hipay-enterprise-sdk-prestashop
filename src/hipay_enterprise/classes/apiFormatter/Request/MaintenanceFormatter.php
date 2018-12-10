@@ -85,21 +85,22 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
             $params = array(
                 "products" => array(),
-                "discounts" => $this->cart->getCartRules(),
+                "discounts" => $this->order->getCartRules(),
                 "order" => $this->order,
+                "cart" => $this->cart,
                 "captureRefundFee" => $this->captureRefundFee,
                 "captureRefundDiscount" => $this->captureRefundDiscount,
                 "operation" => $this->operation,
                 "transactionAttempt" => $transactionAttempt
             );
-            foreach ($this->cart->getProducts() as $item) {
+            foreach ($this->order->getProducts() as $item) {
                 if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
                     $params["products"][] = array(
                         "item" => $item,
                         "quantity" => $this->refundItems[$item["id_product"]]
                     );
                 } elseif ($this->refundItems == "full") {
-                    $params["products"][] = array("item" => $item, "quantity" => $item["cart_quantity"]);
+                    $params["products"][] = array("item" => $item, "quantity" => $item["product_quantity"]);
                 }
             }
 

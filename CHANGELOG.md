@@ -1,3 +1,7 @@
+# Version 2.3.2
+
+- Fix : Refund and capture with an update of product price or discount
+
 # Version 2.3.1
 
 - Fix : refund for local payment method
