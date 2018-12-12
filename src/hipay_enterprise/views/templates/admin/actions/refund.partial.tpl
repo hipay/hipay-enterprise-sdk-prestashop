@@ -91,6 +91,7 @@
                                 {if $remainQty > 0}
                                     <div class="col-lg-6 input-group">
                                         <input data-unit-price="{$item.unit_price_tax_incl}"
+                                               data-id="{$item["product_id"]}"
                                                class="good-selector-refund" name="hipayrefund[{$item["product_id"]}]"
                                                type="number" min="0"
                                                max="{$remainQty}" name="" value="0">
@@ -173,6 +174,7 @@
 
 <script>
     $(document).ready(function () {
+
         $("#hipay_refund_form").submit(function (e) {
             if (checkRefundAmount()) {
                 msgConfirmation = '{l s='Are-you sure to refund for this order ?' mod='hipay_enterprise'}';
@@ -187,9 +189,9 @@
         var currencySign = "€";
         var refundableAmount = {$refundableAmount};
         {if $refundedDiscounts}
-        var refundedDiscount = true;
+            var refundedDiscount = true;
         {else}
-        var refundedDiscount = false;
+            var refundedDiscount = false;
         {/if}
         updateRefundPrice();
 
@@ -204,25 +206,38 @@
         $("#refund-discount").click(function () {
             updateRefundPrice();
         })
+
         function updateRefundPrice() {
-            amount = 0;
+            var items = [];
             $(".good-selector-refund").each(function () {
-                amount += parseFloat($(this).data('unit-price')) * parseFloat($(this).val());
+                var item = {
+                    id: $(this).data('id'),
+                    qty: $(this).val()
+                };
+                items.push(item);
             });
-            if ($("#refund-fee").is(":checked")) {
-                amount = amount + parseFloat($("#refund-fee").data("amount"));
-            }
-            if ($("#refund-discount").is(":checked")) {
-                amount = amount - parseFloat($("#refund-discount").data("amount"));
-            }
-            //fixed round errors
-            amount = amount.toFixed(2);
-            dif = refundableAmount - amount;
-            if (dif.toFixed(2) == -0.01) {
-                amount = amount - 0.01;
-            }
-            $("#total-refund").text(amount + " " + currencySign);
-            $("#total-refund-input").val(amount);
+
+            $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
+               {   "captureRefundFee": $("#refund-fee").is(":checked"),
+                   "captureRefundDiscount": $("#refund-discount").is(":checked"),
+                   "items": items,
+                   "operation": "refund",
+                   "cartId": {$cartId},
+                   "orderId": {$orderId}
+               },
+                function (response) {
+                    if (response.amount >= 0) {
+                        amount = response.amount.toFixed(2);
+                        remain = refundableAmount - amount;
+                        if (remain.toFixed(2) == -0.01) {
+                            amount = amount - 0.01;
+                        }
+
+                        $("#total-refund").text(amount + " " + currencySign);
+                        $("#total-refund-input").val(amount);
+                    }
+                }
+            );
         };
 
         function checkRefundAmount() {

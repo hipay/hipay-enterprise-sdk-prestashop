@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . '/../../helper/HipayDBQuery.php');
 class CartMaintenanceFormatter implements ApiFormatterInterface
 {
 
-    public function __construct($module, $params, $maintenanceData)
+    public function __construct($module, $params, $maintenanceData = null)
     {
         $this->module = $module;
         $this->context = Context::getContext();
@@ -46,6 +46,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->totalItem = 0;
         $this->db = new HipayDBQuery($module);
         $this->maintenanceData = $maintenanceData;
+        $this->hipayCart = null;
     }
 
     /**
@@ -54,9 +55,14 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      */
     public function generate()
     {
+        // Reload and set customer for (autoAddToCart)
+        $customer = new Customer($this->cart->id_customer);
+        Context::getContext()->customer = $customer;
+
         $cart = new HiPay\Fullservice\Gateway\Model\Cart\Cart();
 
         $this->mapRequest($cart);
+        $this->hipayCart = $cart;
 
         return $cart;
     }
@@ -99,7 +105,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     private function getGoodItem($product, $qty)
     {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
-        $productFromCart = $this->cart->getProducts(false, (int)$product["product_id"])[0];
+        $productFromCart = $this->cart->getProducts(true, (int)$product["product_id"])[0];
 
         $european_article_numbering = null;
         if (!empty($product["ean13"]) && $product["ean13"] != "0") {
@@ -150,16 +156,18 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         );
 
         //save capture items and quantity in prestashop
-        $captureData = array(
-            "hp_ps_order_id" => $this->order->id,
-            "hp_ps_product_id" => $product["product_id"],
-            "operation" => $this->operation,
-            "type" => 'good',
-            "attempt_number" => $this->transactionAttempt + 1,
-            "quantity" => $item->getQuantity(),
-            "amount" => Tools::ps_round($item->getTotalAmount(), 2)
-        );
-        $this->maintenanceData->addItem($captureData);
+        if ($this->maintenanceData) {
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => $product["product_id"],
+                "operation" => $this->operation,
+                "type" => 'good',
+                "attempt_number" => $this->transactionAttempt + 1,
+                "quantity" => $qty,
+                "amount" => Tools::ps_round($item->getTotalAmount(), 2)
+            );
+            $this->maintenanceData->addItem($captureData);
+        }
 
         return $item;
     }
@@ -218,16 +226,18 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $item->setProductCategory(1);
 
         //save capture items and quantity in prestashop
-        $captureData = array(
-            "hp_ps_order_id" => $this->order->id,
-            "hp_ps_product_id" => 0,
-            "operation" => $this->operation,
-            "type" => 'discount',
-            "attempt_number" => $this->transactionAttempt + 1,
-            "quantity" => 1,
-            "amount" => $total_amount
-        );
-        $this->maintenanceData->addItem($captureData);
+        if ($this->maintenanceData) {
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => 0,
+                "operation" => $this->operation,
+                "type" => 'discount',
+                "attempt_number" => $this->transactionAttempt + 1,
+                "quantity" => 1,
+                "amount" => $total_amount
+            );
+            $this->maintenanceData->addItem($captureData);
+        }
 
         return $item;
     }
@@ -259,17 +269,33 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
 
 
         //save capture items and quantity in prestashop
-        $captureData = array(
-            "hp_ps_order_id" => $this->order->id,
-            "hp_ps_product_id" => 0,
-            "operation" => $this->operation,
-            "type" => 'fees',
-            "attempt_number" => $this->transactionAttempt + 1,
-            "quantity" => 1,
-            "amount" => $total_amount
-        );
-        $this->maintenanceData->addItem($captureData);
+        if ($this->maintenanceData) {
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => 0,
+                "operation" => $this->operation,
+                "type" => 'fees',
+                "attempt_number" => $this->transactionAttempt + 1,
+                "quantity" => 1,
+                "amount" => $total_amount
+            );
+            $this->maintenanceData->addItem($captureData);
+        }
 
         return $item;
+    }
+
+    /**
+     * Get Total Amount
+     */
+    public function getTotalAmount() {
+        $amount=0;
+        if ($this->hipayCart == null) {
+            $this->hipayCart = $this->generate();
+        }
+        foreach ($this->hipayCart->getAllItems() as $item) {
+            $amount += $item->getTotalAmount();
+        }
+        return Tools::ps_round ($amount, 3);
     }
 }
