@@ -238,7 +238,7 @@
                     "orderId": {$orderId}
                 },
                 function (response) {
-                    if (response.amount >= 0) {
+                    if (response.amount) {
                         amount = response.amount.toFixed(2);
                         remain = stillToCapture - amount;
                         if (remain.toFixed(2) == -0.01) {
