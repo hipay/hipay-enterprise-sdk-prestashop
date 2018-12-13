@@ -52,6 +52,7 @@ class Hipay_enterprise extends PaymentModule
             'Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
         );
 
+
         // init log object
         $this->logs = new HipayLogs($this);
 
@@ -184,7 +185,8 @@ class Hipay_enterprise extends PaymentModule
             'AdminHiPayMoto',
             'AdminHiPayChallenge',
             'AdminHiPayConfig',
-            'AdminHiPaySynchronizeHashing'
+            'AdminHiPaySynchronizeHashing',
+            'AdminHiPayCalculatePrice'
         );
         return $this->createTabAdmin($class_names);
     }
@@ -215,7 +217,8 @@ class Hipay_enterprise extends PaymentModule
             'AdminHiPayMoto',
             'AdminHiPayChallenge',
             'AdminHiPayConfig',
-            'AdminHiPaySynchronizeHashing'
+            'AdminHiPaySynchronizeHashing',
+            'AdminHiPayCalculatePrice'
         );
         foreach ($class_names as $class_name) {
             $id_tab = (int)Tab::getIdFromClassName($class_name);
