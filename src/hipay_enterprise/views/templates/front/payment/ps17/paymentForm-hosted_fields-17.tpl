@@ -70,6 +70,9 @@
     var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
     {/if}
 
+    var cardHolderFirstName = "{$customerFirstName}";
+    var cardHolderLastName = "{$customerLastName}";
+
     var style = {$confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
 
     var activatedCreditCard = [];

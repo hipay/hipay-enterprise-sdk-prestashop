@@ -1,11 +1,6 @@
 function afterTokenization(result) {
     var token = result.token;
-    var brand = "";
-    if (result.hasOwnProperty("domestic_network")) {
-        brand = result.domestic_network;
-    } else {
-        brand = result.brand;
-    }
+    var brand = result.payment_product;
     var pan = result.pan;
     var card_expiry_month = result.card_expiry_month;
     var card_expiry_year = result.card_expiry_year;
@@ -43,14 +38,7 @@ function clearCCForm() {
 }
 
 function isCardTypeOk(result) {
-    var brand = "";
-    if (result.hasOwnProperty("domestic_network")) {
-        brand = result.domestic_network;
-    } else {
-        brand = result.brand;
-    }
-
-    return (activatedCreditCard.indexOf(brand.toLowerCase().replace(" ", "-")) !== -1);
+    return (activatedCreditCard.indexOf(result.payment_product) !== -1);
 }
 
 function displaySecureVaultErrors(errors) {

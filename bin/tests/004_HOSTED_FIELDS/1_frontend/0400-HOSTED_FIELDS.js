@@ -62,6 +62,9 @@ casper.test.begin('Test Checkout ' + paymentType + ' and ' + currentBrandCC, fun
             if (currentBrandCC == 'mastercard') {
                 utilsHiPay.testOtherTypeCC(test, file_path, 'maestro');
             }
+            if (currentBrandCC == 'maestro') {
+                utilsHiPay.testOtherTypeCC(test, file_path, 'amex');
+            }
         })
         .run(function () {
             test.done();

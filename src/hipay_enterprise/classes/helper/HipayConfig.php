@@ -344,6 +344,7 @@ class HipayConfig
                     "display_hosted_page" => "redirect",
                     "css_url" => "",
                     "activate_3d_secure" => ThreeDS::THREE_D_S_DISABLED,
+                    "sdk_js_url" => 'https://libs.hipay.com/js/sdkjs.js',
                     "3d_secure_rules" => array(
                         array(
                             "field" => "total_price",

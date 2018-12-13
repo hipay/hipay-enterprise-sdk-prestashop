@@ -26,7 +26,12 @@ require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 class DirectPostFormatter extends RequestFormatterAbstract
 {
     private $paymentProduct;
+
     private $deviceFingerprint;
+
+    private $paymentMethod;
+
+    private $cardHolder;
 
     public function __construct($moduleInstance, $params)
     {
@@ -34,6 +39,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];
+        $this->cardHolder = (isset($params["card_holder"])) ? $params["card_holder"] : '';
     }
 
     /**
@@ -59,5 +65,20 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $order->payment_product = $this->paymentProduct;
         $order->device_fingerprint = $this->deviceFingerprint;
         $order->paymentMethod = $this->paymentMethod;
+        $this->getCustomerNames($order);
+    }
+
+    /**
+     * Get correct Names for transaction, must be equivalent to the card holder(only for Amex)
+     *
+     * @param $order
+     */
+    public function getCustomerNames(&$order)
+    {
+        if ($this->paymentProduct === "american-express") {
+            $names = explode(' ', trim($this->cardHolder));
+            $order->firstname = $names[0];
+            $order->lastname = trim(preg_replace('/' . $names[0] . '/', "", $this->cardHolder, 1));
+        }
     }
 }
