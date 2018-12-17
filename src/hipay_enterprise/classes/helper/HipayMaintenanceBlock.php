@@ -207,6 +207,9 @@ class HipayMaintenanceBlock
                         'discount' => $this->getDiscount(),
                         'capturedFees' => $capturedFees,
                         'capturedDiscounts' => $capturedDiscounts,
+                        'orderId' => $this->order->id,
+                        'cartId' => $this->cart->id,
+                        'ajaxCalculatePrice' =>  $this->context->link->getAdminLink('AdminHiPayCalculatePrice')
                     )
                 );
 
@@ -256,7 +259,10 @@ class HipayMaintenanceBlock
                         'products' => $this->order->getProducts(),
                         'amountFees' => $this->order->getShipping() ? $this->order->getShipping()[0]['shipping_cost_tax_incl'] : 0,
                         'shippingCost' => $this->order->total_shipping,
-                        'discount' => $this->getDiscount()
+                        'discount' => $this->getDiscount(),
+                        'orderId' => $this->order->id,
+                        'cartId' => $this->cart->id,
+                        'ajaxCalculatePrice' =>  $this->context->link->getAdminLink('AdminHiPayCalculatePrice')
                     )
                 );
                 return true;

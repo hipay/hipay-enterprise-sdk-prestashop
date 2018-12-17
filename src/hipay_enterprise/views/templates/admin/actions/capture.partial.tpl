@@ -100,6 +100,7 @@
                                 <div class="col-lg-6 input-group">
                                     {if $remainQty > 0}
                                         <input data-unit-price="{$item.unit_price_tax_incl}"
+                                               data-id="{$item["product_id"]}"
                                                class="good-selector-capture" id="good-selector-{$item["product_id"]}"
                                                name="hipaycapture[{$item["product_id"]}]" type="number" min="0"
                                                max="{$remainQty}" name="" value="0">
@@ -219,25 +220,36 @@
             updatePrice();
         })
         function updatePrice() {
-            amount = 0;
+            var items = [];
             $(".good-selector-capture").each(function () {
-                amount += parseFloat($(this).data('unit-price')) * parseFloat($(this).val());
+                var item = {
+                    id: $(this).data('id'),
+                    qty: $(this).val()
+                };
+                items.push(item);
             });
-            if ($("#capture-fee").is(":checked")) {
-                amount = amount + parseFloat($("#capture-fee").data("amount"));
-            }
-            if ($("#capture-discount").val() != null && $("#capture-discount").is(":checked")) {
-                amount = amount - parseFloat($("#capture-discount").data("amount"));
-            }
-            //fixed round errors
-            amount = amount.toFixed(2);
-            dif = stillToCapture - amount;
-            if (dif.toFixed(2) == -0.01) {
-                amount = amount - 0.01;
-            }
 
-            $("#total-capture").text(amount + " " + currencySign);
-            $("#total-capture-input").val(amount);
+            $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
+                {   "captureRefundFee": $("#capture-fee").is(":checked"),
+                    "captureRefundDiscount": $("#capture-discount").is(":checked"),
+                    "items": items,
+                    "operation": "capture",
+                    "cartId": {$cartId},
+                    "orderId": {$orderId}
+                },
+                function (response) {
+                    if (response.amount) {
+                        amount = response.amount.toFixed(2);
+                        remain = stillToCapture - amount;
+                        if (remain.toFixed(2) == -0.01) {
+                            amount = amount - 0.01;
+                        }
+
+                        $("#total-capture").text(amount + " " + currencySign);
+                        $("#total-capture-input").val(amount);
+                    }
+                }
+            );
         };
 
         function checkCaptureAmount() {

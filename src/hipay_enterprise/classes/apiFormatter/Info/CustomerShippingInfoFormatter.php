@@ -55,6 +55,8 @@ class CustomerShippingInfoFormatter extends apiFormatterAbstract
         $customerHippingInfo->shipto_phone = $this->getPhone();
         $customerHippingInfo->shipto_state = ($this->deliveryState) ? $this->deliveryState->name : '';
         $customerHippingInfo->shipto_recipientinfo = $this->store->name;
+        $customerHippingInfo->shipto_msisdn = isset($this->delivery->phone_mobile) ? $this->delivery->phone_mobile : '';
+        $customerHippingInfo->shipto_gender = "U";
     }
 
     /**

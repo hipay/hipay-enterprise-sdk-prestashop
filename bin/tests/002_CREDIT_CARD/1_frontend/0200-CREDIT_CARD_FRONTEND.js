@@ -47,8 +47,13 @@ casper.test.begin('Test Checkout HiPay Enterprise Credit Card with ' + currentBr
             if (currentBrandCC == 'visa') {
                 utilsHiPay.testOtherTypeCC(test, file_path, 'mastercard');
             }
+
             if (currentBrandCC == 'mastercard') {
                 utilsHiPay.testOtherTypeCC(test, file_path, 'maestro');
+            }
+
+            if (currentBrandCC == 'maestro') {
+                utilsHiPay.testOtherTypeCC(test, file_path, 'amex');
             }
         })
         .run(function () {

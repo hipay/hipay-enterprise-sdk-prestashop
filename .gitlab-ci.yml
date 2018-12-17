@@ -59,6 +59,7 @@ test-casper-17-1:
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
   after_script:
+    - docker cp "$(docker-compose -f docker-compose.test.yml -p $PROJECT_NAME_TEST_PS17_1 ps -q web)":/var/www/html/var/logs bin/tests/errors
     - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
 test-casper-17-2:

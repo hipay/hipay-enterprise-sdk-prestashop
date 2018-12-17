@@ -104,18 +104,11 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                 }
             }
 
-            $cart = new CartMaintenanceFormatter($this->module, $params, $this->maintenanceData);
+            $cartFormatter = new CartMaintenanceFormatter($this->module, $params, $this->maintenanceData);
+            $cart = $cartFormatter->generate();
 
-            $maintenance->basket = $cart->generate();
-
-            $maintenance->amount = 0;
-
-            foreach ($maintenance->basket->getAllItems() as $item) {
-                $maintenance->amount += $item->getTotalAmount();
-            }
-
-            $maintenance->amount = Tools::ps_round($maintenance->amount, 3);
-            $maintenance->basket = $maintenance->basket->toJson();
+            $maintenance->amount = $cartFormatter->getTotalAmount();
+            $maintenance->basket = $cart->toJson();
         }else{
             // save transaction in db even if it is a no basket transaction
             $captureData = array(

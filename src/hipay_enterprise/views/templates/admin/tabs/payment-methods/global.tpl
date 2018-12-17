@@ -185,6 +185,18 @@
                     </span>
                 </div>
             </div>
+
+            <div id="sdk_js_url" class="form-group">
+                <label class="control-label col-lg-3">
+                        <span>
+                            {l s='SDK JS url' mod='hipay_enterprise'}
+                        </span>
+                </label>
+                <div class="col-lg-4">
+                    <input class="form-control" type="text" name="sdk_js_url" value="{$config_hipay.payment.global.sdk_js_url}">
+                </div>
+            </div>
+
             {* 3DS Form *}
             {include file='../partials/3ds.forms.partial.tpl'}
             {*/ 3DS Form /*}
@@ -234,6 +246,7 @@
         // Display or hide specific input for hosted_page or Hosted_fields
         if ($("#operating_mode").val() == "hosted_page") {
             $("#hostedfieldsconf").hide();
+            $("#sdk_js_url").hide();
         } else if ($("#operating_mode").val() == "hosted_fields") {
             $("#hostedconf").hide();
         } else {
@@ -245,10 +258,13 @@
             if ($("#operating_mode").val() == "hosted_page") {
                 $("#hostedconf").show();
                 $("#hostedfieldsconf").hide();
+                $("#sdk_js_url").hide();
             } else if ($("#operating_mode").val() == "hosted_fields") {
                 $("#hostedconf").hide();
                 $("#hostedfieldsconf").show();
+                $("#sdk_js_url").show();
             } else {
+                $("#sdk_js_url").show();
                 $("#hostedconf").hide();
                 $("#hostedfieldsconf").hide();
             }
