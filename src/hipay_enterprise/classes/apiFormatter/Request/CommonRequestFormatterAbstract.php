@@ -81,6 +81,9 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "display_iframe" => $iframe,
         );
 
+        if (isset($this->params["create_OneClick"]) && $this->params["create_OneClick"]) {
+            $customDataHipay["create_OneClick"] = true;
+        }
 
         // Add custom data for transaction request
         if (file_exists(dirname(__FILE__) . '/../../HipayEnterpriseHelperCustomData.php')) {

@@ -255,28 +255,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     "method" => $selectedCC,
                     "authentication_indicator" => $this->setAuthenticationIndicator($cart),
                     "card_holder" => Tools::getValue('card-holder'),
+                    "create_OneClick" => !$customer->is_guest && Tools::isSubmit('saveTokenHipay')
                 );
-
-                if (!$customer->is_guest && Tools::isSubmit('saveTokenHipay')) {
-                    $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[$selectedCC];
-
-                    if (isset($configCC['recurring']) && $configCC['recurring']) {
-
-                        $card = array(
-                            "token" => Tools::getValue('card-token'),
-                            "brand" => $selectedCC,
-                            "pan" => Tools::getValue('card-pan'),
-                            "card_holder" => Tools::getValue('card-holder'),
-                            "card_expiry_month" => Tools::getValue('card-expiry-month'),
-                            "card_expiry_year" => Tools::getValue('card-expiry-year'),
-                            "issuer" => Tools::getValue('card-issuer'),
-                            "country" => Tools::getValue('card-country'),
-                        );
-
-                        $this->ccToken->saveCCToken($cart->id_customer, $card);
-                    }
-                }
-
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {
                 $this->module->getLogs()->logException($e);
