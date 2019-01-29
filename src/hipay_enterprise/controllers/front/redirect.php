@@ -75,6 +75,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function postProcess()
     {
+
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
