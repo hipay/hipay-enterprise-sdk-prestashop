@@ -165,7 +165,7 @@ class HipayNotification
                     $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
 
                     $customData = $this->transaction->getCustomData();
-                    if (isset($customData["multi_use"]) && $customData["multi_usemulti_use"]) {
+                    if (isset($customData["multiUse"]) && $customData["multiUse"]) {
                         $this->saveCardToken();
                     }
                     break;

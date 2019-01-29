@@ -28,7 +28,7 @@
                 {/if}
                 <span>
                     {if $configHipay.payment.global.operating_mode.UXMode != 'direct_post' && $configHipay.payment.global.operating_mode.UXMode != 'hosted_fields'}
-                        {if $configHipay.payment.global.display_hosted_page != 'iframe'}
+                        {if !$configHipay.payment.global.card_token}
                             <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                         {/if}
                     {/if}

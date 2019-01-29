@@ -63,5 +63,6 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order->display_selector = $this->configHipay["payment"]["global"]["display_card_selector"];
         $order->payment_product_list = $this->productList;
         $order->payment_product_category_list = '';
+        $order->multi_use = $this->params["multi_use"];
     }
 }
