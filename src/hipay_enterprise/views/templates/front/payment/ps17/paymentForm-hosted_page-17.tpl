@@ -23,13 +23,14 @@
     {/if}
     <div class="row" id="group-without-token" style="{if $savedCC && $confHipay.payment.global.card_token}display:none;{/if}">
         {if $confHipay.payment.global.display_hosted_page != 'iframe'}
-            <p>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
+            <p class="col-md-12">{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
         {else}
-            <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
+            <p class="col-md-12">{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
+            <input type="hidden" id="iframe-generate" name="iframeCall" value="1" />
         {/if}
 
         {if $confHipay.payment.global.card_token && !$is_guest }
-            <div class="row">
+            <div class="col-md-12">
                     <span class="custom-checkbox" id="save-credit-card">
                         <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
                         <span><i class="material-icons checkbox-checked"></i></span>

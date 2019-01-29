@@ -75,10 +75,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function postProcess()
     {
-
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
             case ApiMode::HOSTED_PAGE:
-                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
+                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect" &&
+                    Tools::getValue('ccTokenHipay')) {
                     if (!empty(Tools::getValue('ccTokenHipay'))
                         && Tools::getValue('ccTokenHipay') != "noToken") {
                         $path = $this->apiSavedCC(
@@ -109,6 +109,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         $this->savedCC,
                         $this->context
                     );
+
                     return $this->setTemplate($path);
                 }
         }
@@ -154,7 +155,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
             case UXMode::HOSTED_PAGE:
-                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] !== "redirect") {
+                if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] !== "redirect"
+                    && Tools::getValue('iframeCall')) {
                     $this->context->smarty->assign(
                         array(
                             'url' => $this->apiHandler->handleCreditCard(
@@ -170,23 +172,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             $this->module->name .
                             '/views/templates/front/payment/ps17/paymentFormIframe-17'
                             : 'payment/ps16/paymentFormIframe-16') . '.tpl';
+                } else if ($this->module->hipayConfigTool->getPaymentGlobal()["card_token"] && _PS_VERSION_ < '1.7') {
+                    $this->assignTemplate();
+                    $path = 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
                 }
                 break;
             case UXMode::DIRECT_POST:
             case UXMode::HOSTED_FIELDS:
-                $this->context->smarty->assign(
-                    array(
-                        'status_error' => '200', // Force to ok for first call
-                        'status_error_oc' => '200',
-                        'cart_id' => $this->currentCart->id,
-                        'savedCC' => $this->savedCC,
-                        'is_guest' => $this->customer->is_guest,
-                        'customerFirstName' => $this->customer->firstname,
-                        'customerLastName' => $this->customer->lastname,
-                        'amount' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
-                        'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
-                    )
-                );
+                $this->assignTemplate();
 
                 $path = 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
                 break;
@@ -195,6 +188,25 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         }
 
         return $this->setTemplate($path);
+    }
+
+    /**
+     *  Assign Order template
+     */
+    private function assignTemplate() {
+        $this->context->smarty->assign(
+            array(
+                'status_error' => '200', // Force to ok for first call
+                'status_error_oc' => '200',
+                'cart_id' => $this->currentCart->id,
+                'savedCC' => $this->savedCC,
+                'is_guest' => $this->customer->is_guest,
+                'customerFirstName' => $this->customer->firstname,
+                'customerLastName' => $this->customer->lastname,
+                'amount' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
+                'confHipay' => $this->module->hipayConfigTool->getConfigHipay()
+            )
+        );
     }
 
     /**
