@@ -75,17 +75,27 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function postProcess()
     {
-
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                    $this->apiHandler->handleCreditCard(
-                        ApiMode::HOSTED_PAGE,
-                        array(
-                            "method" => "credit_card",
-                            "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
-                        )
-                    );
+                    if (!empty(Tools::getValue('ccTokenHipay'))
+                        && Tools::getValue('ccTokenHipay') != "noToken") {
+                        $path = $this->apiSavedCC(
+                            Tools::getValue('ccTokenHipay'),
+                            $this->currentCart,
+                            $this->savedCC,
+                            $this->context
+                        );
+                        return $this->setTemplate($path);
+                    } else {
+                        $this->apiHandler->handleCreditCard(
+                            ApiMode::HOSTED_PAGE,
+                            array(
+                                "method" => "credit_card",
+                                "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
+                            )
+                        );
+                    }
                 }
                 break;
             case ApiMode::DIRECT_POST:
@@ -254,29 +264,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     "cardtoken" => Tools::getValue('card-token'),
                     "method" => $selectedCC,
                     "authentication_indicator" => $this->setAuthenticationIndicator($cart),
-                    "card_holder" => Tools::getValue('card-holder'),
+                    "card_holder" => Tools::getValue('card-holder')
                 );
-
-                if (!$customer->is_guest && Tools::isSubmit('saveTokenHipay')) {
-                    $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[$selectedCC];
-
-                    if (isset($configCC['recurring']) && $configCC['recurring']) {
-
-                        $card = array(
-                            "token" => Tools::getValue('card-token'),
-                            "brand" => $selectedCC,
-                            "pan" => Tools::getValue('card-pan'),
-                            "card_holder" => Tools::getValue('card-holder'),
-                            "card_expiry_month" => Tools::getValue('card-expiry-month'),
-                            "card_expiry_year" => Tools::getValue('card-expiry-year'),
-                            "issuer" => Tools::getValue('card-issuer'),
-                            "country" => Tools::getValue('card-country'),
-                        );
-
-                        $this->ccToken->saveCCToken($cart->id_customer, $card);
-                    }
-                }
-
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {
                 $this->module->getLogs()->logException($e);

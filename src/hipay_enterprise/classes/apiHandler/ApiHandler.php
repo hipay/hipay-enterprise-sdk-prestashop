@@ -89,6 +89,9 @@ class Apihandler
         $delivery = new Address((int)$cart->id_address_delivery);
         $deliveryCountry = new Country((int)$delivery->id_country);
         $currency = new Currency((int)$cart->id_currency);
+        $customer = new Customer((int)$cart->id_customer);
+
+        $params["multi_use"] = !$customer->is_guest && Tools::isSubmit('saveTokenHipay');
 
         switch ($mode) {
             case ApiMode::DIRECT_POST:
@@ -320,9 +323,9 @@ class Apihandler
     private function handleDirectOrder($params, $cc = false)
     {
         if ($cc) {
-            $config = $this->configHipay["payment"]["credit_card"][$params["method"]];
+            $config = $this->configHipay["payment"]["credit_card"][strtolower($params["method"])];
         } else {
-            $config = $this->configHipay["payment"]["local_payment"][$params["method"]];
+            $config = $this->configHipay["payment"]["local_payment"][strtolower($params["method"])];
         }
 
         if (is_array($config["displayName"])) {
