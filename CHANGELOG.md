@@ -1,3 +1,7 @@
+# Version 2.4.1
+
+- Fix missing month in credit card form
+
 # Version 2.4.0
 
 - Get payment product from SDK JS
