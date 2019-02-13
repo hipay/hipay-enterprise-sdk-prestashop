@@ -78,15 +78,17 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                    if (Tools::getValue('ccTokenHipay') && !empty(Tools::getValue('ccTokenHipay'))
-                        && Tools::getValue('ccTokenHipay') != "noToken") {
-                        $path = $this->apiSavedCC(
-                            Tools::getValue('ccTokenHipay'),
-                            $this->currentCart,
-                            $this->savedCC,
-                            $this->context
-                        );
-                        return $this->setTemplate($path);
+                    $ccToken=  Tools::getValue('ccTokenHipay','') ;
+
+                    if ((_PS_VERSION_ > '1.7' && empty($ccToken))
+                    ||  (_PS_VERSION_ < '1.7' && (empty($ccToken) || (!empty($ccToken) && $ccToken != "noToken")))) {
+                            $path = $this->apiSavedCC(
+                                Tools::getValue('ccTokenHipay'),
+                                $this->currentCart,
+                                $this->savedCC,
+                                $this->context
+                            );
+                            return $this->setTemplate($path);
                     } else {
                         $this->apiHandler->handleCreditCard(
                             ApiMode::HOSTED_PAGE,

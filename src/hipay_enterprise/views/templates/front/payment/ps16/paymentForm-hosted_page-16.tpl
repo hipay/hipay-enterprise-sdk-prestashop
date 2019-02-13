@@ -68,7 +68,9 @@
 
                 {if $confHipay.payment.global.card_token && !$is_guest}
                     {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/savetoken.tpl"}
-                    <input type="hidden" id="radio-no-token" name="ccTokenHipay" value="noToken" />
+                    {if !$savedCC}
+                        <input type="hidden" id="radio-no-token" name="ccTokenHipay" value="noToken" />
+                    {/if}
                 {/if}
             </div>
 
