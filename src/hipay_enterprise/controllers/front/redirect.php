@@ -79,8 +79,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $ccToken=  Tools::getValue('ccTokenHipay','') ;
-
-                    if ((_PS_VERSION_ > '1.7' && empty($ccToken))
+                    if ((_PS_VERSION_ > '1.7' && !empty($ccToken) && $ccToken != "noToken")
                     ||  (_PS_VERSION_ < '1.7' && (empty($ccToken) || (!empty($ccToken) && $ccToken != "noToken")))) {
                             $path = $this->apiSavedCC(
                                 Tools::getValue('ccTokenHipay'),
