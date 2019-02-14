@@ -84,7 +84,7 @@ class CartFormatter extends ApiFormatterAbstract
         $product_reference = HipayHelper::getProductRef($product);
         $type = "good";
         $name = $product["name"];
-        $quantity = $product["cart_quantity"];
+        $quantity = (int)$product["cart_quantity"];
 
 
         $discount = -1 *

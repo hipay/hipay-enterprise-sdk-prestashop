@@ -109,8 +109,9 @@ casper.test.begin('Test manual capture', function (test) {
                         'input[name="hipay_capture_fee"]': 1
                     }, false);
 
-
-                    this.click('button[name="hipay_capture_basket_submit"]');
+                    this.wait(4000, function () {
+                        this.click('button[name="hipay_capture_basket_submit"]');
+                    });
 
                     this.waitForAlert(function () {
                         test.info("Alert received", "INFO");
@@ -181,7 +182,10 @@ casper.test.begin('Test manual capture', function (test) {
                     this.fillSelectors("form#hipay_capture_form", {
                         'input[name="hipaycapture[1]"]': 6,
                     }, false);
-                    this.click('button[name="hipay_capture_basket_submit"]');
+
+                    this.wait(4000, function () {
+                        this.click('button[name="hipay_capture_basket_submit"]');
+                    });
 
                     this.waitForAlert(function (response) {
                         test.info("Alert received", "INFO");

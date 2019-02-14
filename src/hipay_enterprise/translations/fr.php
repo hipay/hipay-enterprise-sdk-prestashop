@@ -427,7 +427,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymenterror_5703ad364b7ddaa8c9275b949aa
 $_MODULE['<{hipay_enterprise}prestashop>paymenterror_cddcf1bdadaa3a50e049409f5addb89b'] = 'Ce type de carte ou la devise de la commande ne sont pas pris en charge. Veuillez choisir un autre moyen de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymenterror_291558103a4553ea6d985a6645e3d65b'] = 'Une erreur est survenue, le paiement a été annulé.';
 $_MODULE['<{hipay_enterprise}prestashop>oneclick_b7d2f0f194257c6728603e53c60f8101'] = 'Votre requête a été rejetée suite à une erreur de validation. Veuillez vérifier les informations renseignées';
-$_MODULE['<{hipay_enterprise}prestashop>oneclick_d7a3b3bf767faf334c85f11c8ba678c8'] = 'Payer avec une nouvelle carte de crédit';
+$_MODULE['<{hipay_enterprise}prestashop>oneclick_d7a3b3bf767faf334c85f11c8ba678c8'] = 'Payer avec une carte de crédit sauvegardée';
 $_MODULE['<{hipay_enterprise}prestashop>oneclick_5d5f8125c7c41d3d32de532877b2bf49'] = 'Date d\'exp.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-direct_post-16_9354dc0b37176ebaf3ce2f4adc85ef60'] = 'Paiement';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-direct_post-16_f1d3b424cd68795ecaa552883759aceb'] = 'Récapitulatif du paiement';
@@ -475,8 +475,11 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_148b2bc3888
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement One-click)';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est en cours de traitement. Merci de patienter.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_fields-17_755e746151fd31031acf6a0e611efd6f'] = 'Ce type de carte ou la devise de la commande ne sont pas pris en charge. Veuillez choisir un autre moyen de paiement.';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_148b2bc3888ea4c45fb942c1f2d24005'] = 'Payer avec une nouvelle carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous allez être redirigé vers la page de paiement HiPay pour effectuer le paiement de la commande.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_bd6963a84800b01d6639adc5c407fcf4'] = 'Confirmez votre commande pour accéder à la page de paiement';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement One-click)';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-17_069616c7259ee048bd594d10c8ee1cd7'] = 'Votre paiement est en cours de traitement. Merci de patienter.';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_0ca2b5535330f021917c16883385ed15'] = 'Récapitulatif du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>cancel-16_2758fccb8c7506009717e9834717c238'] = 'Votre commande a été annulée.';

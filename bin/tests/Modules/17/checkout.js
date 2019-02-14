@@ -257,7 +257,7 @@ exports.fillStepPayment = function fillStepPayment(test, hostedFields) {
             } else if (currentBrandCC == 'cb' || currentBrandCC == "mastercard") {
                 fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.cb, '666', hostedFields);
             } else if (currentBrandCC == 'amex') {
-                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '666', hostedFields);
+                fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.amex, '6666', hostedFields);
             } else if (currentBrandCC == 'visa_3ds') {
                 fillFormPaymentHipayCC(parametersLibHiPay.cardsNumber.visa_3ds, '666', hostedFields);
             } else if (currentBrandCC == 'maestro') {

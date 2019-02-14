@@ -1,3 +1,22 @@
+# Version 2.5.0
+
+- Add one-click support for Hosted Page
+- Refactoring one-click workflow
+- Fix amex one-click
+- Add minimum prestashop support 
+
+# Version 2.4.1
+
+- Fix missing month in credit card form
+
+# Version 2.4.0
+
+- Get payment product from SDK JS
+- Configurable SDK JS url
+- Fix: amount in basket on maintenance request
+- Fix: Oney payment method
+- Fix: cardholder For Amex
+
 # Version 2.3.2
 
 - Fix : Refund and capture with an update of product price or discount

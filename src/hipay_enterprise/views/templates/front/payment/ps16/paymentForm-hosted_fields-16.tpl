@@ -83,6 +83,8 @@
         {if $savedCC &&  $confHipay.payment.global.card_token}
         $('#credit-card-group').collapse('hide');
         {/if}
+        var cardHolderFirstName = "{$customerFirstName}";
+        var cardHolderLastName = "{$customerLastName}";
         var lang = "{$lang_iso}";
         var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
