@@ -21,7 +21,7 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 
 ## Features
 
-- Compatibility Prestashop 1.6.x - 1.7.x
+- Compatibility Prestashop 1.6.x (From 1.6.0.11) - 1.7.x
 - 35 payment methods
 - Hosted integration (hosted page and Iframe), API integration
 - Direct Post integration (tokenization javascript)
