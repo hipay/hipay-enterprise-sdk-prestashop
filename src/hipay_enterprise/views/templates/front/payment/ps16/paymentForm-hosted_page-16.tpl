@@ -1,4 +1,15 @@
 {**
+* HiPay Enterprise SDK Prestashop
+*
+* 2017 HiPay
+*
+* NOTICE OF LICENSE
+*
+* @author    HiPay <support.tpp@hipay.com>
+* @copyright 2017 HiPay
+* @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
+*}
+{**
  * HiPay Enterprise SDK Prestashop
  *
  * 2017 HiPay
@@ -9,7 +20,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 {capture name=path}{l s='Payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
@@ -23,7 +33,7 @@
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
     <form enctype="application/x-www-form-urlencoded"
           action="{$link->getModuleLink('hipay_enterprise', 'redirect', [], true)|escape:'html'}"
-          class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="tokenizerForm" id="tokenizerForm"
+          class="form-horizontal col-lg-6 col-lg-offset-3" method="post" name="hpaymentForm" id="hpaymentForm"
           autocomplete="off">
         <div class="order_carrier_content box">
             <h2 class="page-subheading">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
@@ -47,13 +57,23 @@
                     <label for="radio-no-token"><strong>{l s='Pay with a new credit card' mod='hipay_enterprise'}</strong></label>
                 </div>
             {/if}
-            <div id="credit-card-group" >
-                {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-direct-post.tpl"}
+
+            <div class="col-lg-12 col-md-12 col-xs-12" id="group-without-token" style="{if $savedCC && $confHipay.payment.global.card_token}display:none;{/if}">
+                {if $confHipay.payment.global.display_hosted_page != 'iframe'}
+                    <p>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
+                {else}
+                    <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
+                    <input type="hidden" id="iframe-generate" name="iframeCall" value="1" />
+                {/if}
 
                 {if $confHipay.payment.global.card_token && !$is_guest}
                     {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/savetoken.tpl"}
+                    {if !$savedCC}
+                        <input type="hidden" id="radio-no-token" name="ccTokenHipay" value="noToken" />
+                    {/if}
                 {/if}
             </div>
+
             <div class="block-pay">
                 <button id="pay-button" type="submit" name="processCarrierHipay"
                         class="button btn btn-default standard-checkout button-medium col-lg-12 col-md-12 col-xs-12"
@@ -70,23 +90,21 @@
         <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
         <img src="{$this_path_ssl}/views/img/loading.gif">
     </p>
-    <script type="text/javascript" src="{$this_path_ssl}views/js/card-tokenize.js"></script>
-    <script type="text/javascript">
-        {if $savedCC &&  $confHipay.payment.global.card_token}
-            $('#credit-card-group').collapse('hide');
-        {/if}
-        var lang = "{$lang_iso}";
-        var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
-        var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
-        var myPaymentMethodSelected = true;
-        {if $confHipay.account.global.sandbox_mode}
-        var api_tokenjs_mode = "stage";
-        var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
-        var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
-        {else}
-        var api_tokenjs_mode = "production";
-        var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
-        var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
-        {/if}
-    </script>
 {/if}
+<script>
+    document.addEventListener('DOMContentLoaded',
+        function() {
+            $('#radio-no-token').change(function () {
+                if ($('#radio-no-token').is(":checked")) {
+                    $('#group-without-token').show();
+                } else {
+                    $('#group-without-token').hide();
+                }
+
+            });
+        },
+        false
+    );
+</script>
+
+

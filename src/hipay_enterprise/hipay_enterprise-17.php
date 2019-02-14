@@ -226,6 +226,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             switch ($uxMode) {
                 case UXMode::DIRECT_POST:
                 case UXMode::HOSTED_FIELDS:
+                case UXMode::HOSTED_PAGE:
                     // set credit card for one click
                     $this->ccToken = new HipayCCToken($this);
                     $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);

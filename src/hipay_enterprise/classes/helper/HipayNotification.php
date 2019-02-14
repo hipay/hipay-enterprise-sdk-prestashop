@@ -37,6 +37,7 @@ class HipayNotification
     protected $cart;
     protected $orderExist = false;
     protected $order = null;
+    protected $ccToken;
 
     /**
      * HipayNotification constructor.
@@ -68,6 +69,8 @@ class HipayNotification
             $this->log->logErrors('Bad Callback initiated, cart could not be initiated ');
             die('Cart empty');
         }
+
+        $this->ccToken = new HipayCCToken($this->module);
 
         // forced shop
         Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
@@ -160,6 +163,11 @@ class HipayNotification
                     break;
                 case TransactionStatus::AUTHORIZED: //116
                     $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
+
+                    $customData = $this->transaction->getCustomData();
+                    if (isset($customData["multiUse"]) && $customData["multiUse"]) {
+                        $this->saveCardToken();
+                    }
                     break;
                 case TransactionStatus::CAPTURED: //118
                 case TransactionStatus::CAPTURE_REQUESTED: //117
@@ -366,6 +374,38 @@ class HipayNotification
             } else {
                 $this->log->logInfos('# Order Payment of 0 amount not added');
             }
+        }
+    }
+
+    /**
+     * Save card Token for recurring payment
+     *
+     * @throws Exception
+     */
+    private function saveCardToken()
+    {
+        try {
+            if ($this->transaction->getPaymentMethod() != null) {
+                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower($this->transaction->getPaymentProduct())];
+                if (isset($configCC['recurring']) && $configCC['recurring']) {
+
+                    $card = array(
+                        "token" => $this->transaction->getPaymentMethod()->getToken(),
+                        "brand" => $this->transaction->getPaymentProduct(),
+                        "pan" => $this->transaction->getPaymentMethod()->getPan(),
+                        "card_holder" => $this->transaction->getPaymentMethod()->getCardHolder(),
+                        "card_expiry_month" => $this->transaction->getPaymentMethod()->getCardExpiryMonth(),
+                        "card_expiry_year" => $this->transaction->getPaymentMethod()->getCardExpiryYear(),
+                        "issuer" =>  $this->transaction->getPaymentMethod()->getIssuer(),
+                        "country" =>  $this->transaction->getPaymentMethod()->getCountry()
+                    );
+
+                    $this->ccToken->saveCCToken($this->cart->id_customer, $card);
+                }
+            }
+        } catch (Exception $e) {
+            $this->log->logException($e);
+            throw $e;
         }
     }
 
