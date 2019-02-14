@@ -386,13 +386,12 @@ class HipayNotification
     {
         try {
             if ($this->transaction->getPaymentMethod() != null) {
-                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower($this->transaction->getPaymentMethod()->getBrand())];
-
+                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower($this->transaction->getPaymentProduct())];
                 if (isset($configCC['recurring']) && $configCC['recurring']) {
 
                     $card = array(
                         "token" => $this->transaction->getPaymentMethod()->getToken(),
-                        "brand" => $this->transaction->getPaymentMethod()->getBrand(),
+                        "brand" => $this->transaction->getPaymentProduct(),
                         "pan" => $this->transaction->getPaymentMethod()->getPan(),
                         "card_holder" => $this->transaction->getPaymentMethod()->getCardHolder(),
                         "card_expiry_month" => $this->transaction->getPaymentMethod()->getCardExpiryMonth(),
