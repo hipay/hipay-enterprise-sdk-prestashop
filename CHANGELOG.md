@@ -1,3 +1,10 @@
+# Version 2.5.0
+
+- Add one-click support for Hosted Page
+- Refactoring one-click workflow
+- Fix amex one-click
+- Add minimum prestashop support 
+
 # Version 2.4.1
 
 - Fix missing month in credit card form
