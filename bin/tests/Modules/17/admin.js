@@ -91,13 +91,13 @@ exports.gotToHiPayConfiguration = function gotToHiPayConfiguration(test) {
 
             this.waitForSelector('#subtab-AdminModulesSf a', function success() {
                 this.click('#subtab-AdminModulesSf a');
-                this.waitForSelector('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', function success() {
-                    this.click('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button');
-                    this.echo("Done", "INFO");
 
-                }, function fail() {
-                    test.assertExists('#modules-list-container-all div[data-name="HiPay Enterprise"] form.btn-group button', "'Configuration' button exists");
-                }, 50000);
+                this.waitForUrl(/improve\/modules\/manage/, function(){
+                    var url = casper.getCurrentUrl();
+                    var myRegexp = /token=(.*)(&*)/g;
+                    var token = myRegexp.exec(url);
+                    casper.thenOpen(baseURL + "admin-hipay/index.php/improve/modules/manage/action/configure/hipay_enterprise?_token=" + token[1]);
+                });
 
             }, function fail() {
                 test.assertExists('subtab-AdminModulesSf a', "Modules admin page exists");
@@ -333,15 +333,15 @@ function setValueOptions(test, code, value) {
 exports.activateLocalization = function activateLocalization(test, locale) {
     casper.then(function () {
         this.echo("Import and activate localization : " + locale, "INFO");
-        this.waitForSelector('#subtab-AdminParentLocalization a', function success() {
+        this.waitForSelector('#subtab-AdminInternational a', function success() {
             this.click('#subtab-AdminInternational a');
             this.click('#subtab-AdminParentLocalization a');
-            this.waitForSelector('select[name="iso_localization_pack"]', function success() {
-                this.fillSelectors("form#configuration_form",
-                    {'select[name="iso_localization_pack"]': locale.toLowerCase()},
-                    false
+            this.waitForSelector('select[name="import_localization_pack[iso_localization_pack]"]', function success() {
+                this.fillSelectors('form[name="import_localization_pack"]',
+                    {'select[name="import_localization_pack[iso_localization_pack]"]': locale.toLowerCase()},
+                    true
                 );
-                this.click('form#configuration_form button[name="submitLocalizationPack"]');
+                //this.click('form#configuration_form button[name="submitLocalizationPack"]');
                 this.waitForSelector('.alert.alert-success', function success() {
                     this.echo("Import Done ", "COMMENT");
                     /* Associate Payment module with locale */
@@ -357,30 +357,37 @@ exports.activateLocalization = function activateLocalization(test, locale) {
                                 var id_country = 13;
                         }
 
-                        this.waitForSelector('form#form_country', function success() {
-                            var alreadyChecked = this.getElementAttribute('form#form_country input[value="' + id_country + '"][name="hipay_enterprise_country[]"]', 'checked');
+                        this.waitForSelector('form[name="form"]', function success() {
+                            var alreadyChecked = this.getElementAttribute('form[name="form"] input[value="' + id_country + '"][name="form[payment_module_preferences][country_restrictions][hipay_enterprise][]"]', 'checked');
                             if (alreadyChecked.length === 0) {
                                 this.echo("Activate country for payment module", "INFO");
-                                this.click('form#form_country input[value="' + id_country + '"][name="hipay_enterprise_country[]"]');
-                                this.click('button[name="submitModulecountry"]');
-                                this.waitForSelector('.alert.alert-success', function success() {
+                                // this.click('.md-checkbox > label');
+                                // this.click('form[name="form"] button');
+                                var field = 'input[value="' + id_country + '"][name="form[payment_module_preferences][country_restrictions][hipay_enterprise][]"]';
+                                this.fillSelectors('form[name="form"]', {
+                                    'input[name="form[payment_module_preferences][country_restrictions][hipay_enterprise][]"]': true
+                                }, true);
+
+
+                                this.waitForSelector('.alert.alert-success > .alert-text', function success() {
+                                    this.click('formaa[name="form"] button');
                                     this.echo("Done ", "COMMENT");
                                 }, function fail() {
                                     test.assertExists('.alert.alert-success', "Activate country for payment module error");
                                 });
                             }
                         }, function fail() {
-                            test.assertExists('form#form_country', "Form country exists");
+                            test.assertExists('form[name="form"]', "Form country exists");
                         }, 50000);
                     });
                 }, function fail() {
                     test.assertExists('.success', "'Import pack localization failed' button exists");
                 }, 50000);
             }, function fail() {
-                test.assertExists('select[name="iso_localization_pack"]', "Localization input exists");
+                test.assertExists('select[name="import_localization_pack[iso_localization_pack]"]', "Localization input exists");
             }, 50000);
         }, function fail() {
-            test.assertExists('#subtab-AdminParentLocalization a', "Modules admin page exists");
+            test.assertExists('#subtab-AdminInternational a', "Modules admin page exists");
         }, 50000);
     });
 };

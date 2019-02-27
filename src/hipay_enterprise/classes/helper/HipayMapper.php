@@ -137,9 +137,8 @@ class HipayMapper
     }
 
     /**
-     *
-     * @param type $PSId
-     * @return type
+     * @param $PSId
+     * @return int|null
      */
     public function getMappedHipayCarrierFromPSId($PSId)
     {
@@ -174,7 +173,11 @@ class HipayMapper
 
     /**
      * save mapping
-     * @param type $values
+     *
+     * @param $type
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function setMapping($type, $values)
     {
@@ -224,6 +227,7 @@ class HipayMapper
 
     /**
      * check if id is an hipay category code
+     *
      * @param int $catId
      * @return boolean
      */
@@ -239,10 +243,10 @@ class HipayMapper
     }
 
     /**
-     *
-     * @param type $idCarrierOld
-     * @param type $idCarrierNew
-     * @return boolean
+     * @param $idCarrierOld
+     * @param $idCarrierNew
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function updateCarrier($idCarrierOld, $idCarrierNew)
     {

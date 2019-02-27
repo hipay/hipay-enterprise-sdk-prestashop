@@ -38,7 +38,7 @@ class HipayConfigFormHandler
     /**
      * Save Account informations send by config page form
      *
-     * @return : bool
+     * @return bool
      * */
     public function saveAccountInformations()
     {
@@ -171,7 +171,7 @@ class HipayConfigFormHandler
     /**
      * Save Global payment informations send by config page form
      *
-     * @return : bool
+     * @return bool
      * */
     public function saveGlobalPaymentInformations()
     {
@@ -229,6 +229,7 @@ class HipayConfigFormHandler
 
     /**
      * save credit cards settings form
+     *
      * @return boolean
      */
     public function saveCreditCardInformations($context)
@@ -354,6 +355,7 @@ class HipayConfigFormHandler
 
     /**
      * Save fraud settings
+     *
      * @return boolean
      */
     public function saveFraudInformations()
@@ -392,8 +394,8 @@ class HipayConfigFormHandler
     /**
      * Save Category Mapping informations send by config page form
      *
-     * @return : bool
-     * */
+     * @return bool
+     */
     public function saveCategoryMappingInformations()
     {
         $this->module->logs->logInfos('# saveCategoryMappingInformations');
@@ -428,8 +430,8 @@ class HipayConfigFormHandler
     /**
      * Save Carrier Mapping informations send by config page form
      *
-     * @return : bool
-     * */
+     * @return bool
+     */
     public function saveCarrierMappingInformations()
     {
         $this->module->logs->logInfos('# SaveCarrierMappingInformations');
@@ -473,10 +475,6 @@ class HipayConfigFormHandler
         return false;
     }
 
-    /**
-     *
-     * @return type
-     */
     private function save3DSecureInformations()
     {
         $this->module->logs->logInfos('# save3DSecureInformations');
