@@ -1,3 +1,7 @@
+# Version 2.5.1
+
+- Fix : Category and carrier mapping not saving
+
 # Version 2.5.0
 
 - Add one-click support for Hosted Page
