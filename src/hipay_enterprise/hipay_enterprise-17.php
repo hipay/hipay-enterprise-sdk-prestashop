@@ -329,7 +329,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'modules/' . $this->name . '/views/js/devicefingerprint.js'
             );
             $this->context->controller->registerJavascript(
-                'device-fingerprint',
+                'cc-functions',
                 'modules/' . $this->name . '/views/js/cc.functions.js'
             );
             $this->context->controller->registerJavascript(

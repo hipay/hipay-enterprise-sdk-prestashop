@@ -41,7 +41,8 @@ class HipayDBQuery
 
     /**
      * Create categories mapping table
-     * @return type
+     *
+     * @return bool
      */
     public function createCatMappingTable()
     {
@@ -59,7 +60,8 @@ class HipayDBQuery
 
     /**
      * Create categories mapping table
-     * @return type
+     *
+     * @return bool
      */
     public function createCarrierMappingTable()
     {
@@ -78,10 +80,6 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
-    /**
-     *
-     * @return type
-     */
     public function createOrderRefundCaptureTable()
     {
         $this->logs->logInfos('Create Hipay order refund capture table');
@@ -101,10 +99,6 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
-    /**
-     *
-     * @return type
-     */
     public function createCCTokenTable()
     {
         $this->logs->logInfos('Create Hipay credit card token table');
@@ -126,10 +120,6 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
-    /**
-     *
-     * @return type
-     */
     public function createHipayTransactionTable()
     {
         $this->logs->logInfos('Create Hipay transaction table');
@@ -155,10 +145,6 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
-    /**
-     *
-     * @return type
-     */
     public function createHipayOrderCaptureType()
     {
         $this->logs->logInfos('Create Hipay order capture type table');
@@ -175,7 +161,8 @@ class HipayDBQuery
 
     /**
      * Delete Hipay mapping table
-     * @return type
+     *
+     * @return bool
      */
     public function deleteCatMappingTable()
     {
@@ -187,7 +174,8 @@ class HipayDBQuery
 
     /**
      * Delete Hipay mapping table
-     * @return type
+     *
+     * @return bool
      */
     public function deleteCarrierMappingTable()
     {
@@ -213,20 +201,13 @@ class HipayDBQuery
         return Db::getInstance()->execute($sql);
     }
 
-    public function deleteOrderCaptureTypoeTable()
-    {
-        $this->logs->logInfos('Delete order capture type table');
-
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE . '`';
-        return Db::getInstance()->execute($sql);
-    }
-
     /**
      * set activated currency for the module
-     * @param type $moduleId
-     * @param type $moduleId
-     * @param type $iso
-     * @return type
+     *
+     * @param $moduleId
+     * @param $shopId
+     * @param $iso
+     * @return bool
      */
     public function setCurrencies($moduleId, $shopId, $iso)
     {
@@ -240,6 +221,7 @@ class HipayDBQuery
 
     /**
      * get last cart from user ID
+     *
      * @param int $userId
      * @return boolean / Cart
      */
@@ -264,6 +246,7 @@ class HipayDBQuery
 
     /**
      * start sql transaction
+     *
      * @param int $cartId
      */
     public function setSQLLockForCart($cartId, $origin)
@@ -282,6 +265,8 @@ class HipayDBQuery
 
     /**
      * commit transaction and release sql lock
+     *
+     * @param $origin
      */
     public function releaseSQLLock($origin)
     {
@@ -294,8 +279,8 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $cartId
+     * @param $cartId
+     * @return bool
      */
     public function getOrderByCartId($cartId)
     {
@@ -307,25 +292,9 @@ class HipayDBQuery
     }
 
     /**
-     * return transaction from Order Id
-     * @return type
-     */
-    public function getTransactionFromOrder($orderId)
-    {
-        $sql = 'SELECT DISTINCT(op.transaction_id)
-                FROM `' . _DB_PREFIX_ . 'order_payment` op
-                INNER JOIN `' . _DB_PREFIX_ . 'orders` o ON o.reference = op.order_reference
-                WHERE o.id_order = ' . pSQL((int)$orderId);
-
-        $result = Db::getInstance()->getRow($sql);
-
-        return $result;
-    }
-
-    /**
-     *
-     * @param int $idShop
-     * @return type
+     * @param $idShop
+     * @return array|false|mysqli_result|null|PDOStatement|resource
+     * @throws PrestaShopDatabaseException
      */
     public function getHipayMappedCategories($idShop)
     {
@@ -337,9 +306,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param int $idShop
-     * @return type
+     * @param $idShop
+     * @return array|false|mysqli_result|null|PDOStatement|resource
+     * @throws PrestaShopDatabaseException
      */
     public function getHipayMappedCarriers($idShop)
     {
@@ -352,44 +321,31 @@ class HipayDBQuery
 
     /**
      * insert row in HIPAY_CAT_MAPPING_TABLE
-     * @param type $values
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
-    public function setHipayCatMapping($values, $shopId)
+    public function setHipayCatMapping($values)
     {
-        try {
-            Db::getInstance()->insert(HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $values);
-        } catch (Exception $exc) {
-            $where = "`shop_id` = " . (int)$shopId;
-
-            Db::getInstance()->delete(HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $where);
-
-            Db::getInstance()->insert(HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $values);
-        }
-        return true;
+        return Db::getInstance()->insert(HipayDBQuery::HIPAY_CAT_MAPPING_TABLE, $values, false, true, Db::REPLACE);
     }
 
     /**
      * insert row in HIPAY_CARRIER_MAPPING_TABLE
-     * @param type $values
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
-    public function setHipayCarrierMapping($values, $shopId)
+    public function setHipayCarrierMapping($values)
     {
-        try {
-            Db::getInstance()->insert(HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $values);
-        } catch (Exception $exc) {
-            $where = "`shop_id` = " . (int)$shopId;
-
-            Db::getInstance()->delete(HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $where);
-
-            Db::getInstance()->insert(HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $values);
-        }
-        return true;
+        return Db::getInstance()->insert(HipayDBQuery::HIPAY_CARRIER_MAPPING_TABLE, $values, false, true, Db::REPLACE);
     }
 
     /**
-     *
-     * @param type $PSId
-     * @return int
+     * @param $PSId
+     * @return array|bool|null|object
      */
     public function getHipayCatFromPSId($PSId)
     {
@@ -403,9 +359,8 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $PSId
-     * @return int
+     * @param $PSId
+     * @return array|bool|null|object
      */
     public function getHipayCarrierFromPSId($PSId)
     {
@@ -420,9 +375,10 @@ class HipayDBQuery
 
     /**
      * check if specific order status exist in $idOrder order history
-     * @param type $status
-     * @param type $idOrder
-     * @return boolean
+     *
+     * @param $status
+     * @param $idOrder
+     * @return bool
      */
     public function checkOrderStatusExist($status, $idOrder)
     {
@@ -442,6 +398,13 @@ class HipayDBQuery
         return false;
     }
 
+    /**
+     * @param $order_ref
+     * @param $trans_id
+     * @return bool|OrderPayment
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function findOrderPayment($order_ref, $trans_id)
     {
         $payment_id = Db::getInstance()->getValue(
@@ -458,8 +421,10 @@ class HipayDBQuery
 
     /**
      * count order payment line
-     * @param type $orderReference
-     * @return boolean
+     *
+     * @param $orderReference
+     * @param null $transactionId
+     * @return int
      */
     public function countOrderPayment($orderReference, $transactionId = null)
     {
@@ -485,7 +450,8 @@ class HipayDBQuery
      * Check if there is a duplicated OrderPayment and remove duplicate from same order ref but with incomplete payment method name
      * When order is set to Payed order status Prestashop create order payment with remaining amount to pay
      * we need to erase this line
-     * @param type $orderReference
+     *
+     * @param $orderReference
      */
     public function deleteOrderPaymentDuplicate($orderReference)
     {
@@ -500,8 +466,10 @@ class HipayDBQuery
 
     /**
      * save hipay transaction (notification)
-     * @param type $values
-     * @return type
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function setHipayTransaction($values)
     {
@@ -533,8 +501,10 @@ class HipayDBQuery
 
     /**
      * return order transaction reference from hipay transaction
-     * @param type $orderId
-     * @return string|boolean
+     *
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function getTransactionReference($orderId)
     {
@@ -551,8 +521,10 @@ class HipayDBQuery
 
     /**
      * return order payment product from hipay transaction
-     * @param type $orderId
-     * @return boolean
+     *
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function getPaymentProductFromMessage($orderId)
     {
@@ -568,8 +540,10 @@ class HipayDBQuery
 
     /**
      * return order basket from hipay transaction
-     * @param type $orderId
-     * @return boolean
+     *
+     * @param $orderId
+     * @return array|bool
+     * @throws PrestaShopDatabaseException
      */
     public function getOrderBasket($orderId)
     {
@@ -588,8 +562,10 @@ class HipayDBQuery
 
     /**
      * save order capture data (basket)
-     * @param type $values
-     * @return type
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function setCaptureOrRefundOrder($values)
     {
@@ -605,8 +581,10 @@ class HipayDBQuery
 
     /**
      * get order capture saved data (basket)
-     * @param type $orderId
-     * @return type
+     *
+     * @param $orderId
+     * @return array
+     * @throws PrestaShopDatabaseException
      */
     public function getCapturedItems($orderId)
     {
@@ -619,8 +597,10 @@ class HipayDBQuery
 
     /**
      * get order refund saved data (basket)
-     * @param type $orderId
-     * @return type
+     *
+     * @param $orderId
+     * @return array
+     * @throws PrestaShopDatabaseException
      */
     public function getRefundedItems($orderId)
     {
@@ -633,8 +613,10 @@ class HipayDBQuery
 
     /**
      * return true if a capture or refund have been executed from TPP BO
-     * @param type $orderId
-     * @return type
+     *
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function captureOrRefundFromBO($orderId)
     {
@@ -648,9 +630,12 @@ class HipayDBQuery
 
     /**
      * get capture or refund saved data (basket)
-     * @param type $orderId
-     * @param type $operation
-     * @return type
+     *
+     * @param $orderId
+     * @param $operation
+     * @param $type
+     * @return array
+     * @throws PrestaShopDatabaseException
      */
     private function getMaintainedItems($orderId, $operation, $type)
     {
@@ -678,9 +663,10 @@ class HipayDBQuery
 
     /**
      * get number of capture or refund attempt
-     * @param type $type
-     * @param type $orderId
-     * @return type
+     *
+     * @param $operation
+     * @param $orderId
+     * @return int
      */
     public function getNbOperationAttempt($operation, $orderId)
     {
@@ -703,8 +689,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function feesAreCaptured($orderId)
     {
@@ -712,8 +699,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function feesAreRefunded($orderId)
     {
@@ -721,8 +709,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function discountsAreCaptured($orderId)
     {
@@ -730,8 +719,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function discountsAreRefunded($orderId)
     {
@@ -739,10 +729,11 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
-     * @param type $operation
-     * @return boolean
+     * @param $orderId
+     * @param $type
+     * @param $operation
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     private function feesOrDiscountAreMaintained($orderId, $type, $operation)
     {
@@ -769,9 +760,11 @@ class HipayDBQuery
 
     /**
      * check if token exist for this customer
-     * @param type $customerId
-     * @param type $token
-     * @return boolean
+     *
+     * @param $customerId
+     * @param $token
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function ccTokenExist(
         $customerId,
@@ -789,9 +782,11 @@ class HipayDBQuery
     }
 
     /**
-     * save credit card token and other informations
-     * @param type $values
-     * @return type
+     * save credit card token and other information
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function setCCToken($values)
     {
@@ -804,6 +799,7 @@ class HipayDBQuery
 
     /**
      * get all credit card saved for this customer
+     *
      * @param type $customerId
      * @return boolean
      */
@@ -827,10 +823,12 @@ class HipayDBQuery
     }
 
     /**
-     * get token informations
-     * @param type $customerId
-     * @param type $token
-     * @return boolean
+     * get token information
+     *
+     * @param $customerId
+     * @param $token
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function getToken($customerId, $token)
     {
@@ -847,9 +845,11 @@ class HipayDBQuery
 
     /**
      * delete credit card token
-     * @param type $customerId
-     * @param type $tokenId
-     * @return boolean
+     *
+     * @param $customerId
+     * @param $tokenId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function deleteToken($customerId, $tokenId)
     {
@@ -888,8 +888,10 @@ class HipayDBQuery
 
     /**
      * save order capture type
-     * @param type $values
-     * @return type
+     *
+     * @param $values
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function setOrderCaptureType($values)
     {
@@ -901,8 +903,9 @@ class HipayDBQuery
     }
 
     /**
-     *
-     * @param type $orderId
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
      */
     public function isManualCapture($orderId)
     {
