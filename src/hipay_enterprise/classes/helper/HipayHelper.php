@@ -533,11 +533,14 @@ class HipayHelper
                             foreach ($checkoutFieldsMandatory as $field) {
                                 switch ($field) {
                                     case "phone":
-                                        if (empty($address->{$field})) {
+                                        $phone = (isset($address->phone_mobile) && $address->phone_mobile != '') ?
+                                            $address->phone_mobile : $address->phone;
+
+                                        if (empty($phone)) {
                                             $fieldMandatory[] = $module->l(
                                                 'Please enter your phone number to use this payment method.'
                                             );
-                                        } elseif (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"', $address->{$field})) {
+                                        } elseif (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"', $phone)) {
                                             $fieldMandatory[] = $module->l('Please check the phone number entered.');
                                         }
                                         break;

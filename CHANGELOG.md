@@ -1,3 +1,7 @@
+# Version 2.5.2
+
+- Fix: Bnppf with Prestashop 1.6
+
 # Version 2.5.1
 
 - Fix : Category and carrier mapping not saving
