@@ -39,13 +39,13 @@
             </div>
         {/if}
     </div>
+    <input id="ioBB" type="hidden" name="ioBB">
 
 </form>
 <div id="payment-loader-hp" style='text-align: center; display:none;'>
     <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
     <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded',
         function() {
