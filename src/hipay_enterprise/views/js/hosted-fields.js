@@ -23,7 +23,7 @@ $(document).ready(function () {
                 return true; // allow whatever action that would normally happen to continue
             }
 
-            hipayHF.createToken()
+            hipayHF.getPaymentData()
                 .then(function (response) {
                         if (isCardTypeOk(response)) {
                             displayLoadingDiv();
@@ -37,9 +37,8 @@ $(document).ready(function () {
                             return false;
                         }
                     },
-                    function (error) {
-                        $("#error-js").show();
-                        $("#error-js").text(error);
+                    function (errors) {
+                        handleErrorhipayHF(errors);
                     }
                 );
         }
@@ -86,22 +85,58 @@ function initHostedFields() {
 
     hipayHF = hipay.create("card", config);
 
-    hipayHF.on("change", function (data) {
-        handleErrorhipayHF(data.valid, data.error);
+    hipay.injectBaseStylesheet();
+
+    hipayHF.on("blur", function (data) {
+        // Get error container
+        var domElement = document.querySelector(
+            "[data-hipay-id='hipay-card-field-error-" + data.element + "']"
+        );
+
+        // Finish function if no error DOM element
+        if (!domElement) {
+            return;
+        }
+
+        // If not valid & not empty add error
+        if (!data.validity.valid && !data.validity.empty) {
+            domElement.innerText = data.validity.error;
+        } else {
+            domElement.innerText = '';
+        }
+    });
+
+    hipayHF.on("inputChange", function (data) {
+        // Get error container
+        var domElement = document.querySelector(
+            "[data-hipay-id='hipay-card-field-error-" + data.element + "']"
+        );
+
+        // Finish function if no error DOM element
+        if (!domElement) {
+            return;
+        }
+
+        // If not valid & not potentiallyValid add error (input is focused)
+        if (!data.validity.valid && !data.validity.potentiallyValid) {
+            domElement.innerText = data.validity.error;
+        } else {
+            domElement.innerText = '';
+        }
     });
 
 }
 
-// Function to call when card change
-// It display/hide the error message
-function handleErrorhipayHF(valid, error) {
-    if (error) {
-        $("#error-js").show();
-    } else {
-        $("#error-js").hide();
-    }
+function handleErrorhipayHF(errors) {
 
-    document.getElementById("error-js").innerHTML = error
-        ? '<i class="material-icons"></i>' + error
-        : error;
+    for (var error in errors) {
+        var domElement = document.querySelector(
+            "[data-hipay-id='hipay-card-field-error-" + errors[error].field + "']"
+        );
+
+        // If DOM element add error inside
+        if (domElement) {
+            domElement.innerText = errors[error].error;
+        }
+    }
 }
