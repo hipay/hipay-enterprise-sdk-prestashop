@@ -1,3 +1,11 @@
+#credit-card-group {
+    margin-bottom: 20px;
+}
+
+.hipay-field-error {
+    line-height: 11px !important;
+}
+
 .hipayHF-row {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -37,7 +45,7 @@
     width: 50%;
 }
 
-.ie9 .hipayHF-field-container-half{
+.ie9 .hipayHF-field-container-half {
     width: 100%;
     margin-bottom: 16px;
 }
@@ -161,17 +169,18 @@
     border-bottom: dotted 1px #cfd7df;
 }
 
-#hipayHF-help-cvc{
+#hipayHF-help-cvc {
     font-size: 14px;
     padding: .75rem 1.25rem;
-    margin-top: 4px;
+    margin-top: 25px;
     border-radius: .25rem;
     color: #856404;
     background-color: #fff3cd;
     border: solid 1px #ffeeba;
     display: none;
 }
-#hipayHF-help-cvc.visible{
+
+#hipayHF-help-cvc.visible {
     display: block;
 }
 
@@ -224,7 +233,7 @@
     margin-top: 15px;
 }
 
-.one-click{
+.one-click {
     margin: 10px;
     padding: 10px 0;
 }
@@ -300,7 +309,7 @@ a:hover.tooltips span {
     color: #c8c8c8 !important;
 }
 
-.hipay-form-16-title{
+.hipay-form-16-title {
     font-family: "Open Sans", sans-serif;
     font-weight: 600;
     text-transform: uppercase;
