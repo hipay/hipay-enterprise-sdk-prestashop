@@ -13,7 +13,9 @@
     "frontPosition": 4,
     "activated": 0,
     "canRefund": 1,
+    "canRefundPartially": 1,
     "canManualCapture": 1,
+    "canManualCapturePartially": 1,
     "currencies": [
       "EUR"
     ],
