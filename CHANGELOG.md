@@ -1,3 +1,10 @@
+# Version 2.6.0
+
+- Add error message on field (hosted fields)
+- Fix: device fingerprint on hosted fields
+- Update payment method configuration
+- Fix: credit card number format on paste
+
 # Version 2.5.2
 
 - Fix: Bnppf with Prestashop 1.6
