@@ -21,6 +21,7 @@
             <div class="hipayHF-field" id="hipayHF-card-holder"></div>
             <label class="hipayHF-label" for="hipayHF-card-holder">{l s='Fullname' mod='hipay_enterprise'}</label>
             <div class="hipayHF-baseline"></div>
+            <div class="hipay-field-error" data-hipay-id='hipay-card-field-error-cardHolder'></div>
         </div>
     </div>
     <div class="hipayHF-row">
@@ -28,6 +29,7 @@
             <div class="hipayHF-field" id="hipayHF-card-number"></div>
             <label class="hipayHF-label" for="hipayHF-card-number">{l s='Card Number' mod='hipay_enterprise'}</label>
             <div class="hipayHF-baseline"></div>
+            <div class="hipay-field-error" data-hipay-id='hipay-card-field-error-cardNumber'></div>
         </div>
     </div>
     <div class="hipayHF-row">
@@ -35,11 +37,13 @@
             <div class="hipayHF-field" id="hipayHF-date-expiry"></div>
             <label class="hipayHF-label" for="hipayHF-date-expiry">{l s='Expiry date' mod='hipay_enterprise'}</label>
             <div class="hipayHF-baseline"></div>
+            <div class="hipay-field-error" data-hipay-id='hipay-card-field-error-expiryDate'></div>
         </div>
         <div class="hipayHF-field-container hipayHF-field-container-half">
             <div class="hipayHF-field" id="hipayHF-cvc"></div>
             <label class="hipayHF-label" for="hipayHF-cvc">{l s='CVC' mod='hipay_enterprise'}</label>
             <div class="hipayHF-baseline"></div>
+            <div class="hipay-field-error" data-hipay-id='hipay-card-field-error-cvc'></div>
         </div>
     </div>
 
