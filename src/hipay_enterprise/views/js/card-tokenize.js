@@ -10,16 +10,6 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-$(document).ready(function () {
-    $(".ioBB").val($("#ioBB").val());
-    if ($("#credit-card-group").length) {
-        $('<a href="#" class="tooltips">' + i18nCVCLabelLocal + '<span>' + i18nCVCTooltipLocal + '</span></a>').insertAfter('#cvc');
-        $('.card-js #card-number').attr('placeholder', i18nCardNumberLocal);
-        $('.card-js #the-card-name-id').attr('placeholder', i18nNameOnCardLocal);
-        $('.card-js .expiry').attr('placeholder', i18nDateLocal);
-    }
-});
-
 $("#card-number").focus(function () {
     $('#radio-no-token').prop('checked', true);
 });

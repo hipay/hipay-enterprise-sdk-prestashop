@@ -4,7 +4,7 @@ stages:
  - build-test
  - test
  - clean-stack
- - analysis
+# - analysis
  - package
  - build
  - deploy
@@ -90,31 +90,29 @@ clean-stack-test:
     - pi-commerce-no-overlay
   when: always
 
-sonarqube:
-  stage: analysis
-  image: ciricihq/gitlab-sonar-scanner
-  variables:
-    SONAR_URL: http://172.17.0.1:19000
-    SONAR_ANALYSIS_MODE: preview
-    SONAR_TOKEN: $SONAR_LOGIN
-  script:
-    - /usr/bin/sonar-scanner-run.sh
-  retry: 2
-  tags:
-    - pi-commerce-no-overlay
-
-sonarqube-reports:
-  stage: analysis
-  image: ciricihq/gitlab-sonar-scanner
-  variables:
-    SONAR_URL: http://172.17.0.1:19000
-    SONAR_ANALYSIS_MODE: "publish"
-    SONAR_TOKEN: $SONAR_LOGIN
-  script:
-    - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
-  retry: 2
-  tags:
-    - pi-commerce-no-overlay
+#sonarqube:
+#  stage: analysis
+#  image: ciricihq/gitlab-sonar-scanner
+#  variables:
+#    SONAR_URL: http://172.17.0.1:19000
+#    SONAR_ANALYSIS_MODE: preview
+#    SONAR_TOKEN: $SONAR_LOGIN
+#  script:
+#    - /usr/bin/sonar-scanner-run.sh
+#  tags:
+#    - pi-commerce-no-overlay
+#
+#sonarqube-reports:
+#  stage: analysis
+#  image: ciricihq/gitlab-sonar-scanner
+#  variables:
+#    SONAR_URL: http://172.17.0.1:19000
+#    SONAR_ANALYSIS_MODE: "publish"
+#    SONAR_TOKEN: $SONAR_LOGIN
+#  script:
+#    - unset CI_BUILD_REF && /usr/bin/sonar-scanner-run.sh
+#  tags:
+#    - pi-commerce-no-overlay
 
 package:
  stage: package
