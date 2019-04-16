@@ -1,3 +1,7 @@
+# Version 2.6.1
+
+- Fix: shipping fees calculation
+
 # Version 2.6.0
 
 - Add error message on field (hosted fields)
