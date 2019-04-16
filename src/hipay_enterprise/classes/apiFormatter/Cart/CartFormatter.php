@@ -179,10 +179,10 @@ class CartFormatter extends ApiFormatterAbstract
             $carrier = new Carrier($cartSummary["carrier"]->id);
             $product_reference = HipayHelper::getCarrierRef($carrier);
             $name = $cartSummary["carrier"]->name;
-            $unit_price = (float)$cartSummary["total_shipping"];
+            $unit_price = $this->cart->getTotalShippingCost();
             $tax_rate = $cartSummary["carrier"]->getTaxesRate($this->delivery);
             $discount = 0.00;
-            $total_amount = (float)$cartSummary["total_shipping"];
+            $total_amount = $this->cart->getTotalShippingCost();
             $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
                 $product_reference,
                 $name,
