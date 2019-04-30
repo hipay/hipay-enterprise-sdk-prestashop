@@ -159,7 +159,24 @@ exports.billingInformation = function billingInformation(test, country) {
                 'select[name="id_country"]': adress['id_country'],
                 'input[name="phone"]': '0171000000'
             }, false);
+
+
             this.click("section#checkout-addresses-step footer.form-footer button.continue");
+
+            if (adress['region'] !== undefined) {
+                this.waitForSelector('select[name="id_state"]', function () {
+                    this.fillSelectors('#checkout-addresses-step form', {
+                        'select[name="id_state"]': adress['region'],
+                    }, false);
+                    this.click("section#checkout-addresses-step footer.form-footer button.continue");
+                }, function fail() {
+                    test.assertExists(
+                        'select[name="id_state"]',
+                        "select[name=\"id_state\"] exists"
+                    );
+                }, 50000);
+            }
+
             this.echo("Done", "COMMENT");
         }, function fail() {
             test.assertExists(
@@ -180,7 +197,6 @@ function getAdressByCountry(country) {
         'street': '1249 Tongass Avenue, Suite B',
         'city': 'Ketchikan',
         'cp': '9901',
-        'region': '2',
         'id_country': '8'
     };
     switch (country) {
@@ -188,8 +204,15 @@ function getAdressByCountry(country) {
             adress['street'] = 'Rue de la paix';
             adress['city'] = 'PARIS';
             adress['cp'] = '75000';
-            adress['region'] = '257';
             casper.echo("French Address", "COMMENT");
+            break;
+        case "IT":
+            adress['street'] = 'Rue de la paix';
+            adress['city'] = 'ROMA';
+            adress['cp'] = '75000';
+            adress['region'] = '197';
+            adress['id_country'] = '10';
+            casper.echo("Italian Address", "COMMENT");
             break;
         case "BR":
             casper.echo("Brazilian Address", "COMMENT");
@@ -198,7 +221,6 @@ function getAdressByCountry(country) {
             adress['street'] = 'Rue de la paix';
             adress['city'] = 'Amsterdam';
             adress['cp'] = '1000 AA';
-            adress['region'] = '257';
             adress['id_country'] = '13';
             casper.echo("Netherlands Address", "COMMENT");
             break;

@@ -17,9 +17,18 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 #===================================#
 #       CUSTOMS CONFIGURATIONS
 #===================================#
-if [ ! -f /var/www/html/console/console.php ];then
+if [ ! -f /var/www/html/prestashopConsole.phar ];then
 
     cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
+
+    if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ];then
+        # INSTALL X DEBUG
+        echo '' | pecl install xdebug-2.6.1
+
+        echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
+        echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini
+        echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+    fi
 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
@@ -31,17 +40,14 @@ if [ ! -f /var/www/html/console/console.php ];then
     printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     cd /var/www/html/ \
-    && git clone https://github.com/nenes25/prestashop_console.git console \
-    && cd console \
-    && rm composer.lock \
-    && composer install
+    && wget https://github.com/nenes25/prestashop_console/raw/master/bin/prestashopConsole.phar \
+    && chmod +x prestashopConsole.phar
 
     # Installation  HiPay's module
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    cd /var/www/html/console/ \
-    && php console.php module:install hipay_enterprise
+    ./prestashopConsole.phar module:install hipay_enterprise
 
     # Configure module credentials
     # Installation  HiPay's module
@@ -49,7 +55,7 @@ if [ ! -f /var/www/html/console/console.php ];then
     printf "\n${COLOR_SUCCESS}     Configuration HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
-    CONFIG=`php console.php configuration:get HIPAY_CONFIG`
+    CONFIG=`./prestashopConsole.phar configuration:get HIPAY_CONFIG`
     CONFIG=${CONFIG/'"api_username_sandbox":""'/'"api_username_sandbox":"'$HIPAY_API_USER_TEST'"'}
     CONFIG=${CONFIG/'"api_password_sandbox":""'/'"api_password_sandbox":"'$HIPAY_API_PASSWORD_TEST'"'}
     CONFIG=${CONFIG/'"api_tokenjs_username_sandbox":""'/'"api_tokenjs_username_sandbox":"'$HIPAY_TOKENJS_USERNAME_TEST'"'}
@@ -64,24 +70,16 @@ if [ ! -f /var/www/html/console/console.php ];then
         CONFIG=${CONFIG/'"test":"SHA1"'/'"test":"SHA512"'}
     fi
 
-    php console.php configuration:set HIPAY_CONFIG "$CONFIG"
+    ./prestashopConsole.phar configuration:set HIPAY_CONFIG "$CONFIG"
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ];then
-        php console.php  configuration:set PS_SSL_ENABLED 1
+        ./prestashopConsole.phar  configuration:set PS_SSL_ENABLED 1
     fi
 
-    php console.php c:flush
+    ./prestashopConsole.phar c:flush
 
-    if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ];then
-        # INSTALL X DEBUG
-        echo '' | pecl install xdebug-2.6.1
 
-        echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
-        echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini
-        echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
-    fi   
-
-   #===================================#
+    #===================================#
     #            ADD CRON
     #===================================#
     #crontab -l | { cat; echo "*/5 * * * *  php /var/www/html/modules/hipay_enterprise/cron.php > /var/log/cron.log"; } | crontab -
