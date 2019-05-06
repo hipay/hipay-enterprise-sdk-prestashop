@@ -28,13 +28,12 @@ if [ "$1" = '' ] || [ "$1" = '--help' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database smtp
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml stop prestashop17 database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop17 database
      rm -Rf data/
-     rm -Rf web16/
      rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml build --no-cache prestashop16 prestashop17 database smtp
-     docker-compose -f docker-compose.dev.yml up -d prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop17 database
+     docker-compose -f docker-compose.dev.yml up -d prestashop17 database
 fi
 
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
@@ -48,8 +47,8 @@ if [ "$1" = 'init' ] && [ "$2" != '' ];then
 fi
 
 if [ "$1" = 'restart' ];then
-     docker-compose -f docker-compose.dev.yml  stop prestashop16 prestashop17 database smtp
-     docker-compose -f docker-compose.dev.yml  up -d prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml  stop prestashop17 database
+     docker-compose -f docker-compose.dev.yml  up -d prestashop17 database
 fi
 
 if [ "$1" = 'kill' ];then
@@ -92,7 +91,7 @@ if [ "$1" = 'test' ]; then
    fi
 
    cd bin/tests/000_lib
-   npm install
+#   npm install
    cd ../../../;
 
    if [ "$2" = '17' ]; then
@@ -103,5 +102,5 @@ if [ "$1" = 'test' ]; then
     PRESTASHOP_VERSION=1.6
    fi
 
-   casperjs test $pathPreFile ${pathDir}/[0-1]*/[1-1][3-3][0-0][0-0]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
+   casperjs test $pathPreFile ${pathDir}/[0-1]*/[1-1][4-4][0-0][0-0]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
 fi

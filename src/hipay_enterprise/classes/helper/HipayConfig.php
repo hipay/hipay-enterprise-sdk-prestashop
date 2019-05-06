@@ -261,10 +261,26 @@ class HipayConfig
 
             $this->updatePaymentGlobal($configHipay);
 
+            $this->updateAccountConfig($configHipay);
+
             $this->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
-
-
         }
+    }
+
+    /**
+     * Update Account config with new default values
+     *
+     * @param $configHipay
+     */
+    private function updateAccountConfig(&$configHipay)
+    {
+        $defaultConfig = $this->getDefaultConfig();
+
+        // add new fields
+        $configHipay["account"] = array_merge(
+            $configHipay["account"],
+            array_diff_key($defaultConfig["account"], $configHipay["account"])
+        );
     }
 
     /**
@@ -285,10 +301,14 @@ class HipayConfig
         // update operating_mode with new format
         switch ($configHipay["payment"]["global"]["operating_mode"]) {
             case "api":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::DIRECT_POST);
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(
+                    UXMode::DIRECT_POST
+                );
                 break;
             case "hosted_page":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::HOSTED_PAGE);
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(
+                    UXMode::HOSTED_PAGE
+                );
                 break;
         }
     }
