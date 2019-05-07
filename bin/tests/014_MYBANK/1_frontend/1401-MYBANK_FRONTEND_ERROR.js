@@ -1,37 +1,35 @@
-/**
- * HiPay Enterprise SDK Prestashop
- *
- * 2017 HiPay
- *
- * NOTICE OF LICENSE
- *
- * @author    HiPay <support.tpp@hipay.com>
- * @copyright 2017 HiPay
- * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- */
-
 /**********************************************************************************************
  *
- *                       VALIDATION TEST METHOD : HOSTED
+ *                       VALIDATION TEST METHOD : MyBank
  *
  *  To launch test, please pass two arguments URL (BASE URL)  and TYPE_CC ( CB,VI,MC )
  *
  /**********************************************************************************************/
 
-var paymentType = "HiPay Enterprise Hosted Page",
-    currentBrandCC = utilsHiPay.getTypeCC();
+var paymentType = "HiPay Enterprise MyBank";
 
-casper.test.begin('Test Checkout ' + paymentType + ' with redirect', function (test) {
+casper.test.begin('Test Checkout ' + paymentType, function (test) {
     phantom.clearCookies();
 
-    casper.start(baseURL)
+    var label;
+
+    casper.start(baseURL + "admin/")
         .then(function () {
             adminMod.logToBackend(test);
         })
         .then(function () {
             adminMod.gotToHiPayConfiguration(test);
-            adminMod.configureOperatingMode(test, "hosted_page");
-            adminMod.configureHostedDisplay(test, "redirect");
+        })
+        .then(function () {
+            adminMod.activateMethod(test, "mybank");
+        })
+        .then(function () {
+            this.waitForSelector('input[name="mybank_displayName[fr]"]', function success() {
+                label = this.getElementAttribute('input[name="mybank_displayName[fr]"]', 'value');
+                test.info("Display name in checkout should be :" + label);
+            }, function fail() {
+                test.assertExists('input[name="mybank_displayName[fr]"]', "Input name exist");
+            });
         })
         .thenOpen(baseURL, function () {
             checkoutMod.selectItemAndOptions(test);
@@ -46,13 +44,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with redirect', function (t
             checkoutMod.shippingMethod(test);
         })
         .then(function () {
-            checkoutMod.selectMethodInCheckout(test, labelPayByCard, true);
-        })
-        .then(function () {
-            paymentLibHiPay.fillCCFormular( test, false);
-        })
-        .then(function () {
-            adminMod.orderResultSuccess(test);
+            test.assertDoesntExist(x('//%s[text()=Payer par ' + label + ']'));
         })
         .run(function () {
             test.done();

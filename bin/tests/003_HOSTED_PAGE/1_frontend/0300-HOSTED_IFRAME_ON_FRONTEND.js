@@ -53,10 +53,9 @@ casper.test.begin('Test Checkout ' + paymentType + ' with Iframe and ' + current
         /* Fill payment formular inside iframe */
         .then(function () {
             this.wait(10000, function () {
-                this.withFrame(0, function () {
-                    paymentLibHiPay.fillPaymentFormularByPaymentProduct(currentBrandCC, test);
-                });
+                paymentLibHiPay.fillCCFormular(test, true);
             });
+
         })
         .then(function () {
             adminMod.orderResultSuccess(test);
