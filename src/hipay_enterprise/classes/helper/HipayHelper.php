@@ -537,18 +537,14 @@ class HipayHelper
                                             $address->phone_mobile : $address->phone;
 
                                         if (empty($phone)) {
-                                            $fieldMandatory[] = $module->l(
-                                                'Please enter your phone number to use this payment method.'
-                                            );
+                                            $fieldMandatory[] = $module->l('Please enter your phone number to use this payment method.');
                                         } elseif (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"', $phone)) {
                                             $fieldMandatory[] = $module->l('Please check the phone number entered.');
                                         }
                                         break;
                                     case "gender":
                                         if (empty($customer->id_gender)) {
-                                            $fieldMandatory[] = $module->l(
-                                                'Please inform your civility to use this method of payment.'
-                                            );
+                                            $fieldMandatory[] = $module->l('Please inform your civility to use this method of payment.');
                                         }
                                         break;
                                     default:

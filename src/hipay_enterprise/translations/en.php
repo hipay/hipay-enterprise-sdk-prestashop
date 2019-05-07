@@ -4,6 +4,7 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise-17_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Pay by';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_519976c8fa87be52c1d1b0af1923c1ce'] = 'HiPay Enterprise';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_6d9d74f646d6381f0221e0cb96b4c7dc'] = 'Fai pagare con HiPay Enterprise usando carte di credito, di debito e molti molti altri metodi di pagamento. Prezzi competitivi e nessuna configurazione richiesta!';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Registered notification from HiPay about captured amount of';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_dcff891b1393af8c2f13bcb13307d6dc'] = 'Registered notification from HiPay about refunded amount of';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_147b202e5d808b32bd8d1eaaa135a58e'] = 'Order total amount:';
@@ -21,7 +22,11 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'You have to enable the SOAP extension on your server to install this module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Pay by credit card';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Pay by';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8421ff4eedd1ef36b494adf1a5500c8b'] = 'You will be redirected to an external payment page. Please do not refresh the page during the process	';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2c84752887477f3a1d1ac7e0b6a39105'] = 'A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.	';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Please enter your phone number to use this payment method.	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_b1252ca7cb264a8e865f94348659ddcb'] = 'Please check the phone number entered.';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Please inform your civility to use this method of payment.	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Please check the information entered.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Order created by HiPay after success payment.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Registered notification from HiPay about captured amount of	';
@@ -47,11 +52,14 @@ $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_058990c1e83284d157854bf34bb0309d'] = 'Refused payment for order %s';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7fe'] = 'Fraudulent payment email';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_2fb302ad440d0eade342f67f7cfcfb31'] = 'Copy to';
+$_MODULE['<{hipay_enterprise}prestashop>hipayform_077040cdb8d3c4db4bb50351a952ef44'] = 'Enter a valid email, during a transaction challenged an email will be sent to this address	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_b627630626fd6ea907a6481cc1af9598'] = 'Copy method';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_f31ffd8a957ed58bd7f57e74a99ae496'] = 'The recipient will be in copy of the email';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_11b61d4b1d1cc34fb081410f0ec5595e'] = 'Separate email';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_8df0982966fe750f140b222aee116e79'] = 'Two mails are sent';
+$_MODULE['<{hipay_enterprise}prestashop>hipayform_165e7ce57962f7d8e6831ee7a7eed5bb'] = 'Bcc';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Save configuration changes';
+$_MODULE['<{hipay_enterprise}prestashop>hipayform_92f0352f846dae3265a134be268f14e8'] = 'Quando una transazione è probabilmente una frode, viene inviata un\'email all\'indirizzo e-mail di contatto del tuo shop e anche a un altro destinatario in copia. Configura qui l\'indirizzo email del destinatario in copia';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_7328fddefd53de471baeb6e2b764f78a'] = 'email@domain.com';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_00d23a76e43b46dae9ec7aa9dcbebb32'] = 'Enabled';
 $_MODULE['<{hipay_enterprise}prestashop>hipayforminput_b9f5c797ebbf55adccdd8539a65a0241'] = 'Disabled';
@@ -149,6 +157,7 @@ $_MODULE['<{hipay_enterprise}prestashop>account_955ad3298db330b5ee880c2c9e6f23a0
 $_MODULE['<{hipay_enterprise}prestashop>account_4268b46d86783cde575138a2f7f245c4'] = 'In test mode, payment cards are not really charged. Enable this option for testing purposes only.';
 $_MODULE['<{hipay_enterprise}prestashop>account_6f744347d54de2e46edf108f065b377c'] = 'Production configuration';
 $_MODULE['<{hipay_enterprise}prestashop>account_da3f162a03b8c1e927d2fa91dc0badfe'] = 'Generated in your HiPay Enterprise back office';
+$_MODULE['<{hipay_enterprise}prestashop>account_14f1f9729a8142e82600dac241e82fe2'] = 'e qui';
 $_MODULE['<{hipay_enterprise}prestashop>account_e1c2083b2a377b6df9c56fcdcba71b56'] = 'These API credentials are required to use the HiPay Enterprise module.';
 $_MODULE['<{hipay_enterprise}prestashop>account_9e76f8b807d3a2a3cbd1f307885175ad'] = 'You must generate public and private credentials.';
 $_MODULE['<{hipay_enterprise}prestashop>account_15c6ff697f4c361d46cabeca62c59fbb'] = 'You can also set specific credentials for your MO/TO order payments. If defined, they will be used when making your payments via the PrestaShop back office.';
@@ -212,6 +221,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'If \'Round on the total\' is activated in the PrestaShop configuration, the cart will not be sent and the payment methods forcing cart sending will be disabled.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Keep cart when payment fails';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Enable technical logs';
+$_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url	';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Discard changes';
@@ -430,6 +440,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformiframe-16_879f6b8877752685a96
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_9354dc0b37176ebaf3ce2f4adc85ef60'] = 'Paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_f1d3b424cd68795ecaa552883759aceb'] = 'Récapitulatif de la commande';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_879f6b8877752685a966564d072f498f'] = 'Votre panier est vide';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_148b2bc3888ea4c45fb942c1f2d24005'] = 'Payer avec une nouvelle carte de crédit';
@@ -537,6 +548,8 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_03ed23bea6d995c37463fc
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_5bf54f627807f6a4247706d80758657c'] = 'No transaction reference linked to this order';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_076fba4ed5dbb43df81bf55bfcc139b7'] = 'Select at least one item to capture';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_1216ce40106a95ed7b36d1e97b31599d'] = 'Capture amount must be greater than zero.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_c71d3ad9c88bcad768b88af9d7b31bd5'] = 'Capture amount must be lower than the amount still to be captured.	';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_7c1231480954da0e29816ecc4bb5f90e'] = 'You must capture discount because next capture amount will be lower than total discount amount.	';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_c0b9b794e1a576ce7a38dce6a245c67c'] = 'Capture has been validated.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_7f982d1fbaeb234e306099b815d460c7'] = 'Hash Algorithm for %s was already set with %s';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Hash Algorithm for %s has been syncrhonize with %s';
@@ -548,6 +561,8 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_03ed23bea6d995c37463fc5
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_5bf54f627807f6a4247706d80758657c'] = 'No transaction reference linked to this order';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_39d2b7e414467c725ba2be7ff1d98602'] = 'Select at least one item to refund';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_170e56581f50a891010abea41cd8fea3'] = 'Refund amount must be greater than zero.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_8277e2277acde3ac16e6bae1711ba57d'] = 'Refund amount must be lower than the amount still to be refunded.	';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_aa8c6ada0b8af0060be494414c7aa3aa'] = 'You must refund discount because next refund amount will be lower than total discount amount.	';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_a87c213c9a08d3c38c5cc5876f1ea995'] = 'Refund has been validated.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_1c35ce43b7738c6efd374c31b7bf85bb'] = 'Payment has been processed.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_9e216745f67cad13afde8537f3490021'] = 'Payment has been declined.';

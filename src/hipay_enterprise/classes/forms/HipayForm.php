@@ -90,10 +90,7 @@ class HipayForm extends HipayFormInput
             "send_payment_fraud_email_copy_to",
             $this->module->l('Copy To', 'HipayForm'),
             array(
-                'desc' => $this->module->l(
-                    'Enter a valid email, during a transaction challenged an email will be sent to this address',
-                    'HipayForm'
-                )
+                'desc' => $this->module->l('Enter a valid email, during a transaction challenged an email will be sent to this address', 'HipayForm')
             )
         );
 
@@ -111,10 +108,7 @@ class HipayForm extends HipayFormInput
                         "query" => array(
                             array(
                                 "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_BCC,
-                                "name" => $this->module->l(
-                                    'Bcc',
-                                    'HipayForm'
-                                )
+                                "name" => $this->module->l('Bcc', 'HipayForm')
                             ),
                             array(
                                 "send_payment_fraud_email_copy_method_id" => $this::TYPE_EMAIL_SEPARATE,
@@ -145,8 +139,7 @@ class HipayForm extends HipayFormInput
         // init field
         $values = array(
             "input_split" => $this->generateHtmlNoticeAdmin(
-                $this->module->l('When a transaction is likely to be a fraud then an email is sent to the contact email from your shop as well as to an additional sender. Here you can configure the additional recipient email',
-                    'HipayForm')
+                $this->module->l('When a transaction is likely to be a fraud then an email is sent to the contact email from your shop as well as to an additional sender. Here you can configure the additional recipient email', 'HipayForm')
             ),
             "payment_fraud_email_sender" => "",
             "send_payment_fraud_email_copy_to" => "",
