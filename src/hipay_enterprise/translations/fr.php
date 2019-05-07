@@ -152,12 +152,12 @@ $_MODULE['<{hipay_enterprise}prestashop>account_da3f162a03b8c1e927d2fa91dc0badfe
 $_MODULE['<{hipay_enterprise}prestashop>account_e1c2083b2a377b6df9c56fcdcba71b56'] = 'Ces identifiants API sont nécessaires pour utiliser le module HiPay Enterprise.';
 $_MODULE['<{hipay_enterprise}prestashop>account_9e76f8b807d3a2a3cbd1f307885175ad'] = 'Vous devez générer des identifiants publics et privés.';
 $_MODULE['<{hipay_enterprise}prestashop>account_15c6ff697f4c361d46cabeca62c59fbb'] = 'Vous pouvez également définir des identifiants spécifiques à vos paiements MO/TO. Ils seront alors utilisés lors de vos paiements via le back office PrestaShop.';
-$_MODULE['<{hipay_enterprise}prestashop>account_2b8147864f9b961c31a9136695688d7d'] = 'Compte (privé)';
+$_MODULE['<{hipay_enterprise}prestashop>account_4661a474db6cc6f9960cfcab4eac3b95'] = 'Identifiants (Privés)';
 $_MODULE['<{hipay_enterprise}prestashop>account_f6039d44b29456b20f8f373155ae4973'] = 'Nom d\'utilisateur';
 $_MODULE['<{hipay_enterprise}prestashop>account_dc647eb65e6711e155375218212b3964'] = 'Mot de passe';
 $_MODULE['<{hipay_enterprise}prestashop>account_5f9e830e8d80c8c4e869029397fa1e0f'] = 'Phrase secrète';
-$_MODULE['<{hipay_enterprise}prestashop>account_4584417f25864754ae43e281c6a770a4'] = 'Tokénisation (publique)';
-$_MODULE['<{hipay_enterprise}prestashop>account_304095b80b587b8a13cd16bd84267abc'] = 'Identifiants du compte MO/TO';
+$_MODULE['<{hipay_enterprise}prestashop>account_6b39ee40fb800d538d92cc01223f76f2'] = 'Identifiants (Publics)';
+$_MODULE['<{hipay_enterprise}prestashop>account_10c01f844555d858dc045a6626c9c185'] = 'Identifiants privés MO/TO';
 $_MODULE['<{hipay_enterprise}prestashop>account_0d541e74cb2e3fa72f7d2e1eece61ef7'] = 'Configuration de test';
 $_MODULE['<{hipay_enterprise}prestashop>account_d8c8dad4bc0ce3a1fa50096362b0b0b2'] = 'Configuration du Hash';
 $_MODULE['<{hipay_enterprise}prestashop>account_5745b40a739a4019ac6d6948c55a1a23'] = 'Si la configuration du hachage est différente de celle définie dans votre back-office Hipay, les notifications ne fonctionneront pas. Vérifiez que les deux valeurs correspondent.';

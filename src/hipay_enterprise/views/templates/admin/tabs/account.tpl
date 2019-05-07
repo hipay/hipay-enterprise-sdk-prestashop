@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Account (Private)' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Private)' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
@@ -92,7 +92,7 @@
                                        value="{$config_hipay.account.production.api_secret_passphrase_production}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Tokenization (Public)' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
@@ -114,7 +114,7 @@
                                        value="{$config_hipay.account.production.api_tokenjs_password_publickey_production}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='MO/TO account credentials' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='MO/TO private credentials' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
@@ -171,7 +171,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Account (Private)' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Private)' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
@@ -201,7 +201,7 @@
                                        value="{$config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Tokenization (Public)' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
@@ -221,7 +221,7 @@
                                        value="{$config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='MO/TO account credentials' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='MO/TO private credentials' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">
                                 {l s='Username' mod='hipay_enterprise'}
