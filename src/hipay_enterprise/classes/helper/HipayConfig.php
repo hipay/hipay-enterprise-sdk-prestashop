@@ -389,7 +389,11 @@ class HipayConfig
                     "activate_basket" => 1,
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
-                    "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
+                    "ccDisplayName" => array(
+                        "fr" => "Carte de crédit",
+                        "en" => "Credit card",
+                        "it" => "Carta di credito"
+                    ),
                     "ccFrontPosition" => 1,
                     "send_url_notification" => 0
                 ),

@@ -157,7 +157,7 @@ $_MODULE['<{hipay_enterprise}prestashop>account_955ad3298db330b5ee880c2c9e6f23a0
 $_MODULE['<{hipay_enterprise}prestashop>account_4268b46d86783cde575138a2f7f245c4'] = 'En mode test, les cartes de paiement ne sont pas débitées. Activez cette option à des fins de tests uniquement.';
 $_MODULE['<{hipay_enterprise}prestashop>account_6f744347d54de2e46edf108f065b377c'] = 'Configuration de production';
 $_MODULE['<{hipay_enterprise}prestashop>account_da3f162a03b8c1e927d2fa91dc0badfe'] = 'Générés dans votre back office HiPay Enterprise';
-$_MODULE['<{hipay_enterprise}prestashop>account_14f1f9729a8142e82600dac241e82fe2'] = 'e qui';
+$_MODULE['<{hipay_enterprise}prestashop>account_14f1f9729a8142e82600dac241e82fe2'] = 'via';
 $_MODULE['<{hipay_enterprise}prestashop>account_e1c2083b2a377b6df9c56fcdcba71b56'] = 'Ces identifiants API sont nécessaires pour utiliser le module HiPay Enterprise.';
 $_MODULE['<{hipay_enterprise}prestashop>account_9e76f8b807d3a2a3cbd1f307885175ad'] = 'Vous devez générer des identifiants publics et privés.';
 $_MODULE['<{hipay_enterprise}prestashop>account_15c6ff697f4c361d46cabeca62c59fbb'] = 'Vous pouvez également définir des identifiants spécifiques à vos paiements MO/TO. Ils seront alors utilisés lors de vos paiements via le back office PrestaShop.';
@@ -221,6 +221,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi sur le total\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Conserver le panier en cas d’échec du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Activer les logs techniques';
+$_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
@@ -561,7 +562,7 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_5bf54f627807f6a4247706d
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_39d2b7e414467c725ba2be7ff1d98602'] = 'Sélectionnez au moins un article à rembourser.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_170e56581f50a891010abea41cd8fea3'] = 'Le montant remboursé doit être supérieur à zéro.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_8277e2277acde3ac16e6bae1711ba57d'] = 'Le montant du remboursement doit être plus grand que zéro.';
-$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_aa8c6ada0b8af0060be494414c7aa3aa'] = 'Le montant du remboursement doit être plus grand que zéro.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_aa8c6ada0b8af0060be494414c7aa3aa'] = 'Vous devez remboursé la réduction car le montant du prochain remboursement sera inférieur à celui du montant total de la réduction.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_a87c213c9a08d3c38c5cc5876f1ea995'] = 'Le remboursement a été validé.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_1c35ce43b7738c6efd374c31b7bf85bb'] = 'Le paiement a été traité.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_9e216745f67cad13afde8537f3490021'] = 'Le paiement a été refusé.';
