@@ -126,7 +126,8 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 //check if no items has been sent
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_capture_fee') !== "on" &&
-                    Tools::getValue('hipay_capture_discount') !== "on"
+                    Tools::getValue('hipay_capture_discount') !== "on" &&
+                    Tools::getValue('hipay_capture_wrapping') !== "on"
                 ) {
                     $hipay_redirect_status = $this->module->l('Select at least one item to capture', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
@@ -184,9 +185,11 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->params["refundItems"] = $refundItems;
                 $this->params["capture_refund_fee"] = Tools::getValue('hipay_capture_fee');
                 $this->params["capture_refund_discount"] = Tools::getValue('hipay_capture_discount');
+                $this->params["capture_refund_wrapping"] = Tools::getValue('hipay_capture_wrapping');
             } else {
                 $this->params["capture_refund_fee"] = true;
                 $this->params["capture_refund_discount"] = true;
+                $this->params["capture_refund_wrapping"] = true;
                 $this->params["refundItems"] = "full";
             }
             if ($this->apiHandler->handleCapture($this->params)) {

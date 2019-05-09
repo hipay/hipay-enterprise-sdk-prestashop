@@ -16,3 +16,6 @@ node_modules/
 bin/tests/000_lib/bower_components
 bin/tests/000_lib/bower_components
 
+bin/tests/tests-cypress/node_modules
+bin/tests/tests-cypress/cypress/videos
+bin/tests/tests-cypress/.npmrc

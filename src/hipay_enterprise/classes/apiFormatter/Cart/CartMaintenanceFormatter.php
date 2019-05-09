@@ -41,6 +41,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->operation = $params["operation"];
         $this->captureRefundFee = $params["captureRefundFee"];
         $this->captureRefundDiscount = $params["captureRefundDiscount"];
+        $this->captureRefundWrapping = $params["captureRefundWrapping"];
         $this->transactionAttempt = $params["transactionAttempt"];
         $this->mapper = new HipayMapper($module);
         $this->totalItem = 0;
@@ -83,6 +84,12 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         // Discount items
+        if ($this->captureRefundWrapping) {
+            $item = $this->getWrappingGoodItem();
+            $cart->addItem($item);
+        }
+
+        // Discount items
         if ($this->captureRefundDiscount && sizeof($this->discounts) > 0) {
             $item = $this->getDiscountItem();
             $cart->addItem($item);
@@ -96,6 +103,50 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             }
         }
     }
+
+    private function getWrappingGoodItem()
+    {
+        $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
+
+        $originalWrapping = $this->getOriginalGood("wrapping");
+
+        $item->__constructItem(
+            null,
+            $originalWrapping["product_reference"],
+            "good",
+            $originalWrapping["name"],
+            1,
+            $originalWrapping["unit_price"],
+            0,
+            0,
+            $originalWrapping["total_amount"],
+            "",
+            "gift wrapping",
+            null,
+            null,
+            null,
+            null,
+            1,
+            null
+        );
+
+        //save capture items and quantity in prestashop
+        if ($this->maintenanceData) {
+            $captureData = array(
+                "hp_ps_order_id" => $this->order->id,
+                "hp_ps_product_id" => 0,
+                "operation" => $this->operation,
+                "type" => 'wrapping',
+                "attempt_number" => $this->transactionAttempt + 1,
+                "quantity" => 1,
+                "amount" => $originalWrapping["total_amount"]
+            );
+            $this->maintenanceData->addItem($captureData);
+        }
+
+        return $item;
+    }
+
 
     /**
      * create a good item from product line informations
@@ -178,10 +229,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param $name
      * @return mixed
      */
-    private function getOriginalDiscount($name) {
+    private function getOriginalDiscount($name)
+    {
         foreach ($this->originalHipayBasket as $key => $value) {
             if ($value["name"] == $name
-                && $value["type"] == 'discount' ) {
+                && $value["type"] == 'discount') {
                 return $value;
             }
         }
@@ -193,9 +245,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param $productReference
      * @return mixed
      */
-    private function getOriginalGood($productReference) {
+    private function getOriginalGood($productReference)
+    {
         foreach ($this->originalHipayBasket as $key => $value) {
-            if ($value["product_reference"] == $productReference ) {
+            if ($value["product_reference"] == $productReference) {
                 return $value;
             }
         }
@@ -303,14 +356,15 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     /**
      * Get Total Amount
      */
-    public function getTotalAmount() {
-        $amount=0;
+    public function getTotalAmount()
+    {
+        $amount = 0;
         if ($this->hipayCart == null) {
             $this->hipayCart = $this->generate();
         }
         foreach ($this->hipayCart->getAllItems() as $item) {
             $amount += $item->getTotalAmount();
         }
-        return Tools::ps_round ($amount, 3);
+        return Tools::ps_round($amount, 3);
     }
 }

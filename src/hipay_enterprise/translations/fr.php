@@ -4,6 +4,7 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise-17_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_519976c8fa87be52c1d1b0af1923c1ce'] = 'HiPay Enterprise';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_6d9d74f646d6381f0221e0cb96b4c7dc'] = 'Acceptez les paiements par carte de crédit et d\'autres méthodes locales avec HiPay Enterprise. Des tarifs très compétitifs, aucune configuration requise !';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Notification enregistrée envoyée par HiPay concernant le montant capturé de';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_dcff891b1393af8c2f13bcb13307d6dc'] = 'Notification enregistrée envoyée par HiPay concernant le montant remboursé de';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_147b202e5d808b32bd8d1eaaa135a58e'] = 'Montant total de la commande :';
@@ -21,7 +22,11 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Vous allez être redirigé vers une page de paiement externe. Veuillez ne pas actualiser la page pendant le processus.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2c84752887477f3a1d1ac7e0b6a39105'] = 'Un certificat SSL est nécessaire pour procéder aux paiements par carte crédit en utilisant le module HiPay. Veuillez consulter la FAQ.';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisi.';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Notification enregistrée envoyée par HiPay concernant un montant capturé de';
@@ -212,6 +217,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi sur le total\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Conserver le panier en cas d’échec du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Activer les logs techniques';
+$_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
@@ -245,6 +251,13 @@ $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_62588e1f645aa6
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b6f1af8cece3ea29a95f4f2f3adedbc3'] = 'URL de votre CSS (feuille de style) pour personnaliser votre page hébergée ou votre iFrame (Important : le protocole HTTPS est requis).';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_08deed15263aa7d966a8a8a01e4d4ac1'] = 'Style des champs hebergés';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_b9b8fa143b21bb5d29dc4de5794f0dd5'] = 'Configuration du style des champs hebergés';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_cb5feb1b7314637725a2e73bdc9f7295'] = 'Color';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_4c0ff9700cc0ef77c92b2627bdcd1fb8'] = 'Font family';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_c4943062b634c56348c67fdebba808eb'] = 'Font size';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_a47c4f19993bfe8ff2a3529bae8c0be3'] = 'Font weight';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_690d173134d2ab64aa541154d9e14a8c'] = 'Placeholder color';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_ab56ff36d96a7d03525c2b2d772055ad'] = 'Caret color';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_534b7c706186028f1b4f51344bbca176'] = 'Icon color';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_2a9621ba11cb428fcaefde69ca952016'] = 'Activer le 3-D Secure';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_b9f5c797ebbf55adccdd8539a65a0241'] = 'Désactivé';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_aff521e71a000d8caad84a24b4cf4596'] = 'Pour toutes les transactions, si disponible';
@@ -315,6 +328,8 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_b8786828a1c422c20e2ce788
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_8d873411b6e4cc1ec66cda29fee4a6f2'] = 'Qté à capturer';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Livraison';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_4bcabb23436d1e64a4e9c5facdf89f88'] = 'Capturer les frais de livraison';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Emballage cadeau';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716f84b11f3'] = 'Capturer l\'emballage cadeau';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Capturer le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
@@ -337,6 +352,9 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_cc61945cbbf46721a053467c3
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_6ebde8a987c71dd0de0c9c2454147301'] = 'Qté à rembourser';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Livraison';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f111bfbf8b73344b9ef0c9a8da6b2779'] = 'Rembourser les frais de livraison';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Emballage cadeau';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Non capturé';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8f776cca'] = 'Rembourser l\'emballage cadeau';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Rembourser le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
@@ -423,6 +441,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformiframe-16_879f6b8877752685a96
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_9354dc0b37176ebaf3ce2f4adc85ef60'] = 'Paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_f1d3b424cd68795ecaa552883759aceb'] = 'Récapitulatif de la commande';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_879f6b8877752685a966564d072f498f'] = 'Votre panier est vide';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_148b2bc3888ea4c45fb942c1f2d24005'] = 'Payer avec une nouvelle carte de crédit';
@@ -530,6 +549,8 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_03ed23bea6d995c37463fc
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_5bf54f627807f6a4247706d80758657c'] = 'Aucune référence de transaction n\'est liée à cette commande.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_076fba4ed5dbb43df81bf55bfcc139b7'] = 'Sélectionnez au moins un article à capturer.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_1216ce40106a95ed7b36d1e97b31599d'] = 'Le montant capturé doit être supérieur à zéro.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_c71d3ad9c88bcad768b88af9d7b31bd5'] = 'Le montant de la capture doit être plus grande que zéro.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_7c1231480954da0e29816ecc4bb5f90e'] = 'Vous devez capturer un bon de réduction car le prochain montant de capture sera inférieur au montant total d\'escompte.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaycapture_c0b9b794e1a576ce7a38dce6a245c67c'] = 'La capture a été validée.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaysynchronizehashing_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s';
@@ -541,6 +562,8 @@ $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_03ed23bea6d995c37463fc5
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_5bf54f627807f6a4247706d80758657c'] = 'Aucune référence de transaction n\'est liée à cette commande.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_39d2b7e414467c725ba2be7ff1d98602'] = 'Sélectionnez au moins un article à rembourser.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_170e56581f50a891010abea41cd8fea3'] = 'Le montant remboursé doit être supérieur à zéro.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_8277e2277acde3ac16e6bae1711ba57d'] = 'Le montant du remboursement doit être plus grand que zéro.';
+$_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_aa8c6ada0b8af0060be494414c7aa3aa'] = 'Le montant du remboursement doit être plus grand que zéro.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipayrefund_a87c213c9a08d3c38c5cc5876f1ea995'] = 'Le remboursement a été validé.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_1c35ce43b7738c6efd374c31b7bf85bb'] = 'Le paiement a été traité.';
 $_MODULE['<{hipay_enterprise}prestashop>adminhipaymoto_9e216745f67cad13afde8537f3490021'] = 'Le paiement a été refusé.';
