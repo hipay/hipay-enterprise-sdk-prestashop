@@ -13,6 +13,7 @@
 
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/../../classes/exceptions/PaymentProductNotFoundException.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 /**
@@ -63,12 +64,17 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         //#################################################################
 
         $db->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
+        try {
+            $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('product'));
+        } catch (PaymentProductNotFoundException $e) {
+            $paymentProduct = Tools::getValue('product');
+        }
 
-        // If Gateway send payment product in redirection card brand
-        $cardBrand = Tools::getValue('cardbrand');
-        $paymentProduct = Tools::getValue('product');
-
-        $paymentProduct = HipayHelper::getPaymentProductName($cardBrand, $paymentProduct, $this->module, $context->language->iso_code);
+        $paymentProductName = HipayHelper::getPaymentProductName(
+            $paymentProduct,
+            $this->module,
+            $context->language
+        );
 
         $this->module->getLogs()->logInfos("# Prepare Validate Order from Validation");
         HipayHelper::validateOrder(
@@ -77,7 +83,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $this->module->hipayConfigTool->getConfigHipay(),
             $db,
             $objCart,
-            $paymentProduct
+            $paymentProductName
         );
     }
 }

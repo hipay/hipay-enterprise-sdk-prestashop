@@ -62,39 +62,32 @@ class HipayHelper
         return true;
     }
 
-    public static function getPaymentProductName($cardBrand, $paymentProduct, $module, $language)
+    public static function getPaymentProductName($paymentProduct, $module, $language)
     {
-        if (!$cardBrand) {
-            if ($paymentProduct && $paymentProduct == 'credit_card') {
-                $paymentProduct = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
-            } elseif ($paymentProduct && isset($module->hipayConfigTool->getLocalPayment()[$paymentProduct])) {
-                $config = $paymentProduct = $module->hipayConfigTool->getLocalPayment()[$paymentProduct];
-                if (is_array($config["displayName"])) {
-                    $paymentProduct = $config["displayName"][$language];
-                } else {
-                    $paymentProduct = $config["displayName"];
-                }
-            } elseif ($paymentProduct && isset($module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct])) {
-                $config = $paymentProduct = $module->hipayConfigTool->getPaymentCreditCard()[$paymentProduct];
-                if (is_array($config["displayName"])) {
-                    $paymentProduct = $config["displayName"][$language];
-                } else {
-                    $paymentProduct = $config["displayName"];
-                }
+        if ($paymentProduct == 'credit_card') {
+            if (isset($module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])) {
+                $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$language->iso_code];
+            } else {
+                $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
+            }
+        } else if (is_array($paymentProduct["displayName"])) {
+            if (isset($paymentProduct["displayName"][$language->iso_code])) {
+                $paymentProductName = $paymentProduct["displayName"][$language->iso_code];
+            } else {
+                $paymentProductName = $paymentProduct["displayName"]["en"];
             }
         } else {
-            $paymentProduct = Tools::ucfirst(Tools::strtolower($cardBrand));
+            $paymentProductName = $paymentProduct["displayName"];
         }
 
-        return $paymentProduct;
+        return $paymentProductName;
     }
 
     /**
-     *
-     * @param type $order
-     * @param type $operation
-     * @param type $maintenanceData
-     * @return type
+     * @param $order
+     * @param $operation
+     * @param $transactionAttempt
+     * @return string
      */
     public static function generateOperationId($order, $operation, $transactionAttempt)
     {
@@ -154,7 +147,9 @@ class HipayHelper
             !$isValidSignature
             && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)
         ) {
-            $module->getLogs()->logInfos("# Signature is not valid. Hash is the same. Try to synchronize for {$environment}");
+            $module->getLogs()->logInfos(
+                "# Signature is not valid. Hash is the same. Try to synchronize for {$environment}"
+            );
             try {
                 if (HipayHelper::existCredentialForPlateform($module, $environment)) {
                     $hashAlgorithmAccount = ApiCaller::getSecuritySettings($module, $environment);
@@ -526,7 +521,9 @@ class HipayHelper
                             'views/img/' .
                             $settings["logo"];
 
-                        $checkoutFieldsMandatory = isset($module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"]) ?
+                        $checkoutFieldsMandatory = isset(
+                            $module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"]
+                        ) ?
                             $module->hipayConfigTool->getLocalPayment()[$name]["checkoutFieldsMandatory"] : "";
                         $fieldMandatory = array();
                         if (!empty($checkoutFieldsMandatory)) {
@@ -640,10 +637,6 @@ class HipayHelper
             $orderId = $module->currentOrder;
             $db->releaseSQLLock('validateOrder');
 
-            $captureType = array("order_id" => $orderId, "type" => $configHipay["payment"]["global"]["capture_mode"]);
-
-            $db->setOrderCaptureType($captureType);
-
             Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
@@ -681,7 +674,8 @@ class HipayHelper
     /**
      * Check if order has already been placed ( Without prestashop cache)
      *
-     * @return bool result
+     * @param $cart_id
+     * @return bool
      */
     public static function orderExists($cart_id)
     {
