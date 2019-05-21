@@ -67,8 +67,15 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         $iframe = ($this->configHipay["payment"]["global"]["operating_mode"] === "iframe") ? 1 : 0;
 
         $paymentCode = "hipay_hosted";
-        if (isset($this->params["method"])) {
+        $captureType = $this->configHipay["payment"]["global"]["capture_mode"];
+
+        if (isset($this->params["method"]) && $this->params["method"] !== "credit_card") {
+            $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct($this->params["method"]);
             $paymentCode = $this->params["method"];
+            //if method doesn't allow capture, capture is automatic
+            if (!$paymentProduct["canManualCapture"] && !$paymentProduct["canManualCapturePartially"]) {
+                $captureType = "automatic";
+            }
         }
 
         $shippingDescription = $cartSummary["carrier"]->name ?: "";
@@ -79,6 +86,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             ),
             "payment_code" => $paymentCode,
             "display_iframe" => $iframe,
+            "captureType" => $captureType,
         );
 
         if (isset($this->params["multi_use"]) && $this->params["multi_use"]) {
