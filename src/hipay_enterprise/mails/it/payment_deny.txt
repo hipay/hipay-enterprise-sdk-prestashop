@@ -1,0 +1,24 @@
+
+[{shop_url}] 
+
+Buongiorno {firstname} {lastname},
+
+si e' verificato un problema con il pagamnento su {shop_name} per l'ordine 
+con referenza {order_name}. Per cortesia ci contattati nel piu' breve tempo possibile
+secondo la sua disponibilità.
+
+NON POSSIAMO PURTROPPO INVIARE IL VOSTRO ORDINE FINO A QUANDO NON AVREMMO RICEVUTO IL PAGAMENTO.
+
+Puo' verificare il suo ordine e scaricare la fattura tramite la sezione
+"Storico Ordini" [{history_url}]
+del suo account facendo sul link "Il Tuo Account"
+[{my_account_url}] nel suo shop.
+
+Se utilizza un account non identificato, può seguire l'ordine tramite la sezione
+"Guest Tracking"
+[{guest_tracking_url}?id_order={order_name}]
+del suo shop.
+
+{shop_name} [{shop_url}] powered
+by PrestaShop(tm) [http://www.prestashop.com/] 
+
