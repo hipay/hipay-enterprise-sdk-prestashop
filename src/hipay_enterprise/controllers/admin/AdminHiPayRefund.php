@@ -147,10 +147,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     );
                     die('');
                 } else if (Tools::getValue('total-refund-input') > $refundableAmount) {
-                    $hipay_redirect_status = $this->module->l(
-                        'Refund amount must be lower than the amount still to be refunded.',
-                        'capture'
-                    );
+                    $hipay_redirect_status = $this->module->l('Refund amount must be lower than the amount still to be refunded.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     Tools::redirectAdmin(
                         $this->context->link->getAdminLink('AdminOrders') .
@@ -165,10 +162,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                         ($refundableAmount - Tools::getValue('total-refund-input') <=
                             Tools::getValue('capture-refund-amount'))
                     ) {
-                        $hipay_redirect_status = $this->module->l(
-                            'You must refund discount because next refund amount will be lower than total discount amount.',
-                            'capture'
-                        );
+                        $hipay_redirect_status = $this->module->l('You must refund discount because next refund amount will be lower than total discount amount.');
                         $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                         Tools::redirectAdmin(
                             $this->context->link->getAdminLink('AdminOrders') .

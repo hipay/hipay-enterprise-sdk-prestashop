@@ -1,0 +1,10 @@
+
+[{shop_url}] 
+
+Buongiorno ,
+
+Una transazione di pagamento è in attesa di validazione
+
+{shop_name} [{shop_url}] powered
+by PrestaShop(tm) [http://www.prestashop.com/] 
+

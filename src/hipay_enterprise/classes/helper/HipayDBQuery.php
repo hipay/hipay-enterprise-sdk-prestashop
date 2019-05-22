@@ -927,6 +927,24 @@ class HipayDBQuery
      * @return bool
      * @throws PrestaShopDatabaseException
      */
+    public function OrderCaptureTypeExist($orderId)
+    {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE .
+            '` WHERE order_id=' . pSQL((int)$orderId) ;
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
     public function isManualCapture($orderId)
     {
         $sql = 'SELECT * FROM `' .

@@ -17,6 +17,7 @@ require_once(dirname(__FILE__) . '/HipayMaintenanceData.php');
 require_once(dirname(__FILE__) . '/HipayHelper.php');
 require_once(dirname(__FILE__) . '/HipayOrderMessage.php');
 require_once(dirname(__FILE__) . '/HipayMail.php');
+require_once(dirname(__FILE__) . '/../exceptions/PaymentProductNotFoundException.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
@@ -38,11 +39,22 @@ class HipayNotification
     protected $orderExist = false;
     protected $order = null;
     protected $ccToken;
+    protected $module;
+    protected $log;
+    protected $context;
+    protected $db;
+
+    /**
+     * @var HipayConfig
+     */
+    protected $configHipay;
 
     /**
      * HipayNotification constructor.
      * @param $moduleInstance
      * @param $data
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function __construct($moduleInstance, $data)
     {
@@ -163,7 +175,8 @@ class HipayNotification
                     break;
                 case TransactionStatus::AUTHORIZED: //116
                     $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
-
+                    // set capture type on authorized
+                    $this->setOrderCaptureType();
                     $customData = $this->transaction->getCustomData();
                     if (isset($customData["multiUse"]) && $customData["multiUse"]) {
                         $this->saveCardToken();
@@ -278,7 +291,7 @@ class HipayNotification
             $shop = new Shop($shop_id);
             Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
 
-            $paymentProduct = $this->getPaymentProductName();
+            $paymentProductName = $this->getPaymentProductName();
 
             try {
                 $this->log->logInfos('Prepare Validate order from registerOrder');
@@ -286,7 +299,7 @@ class HipayNotification
                     Context::getContext()->cart->id,
                     $state,
                     (float)$this->transaction->getAuthorizedAmount(),
-                    $paymentProduct,
+                    $paymentProductName,
                     $message,
                     array(),
                     Context::getContext()->cart->id_currency,
@@ -295,13 +308,6 @@ class HipayNotification
                     $shop
                 );
                 $this->order = new Order($this->module->currentOrder);
-
-                $captureType = array(
-                    "order_id" => $this->order->id,
-                    "type" => $this->configHipay["payment"]["global"]["capture_mode"]
-                );
-
-                $this->db->setOrderCaptureType($captureType);
 
                 $this->addOrderMessage();
                 return true;
@@ -314,21 +320,42 @@ class HipayNotification
     }
 
     /**
+     * Save capture type from notification (required for capture and refund form)
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    private function setOrderCaptureType()
+    {
+        if ($this->order !== null && !$this->db->OrderCaptureTypeExist($this->order->id)) {
+
+            $customData = $this->transaction->getCustomData();
+
+            $captureType = array(
+                "order_id" => $this->order->id,
+                "type" => (isset($customData["captureType"])) ? $customData["captureType"] : "automatic"
+            );
+
+            $this->db->setOrderCaptureType($captureType);
+        }
+    }
+
+    /**
      * @return mixed
      */
     private function getPaymentProductName()
     {
-        $cardBrand = false;
-        if ($this->transaction->getPaymentMethod() != null) {
-            $cardBrand = $this->transaction->getPaymentMethod()->getBrand();
+        $paymentProductName = $this->transaction->getPaymentProduct();
+
+        try {
+            $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct($paymentProductName);
+        } catch (PaymentProductNotFoundException $e) {
+            $paymentProduct = $paymentProductName;
         }
-        $paymentProduct = $this->transaction->getPaymentProduct();
 
         return HipayHelper::getPaymentProductName(
-            $cardBrand,
             $paymentProduct,
             $this->module,
-            $this->context->language->iso_code
+            $this->context->language
         );
     }
 
@@ -386,7 +413,9 @@ class HipayNotification
     {
         try {
             if ($this->transaction->getPaymentMethod() != null) {
-                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower($this->transaction->getPaymentProduct())];
+                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower(
+                    $this->transaction->getPaymentProduct()
+                )];
                 if (isset($configCC['recurring']) && $configCC['recurring']) {
 
                     $card = array(
@@ -396,8 +425,8 @@ class HipayNotification
                         "card_holder" => $this->transaction->getPaymentMethod()->getCardHolder(),
                         "card_expiry_month" => $this->transaction->getPaymentMethod()->getCardExpiryMonth(),
                         "card_expiry_year" => $this->transaction->getPaymentMethod()->getCardExpiryYear(),
-                        "issuer" =>  $this->transaction->getPaymentMethod()->getIssuer(),
-                        "country" =>  $this->transaction->getPaymentMethod()->getCountry()
+                        "issuer" => $this->transaction->getPaymentMethod()->getIssuer(),
+                        "country" => $this->transaction->getPaymentMethod()->getCountry()
                     );
 
                     $this->ccToken->saveCCToken($this->cart->id_customer, $card);
@@ -641,8 +670,10 @@ class HipayNotification
         $amount = $this->transaction->getCapturedAmount() - HipayHelper::getOrderPaymentAmount($this->order);
 
         if ($refund) {
-            $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount($this->order,
-                        true));
+            $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount(
+                        $this->order,
+                        true
+                    ));
         }
 
         return $amount;
