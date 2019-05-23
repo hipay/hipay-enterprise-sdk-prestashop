@@ -332,6 +332,8 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_b8786828a1c422c20e2ce788
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_8d873411b6e4cc1ec66cda29fee4a6f2'] = 'Qté à capturer';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Livraison';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_4bcabb23436d1e64a4e9c5facdf89f88'] = 'Capturer les frais de livraison';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Emballage cadeau';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716f84b11f3'] = 'Capturer l\'emballage cadeau';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Capturer le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
@@ -354,6 +356,9 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_cc61945cbbf46721a053467c3
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_6ebde8a987c71dd0de0c9c2454147301'] = 'Qté à rembourser';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Livraison';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f111bfbf8b73344b9ef0c9a8da6b2779'] = 'Rembourser les frais de livraison';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Emballage cadeau';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Non capturé';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8f776cca'] = 'Rembourser l\'emballage cadeau';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Rembourser le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
@@ -440,7 +445,7 @@ $_MODULE['<{hipay_enterprise}prestashop>paymentformiframe-16_879f6b8877752685a96
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_9354dc0b37176ebaf3ce2f4adc85ef60'] = 'Paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_f1d3b424cd68795ecaa552883759aceb'] = 'Récapitulatif de la commande';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_879f6b8877752685a966564d072f498f'] = 'Votre panier est vide';
-$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_d1c88d77a5f5e4417d8b85a938103756'] = 'Montant à payer';
 $_MODULE['<{hipay_enterprise}prestashop>paymentform-hosted_page-16_148b2bc3888ea4c45fb942c1f2d24005'] = 'Payer avec une nouvelle carte de crédit';

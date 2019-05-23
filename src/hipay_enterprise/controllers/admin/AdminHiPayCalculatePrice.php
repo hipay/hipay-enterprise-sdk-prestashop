@@ -45,6 +45,7 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
         try {
             $captureRefundFee = Tools::getValue("captureRefundFee");
             $captureRefundDiscount = Tools::getValue("captureRefundDiscount");
+            $captureRefundWrapping = Tools::getValue("captureRefundWrapping");
             $items = Tools::getValue("items");
             $operation = Tools::getValue("operation");
             $order = new Order(Tools::getValue("orderId"));
@@ -56,18 +57,21 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
                 "order" => $order,
                 "cart" => $cart,
                 "captureRefundFee" => $captureRefundFee === "false" ? 0 : 1,
-                "captureRefundDiscount" =>  $captureRefundDiscount === "false" ? 0 : 1,
+                "captureRefundDiscount" => $captureRefundDiscount === "false" ? 0 : 1,
+                "captureRefundWrapping" => $captureRefundWrapping === "false" ? 0 : 1,
                 "operation" => $operation,
                 "transactionAttempt" => 0
             );
 
-            foreach ($order->getProducts() as $product) {
-                foreach ($items as $item) {
-                    if ($item["id"] == $product["id_product"]) {
-                        $params["products"][] = array(
-                            "item" => $product,
-                            "quantity" => $item["qty"]
-                        );
+            if (!empty($items)) {
+                foreach ($order->getProducts() as $product) {
+                    foreach ($items as $item) {
+                        if ($item["id"] == $product["id_product"]) {
+                            $params["products"][] = array(
+                                "item" => $product,
+                                "quantity" => $item["qty"]
+                            );
+                        }
                     }
                 }
             }
@@ -77,7 +81,8 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
 
             ob_end_clean();
             header('Content-Type: application/json');
-            die(json_encode(
+            die(
+            json_encode(
                 array(
                     "amount" => $amount
                 )
@@ -86,10 +91,14 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
         } catch (Exception $e) {
             ob_end_clean();
             header('Content-Type: application/json');
-            die(json_encode(array(
-                "state" => "error",
-                "message" => $e->getTraceAsString()
-            )));
+            die(
+            json_encode(
+                array(
+                    "state" => "error",
+                    "message" => $e->getTraceAsString()
+                )
+            )
+            );
         }
     }
 }

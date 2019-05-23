@@ -122,7 +122,8 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_refund_fee') !== "on" &&
-                    Tools::getValue('hipay_refund_discount') !== "on"
+                    Tools::getValue('hipay_refund_discount') !== "on" &&
+                    Tools::getValue('hipay_refund_wrapping') !== "on"
                 ) {
                     $hipay_redirect_status = $this->module->l('Select at least one item to refund', 'capture');
 
@@ -177,14 +178,14 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     "refundItems" => $refundItems,
                     "order" => $this->order->id,
                     "transaction_reference" => $this->transactionReference,
-                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee')
+                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee'),
+                    "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping'),
+                    "capture_refund_discount" => Tools::getValue('hipay_refund_discount')
                 );
-                $this->params["refundItems"] = $refundItems;
-                $this->params["capture_refund_fee"] = Tools::getValue('hipay_refund_fee');
-                $this->params["capture_refund_discount"] = Tools::getValue('hipay_refund_discount');
             } else {
                 $this->params["capture_refund_discount"] = true;
                 $this->params["capture_refund_fee"] = true;
+                $this->params["capture_refund_wrapping"] = true;
                 $this->params["refundItems"] = "full";
             }
 

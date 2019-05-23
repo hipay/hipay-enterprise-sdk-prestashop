@@ -332,6 +332,8 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_b8786828a1c422c20e2ce788
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_8d873411b6e4cc1ec66cda29fee4a6f2'] = 'Qty to be captured';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Shipping';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_4bcabb23436d1e64a4e9c5facdf89f88'] = 'Capture delivery fees';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Wrapping gift';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716f84b11f3'] = 'Capture Wrapping gift';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Discount';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Capture discount';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
@@ -354,6 +356,9 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_cc61945cbbf46721a053467c3
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_6ebde8a987c71dd0de0c9c2454147301'] = 'Qty to be refunded';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_ea9cf7e47ff33b2be14e6dd07cbcefc6'] = 'Shipping';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f111bfbf8b73344b9ef0c9a8da6b2779'] = 'Refund delivery fees';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_8a8f5b0cabb145f44e8e1ea9b4971715'] = 'Wrapping gift';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Not captured';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8f776cca'] = 'Refund Wrapping gift';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Discount';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Refund discount';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';

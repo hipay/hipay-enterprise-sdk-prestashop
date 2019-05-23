@@ -52,7 +52,7 @@
                         {else if empty($capturedItems) && empty($refundedItems) }
                             {assign var="remainQty" value=$item["product_quantity"] }
                         {else if empty($capturedItems) && !empty($refundedItems) &&  !isset($refundedItems[$item["product_id"]])}
- +                                {assign var="remainQty" value=$item["product_quantity"] }    
+                            +                                {assign var="remainQty" value=$item["product_quantity"] }
                         {else if empty($capturedItems) || !isset($capturedItems[$item["product_id"]]) }
                             {assign var="remainQty" value=0}
                         {else if !empty($refundedItems) && isset($refundedItems[$item["product_id"]]) }
@@ -81,9 +81,7 @@
                                         <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
                                             {displayPrice price=$refundedItems[$item["product_id"]]["amount"] currency=$id_currency}
                                         </span>
-
-{else}
-
+                                    {else}
                                         <span class="badge badge-warning">{displayPrice price=0 currency=$id_currency}</span>
                                     {/if}
                             </td>
@@ -112,7 +110,9 @@
                         </td>
                         <td>
                             {if $shippingCost > 0 }
-                                {if ($capturedFees && !$refundedFees) || ($stillToCapture <= 0 && !$refundedFees)}
+                                {if !$capturedFees && $manualCapture}
+                                    <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
+                                {elseif ($capturedFees && !$refundedFees) || ($stillToCapture <= 0 && !$refundedFees)}
                                     <input id="refund-fee" data-amount="{$amountFees}" type="checkbox"
                                            name="hipay_refund_fee">
                                     {l s='Refund fee(s)'  mod='hipay_enterprise'}
@@ -125,7 +125,30 @@
                         </td>
                         <td></td>
                     </tr>
-                    {if !empty($discount)}
+                    {if $wrappingGift}
+                        <tr>
+                            <td></td>
+                            <td>{l s='Wrapping gift' mod='hipay_enterprise'}</td>
+                            <td>
+                                     <span>
+                                         {displayPrice price=$wrapping.value currency=$id_currency}
+                                         <span>
+                            </td>
+                            <td>
+                                {if !$wrapping.captured && $manualCapture}
+                                    <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
+                                {elseif !$wrapping.refunded}
+                                    <input id="refund-wrapping" data-amount="{$wrapping.value}" type="checkbox"
+                                           name="hipay_refund_wrapping">
+                                    {l s='Refund Wrapping gift' mod='hipay_enterprise'}
+                                {else}
+                                    <span class="badge badge-success">{l s='Refunded'  mod='hipay_enterprise'}</span>
+                                {/if}
+                            </td>
+                            <td></td>
+                        </tr>
+                    {/if }
+                    {if not empty($discount)}
                         <tr>
                             <td></td>
                             <td>{l s='Discount' mod='hipay_enterprise'} {$discount.name}</td>
@@ -135,7 +158,9 @@
                                          <span>
                             </td>
                             <td>
-                                {if !$refundedDiscounts}
+                                {if !$capturedDiscounts && $manualCapture}
+                                    <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
+                                {elseif !$refundedDiscounts}
                                     <input id="refund-discount" data-amount="{$discount.value}" type="checkbox"
                                            name="hipay_refund_discount">
                                     {l s='Refund Discount' mod='hipay_enterprise'}
@@ -189,9 +214,9 @@
         var currencySign = "€";
         var refundableAmount = {$refundableAmount};
         {if $refundedDiscounts}
-            var refundedDiscount = true;
+        var refundedDiscount = true;
         {else}
-            var refundedDiscount = false;
+        var refundedDiscount = false;
         {/if}
         updateRefundPrice();
 
@@ -201,11 +226,15 @@
 
         $("#refund-fee").click(function () {
             updateRefundPrice();
-        })
+        });
 
         $("#refund-discount").click(function () {
             updateRefundPrice();
-        })
+        });
+
+        $("#refund-wrapping").click(function () {
+            updateRefundPrice();
+        });
 
         function updateRefundPrice() {
             var items = [];
@@ -218,13 +247,15 @@
             });
 
             $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
-               {   "captureRefundFee": $("#refund-fee").is(":checked"),
-                   "captureRefundDiscount": $("#refund-discount").is(":checked"),
-                   "items": items,
-                   "operation": "refund",
-                   "cartId": {$cartId},
-                   "orderId": {$orderId}
-               },
+                {
+                    "captureRefundFee": $("#refund-fee").is(":checked"),
+                    "captureRefundDiscount": $("#refund-discount").is(":checked"),
+                    "captureRefundWrapping": $("#refund-wrapping").is(":checked"),
+                    "items": items,
+                    "operation": "refund",
+                    "cartId": {$cartId},
+                    "orderId": {$orderId}
+                },
                 function (response) {
 
                     if (response.amount) {
@@ -239,7 +270,7 @@
                     }
                 }
             );
-        };
+        }
 
         function checkRefundAmount() {
 

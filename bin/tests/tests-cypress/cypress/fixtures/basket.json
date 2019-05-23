@@ -1,0 +1,7 @@
+{
+  "basketWithoutMapping": [],
+  "basketWithMapping": [],
+  "capture001": [],
+  "wrappingGift": [{"type":"good","product_reference":"demo_1-s-blanc","quantity":5,"unit_price":28.68,"total_amount":114.72,"discount":-28.68,"name":"T-shirt+imprimé+colibri","tax_rate":20},{"type":"good","product_reference":"demo_11","quantity":3,"unit_price":14.28,"total_amount":42.84,"discount":0,"name":"Mug+The+best+is+yet+to+come","tax_rate":20},{"type":"good","product_reference":"wrapping","quantity":1,"unit_price":10,"total_amount":10,"discount":0,"name":"wrapping","tax_rate":0},{"type":"fee","product_reference":"1-prestashop","quantity":1,"unit_price":0,"total_amount":0,"discount":0,"name":"PrestaShop","tax_rate":20}],
+  "wrappingGiftCapture": [{"type":"good","product_reference":"demo_1-s-blanc","quantity":5,"unit_price":28.68,"total_amount":114.72,"discount":-28.68},{"type":"good","product_reference":"demo_11","quantity":3,"unit_price":14.28,"total_amount":42.84,"discount":0},{"type":"good","product_reference":"wrapping","quantity":1,"unit_price":10,"total_amount":10,"discount":0}]
+}

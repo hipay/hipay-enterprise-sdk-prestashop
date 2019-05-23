@@ -136,6 +136,27 @@
                         </td>
                         <td></td>
                     </tr>
+                    {if $wrappingGift}
+                        <tr>
+                            <td></td>
+                            <td>{l s='Wrapping gift' mod='hipay_enterprise'}</td>
+                            <td>
+                                     <span>
+                                         {displayPrice price=$wrapping.value currency=$id_currency}
+                                         <span>
+                            </td>
+                            <td>
+                                {if !$wrapping.captured}
+                                    <input id="capture-wrapping" data-amount="{$wrapping.value}" type="checkbox"
+                                           name="hipay_capture_wrapping">
+                                    {l s='Capture Wrapping gift' mod='hipay_enterprise'}
+                                {else}
+                                    <span class="badge badge-success">{l s='Captured'  mod='hipay_enterprise'}</span>
+                                {/if}
+                            </td>
+                            <td></td>
+                        </tr>
+                    {/if }
                     {if !empty($discount)}
                         <tr>
                             <td></td>
@@ -152,7 +173,7 @@
                                     {l s='Capture Discount' mod='hipay_enterprise'}
                                     <input type="hidden" name="capture-discount-amount" value="{$discount.value}"/>
                                 {else}
-                                    <span class="badge badge-success">Captured</span>
+                                    <span class="badge badge-success">{l s='Captured'  mod='hipay_enterprise'}</span>
                                 {/if}
                             </td>
                             <td></td>
@@ -214,11 +235,16 @@
 
         $("#capture-fee").click(function () {
             updatePrice();
-        })
+        });
 
         $("#capture-discount").click(function () {
             updatePrice();
-        })
+        });
+
+        $("#capture-wrapping").click(function () {
+            updatePrice();
+        });
+
         function updatePrice() {
             var items = [];
             $(".good-selector-capture").each(function () {
@@ -230,8 +256,10 @@
             });
 
             $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
-                {   "captureRefundFee": $("#capture-fee").is(":checked"),
+                {
+                    "captureRefundFee": $("#capture-fee").is(":checked"),
                     "captureRefundDiscount": $("#capture-discount").is(":checked"),
+                    "captureRefundWrapping": $("#capture-wrapping").is(":checked"),
                     "items": items,
                     "operation": "capture",
                     "cartId": {$cartId},
@@ -250,7 +278,7 @@
                     }
                 }
             );
-        };
+        }
 
         function checkCaptureAmount() {
 
@@ -278,7 +306,7 @@
             }
 
             return true;
-        };
+        }
 
         function displayError(text) {
             $("#danger-js").text(text);

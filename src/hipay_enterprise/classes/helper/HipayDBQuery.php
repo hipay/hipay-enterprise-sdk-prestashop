@@ -730,6 +730,26 @@ class HipayDBQuery
 
     /**
      * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function wrappingIsRefunded($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId, 'wrapping', 'refund');
+    }
+
+    /**
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function wrappingIsCaptured($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId, 'wrapping', 'capture');
+    }
+
+    /**
+     * @param $orderId
      * @param $type
      * @param $operation
      * @return bool

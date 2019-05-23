@@ -54,6 +54,11 @@ class CartFormatter extends ApiFormatterAbstract
             $cart->addItem($item);
         }
 
+        if($this->cart->gift){
+            $item = $this->getWrappingGoodItem();
+            $cart->addItem($item);
+        }
+
         // Discount items
 
         if (!empty($this->cart->getCartRules())) {
@@ -65,6 +70,40 @@ class CartFormatter extends ApiFormatterAbstract
         if ($item) {
             $cart->addItem($item);
         }
+    }
+
+    private function getWrappingGoodItem(){
+        $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
+
+        $product_reference = "wrapping";
+        $type = "good";
+
+        $name = "wrapping";
+        $quantity = 1;
+
+        $unit_price = $total_amount = $this->cart->getOrderTotal(true, Cart::ONLY_WRAPPING);
+
+        $item->__constructItem(
+            null,
+            $product_reference,
+            $type,
+            $name,
+            $quantity,
+            $unit_price,
+            0,
+            0,
+            $total_amount,
+            "",
+            "gift wrapping",
+            null,
+            null,
+            null,
+            null,
+            1,
+            null
+        );
+
+        return $item;
     }
 
     /**
