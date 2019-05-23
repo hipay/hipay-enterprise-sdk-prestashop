@@ -13,6 +13,8 @@ stages:
 variables:
   PROJECT_NAME_TEST_PS17_1: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}-17-1
   PROJECT_NAME_TEST_PS17_2: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}-17-2
+  PROJECT_NAME_TEST_PS17_3: ${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}-17-3
+  GIT_DEPTH: 10
 
 #########################
 ####  TEMPLATE      ####
@@ -33,6 +35,8 @@ variables:
   artifacts:
     paths:
       - bin/tests/errors
+      - bin/tests/tests-cypress/cypress/videos
+      - bin/tests/tests-cypress/cypress/screenshots
     when: always
 
 #########################
@@ -58,6 +62,7 @@ test-casper-17-1:
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml logs
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
+  retry: 2
   after_script:
     - docker cp "$(docker-compose -f docker-compose.test.yml -p $PROJECT_NAME_TEST_PS17_1 ps -q web)":/var/www/html/var/logs bin/tests/errors
     - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_1 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
@@ -74,8 +79,29 @@ test-casper-17-2:
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml logs
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
+  retry: 2
   after_script:
     - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_2 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+
+test-cypress-17-1:
+  <<: *test_definition
+  script:
+    - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/" ./bin/docker/conf/test/env17
+    - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/test/env
+    - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
+    - sed -i -e "s/\${NPM_REGISTRY_TOKEN\}/$NPM_REGISTRY_TOKEN/" ./bin/tests/tests-cypress/.npmrc
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml stop
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml rm -fv
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml up -d
+    - sleep 300
+    - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml logs
+    - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
+    - cd bin/tests/tests-cypress
+    - yarn install
+    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http://${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/ --env $CYPRESS_ENV
+  retry: 2
+  after_script:
+    - /tools/clean-job.sh $PROJECT_NAME_TEST_PS17_3 docker-compose.test.yml prestashop ${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
 
 clean-stack-test:
   stage: clean-stack

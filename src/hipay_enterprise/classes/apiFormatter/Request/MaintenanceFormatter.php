@@ -38,6 +38,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->amount = (isset($params["amount"])) ? $params["amount"] : 0.01;
         $this->captureRefundFee = (isset($params["capture_refund_fee"])) ? $params["capture_refund_fee"] : false;
         $this->captureRefundDiscount = (isset($params["capture_refund_discount"])) ? $params["capture_refund_discount"] : false;
+        $this->captureRefundWrapping = (isset($params["capture_refund_wrapping"])) ? $params["capture_refund_wrapping"] : false;
         $this->refundItems = (isset($params["refundItems"])) ? $params["refundItems"] : false;
         $this->context = Context::getContext();
         $this->order = (isset($params["order"])) ? new Order($params["order"]) : false;
@@ -82,7 +83,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
             $transactionAttempt
         );
         //if there's a basket
-        if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on") {
+        if ($this->refundItems || $this->captureRefundFee == "on" || $this->captureRefundDiscount == "on" || $this->captureRefundWrapping == "on") {
             $params = array(
                 "products" => array(),
                 "discounts" => $this->order->getCartRules(),
@@ -90,6 +91,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                 "cart" => $this->cart,
                 "captureRefundFee" => $this->captureRefundFee,
                 "captureRefundDiscount" => $this->captureRefundDiscount,
+                "captureRefundWrapping" => $this->captureRefundWrapping,
                 "operation" => $this->operation,
                 "transactionAttempt" => $transactionAttempt
             );

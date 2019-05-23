@@ -37,7 +37,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.6.1';
+        $this->version = '2.7.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -48,9 +48,7 @@ class Hipay_enterprise extends PaymentModule
         $this->bootstrap = true;
         $this->display = 'view';
         $this->displayName = $this->l('HiPay Enterprise');
-        $this->description = $this->l(
-            'Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!'
-        );
+        $this->description = $this->l('Accept payments by credit card and other local methods with HiPay Enterprise. Very competitive rates, no configuration required!');
 
 
         // init log object
@@ -395,9 +393,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $hipay17 = new HipayEnterpriseNew();
         // Fix Bug with translation and bad context ( Hook in an another file)
-        $params['translation_checkout'] = $this->l(
-            'You will be redirected to an external payment page. Please do not refresh the page during the process'
-        );
+        $params['translation_checkout'] = $this->l('You will be redirected to an external payment page. Please do not refresh the page during the process');
 
         return $hipay17->hipayPaymentOptions($params);
     }
@@ -473,9 +469,7 @@ class Hipay_enterprise extends PaymentModule
         $source = array("brand_version" => _PS_VERSION_, "integration_version" => $this->version,);
 
         if (!Configuration::get('PS_SSL_ENABLED')) {
-            $this->_technicalErrors = $this->l(
-                'A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.'
-            );
+            $this->_technicalErrors = $this->l('A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.');
         }
 
         $this->context->smarty->assign(

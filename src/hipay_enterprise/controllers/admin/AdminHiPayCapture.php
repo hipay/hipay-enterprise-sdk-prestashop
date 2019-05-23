@@ -126,7 +126,8 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 //check if no items has been sent
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_capture_fee') !== "on" &&
-                    Tools::getValue('hipay_capture_discount') !== "on"
+                    Tools::getValue('hipay_capture_discount') !== "on" &&
+                    Tools::getValue('hipay_capture_wrapping') !== "on"
                 ) {
                     $hipay_redirect_status = $this->module->l('Select at least one item to capture', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
@@ -148,10 +149,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                     );
                     die('');
                 } else if (Tools::getValue('total-capture-input') > $stillToCapture + 0.01) {
-                    $hipay_redirect_status = $this->module->l(
-                        'Capture amount must be lower than the amount still to be captured.',
-                        'capture'
-                    );
+                    $hipay_redirect_status = $this->module->l('Capture amount must be lower than the amount still to be captured.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     Tools::redirectAdmin(
                         $this->context->link->getAdminLink('AdminOrders') .
@@ -166,10 +164,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                         ($stillToCapture - Tools::getValue('total-capture-input') <=
                             Tools::getValue('capture-discount-amount'))
                     ) {
-                        $hipay_redirect_status = $this->module->l(
-                            'You must capture discount because next capture amount will be lower than total discount amount.',
-                            'capture'
-                        );
+                        $hipay_redirect_status = $this->module->l('You must capture discount because next capture amount will be lower than total discount amount.');
                         $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                         Tools::redirectAdmin(
                             $this->context->link->getAdminLink('AdminOrders') .
@@ -184,9 +179,11 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $this->params["refundItems"] = $refundItems;
                 $this->params["capture_refund_fee"] = Tools::getValue('hipay_capture_fee');
                 $this->params["capture_refund_discount"] = Tools::getValue('hipay_capture_discount');
+                $this->params["capture_refund_wrapping"] = Tools::getValue('hipay_capture_wrapping');
             } else {
                 $this->params["capture_refund_fee"] = true;
                 $this->params["capture_refund_discount"] = true;
+                $this->params["capture_refund_wrapping"] = true;
                 $this->params["refundItems"] = "full";
             }
             if ($this->apiHandler->handleCapture($this->params)) {

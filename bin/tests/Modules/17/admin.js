@@ -92,7 +92,7 @@ exports.gotToHiPayConfiguration = function gotToHiPayConfiguration(test) {
             this.waitForSelector('#subtab-AdminModulesSf a', function success() {
                 this.click('#subtab-AdminModulesSf a');
 
-                this.waitForUrl(/improve\/modules\/manage/, function(){
+                this.waitForUrl(/improve\/modules\/manage/, function () {
                     var url = casper.getCurrentUrl();
                     var myRegexp = /token=(.*)(&*)/g;
                     var token = myRegexp.exec(url);
@@ -355,6 +355,10 @@ exports.activateLocalization = function activateLocalization(test, locale) {
                                 break;
                             case "NL":
                                 var id_country = 13;
+                                break;
+                            case "IT":
+                                var id_country = 10;
+                                break;
                         }
 
                         this.waitForSelector('form[name="form"]', function success() {
@@ -364,13 +368,15 @@ exports.activateLocalization = function activateLocalization(test, locale) {
                                 // this.click('.md-checkbox > label');
                                 // this.click('form[name="form"] button');
                                 var field = 'input[value="' + id_country + '"][name="form[payment_module_preferences][country_restrictions][hipay_enterprise][]"]';
-                                this.fillSelectors('form[name="form"]', {
-                                    'input[name="form[payment_module_preferences][country_restrictions][hipay_enterprise][]"]': true
-                                }, true);
 
+                                var fillForm = {};
+
+                                fillForm[field] = true;
+
+                                this.fillSelectors('form[name="form"]', fillForm, true);
 
                                 this.waitForSelector('.alert.alert-success > .alert-text', function success() {
-                                    this.click('formaa[name="form"] button');
+                                    this.click('form[name="form"] button');
                                     this.echo("Done ", "COMMENT");
                                 }, function fail() {
                                     test.assertExists('.alert.alert-success', "Activate country for payment module error");

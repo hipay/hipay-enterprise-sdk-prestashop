@@ -49,7 +49,7 @@ casper.test.begin('Test Checkout ' + paymentType + ' with redirect', function (t
             checkoutMod.selectMethodInCheckout(test, labelPayByCard, true);
         })
         .then(function () {
-            paymentLibHiPay.fillPaymentFormularByPaymentProduct(currentBrandCC, test);
+            paymentLibHiPay.fillCCFormular( test, false);
         })
         .then(function () {
             adminMod.orderResultSuccess(test);

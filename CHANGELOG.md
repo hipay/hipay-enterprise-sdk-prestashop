@@ -1,3 +1,12 @@
+# Version 2.7.0
+
+- Add MyBank Payment method
+- Add Italian translations
+- Fix: Handle wrapping gift in order with basket
+- Fix: upgrade management
+- Fix: capture form not displaying
+- Fix: french and english translations
+
 # Version 2.6.1
 
 - Fix: shipping fees calculation

@@ -14,6 +14,7 @@
 require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
 require_once(dirname(__FILE__) . '/enums/UXMode.php');
 require_once(dirname(__FILE__) . '/enums/ThreeDS.php');
+require_once(dirname(__FILE__) . '/../exceptions/PaymentProductNotFoundException.php');
 
 use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
 
@@ -130,6 +131,23 @@ class HipayConfig
         return $this->getConfigHipay()["fraud"];
     }
 
+    /**
+     * Get payment product config from payment product name
+     *
+     * @param $paymentProduct
+     * @return array
+     * @throws PaymentProductNotFoundException
+     */
+    public function getPaymentProduct($paymentProduct)
+    {
+        if (isset($this->getPaymentCreditCard()[$paymentProduct])) {
+            return $this->getPaymentCreditCard()[$paymentProduct];
+        } elseif (isset($this->getLocalPayment()[$paymentProduct])) {
+            return $this->getLocalPayment()[$paymentProduct];
+        }
+
+        throw new PaymentProductNotFoundException($paymentProduct);
+    }
 
     /**
      *  Save a specific key of the module config
@@ -261,10 +279,26 @@ class HipayConfig
 
             $this->updatePaymentGlobal($configHipay);
 
+            $this->updateAccountConfig($configHipay);
+
             $this->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
-
-
         }
+    }
+
+    /**
+     * Update Account config with new default values
+     *
+     * @param $configHipay
+     */
+    private function updateAccountConfig(&$configHipay)
+    {
+        $defaultConfig = $this->getDefaultConfig();
+
+        // add new fields
+        $configHipay["account"] = array_merge(
+            $configHipay["account"],
+            array_diff_key($defaultConfig["account"], $configHipay["account"])
+        );
     }
 
     /**
@@ -285,10 +319,14 @@ class HipayConfig
         // update operating_mode with new format
         switch ($configHipay["payment"]["global"]["operating_mode"]) {
             case "api":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::DIRECT_POST);
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(
+                    UXMode::DIRECT_POST
+                );
                 break;
             case "hosted_page":
-                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(UXMode::HOSTED_PAGE);
+                $configHipay["payment"]["global"]["operating_mode"] = OperatingMode::getOperatingMode(
+                    UXMode::HOSTED_PAGE
+                );
                 break;
         }
     }
@@ -369,7 +407,11 @@ class HipayConfig
                     "activate_basket" => 1,
                     "log_infos" => 1,
                     "regenerate_cart_on_decline" => 1,
-                    "ccDisplayName" => array("fr" => "Carte de crédit", "en" => "Credit card"),
+                    "ccDisplayName" => array(
+                        "fr" => "Carte de crédit",
+                        "en" => "Credit card",
+                        "it" => "Carta di credito"
+                    ),
                     "ccFrontPosition" => 1,
                     "send_url_notification" => 0
                 ),

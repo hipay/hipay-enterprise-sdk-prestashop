@@ -96,7 +96,7 @@ class Apihandler
         switch ($mode) {
             case ApiMode::DIRECT_POST:
                 $params ["paymentmethod"] = $this->getPaymentMethod($params);
-                $this->handleDirectOrder($params, true);
+                $this->handleDirectOrder($params);
                 break;
             case ApiMode::HOSTED_PAGE_IFRAME:
                 $params["productlist"] = HipayHelper::getCreditCardProductList(
@@ -133,7 +133,7 @@ class Apihandler
 
         $params ["paymentmethod"] = $this->getPaymentMethod($params, false);
 
-        switch($mode){
+        switch ($mode) {
             case ApiMode::DIRECT_POST:
                 return $this->handleDirectOrder($params);
                 break;
@@ -318,58 +318,58 @@ class Apihandler
      * call api and redirect to success or error page
      *
      * @param $params
-     * @param bool $cc
+     * @throws PrestaShopException
      */
-    private function handleDirectOrder($params, $cc = false)
+    private function handleDirectOrder($params)
     {
-        if ($cc) {
-            $config = $this->configHipay["payment"]["credit_card"][strtolower($params["method"])];
-        } else {
-            $config = $this->configHipay["payment"]["local_payment"][strtolower($params["method"])];
-        }
-
-        if (is_array($config["displayName"])) {
-            $params["methodDisplayName"] = $config["displayName"][$this->context->language->iso_code];
-        } else {
-            $params["methodDisplayName"] = $config["displayName"];
-        }
-
         try {
+            $params["paymentProduct"] = $this->module->hipayConfigTool->getPaymentProduct($params["method"]);
+
+            $params["methodDisplayName"] = HipayHelper::getPaymentProductName(
+                $params["paymentProduct"],
+                $this->module,
+                $this->context->language
+            );
+
             $response = ApiCaller::requestDirectPost($this->module, $params);
+
+            $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
+            $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
+            $exceptionUrl = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
+            $forwardUrl = $response->getForwardUrl();
+
+            switch ($response->getState()) {
+                case TransactionState::COMPLETED:
+                    $this->callValidateOrder($params);
+                    break;
+                case TransactionState::PENDING:
+                    $redirectUrl = $pendingUrl;
+                    break;
+                case TransactionState::FORWARDING:
+                    $redirectUrl = $forwardUrl;
+                    break;
+                case TransactionState::DECLINED:
+                    $reason = $response->getReason();
+                    $this->module->getLogs()->logInfos(
+                        'There was an error request new transaction: ' . $reason['message']
+                    );
+                    $redirectUrl = $failUrl;
+                    break;
+                case TransactionState::ERROR:
+                    $reason = $response->getReason();
+                    $this->module->getLogs()->logInfos(
+                        'There was an error request new transaction: ' . $reason['message']
+                    );
+                    $redirectUrl = $exceptionUrl;
+                    break;
+                default:
+                    $redirectUrl = $failUrl;
+            }
+
+            Tools::redirect($redirectUrl);
         } catch (GatewayException $e) {
             $e->handleException();
         }
-
-        $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
-        $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
-        $exceptionUrl = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
-        $forwardUrl = $response->getForwardUrl();
-
-        switch ($response->getState()) {
-            case TransactionState::COMPLETED:
-                $this->callValidateOrder($params);
-                break;
-            case TransactionState::PENDING:
-                $redirectUrl = $pendingUrl;
-                break;
-            case TransactionState::FORWARDING:
-                $redirectUrl = $forwardUrl;
-                break;
-            case TransactionState::DECLINED:
-                $reason = $response->getReason();
-                $this->module->getLogs()->logInfos('There was an error request new transaction: ' . $reason['message']);
-                $redirectUrl = $failUrl;
-                break;
-            case TransactionState::ERROR:
-                $reason = $response->getReason();
-                $this->module->getLogs()->logInfos('There was an error request new transaction: ' . $reason['message']);
-                $redirectUrl = $exceptionUrl;
-                break;
-            default:
-                $redirectUrl = $failUrl;
-        }
-
-        Tools::redirect($redirectUrl);
     }
 
     /**
@@ -394,6 +394,7 @@ class Apihandler
      * create order (Api Order)
      *
      * @param $params
+     * @throws PrestaShopException
      */
     private function callValidateOrder($params)
     {
@@ -413,32 +414,5 @@ class Apihandler
         );
 
         $this->db->releaseSQLLock('callValidateOrder' . $cart->id);
-    }
-
-    /**
-     * Check if payment method force Hpayment
-     *
-     * @param $configMethod
-     * @return bool
-     */
-    private function forceHpayment($configMethod)
-    {
-        return (bool)$this->getMethodConfigField($configMethod, "forceHpayment");
-    }
-
-    /**
-     * get Method config field
-     *
-     * @param $configMethod
-     * @param $field
-     * @return bool
-     */
-    private function getMethodConfigField($configMethod, $field)
-    {
-        if (isset($configMethod[$field])) {
-            return $configMethod[$field];
-        }
-
-        return false;
     }
 }

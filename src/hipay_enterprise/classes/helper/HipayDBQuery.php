@@ -730,6 +730,26 @@ class HipayDBQuery
 
     /**
      * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function wrappingIsRefunded($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId, 'wrapping', 'refund');
+    }
+
+    /**
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function wrappingIsCaptured($orderId)
+    {
+        return $this->feesOrDiscountAreMaintained($orderId, 'wrapping', 'capture');
+    }
+
+    /**
+     * @param $orderId
      * @param $type
      * @param $operation
      * @return bool
@@ -900,6 +920,24 @@ class HipayDBQuery
         }
 
         return Db::getInstance()->insert(HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE, $values);
+    }
+
+    /**
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function OrderCaptureTypeExist($orderId)
+    {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_ORDER_CAPTURE_TYPE_TABLE .
+            '` WHERE order_id=' . pSQL((int)$orderId) ;
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
