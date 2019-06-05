@@ -508,7 +508,7 @@ class HipayHelper
                 if ($paymentMethodType == "local_payment") {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE ||
                         Configuration::get('PS_ROUND_TYPE') == Order::ROUND_ITEM ||
-                        !$settings["forceBasket"]
+                        !$settings["basketRequired"]
                     ) {
                         $activatedPayment[$name] = $settings;
                         $activatedPayment[$name]["link"] = $context->link->getModuleLink(

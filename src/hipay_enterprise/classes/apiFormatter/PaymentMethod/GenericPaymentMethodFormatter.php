@@ -44,7 +44,8 @@ class GenericPaymentMethodFormatter extends ApiFormatterAbstract
         $PMRequest = null;
 
         if (!empty($this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"])) {
-            $PMRequest = new $this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["sdkClass"]();
+            $sdkClass = $this->configHipay["payment"]["local_payment"][$this->params["method"]]["additionalFields"]["sdkClass"];
+            $PMRequest = new $sdkClass();
 
             $this->mapRequest($PMRequest);
         }
