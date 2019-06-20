@@ -16,6 +16,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.p
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
 require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
 require_once(dirname(__FILE__) . '/../helper/HipayMaintenanceData.php');
+require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 /**
@@ -117,22 +118,41 @@ class ApiCaller
     public static function requestDirectPost($moduleInstance, $params)
     {
         try {
+
+            $time_Totalstart = microtime(true);
+
             // Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
 
             //Set data to send to the API
             $directPostFormatter = new DirectPostFormatter($moduleInstance, $params);
-
             // @var \HiPay\Fullservice\Gateway\Request\Order\OrderRequest
             $orderRequest = $directPostFormatter->generate();
             $moduleInstance->getLogs()->logRequest($orderRequest);
 
+            $time_formatend = microtime(true);
+            $moduleInstance->getLogs()->logRequest(
+                "Execution Time (DirectPost - Format): " . ($time_formatend - $time_Totalstart)
+            );
+
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-            return $gatewayClient->requestNewOrder($orderRequest);
+            $response = $gatewayClient->requestNewOrder($orderRequest);
+
+            $time_Totalend = microtime(true);
+
+            $moduleInstance->getLogs()->logRequest(
+                "Execution Time (DirectPost - Request): " . ($time_Totalend - $time_formatend)
+            );
+
+            $moduleInstance->getLogs()->logRequest(
+                "Execution Time (DirectPost - Total): " . ($time_Totalend - $time_Totalstart)
+            );
+
+            return $response;
         } catch (Exception $e) {
-            $db = new HipayDBQuery($moduleInstance);
+            $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
-            $db->releaseSQLLock('requestDirectPost');
+            $dbUtils->releaseSQLLock('requestDirectPost');
             throw new GatewayException(
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
                 $e->getMessage() . ']',

@@ -12,6 +12,8 @@
  */
 
 require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBUtils.php');
 
 /**
  * Handle config form data savings
@@ -33,6 +35,7 @@ class HipayConfigFormHandler
     {
         $this->context = Context::getContext();
         $this->module = $module_instance;
+        $this->dbUtils = new HipayDBUtils($this->module);
     }
 
     /**
@@ -268,7 +271,7 @@ class HipayConfigFormHandler
                         if ($key == "currencies" && $fieldValue) {
                             foreach ($fieldValue as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
-                                    $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
+                                    $this->dbUtils->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
                             }
                         }
@@ -330,7 +333,7 @@ class HipayConfigFormHandler
                         if ($key == "currencies" && $fieldValue) {
                             foreach ($fieldValue as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
-                                    $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
+                                    $this->dbUtils->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
                             }
                         }

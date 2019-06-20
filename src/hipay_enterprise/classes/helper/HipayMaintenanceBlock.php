@@ -12,6 +12,7 @@
  */
 
 require_once(dirname(__FILE__) . '/HipayHelper.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBMaintenance.php');
 
 /**
  * handle credit card token (OneClik payment)
@@ -35,6 +36,7 @@ class HipayMaintenanceBlock
     private $statusNotAvailableForCapture;
     private $statusAvailableForRefund;
     private $statusNotAvailableForRefund;
+    private $dbMaintenance;
 
     /**
      * HipayMaintenanceBlock constructor.
@@ -49,9 +51,10 @@ class HipayMaintenanceBlock
         $this->context = Context::getContext();
         $this->order = new Order($orderID);
         $this->cart = new Cart($this->order->id_cart);
-        $this->paymentProduct = $this->module->db->getPaymentProductFromMessage($this->order->id);
-        $this->captureOrRefundFromBo = $this->module->db->captureOrRefundFromBO($this->order->id);
-        $this->basket = $this->module->db->getOrderBasket($this->order->id);
+        $this->paymentProduct = $this->dbMaintenance->getPaymentProductFromMessage($this->order->id);
+        $this->captureOrRefundFromBo = $this->dbMaintenance->captureOrRefundFromBO($this->order->id);
+        $this->basket = $this->dbMaintenance->getOrderBasket($this->order->id);
+        $this->dbMaintenance = new HipayDBMaintenance($this->module);
 
         $this->statusAvailableForCapture = array(
             Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
@@ -129,7 +132,7 @@ class HipayMaintenanceBlock
     private function checkMoto()
     {
         if ($this->order->getCurrentState() == $this->getStatusId('HIPAY_OS_MOTO_PENDING') &&
-            !$this->module->db->getTransactionReference($this->order->id)
+            !$this->dbMaintenance->getTransactionReference($this->order->id)
         ) {
             $this->context->smarty->assign(
                 array(
@@ -176,13 +179,13 @@ class HipayMaintenanceBlock
     private function checkRefund()
     {
         if ($this->paymentProduct) {
-            $refundedItems = $this->module->db->getRefundedItems($this->order->id);
-            $refundedFees = $this->module->db->feesAreRefunded($this->order->id);
-            $refundedDiscounts = $this->module->db->discountsAreRefunded($this->order->id);
-            $capturedFees = $this->module->db->feesAreCaptured($this->order->id);
-            $capturedDiscounts = $this->module->db->discountsAreCaptured($this->order->id);
-            $capturedWrapping = $this->module->db->wrappingIsCaptured($this->order->id);
-            $refundedWrapping = $this->module->db->wrappingIsRefunded($this->order->id);
+            $refundedItems = $this->dbMaintenance->getRefundedItems($this->order->id);
+            $refundedFees = $this->dbMaintenance->feesAreRefunded($this->order->id);
+            $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
+            $capturedFees = $this->dbMaintenance->feesAreCaptured($this->order->id);
+            $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
+            $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
+            $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
 
             if (
                 $this->paymentMethodCanRefundOrCapture("refund")
@@ -199,7 +202,7 @@ class HipayMaintenanceBlock
                         'manualCapture' => $this->isManualCapture(),
                         'stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
-                        'alreadyCaptured' => $this->module->db->alreadyCaptured($this->order->id),
+                        'alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
                         'refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) -
                             HipayHelper::getOrderPaymentAmount($this->order, true),
                         'refundedFees' => $refundedFees,
@@ -264,10 +267,10 @@ class HipayMaintenanceBlock
                 && !$this->isTotallyCaptured()
             ) {
 
-                $capturedItems = $this->module->db->getCapturedItems($this->order->id);
-                $capturedFees = $this->module->db->feesAreCaptured($this->order->id);
-                $capturedDiscounts = $this->module->db->discountsAreCaptured($this->order->id);
-                $capturedWrapping = $this->module->db->wrappingIsCaptured($this->order->id);
+                $capturedItems = $this->dbMaintenance->getCapturedItems($this->order->id);
+                $capturedFees = $this->dbMaintenance->feesAreCaptured($this->order->id);
+                $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
+                $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
 
                 $this->context->smarty->assign(
                     array(
@@ -347,9 +350,9 @@ class HipayMaintenanceBlock
     private function isTotallyRefunded()
     {
         $totallyRefunded = true;
-        $refundedItems = $this->module->db->getRefundedItems($this->order->id);
-        $refundedFees = $this->module->db->feesAreRefunded($this->order->id);
-        $refundedDiscounts = $this->module->db->discountsAreRefunded($this->order->id);
+        $refundedItems = $this->dbMaintenance->getRefundedItems($this->order->id);
+        $refundedFees = $this->dbMaintenance->feesAreRefunded($this->order->id);
+        $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
         foreach ($this->order->getProducts() as $product) {
             $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) &&
@@ -429,7 +432,7 @@ class HipayMaintenanceBlock
         );
 
         if (
-            $this->module->db->isManualCapture($this->order->id)
+            $this->dbMaintenance->isManualCapture($this->order->id)
             || (boolean)$isChallenged
         ) {
             return true;

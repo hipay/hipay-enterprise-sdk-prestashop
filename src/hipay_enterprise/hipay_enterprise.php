@@ -58,8 +58,7 @@ class Hipay_enterprise extends PaymentModule
         // init mapper object
         $this->mapper = new HipayMapper($this);
 
-        // init query object
-        $this->db = new HipayDBQuery($this);
+        $this->dbSchemaManager = new HipayDBSchemaManager($this);
 
         // init token manger object
         $this->token = new HipayCCToken($this);
@@ -610,10 +609,10 @@ class Hipay_enterprise extends PaymentModule
     private function createHipayTable()
     {
         $this->mapper->createTable();
-        $this->db->createOrderRefundCaptureTable();
-        $this->db->createCCTokenTable();
-        $this->db->createHipayTransactionTable();
-        $this->db->createHipayOrderCaptureType();
+        $this->dbSchemaManager->createOrderRefundCaptureTable();
+        $this->dbSchemaManager->createCCTokenTable();
+        $this->dbSchemaManager->createHipayTransactionTable();
+        $this->dbSchemaManager->createHipayOrderCaptureType();
         return true;
     }
 
@@ -623,8 +622,7 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-//        $this->db->deleteOrderRefundCaptureTable();
-        $this->db->deleteCCTokenTable();
+        $this->dbSchemaManager->deleteCCTokenTable();
         return true;
     }
 }
@@ -642,7 +640,7 @@ require_once(dirname(__FILE__) . '/classes/helper/HipayConfig.php');
 require_once(dirname(__FILE__) . '/classes/forms/HipayForm.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayMapper.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
-require_once(dirname(__FILE__) . '/classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/classes/helper/dbquery/HipayDBSchemaManager.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayFormControl.php');

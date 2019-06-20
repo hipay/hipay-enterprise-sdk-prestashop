@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBTokenQuery.php');
 
 /**
  * handle credit card token (OneClik payment)
@@ -29,7 +29,7 @@ class HipayCCToken
         $this->module = $moduleInstance;
         $this->logs = $this->module->getLogs();
         $this->context = Context::getContext();
-        $this->db = new HipayDBQuery($this->module);
+        $this->dbTokenQuery = new HipayDBTokenQuery($this->module);
     }
 
     /**
@@ -44,7 +44,7 @@ class HipayCCToken
             $this->module->getLogs()->logInfos("# SaveCCToken for customer ID $customerId");
             $card = array_merge(array("customer_id" => $customerId), $card);
 
-            $this->db->setCCToken($card);
+            $this->dbTokenQuery->setCCToken($card);
         }
     }
 
@@ -55,7 +55,7 @@ class HipayCCToken
      */
     public function getSavedCC($customerId)
     {
-        return $this->db->getSavedCC($customerId);
+        return $this->dbTokenQuery->getSavedCC($customerId);
     }
 
     /**
@@ -66,7 +66,7 @@ class HipayCCToken
      */
     public function tokenExist($customerId, $token)
     {
-        return $this->db->ccTokenExist($customerId, $token);
+        return $this->dbTokenQuery->ccTokenExist($customerId, $token);
     }
 
     /**
@@ -77,7 +77,7 @@ class HipayCCToken
      */
     public function getTokenDetails($customerId, $token)
     {
-        return $this->db->getToken($customerId, $token);
+        return $this->dbTokenQuery->getToken($customerId, $token);
     }
 
     /**
@@ -88,7 +88,7 @@ class HipayCCToken
      */
     public function deleteToken($customerId, $tokenId)
     {
-        return $this->db->deleteToken($customerId, $tokenId);
+        return $this->dbTokenQuery->deleteToken($customerId, $tokenId);
     }
 
     /**
@@ -98,6 +98,6 @@ class HipayCCToken
      */
     public function deleteAllToken($customerId)
     {
-        return $this->db->deleteAllToken($customerId);
+        return $this->dbTokenQuery->deleteAllToken($customerId);
     }
 }

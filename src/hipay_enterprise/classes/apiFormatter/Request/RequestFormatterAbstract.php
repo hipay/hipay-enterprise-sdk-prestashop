@@ -14,10 +14,15 @@
 require_once(dirname(__FILE__) . '/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerShippingInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/BrowserInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/MerchantRiskStatementFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/AccountInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/PreviousAuthInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../../helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
+use HiPay\Fullservice\Enum\ThreeDSTwo\DeviceChannel;
 
 /**
  *
@@ -41,7 +46,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
-     * @param type $order
+     * @param \HiPay\Fullservice\Gateway\Request\Order\OrderRequest $order
      */
     protected function mapRequest(&$order)
     {
@@ -170,11 +175,19 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->basket = $this->params["basket"];
         $order->delivery_information = $this->params["delivery_informations"];
         $order->authentication_indicator = $this->params["authentication_indicator"];
+
+        if (in_array(strtolower($this->params["method"]), $this->cardPaymentProduct)) {
+            $order->browser_info = $this->getBrowserInfo();
+            $order->previous_auth_info = $this->getPreviousAuthInfo();
+            $order->merchant_risk_statement = $this->getMerchantRiskStatement();
+            $order->account_info = $this->getAccountInfo();
+            $order->device_channel = DeviceChannel::BROWSER;
+        }
     }
 
     /**
-     * return well formatted order descritpion
-     * @param type $order
+     * return well formatted order description
+     * @param \HiPay\Fullservice\Gateway\Request\Order\OrderRequest $order
      * @return string
      */
     protected function generateDescription($order)
@@ -222,5 +235,33 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $billingInfo = new CustomerShippingInfoFormatter($this->module, $this->cart);
 
         return $billingInfo->generate();
+    }
+
+    private function getBrowserInfo()
+    {
+        $browserInfo = new BrowserInfoFormatter($this->module, $this->cart, $this->params);
+
+        return $browserInfo->generate();
+    }
+
+    private function getPreviousAuthInfo()
+    {
+        $previousAuthInfo = new PreviousAuthInfoFormatter($this->module, $this->cart);
+
+        return $previousAuthInfo->generate();
+    }
+
+    private function getMerchantRiskStatement()
+    {
+        $merchantRiskStatement = new MerchantRiskStatementFormatter($this->module, $this->cart);
+
+        return $merchantRiskStatement->generate();
+    }
+
+    private function getAccountInfo()
+    {
+        $accountInfo = new AccountInfoFormatter($this->module, $this->cart, $this->params);
+
+        return $accountInfo->generate();
     }
 }

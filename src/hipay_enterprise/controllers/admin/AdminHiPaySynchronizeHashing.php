@@ -40,7 +40,6 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
         parent::__construct();
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
-        $this->db = new HipayDBQuery($this->module);
     }
 
     /**
