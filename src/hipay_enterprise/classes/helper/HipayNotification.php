@@ -416,7 +416,7 @@ class HipayNotification
                 $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower(
                     $this->transaction->getPaymentProduct()
                 )];
-                if (isset($configCC['recurring']) && $configCC['recurring']) {
+                if (isset($configCC['canRecurring']) && $configCC['canRecurring']) {
 
                     $card = array(
                         "token" => $this->transaction->getPaymentMethod()->getToken(),

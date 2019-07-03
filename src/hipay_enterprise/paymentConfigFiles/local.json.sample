@@ -1,14 +1,14 @@
 {
-  "name": "carte-cadeau",
+  "name": "test",
   "config": {
     "group": {
-      "code": "oney",
-      "label": "Oney Facily Pay"
+      "code": "test",
+      "label": "Test method group is optional"
     },
-    "displayNameBO": "Oney CARTE CADEAU",
+    "displayNameBO": "Test method",
     "displayName":  {
-      "fr": "Oney CARTE CADEAU",
-      "en": "Oney CARTE CADEAU"
+      "fr": "Test method",
+      "en": "Test method"
     },
     "frontPosition": 31,
     "activated": 0,
