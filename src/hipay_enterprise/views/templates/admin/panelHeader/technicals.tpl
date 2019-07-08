@@ -51,7 +51,7 @@
         {* Showing update alert if needed *}
         {if $updateNotif->getVersion() != $updateNotif->getNewVersion()}
             <div class="row">
-                <div class="alert alert-danger">
+                <div id='hipayupdate' class="alert alert-danger">
                     {l s='There is a new version of HiPay Enterprise module available.' mod='hipay_enterprise'}
                     <a href="{$updateNotif->getReadMeUrl()}">{l s='View version %s details' mod='hipay_enterprise' sprintf=$updateNotif->getNewVersion()}</a>
                     {l s='or' mod='hipay_enterprise'} <a href="{$updateNotif->getDownloadUrl()}">{l s='update now' mod='hipay_enterprise'}</a>.

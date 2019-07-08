@@ -76,6 +76,13 @@ if [ ! -f /var/www/html/prestashopConsole.phar ];then
         ./prestashopConsole.phar  configuration:set PS_SSL_ENABLED 1
     fi
 
+    if [ "$ENVIRONMENT" = "$ENV_STAGE" ];then
+        mysql -h $MYSQL_HOST -D prestashop17 -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+            UPDATE ps_module SET version='0.0.0' WHERE name='hipay_enterprise';
+            COMMIT;
+EOF
+    fi
+
     ./prestashopConsole.phar c:flush
 
 

@@ -60,11 +60,11 @@ class HipayUpdateNotif
      * @param string $version
      * @throws Exception
      */
-    public function __construct($module, $version)
+    public function __construct($module)
     {
         $this->module = $module;
         $this->context = Context::getContext();
-        $this->version = $version;
+        $this->version = $module->db->getModuleVersion($module->name);
 
         // We read info from the saved configuration first, to have values even if GitHub doesn't answer properly
         $this->readFromConf();

@@ -963,4 +963,28 @@ class HipayDBQuery
 
         return false;
     }
+
+    /**
+     * Returns a module's version from database
+     * @param $moduleName The module's name
+     * @return mixed
+     * @throws PrestaShopDatabaseException
+     */
+    public function getModuleVersion($moduleName){
+        $sql = 'SELECT version FROM `' .
+            _DB_PREFIX_ .
+            'module` WHERE name = \'' .
+            pSQL(
+                $moduleName
+            ) .
+            '\' LIMIT 1;';
+
+        $result = Db::getInstance()->executeS($sql);
+
+        if(isset($result[0]) && is_array($result[0])) {
+            return $result[0]['version'];
+        } else {
+            return null;
+        }
+    }
 }

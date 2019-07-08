@@ -91,7 +91,7 @@ class Hipay_enterprise extends PaymentModule
         $this->hipayConfigTool = new HipayConfig($this);
 
         // Checking new versions of the module
-        $this->hipayUpdateNotif = new HipayUpdateNotif($this, $this->version);
+        $this->hipayUpdateNotif = new HipayUpdateNotif($this);
     }
 
     /**
