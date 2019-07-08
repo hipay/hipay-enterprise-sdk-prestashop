@@ -225,3 +225,16 @@
     padding-top: 7px;
     font-weight: 600;
 }
+
+/***********************************/
+/**        MAIN ADMIN VIEW        **/
+/***********************************/
+#hipayNotifLogo {
+    max-height: 50px;
+    max-width: 100% !important;
+}
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
