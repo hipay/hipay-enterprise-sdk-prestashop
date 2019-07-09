@@ -59,6 +59,7 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper = new HipayMapper($this);
 
         $this->dbSchemaManager = new HipayDBSchemaManager($this);
+        $this->dbUtils = new HipayDBUtils($this);
 
         // init token manger object
         $this->token = new HipayCCToken($this);
