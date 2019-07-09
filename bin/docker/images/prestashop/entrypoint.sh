@@ -93,8 +93,17 @@ EOF
     #service cron start
 fi
 
+if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ];then
+    MOD_DROITS=775
+else
+    MOD_DROITS=755
+fi
+
+
 chown -R www-data:www-data /var/www/html
-chmod -R 755 /var/www/html
+chmod -R $MOD_DROITS /var/www/html
+
+
 
 #===================================#
 #       START WEBSERVER
