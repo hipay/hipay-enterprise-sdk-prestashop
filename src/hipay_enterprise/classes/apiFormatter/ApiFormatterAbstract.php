@@ -32,6 +32,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
     protected $cart;
     protected $customer;
     protected $dbUtils;
+    protected $threeDSDB;
     protected $dbToken;
     protected $delivery;
     protected $cardPaymentProduct = array(
@@ -51,6 +52,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
         $this->mapper = new HipayMapper($module);
         $this->dbUtils = new HipayDBUtils($module);
+        $this->threeDSDB = new HipayDBThreeDSQuery($module);
         $this->dbToken = new HipayDBTokenQuery($module);
         $this->cart = (!$cart) ? $this->context->cart : $cart;
         $this->customer = (is_null($this->cart)) ? false : new Customer((int)$this->cart->id_customer);

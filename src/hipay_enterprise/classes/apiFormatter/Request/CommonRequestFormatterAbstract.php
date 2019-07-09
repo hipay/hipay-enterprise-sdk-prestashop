@@ -89,6 +89,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "captureType" => $captureType,
         );
 
+        // Handling one-click data
         if (isset($this->params["multi_use"]) && $this->params["multi_use"]) {
             $customDataHipay["multi_use"] = true;
         }

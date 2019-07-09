@@ -93,7 +93,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
             );
         }
 
-        if ($this->dbUtils->cartAlreadyOrdered($productsArray)) {
+        if ($this->threeDSDB->cartAlreadyOrdered($productsArray)) {
             return ReorderIndicator::REORDERED;
         }
 

@@ -17,6 +17,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.
 require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
 require_once(dirname(__FILE__) . '/../helper/HipayMaintenanceData.php');
 require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php');
+require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBThreeDSQuery.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 /**

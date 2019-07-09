@@ -94,12 +94,12 @@ class AccountInfoFormatter extends ApiFormatterAbstract
                 $this->customer->id,
                 $twentyFourHoursAgo
             );
-            $purchaseInfo->payment_attempts_24h = $this->dbUtils->getNbPaymentAttempt(
+            $purchaseInfo->payment_attempts_24h = $this->threeDSDB->getNbPaymentAttempt(
                 $this->customer->id,
                 $twentyFourHoursAgo,
                 $this->cardPaymentProduct
             );
-            $purchaseInfo->payment_attempts_1y = $this->dbUtils->getNbPaymentAttempt(
+            $purchaseInfo->payment_attempts_1y = $this->threeDSDB->getNbPaymentAttempt(
                 $this->customer->id,
                 $oneYearAgo,
                 $this->cardPaymentProduct
@@ -113,8 +113,8 @@ class AccountInfoFormatter extends ApiFormatterAbstract
     {
         $paymentInfo = new PaymentInfo();
 
-        if (!$this->customer->is_guest && $this->params["method"] !== CardPaymentProduct::HOSTED) {
-            $dateCartFirstUsed = $this->dbUtils->getCartFirstUsed(
+        if (!$this->customer->is_guest && $this->params["oneClick"]) {
+            $dateCartFirstUsed = $this->threeDSDB->getCartFirstUsed(
                 str_replace('x', '*', $this->params["card_pan"]),
                 $this->params["card_expiration_date"],
                 $this->params["card_holder"],
@@ -134,7 +134,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         $shippingInfo = new ShippingInfo();
 
         if (!$this->customer->is_guest) {
-            $addressFirstUsed = $this->dbUtils->getDateAddressFirstUsed($this->delivery->id);
+            $addressFirstUsed = $this->threeDSDB->getDateAddressFirstUsed($this->delivery->id);
             $shippingInfo->shipping_used_date = ($addressFirstUsed) ? date('Ymd', strtotime($addressFirstUsed)) : null;
         }
 

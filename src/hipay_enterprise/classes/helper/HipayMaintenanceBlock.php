@@ -49,12 +49,12 @@ class HipayMaintenanceBlock
     {
         $this->module = $module;
         $this->context = Context::getContext();
+        $this->dbMaintenance = new HipayDBMaintenance($this->module);
         $this->order = new Order($orderID);
         $this->cart = new Cart($this->order->id_cart);
         $this->paymentProduct = $this->dbMaintenance->getPaymentProductFromMessage($this->order->id);
         $this->captureOrRefundFromBo = $this->dbMaintenance->captureOrRefundFromBO($this->order->id);
         $this->basket = $this->dbMaintenance->getOrderBasket($this->order->id);
-        $this->dbMaintenance = new HipayDBMaintenance($this->module);
 
         $this->statusAvailableForCapture = array(
             Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
