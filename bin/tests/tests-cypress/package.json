@@ -1,5 +1,5 @@
 {
-  "name": "hipay-enterprise-sdk-woocommerce",
+  "name": "hipay-enterprise-sdk-prestashop",
   "version": "1.0.0",
   "dependencies": {
     "@hipay/hipay-cypress-utils": "^1.0.32",
