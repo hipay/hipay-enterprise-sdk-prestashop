@@ -1,3 +1,8 @@
+# Version 2.7.1
+
+- Get payment method configuration from PHP SDK
+- Add update notifications in admin dashboard
+
 # Version 2.7.0
 
 - Add MyBank Payment method
