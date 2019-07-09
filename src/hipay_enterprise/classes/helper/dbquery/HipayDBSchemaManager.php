@@ -124,7 +124,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `basket` TEXT ,
                 `attempt_create_multi_use` INT(10),
                 `customer_id` INT(10),
-                `auth_info_method` VARCHAR(2)
+                `auth_info_method` VARCHAR(2),
                 PRIMARY KEY (`hp_id`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
