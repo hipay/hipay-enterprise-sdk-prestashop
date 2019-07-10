@@ -40,7 +40,7 @@
         {/if}
     </div>
     <input id="ioBB" type="hidden" name="ioBB">
-
+    <input id="browserInfo" type="hidden" name="browserInfo">
 </form>
 <div id="payment-loader-hp" style='text-align: center; display:none;'>
     <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
@@ -49,6 +49,15 @@
 <script>
     document.addEventListener('DOMContentLoaded',
         function() {
+            var hipay = HiPay({
+                username: api_tokenjs_username,
+                password: api_tokenjs_password_publickey,
+                environment: api_tokenjs_mode,
+                lang: lang
+            });
+
+            $('#browserInfo').val(JSON.stringify(hipay.getBrowserInfo()));
+
             $("#hpaymentForm").submit(function (e) {
                 var form = this;
                 e.preventDefault();

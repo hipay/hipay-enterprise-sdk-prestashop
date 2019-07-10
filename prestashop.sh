@@ -104,3 +104,11 @@ if [ "$1" = 'test' ]; then
 
    casperjs test $pathPreFile ${pathDir}/[0-1]*/[1-1][4-4][0-0][0-0]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
 fi
+
+if [ "$1" = 'clear-smarty' ] && [ "$2" != '' ]; then
+   cd web$2/var/cache/dev/smarty/compile
+   sudo chmod -R 775 .
+   rm -r ./*
+   echo "Cleared"
+fi
+
