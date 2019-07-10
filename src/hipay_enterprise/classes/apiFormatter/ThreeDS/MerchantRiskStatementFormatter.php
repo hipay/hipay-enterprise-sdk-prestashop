@@ -62,6 +62,8 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
             $merchantRiskStatement->purchase_indicator = PurchaseIndicator::MERCHANDISE_AVAILABLE;
         }
 
+        $merchantRiskStatement->pre_order_date = $this->getPreOrderDate();
+
         if (!$this->customer->is_guest) {
             $merchantRiskStatement->reorder_indicator = $this->cartAlreadyOrdered();
         }
@@ -115,5 +117,30 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
         }
 
         return ShippingIndicator::SHIP_TO_DIFFERENT_ADDRESS;
+    }
+
+    private function getPreOrderDate()
+    {
+        $today = new DateTime();
+        $lastAvailableDate = $today;
+        $preOrder = false;
+        $allProducts = $this->cart->getProducts();
+
+        foreach ($allProducts as $product){
+            $stock = StockAvailable::getQuantityAvailableByProduct($product['id_product'], $product['id_product_attribute']);
+            if($stock <= 0){
+                $preOrder = true;
+                $availableDate = DateTime::createFromFormat("Y-m-d", $product['available_date']);
+                if($availableDate > $lastAvailableDate){
+                    $lastAvailableDate = $availableDate;
+                }
+            }
+        }
+
+        if($preOrder && $lastAvailableDate > $today){
+            return $lastAvailableDate;
+        }
+
+        return null;
     }
 }
