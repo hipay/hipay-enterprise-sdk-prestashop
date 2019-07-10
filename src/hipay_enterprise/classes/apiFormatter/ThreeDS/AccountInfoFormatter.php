@@ -113,7 +113,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
     {
         $paymentInfo = new PaymentInfo();
 
-        if (!$this->customer->is_guest && $this->params["oneClick"]) {
+        if (!$this->customer->is_guest && isset($this->params["oneClick"]) && $this->params["oneClick"]) {
             $dateCartFirstUsed = $this->threeDSDB->getCartFirstUsed(
                 str_replace('x', '*', $this->params["card_pan"]),
                 $this->params["card_expiration_date"],
