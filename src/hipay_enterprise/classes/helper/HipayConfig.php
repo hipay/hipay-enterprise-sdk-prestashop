@@ -535,19 +535,20 @@ class HipayConfig
     /**
      * init local config
      *
+     * @param $folderName
      * @return array
      */
     private function insertPaymentsConfig($folderName)
     {
-        $creditCard = array();
+        $paymentMethod = array();
 
         $files = scandir($this->jsonFilesPath . $folderName);
 
         foreach ($files as $file) {
-            $creditCard = array_merge($creditCard, $this->addPaymentConfig($file, $folderName));
+            $paymentMethod = array_merge($paymentMethod, $this->addPaymentConfig($file, $folderName));
         }
 
-        return $creditCard;
+        return $paymentMethod;
     }
 
     /**
@@ -559,13 +560,57 @@ class HipayConfig
      */
     private function addPaymentConfig($file, $folderName)
     {
-        $creditCard = array();
+        $paymentMethod = array();
 
         if (preg_match('/(.*)\.json/', $file) == 1) {
             $json = Tools::jsonDecode(Tools::file_get_contents($this->jsonFilesPath . $folderName . $file), true);
-            $creditCard[$json["name"]] = $json["config"];
+            $paymentMethod[$json["name"]] = $json["config"];
+
+            $sdkConfig = HiPay\Fullservice\Data\PaymentProduct\Collection::getItem($json["name"]);
+
+            if ($sdkConfig !== null) {
+                $paymentMethod[$json["name"]] = array_merge($sdkConfig->toArray(), $paymentMethod[$json["name"]]);
+            }
+
+            if (
+                isset($paymentMethod[$json["name"]]["currencies"]) &&
+                empty($paymentMethod[$json["name"]]["currencies"])
+            ) {
+                $paymentMethod[$json["name"]]["currencies"] = $this->getActiveCurrencies();
+            }
+
+            if (
+                isset($paymentMethod[$json["name"]]["countries"]) &&
+                empty($paymentMethod[$json["name"]]["countries"])
+            ) {
+                $paymentMethod[$json["name"]]["countries"] = $this->getActiveCountries();
+            }
+
         }
 
-        return $creditCard;
+        return $paymentMethod;
+    }
+
+    private function getActiveCurrencies(){
+        $activeCurrenciesIso = array();
+        $activeCurrencies = Currency::getCurrencies(false, true);
+
+        foreach ($activeCurrencies as $currency) {
+            $activeCurrenciesIso[] = $currency["iso_code"];
+        }
+
+        return $activeCurrenciesIso;
+    }
+
+    private function getActiveCountries()
+    {
+        $activeCountriesIso = array();
+        $activeCountries = Country::getCountries($this->context->language->id, true);
+
+        foreach ($activeCountries as $country) {
+            $activeCountriesIso[] = $country["iso_code"];
+        }
+
+        return $activeCountriesIso;
     }
 }

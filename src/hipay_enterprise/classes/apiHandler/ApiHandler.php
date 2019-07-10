@@ -246,8 +246,8 @@ class Apihandler
             $params["delivery_informations"] = $this->getDeliveryInformation($cart);
         } elseif ($this->configHipay["payment"]["global"]["activate_basket"] ||
             (isset($params["method"]) &&
-                isset($this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"])) &&
-            $this->configHipay["payment"]["local_payment"][$params["method"]]["forceBasket"]
+                isset($this->configHipay["payment"]["local_payment"][$params["method"]]["basketRequired"])) &&
+            $this->configHipay["payment"]["local_payment"][$params["method"]]["basketRequired"]
         ) {
             $params["basket"] = $this->getCart($cart);
             $params["delivery_informations"] = $this->getDeliveryInformation($cart);

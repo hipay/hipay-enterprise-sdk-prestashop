@@ -26,6 +26,7 @@ if (!defined('_PS_VERSION_')) {
 class Hipay_enterprise extends PaymentModule
 {
     public $hipayConfigTool;
+    public $hipayUpdateNotif;
     public $_errors = array();
     public $_successes = array();
     public $currencies_titles = array();
@@ -37,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.7.0';
+        $this->version = '2.7.1';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -88,6 +89,9 @@ class Hipay_enterprise extends PaymentModule
 
         //configuration is handle by an helper class
         $this->hipayConfigTool = new HipayConfig($this);
+
+        // Checking new versions of the module
+        $this->hipayUpdateNotif = new HipayUpdateNotif($this);
     }
 
     /**
@@ -161,6 +165,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('updateCarrier');
         $return &= $this->registerHook('actionAdminDeleteBefore');
         $return &= $this->registerHook('actionAdminBulKDeleteBefore');
+        $return &= $this->registerHook('dashboardZoneOne');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -385,6 +390,15 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
+     * Displays notification block in main admin dashboard
+     * @param $params
+     * @return mixed
+     */
+    public function hookDashboardZoneOne($params){
+        return $this->hipayUpdateNotif->displayBlock();
+    }
+
+    /**
      * Handling prestashop payment hook. Adding payment methods (PS17)
      * @param type $params
      * @return type
@@ -511,7 +525,8 @@ class Hipay_enterprise extends PaymentModule
                 'ajax_url' => $this->context->link->getAdminLink('AdminModules'),
                 'url_site' => Tools::getHttpHost(true) . __PS_BASE_URI__,
                 'syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
-                'syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing')
+                'syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
+                "updateNotif" => $this->hipayUpdateNotif
             )
         );
 
@@ -633,3 +648,4 @@ require_once(dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayFormControl.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php');

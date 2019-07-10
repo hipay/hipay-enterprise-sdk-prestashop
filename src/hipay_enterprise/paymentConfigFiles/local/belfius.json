@@ -8,17 +8,6 @@
     },
     "frontPosition": 10,
     "activated": 0,
-    "canManualCapture": 0,
-    "canManualCapturePartially": 0,
-    "canRefund": 0,
-    "canRefundPartially": 0,
-    "currencies": [
-      "EUR"
-    ],
-    "countries": [
-      "GB",
-      "FR"
-    ],
     "displayConfigurationFields": [
       "displayName",
       "minAmount",
@@ -27,14 +16,12 @@
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
-    "forceBasket": 0,
     "minAmount": {
       "EUR": 0
     },
     "maxAmount": {
       "EUR": false
     },
-    "logo": "dexia-directnet.png",
-    "additionalFields": {}
+    "logo": "dexia-directnet.png"
   }
 }

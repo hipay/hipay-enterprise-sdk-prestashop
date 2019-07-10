@@ -12,17 +12,6 @@
     },
     "frontPosition": 22,
     "activated": 0,
-    "canManualCapture": 0,
-    "canManualCapturePartially": 0,
-    "canRefund": 1,
-    "canRefundPartially": 1,
-    "currencies": [
-      "EUR"
-    ],
-    "countries": [
-      "GB",
-      "FR"
-    ],
     "displayConfigurationFields": [
       "displayName",
       "minAmount",
@@ -31,14 +20,12 @@
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
-    "forceBasket": 0,
     "minAmount": {
       "EUR": 0
     },
     "maxAmount": {
       "EUR": false
     },
-    "logo": "postfinance-efinance.png",
-    "additionalFields": {}
+    "logo": "postfinance-efinance.png"
   }
 }

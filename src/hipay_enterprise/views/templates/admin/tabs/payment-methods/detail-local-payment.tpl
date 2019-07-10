@@ -157,7 +157,7 @@
                         <select id="multiselect-{$key}" name="{$key}_currencies[]" multiple="multiple"
                                 class="multiselect-currency">
                             {foreach $limitedCurrencies as $currency }
-                                <option value="{$currency@key}" {if $currency@key|in_array:$method.currencies } selected {/if} >{$currency@key}
+                                <option value="{$currency@key}" {if !empty($method.currencies) && $currency@key|in_array:$method.currencies } selected {/if} >{$currency@key}
                                     - {$currency} </option>
                             {/foreach}
                         </select>
