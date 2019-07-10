@@ -50,16 +50,19 @@ class BrowserInfoFormatter extends ApiFormatterAbstract
     {
         $browserInfo->ipaddr = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : null;
         $browserInfo->http_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
-        $browserInfo->javascript_enabled = true;
 
-        //TODO: Get from params (information fill by SD JS)
-        $browserInfo->color_depth = "";
-        $browserInfo->device_fingerprint = "";
-        $browserInfo->http_user_agent = "";
-        $browserInfo->java_enabled = "";
-        $browserInfo->language = "";
-        $browserInfo->screen_height = "";
-        $browserInfo->screen_width = "";
-        $browserInfo->timezone = "";
+        // Si JS est désactivé, $this->params['browser_info'] est à false
+        $browserInfo->javascript_enabled = isset($this->params['browser_info']) && ($this->params['browser_info'] !== false);
+
+        if(isset($this->params['browser_info'])) {
+            $browserInfo->java_enabled = isset($this->params['browser_info']->java_enabled) ? $this->params['browser_info']->java_enabled : null;
+            $browserInfo->language = isset($this->params['browser_info']->language) ? $this->params['browser_info']->language : null;
+            $browserInfo->color_depth = isset($this->params['browser_info']->color_depth) ? $this->params['browser_info']->color_depth : null;
+            $browserInfo->screen_height = isset($this->params['browser_info']->screen_height) ? $this->params['browser_info']->screen_height : null;
+            $browserInfo->screen_width = isset($this->params['browser_info']->screen_width) ? $this->params['browser_info']->screen_width : null;
+            $browserInfo->timezone = isset($this->params['browser_info']->timezone) ? $this->params['browser_info']->timezone : null;
+            $browserInfo->http_user_agent = isset($this->params['browser_info']->http_user_agent) ? $this->params['browser_info']->http_user_agent : null;
+            $browserInfo->device_fingerprint = isset($this->params['deviceFingerprint']) ? $this->params['deviceFingerprint'] : null;
+        }
     }
 }

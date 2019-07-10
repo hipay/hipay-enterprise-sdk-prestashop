@@ -290,7 +290,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         "/" .
                         Tools::getValue('card-expiry-year'),
                     "method" => $selectedCC,
-                    "authentication_indicator" => $this->setAuthenticationIndicator($cart)
+                    "authentication_indicator" => $this->setAuthenticationIndicator($cart),
+                    "browser_info" => json_decode(Tools::getValue('browserInfo'))
                 );
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {
