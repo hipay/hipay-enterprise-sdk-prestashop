@@ -154,6 +154,12 @@ class Hipay_enterprise extends PaymentModule
             $this->deleteHipayTable();
     }
 
+    /**
+     * Installation procedure for the HiPay module
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function installHipay()
     {
         $return = $this->installAdminTab();
@@ -177,6 +183,13 @@ class Hipay_enterprise extends PaymentModule
                 $this->registerHook('displayPaymentEU');
             $return = $return && $return16;
         }
+
+        $hook = new Hook();
+        $hook->name = 'actionHipayApiRequest';
+        $hook->title = 'HiPay API Request';
+        $hook->description = 'This hook is called right before HiPay calls its payment API';
+        $return = $return && $hook->add();
+
         return $return;
     }
 

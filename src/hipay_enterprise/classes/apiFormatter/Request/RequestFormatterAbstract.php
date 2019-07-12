@@ -53,6 +53,17 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         parent::mapRequest($order);
         $this->setCustomData($order, $this->cart, $this->params);
 
+        if (in_array(strtolower($this->params["method"]), $this->cardPaymentProduct)) {
+            $order->browser_info = $this->getBrowserInfo();
+            $order->previous_auth_info = $this->getPreviousAuthInfo();
+            $order->merchant_risk_statement = $this->getMerchantRiskStatement();
+            $order->account_info = $this->getAccountInfo();
+            $order->device_channel = DeviceChannel::BROWSER;
+
+            // Triggering apiRequest hook to allow merchants to add their own data to the request
+            Hook::exec('actionHipayApiRequest', array($order, $this->cart));
+        }
+
         $order->orderid = $this->cart->id . "(" . time() . ")";
         if ($this->moto) {
             $order->eci = ECI::MOTO;
@@ -175,14 +186,6 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->basket = $this->params["basket"];
         $order->delivery_information = $this->params["delivery_informations"];
         $order->authentication_indicator = $this->params["authentication_indicator"];
-
-        if (in_array(strtolower($this->params["method"]), $this->cardPaymentProduct)) {
-            $order->browser_info = $this->getBrowserInfo();
-            $order->previous_auth_info = $this->getPreviousAuthInfo();
-            $order->merchant_risk_statement = $this->getMerchantRiskStatement();
-            $order->account_info = $this->getAccountInfo();
-            $order->device_channel = DeviceChannel::BROWSER;
-        }
     }
 
     /**
@@ -264,4 +267,5 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         return $accountInfo->generate();
     }
+
 }
