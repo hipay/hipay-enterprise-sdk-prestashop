@@ -94,7 +94,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         }
 
         // Add custom data for transaction request
-        if (file_exists(dirname(__FILE__) . '/../../HipayEnterpriseHelperCustomData.php')) {
+        if (file_exists(dirname(__FILE__) . '/../../helper/HipayEnterpriseHelperCustomData.php')) {
             if (class_exists('HipayEnterpriseHelperCustomData', true)) {
                 $this->module->getLogs()->logInfos(
                     '## Process Custom Data from Custom Files : HipayEnterpriseHelperCustomData'
@@ -120,7 +120,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
     {
         //PS 1.6 fix
         if (in_array($class_name, array('HipayEnterpriseHelperCustomData'))) {
-            require_once dirname(__FILE__) . '/../../' . $class_name . '.php';
+            require_once dirname(__FILE__) . '/../../helper/' . $class_name . '.php';
         }
     }
 }
