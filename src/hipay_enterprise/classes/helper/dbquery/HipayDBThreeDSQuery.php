@@ -21,7 +21,7 @@ require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
  */
 class HipayDBThreeDSQuery extends HipayDBQueryAbstract
 {
-    public function cartAlreadyOrdered($products)
+    public function cartAlreadyOrdered($customerId, $products)
     {
         $where = array();
         foreach ($products as $product) {
@@ -36,10 +36,11 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
                 ")";
         }
 
-        $sql = 'SELECT id_order, COUNT(id_order) AS count 
-		FROM `' . _DB_PREFIX_ . 'order_detail`
-		WHERE ' . implode(" OR ", $where) . '
-		GROUP BY id_order HAVING COUNT(id_order) = ' . count($products);
+        $sql = 'SELECT COUNT(DISTINCT id_order) AS count 
+		FROM `' . _DB_PREFIX_ . 'order_detail`' .
+		' WHERE (' . implode(" OR ", $where) .
+		') AND id_order IN' .
+            ' (SELECT id_order FROM `' . _DB_PREFIX_ . 'orders` WHERE id_customer = ' . $customerId . ')';
 
         $result = Db::getInstance()->getRow($sql);
 
@@ -136,7 +137,7 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
 
         if (isset($result['transaction_id'])) {
             if(strpos($result['transaction_id'], "BO_TPP") !== FALSE){
-                $transactionId = substr($result['transaction_id'], strpos($result['transaction_id'], '-'));
+                $transactionId = substr($result['transaction_id'], 0, strpos($result['transaction_id'], '-'));
             } else {
                 $transactionId = $result['transaction_id'];
             }

@@ -163,12 +163,15 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
             TransactionStatus::CANCELLED
         );
 
-        $sql = 'SELECT customer_id, SUM(attempt_create_multi_use) AS sum 
-            FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
-            '` WHERE customer_id = ' . pSQL((int)$customerId) .
-            ' AND payment_start >= "' . $paymentStart . '"' .
-            ' AND status IN (' . implode(",", $status) . ')' .
-            ' GROUP BY customer_id;';
+        $sql = 'SELECT COUNT(*) as sum FROM (' .
+                'SELECT order_id' .
+                ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
+                '` WHERE customer_id = ' . pSQL((int)$customerId) .
+                ' AND payment_start >= "' . $paymentStart . '"' .
+                ' AND status IN (' . implode(",", $status) . ')' .
+                ' AND attempt_create_multi_use = 1' .
+                ' GROUP BY customer_id, order_id' .
+            ') TMP;';
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['sum'])) {

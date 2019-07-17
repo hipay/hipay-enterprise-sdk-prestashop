@@ -237,7 +237,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     $tokenDetails['card_expiry_year'],
                 "oneClick" => true,
                 "method" => $tokenDetails['brand'],
-                "authentication_indicator" => $this->setAuthenticationIndicator($cart)
+                "authentication_indicator" => $this->setAuthenticationIndicator($cart),
+                "browser_info" => json_decode(Tools::getValue('browserInfo'))
             );
             $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
         } else {

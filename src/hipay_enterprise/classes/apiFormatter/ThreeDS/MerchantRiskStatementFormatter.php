@@ -56,11 +56,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
             $merchantRiskStatement->delivery_time_frame = DeliveryTimeFrame::ELECTRONIC_DELIVERY;
         }
 
-        if (!$this->cart->isAllProductsInStock()) {
-            $merchantRiskStatement->purchase_indicator = PurchaseIndicator::FUTURE_AVAILABILITY;
-        } else {
-            $merchantRiskStatement->purchase_indicator = PurchaseIndicator::MERCHANDISE_AVAILABLE;
-        }
+        $merchantRiskStatement->purchase_indicator = $this->getPurchaseIndicator();
 
         $merchantRiskStatement->pre_order_date = $this->getPreOrderDate();
 
@@ -95,7 +91,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
             );
         }
 
-        if ($this->threeDSDB->cartAlreadyOrdered($productsArray)) {
+        if ($this->threeDSDB->cartAlreadyOrdered($this->customer->id, $productsArray)) {
             return ReorderIndicator::REORDERED;
         }
 
@@ -119,6 +115,21 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
         return ShippingIndicator::SHIP_TO_DIFFERENT_ADDRESS;
     }
 
+    private function getPurchaseIndicator()
+    {
+        $allProducts = $this->cart->getProducts();
+
+        foreach ($allProducts as $product) {
+            $stock = StockAvailable::getQuantityAvailableByProduct($product['id_product'], $product['id_product_attribute']);
+            if ($stock <= 0) {
+                return PurchaseIndicator::FUTURE_AVAILABILITY;
+            }
+
+        }
+
+        return PurchaseIndicator::MERCHANDISE_AVAILABLE;
+    }
+
     private function getPreOrderDate()
     {
         $today = new DateTime();
@@ -138,7 +149,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
         }
 
         if($preOrder && $lastAvailableDate > $today){
-            return $lastAvailableDate;
+            return $lastAvailableDate->format('Ymd');
         }
 
         return null;

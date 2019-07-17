@@ -11,6 +11,7 @@ Cypress.Commands.add("logToAdmin", () => {
 });
 
 Cypress.Commands.add("adminLogOut", () => {
+    cy.visit('/admin-hipay');
     cy.get('#header_logout').click({force: true});
 });
 
@@ -46,6 +47,16 @@ Cypress.Commands.add("activateLocalPaymentMethods", (method) => {
     });
     cy.get('#local_payment_form > .panel-footer > .col-md-12 > .pull-right').click();
 });
+
+Cypress.Commands.add("activateOneClick", (method) => {
+    cy.get('#card_token_switchmode_on').then(($input) => {
+        if ($input.attr('checked') === undefined) {
+            $input.click();
+        }
+    });
+    cy.get('#panel-global-settings > form:nth-child(1) > div:nth-child(2) > button:nth-child(2)').click();
+});
+
 
 /**
  *  Activate Basket
@@ -100,4 +111,115 @@ Cypress.Commands.add("activateWrappingGift", () => {
 Cypress.Commands.add("setWrappingGiftPrice", (price) => {
     cy.get("#form_gift_options_gift_wrapping_price").clear();
     cy.get("#form_gift_options_gift_wrapping_price").type(price);
+});
+
+Cypress.Commands.add("getLastOrderRequest", () => {
+    cy.getAllRequests().then((requests) => {
+        requests.reverse();
+        for (let request of requests) {
+            if (request.orderid) {
+                return request;
+            }
+        }
+
+        return null;
+    });
+});
+
+Cypress.Commands.add("getOrderRequest", (orderId) => {
+    let goodOrder = null;
+    let regex = new RegExp(orderId + ".*");
+    cy.getAllRequests().then((requests) => {
+        for (let request of requests) {
+            if (request.orderid && request.orderid.match(regex)) {
+                goodOrder = request;
+            }
+        }
+
+        return goodOrder;
+    });
+});
+
+
+Cypress.Commands.add("getAllRequests", () => {
+    cy.goToHipayModuleAdmin();
+
+    cy.get('*[href="#logs"]').click();
+    cy.get('#logs > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2)')
+        .invoke('removeAttr', 'target').click();
+    cy.get('pre')
+        .invoke('text')
+        .then((text) => {
+            let rawLogArray = text.split(/^20[0-9]{2}\/[0-9]{2}\/[0-9]{2} - [0-9]{2}:[0-9]{2}:[0-9]{2}: /gm);
+            let logArray = [];
+            for (let rawLog of rawLogArray) {
+                if (rawLog !== "") {
+                    let logJson = rawLog.replace(/\\/gm, '\\\\"')
+                        .replace(/"/gm, '\\"')
+                        .replace(/ => /gm, '": "')
+                        .replace(/^\s*\[(.*)\]": /gm, '"$1": ')
+                        .replace(/(.)$/gm, '$1",')
+                        .replace(/\s*"?Array",\s*\(",/gm, '{')
+                        .replace(/^\s*\)",\s*$/gm, '},')
+                        .replace(/,\s*}/gm, '}')
+                    logJson = logJson.substr(0, logJson.length - 1);
+
+                    let log = JSON.parse(logJson);
+                    logArray.push(log);
+                }
+            }
+
+            cy.log(logArray).then(() => {
+                return logArray;
+            });
+        });
+});
+
+Cypress.Commands.add("deleteClient", (clientMail) => {
+    cy.visit("/admin-hipay/index.php?controller=AdminCustomers");
+
+    cy.get('body').then(($body) => {
+        // synchronously query from body
+        // to find which element was created
+        if ($body.find('.bulk-actions > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)').length) {
+            cy.get(".bulk-actions > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)").click({force: true});
+            cy.get(".bulk-actions > ul:nth-child(2) > li:nth-child(7) > a:nth-child(1)").click({force: true});
+        } else if($body.find(".delete").length) {
+            cy.get(".delete").click({force: true});
+        } else {
+            cy.log("No user found with mail " + clientMail);
+            return;
+        }
+
+        cy.get('#deleteMode_real').click();
+        cy.get('input.btn').click();
+    });
+});
+
+Cypress.Commands.add("changeProductStock", (productId, stock, preorderDate) => {
+    cy.visit("/admin-hipay/index.php/sell/catalog/products/" + productId);
+    cy.get('.btn-outline-danger').click();
+    cy.get('#tab_step3').click();
+
+    cy.get('body').then(($body) => {
+        // synchronously query from body
+        // to find which element was created
+        if ($body.find('#form_step3_qty_0').is(':visible')) {
+            cy.get('#form_step3_qty_0').clear().type(stock);
+
+            if(preorderDate !== undefined) {
+                cy.get('#form_step3_out_of_stock_1').click();
+                cy.get('#form_step3_available_date').clear().type(preorderDate);
+            } else {
+                cy.get('#form_step3_available_date').clear();
+            }
+        } else {
+            cy.get('.attribute-quantity input').each(($input, idx, $inputs) => {
+                cy.wrap($input).clear().type(stock);
+            });
+        }
+
+        cy.get('.product-footer button.js-btn-save').click({force: true});
+        cy.get('#growls-default div').should('be.visible');
+    });
 });

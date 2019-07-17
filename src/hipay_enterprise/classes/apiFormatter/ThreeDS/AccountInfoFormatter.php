@@ -143,7 +143,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         if ($this->params["method"] !== CardPaymentProduct::HOSTED) {
             $shippingInfo->name_indicator = NameIndicator::DIFFERENT;
 
-            if (isset($this->params["card_holder"]) && $this->params["card_holder"] === $customerFullName) {
+            if (isset($this->params["card_holder"]) && strtoupper($this->params["card_holder"]) === strtoupper($customerFullName)) {
                 $shippingInfo->name_indicator = NameIndicator::IDENTICAL;
             }
         }

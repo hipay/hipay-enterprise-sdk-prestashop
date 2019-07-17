@@ -32,6 +32,14 @@ Cypress.Commands.add("selectMugItem", (qty) => {
     );
 });
 
+Cypress.Commands.add("selectVirtualItem", (qty) => {
+    cy.selectItem(
+        '/index.php?id_product=13&id_product_attribute=0&rewrite=illustration-vectorielle-ours-brun&controller=product',
+        qty
+    );
+});
+
+
 Cypress.Commands.add("selectItem", (url, qty) => {
 
     cy.server();
