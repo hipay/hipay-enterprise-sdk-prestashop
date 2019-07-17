@@ -61,7 +61,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
             $order->device_channel = DeviceChannel::BROWSER;
 
             // Triggering apiRequest hook to allow merchants to add their own data to the request
-            Hook::exec('actionHipayApiRequest', array($order, $this->cart));
+            Hook::exec('actionHipayApiRequest', array("OrderRequest" => &$order, "Cart" => $this->cart));
         }
 
         $order->orderid = $this->cart->id . "(" . time() . ")";
