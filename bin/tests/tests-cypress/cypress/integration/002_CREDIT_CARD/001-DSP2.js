@@ -181,7 +181,7 @@ describe('DSP2 field population', function () {
         });
     });
 
-    it('Makes an authenticated order with reorder and one-click', function () {0
+    it('Makes an authenticated order with reorder and one-click', function () {
         cy.logToAdmin();
         cy.goToHipayModuleAdmin();
         cy.goToHipayModulePaymentMethodAdmin();
@@ -274,7 +274,7 @@ describe('DSP2 field population', function () {
         });
     });
 
-    it('Makes an authenticated order with out of stock products, no virtual products and a card holder name different from the shipping name', function () {
+    it('Makes an authenticated order with out of stock products, no virtual products and an account name different from the shipping name', function () {
         cy.logToAdmin();
         cy.deleteClient(this.customer.email);
         cy.changeProductStock(1, 300);
@@ -296,7 +296,13 @@ describe('DSP2 field population', function () {
         cy.fillShippingForm();
 
         cy.get('#checkout-addresses-step > h1:nth-child(1) > span:nth-child(3)').click();
-        cy.get('*[data-link-action="different-invoice-address"]').click();
+
+        cy.get('*[data-link-action="edit-address"]').click();
+        cy.get('*[name="firstname"').clear().type(this.customer.firstName);
+        cy.get('#use_same_address').click();
+
+        cy.get('#delivery-address .form-footer > .continue').click();
+
         cy.get('#invoice-address input[name="address1"]').type(this.customer.streetAddress + "1");
         cy.get('#invoice-address input[name="postcode"]').type(this.customer.zipCode);
         cy.get('#invoice-address input[name="city"]').type(this.customer.city);
@@ -337,7 +343,7 @@ describe('DSP2 field population', function () {
                     expect(request.merchant_risk_statement.purchase_indicator).to.eq("2", "[merchant_risk_statement.purchase_indicator]");
                     expect(request.merchant_risk_statement.pre_order_date).to.eq("20250801", "[merchant_risk_statement.pre_order_date]");
                     expect(request.merchant_risk_statement.reorder_indicator).to.eq("1", "[merchant_risk_statement.reorder_indicator]");
-                    expect(request.merchant_risk_statement.shipping_indicator).to.eq("2", "[merchant_risk_statement.shipping_indicator]");
+                    expect(request.merchant_risk_statement.shipping_indicator).to.match(/[23]/, "[merchant_risk_statement.shipping_indicator]");
                     expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                     let d = new Date();
