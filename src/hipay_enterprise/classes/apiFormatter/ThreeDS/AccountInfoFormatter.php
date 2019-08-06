@@ -134,18 +134,17 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         if (!$this->customer->is_guest) {
             $addressFirstUsed = $this->threeDSDB->getDateAddressFirstUsed($this->delivery->id);
             $shippingInfo->shipping_used_date = ($addressFirstUsed) ? date('Ymd', strtotime($addressFirstUsed)) : null;
-        }
 
-        $customerFullName = $this->customer->firstname . $this->customer->lastname;
-        $shippingName = $this->delivery->firstname . $this->delivery->lastname;
+            $customerFullName = $this->customer->firstname . $this->customer->lastname;
+            $shippingName = $this->delivery->firstname . $this->delivery->lastname;
 
-        if ($this->params["method"] !== CardPaymentProduct::HOSTED) {
             $shippingInfo->name_indicator = NameIndicator::DIFFERENT;
 
             if ($shippingName === "" || strtoupper($shippingName) === strtoupper($customerFullName)) {
                 $shippingInfo->name_indicator = NameIndicator::IDENTICAL;
             }
         }
+
 
         return $shippingInfo;
     }
