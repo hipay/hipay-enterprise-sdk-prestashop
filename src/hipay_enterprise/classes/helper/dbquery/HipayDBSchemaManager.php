@@ -103,6 +103,32 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         return Db::getInstance()->execute($sql);
     }
 
+    public function upgradeCCTokenTable()
+    {
+        $this->logs->logInfos('Upgrade Hipay credit card token table');
+
+        $sql = 'SET @dbname = DATABASE();
+                SET @tablename = "' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '";
+                SET @columnname = "created_at";
+                SET @preparedStatement = (SELECT IF(
+                    (
+                      SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                      WHERE
+                        (table_name = @tablename)
+                        AND (table_schema = @dbname)
+                        AND (column_name = @columnname)
+                    ) > 0,
+                    "SELECT 1",
+                    CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " DATE;")
+                ));
+                PREPARE alterIfNotExists FROM @preparedStatement;
+                EXECUTE alterIfNotExists;
+                DEALLOCATE PREPARE alterIfNotExists;';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+
     public function createHipayTransactionTable()
     {
         $this->logs->logInfos('Create Hipay transaction table');

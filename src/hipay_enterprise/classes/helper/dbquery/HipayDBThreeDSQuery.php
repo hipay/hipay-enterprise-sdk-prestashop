@@ -69,30 +69,6 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
         return 0;
     }
 
-    public function getCartFirstUsed($cardNumber, $expirationDate, $cardHolder, $customerId)
-    {
-
-        $sql = 'SELECT date_add 
-            FROM `' . _DB_PREFIX_ . 'order_payment`' .
-            ' WHERE card_number LIKE "' . pSQL($cardNumber) . '"' .
-            ' AND card_expiration LIKE "' . $expirationDate . '"' .
-            ' AND card_holder LIKE "' . $cardHolder . '"' .
-            ' AND order_reference IN (
-                SELECT reference
-                FROM `' . _DB_PREFIX_ . 'orders` 
-                WHERE id_customer = ' . pSQL((int)$customerId) . '  
-            )' .
-            ' ORDER BY date_add ASC;';
-
-        $result = Db::getInstance()->getRow($sql);
-
-        if (isset($result['date_add'])) {
-            return $result['date_add'];
-        }
-
-        return false;
-    }
-
     public function getDateAddressFirstUsed($addressId)
     {
 

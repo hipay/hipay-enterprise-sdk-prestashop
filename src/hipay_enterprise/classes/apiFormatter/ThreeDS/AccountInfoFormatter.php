@@ -114,15 +114,13 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         $paymentInfo = new PaymentInfo();
 
         if (!$this->customer->is_guest && isset($this->params["oneClick"]) && $this->params["oneClick"]) {
-            $dateCartFirstUsed = $this->threeDSDB->getCartFirstUsed(
-                str_replace('x', '*', $this->params["card_pan"]),
-                $this->params["card_expiration_date"],
-                $this->params["card_holder"],
-                $this->customer->id
+            $dateCartFirstUsed = $this->dbToken->getToken(
+                $this->customer->id,
+                $this->params["cardtoken"]
             );
 
-            if ($dateCartFirstUsed) {
-                $paymentInfo->enrollment_date = date('Ymd', strtotime($dateCartFirstUsed));
+            if ($dateCartFirstUsed['created_at']) {
+                $paymentInfo->enrollment_date = date('Ymd', strtotime($dateCartFirstUsed['created_at']));
             }
         }
 
@@ -148,10 +146,6 @@ class AccountInfoFormatter extends ApiFormatterAbstract
                 $shippingInfo->name_indicator = NameIndicator::IDENTICAL;
             }
         }
-
-        //@TODO:: to implement
-        $shippingInfo->suspicious_activity = SuspiciousActivity::NO_SUSPICIOUS_ACTIVITY;
-        //$shippingInfo->suspicious_activity = SuspiciousActivity::SUSPICIOUS_ACTIVITY;
 
         return $shippingInfo;
     }
