@@ -175,24 +175,22 @@ Cypress.Commands.add("getAllRequests", () => {
         });
 });
 
-Cypress.Commands.add("deleteClient", (clientMail) => {
+Cypress.Commands.add("deleteClients", () => {
     cy.visit("/admin-hipay/index.php?controller=AdminCustomers");
 
     cy.get('body').then(($body) => {
         // synchronously query from body
         // to find which element was created
-        if ($body.find('.bulk-actions > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)').length) {
-            cy.get(".bulk-actions > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)").click({force: true});
-            cy.get(".bulk-actions > ul:nth-child(2) > li:nth-child(7) > a:nth-child(1)").click({force: true});
-        } else if($body.find(".delete").length) {
-            cy.get(".delete").click({force: true});
+        if ($body.find('#customer_grid_bulk_action_select_all').length) {
+            cy.get(".js-bulk-action-checkbox").click({force: true, multiple: true});
+            cy.wait(2000);
+            cy.get("#customer_grid_bulk_action_delete_selection").click({force: true});
+
+            cy.get('.js-submit-delete-customers').click();
         } else {
-            cy.log("No user found with mail " + clientMail);
+            cy.log("No user found");
             return;
         }
-
-        cy.get('#deleteMode_real').click();
-        cy.get('input.btn').click();
     });
 });
 

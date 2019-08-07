@@ -25,22 +25,20 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
     {
         $where = array();
         foreach ($products as $product) {
-            $where[] = "(product_id = " .
-                $product["product_id"] .
-                " and product_quantity = " .
-                $product["product_quantity"] .
-                " and id_shop = " .
-                $product["id_shop"] .
-                " and product_attribute_id = "
-                . $product["product_attribute_id"] .
-                ")";
+            $where[] = 'EXISTS (' .
+                'SELECT * FROM `' . _DB_PREFIX_ . 'order_detail` od '.
+                ' WHERE product_id = ' . $product["product_id"] .
+                ' AND product_quantity = ' . $product["product_quantity"] .
+                ' AND id_shop = ' . $product["id_shop"] .
+                ' AND product_attribute_id = ' . $product["product_attribute_id"] .
+                ' AND od.id_order = o.id_order' .
+                ')';
         }
 
-        $sql = 'SELECT COUNT(DISTINCT id_order) AS count 
-		FROM `' . _DB_PREFIX_ . 'order_detail`' .
-		' WHERE (' . implode(" OR ", $where) .
-		') AND id_order IN' .
-            ' (SELECT id_order FROM `' . _DB_PREFIX_ . 'orders` WHERE id_customer = ' . $customerId . ')';
+        $sql = 'SELECT count(id_order) as count FROM `' . _DB_PREFIX_ . 'orders` o' .
+		' WHERE id_customer = ' . $customerId .
+        ' AND (SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'order_detail` od WHERE od.id_order = o.id_order) = ' . count($products) .
+        ' AND (' . implode(" AND ", $where) . ')';
 
         $result = Db::getInstance()->getRow($sql);
 

@@ -20,21 +20,21 @@ Cypress.Commands.add("selectItemAndGoToCart", (qty) => {
 
 Cypress.Commands.add("selectShirtItem", (qty) => {
     cy.selectItem(
-        '/index.php?id_product=1&id_product_attribute=1&rewrite=hummingbird-printed-t-shirt&controller=product#/1-taille-s/8-couleur-blanc',
+        '/index.php?id_product=1&rewrite=hummingbird-printed-t-shirt&controller=product#/1-taille-s/8-couleur-blanc',
         qty
     );
 });
 
 Cypress.Commands.add("selectMugItem", (qty) => {
     cy.selectItem(
-        '/index.php?id_product=6&id_product_attribute=0&rewrite=mug-the-best-is-yet-to-come&controller=product',
+        '/index.php?id_product=6&rewrite=mug-the-best-is-yet-to-come&controller=product',
         qty
     );
 });
 
 Cypress.Commands.add("selectVirtualItem", (qty) => {
     cy.selectItem(
-        '/index.php?id_product=13&id_product_attribute=0&rewrite=illustration-vectorielle-ours-brun&controller=product',
+        '/index.php?id_product=13&rewrite=illustration-vectorielle-ours-brun&controller=product',
         qty
     );
 });

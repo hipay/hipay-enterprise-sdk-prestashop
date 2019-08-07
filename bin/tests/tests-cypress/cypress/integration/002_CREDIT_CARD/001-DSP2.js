@@ -13,7 +13,7 @@ describe('DSP2 field population', function () {
 
     it('Makes an authenticated order with virtual products', function () {
         cy.logToAdmin();
-        cy.deleteClient(this.customer.email);
+        cy.deleteClients();
         cy.changeProductStock(1, 300);
         cy.changeProductStock(6, 300);
         cy.changeProductStock(13, 300);
@@ -67,7 +67,7 @@ describe('DSP2 field population', function () {
                 expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                 let d = new Date();
-                let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + d.getDate();
+                let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + (d.getDate() < 10 ? "0" : "") + (d.getDate());
                 // Account info
                 //  -> Customer
                 expect(request.account_info.customer.account_change).to.eq(today, "[account_info.customer.account_change]");
@@ -110,7 +110,7 @@ describe('DSP2 field population', function () {
         cy.goToHipayModulePaymentMethodAdmin();
         cy.activateOneClick();
 
-        cy.deleteClient(this.customer.email);
+        cy.deleteClients();
 
         cy.changeProductStock(1, 300);
         cy.changeProductStock(6, 300);
@@ -237,7 +237,7 @@ describe('DSP2 field population', function () {
                     expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                     let d = new Date();
-                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + d.getDate();
+                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + (d.getDate() < 10 ? "0" : "") + (d.getDate());
                     // Account info
                     //  -> Customer
                     expect(request.account_info.customer.account_change).to.eq(today, "[account_info.customer.account_change]");
@@ -276,7 +276,7 @@ describe('DSP2 field population', function () {
 
     it('Makes an authenticated order with out of stock products, no virtual products and an account name different from the shipping name', function () {
         cy.logToAdmin();
-        cy.deleteClient(this.customer.email);
+        cy.deleteClients();
         cy.changeProductStock(1, 300);
         cy.changeProductStock(13, 300);
         cy.changeProductStock(6, 0, '2025-08-01');
@@ -347,7 +347,7 @@ describe('DSP2 field population', function () {
                     expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                     let d = new Date();
-                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + d.getDate();
+                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + (d.getDate() < 10 ? "0" : "") + (d.getDate());
                     // Account info
                     //  -> Customer
                     expect(request.account_info.customer.account_change).to.eq(today, "[account_info.customer.account_change]");
@@ -386,7 +386,7 @@ describe('DSP2 field population', function () {
 
     it('Makes a non authenticated order with physical products', function () {
         cy.logToAdmin();
-        cy.deleteClient(this.customer.email);
+        cy.deleteClients();
 
         cy.changeProductStock(1, 300);
         cy.changeProductStock(6, 300);
@@ -445,7 +445,7 @@ describe('DSP2 field population', function () {
                     expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                     let d = new Date();
-                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + d.getDate();
+                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + (d.getDate() < 10 ? "0" : "") + (d.getDate());
                     // Account info
                     //  -> Customer
                     expect(request.account_info.customer.account_change).to.eq("", "[account_info.customer.account_change]");
@@ -484,7 +484,7 @@ describe('DSP2 field population', function () {
 
     it('Makes a non authenticated order with virtual products', function () {
         cy.logToAdmin();
-        cy.deleteClient(this.customer.email);
+        cy.deleteClients();
 
         cy.changeProductStock(1, 300);
         cy.changeProductStock(6, 300);
@@ -529,7 +529,7 @@ describe('DSP2 field population', function () {
                     expect(request.merchant_risk_statement.gift_card).to.eq("", "[merchant_risk_statement.gift_card]");
 
                     let d = new Date();
-                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + d.getDate();
+                    let today = d.getFullYear() + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "" + (d.getDate() < 10 ? "0" : "") + (d.getDate());
                     // Account info
                     //  -> Customer
                     expect(request.account_info.customer.account_change).to.eq("", "[account_info.customer.account_change]");
