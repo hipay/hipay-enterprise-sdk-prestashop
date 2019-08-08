@@ -89,7 +89,6 @@ describe('DSP2 field population', function () {
 
                 // Browser info
                 expect(request.browser_info.color_depth).to.match(/(.*)/, "[browser_info.color_depth]");
-                expect(request.browser_info.device_fingerprint).to.match(/(.*)/, "[browser_info.device_fingerprint]");
                 expect(request.browser_info.http_accept).to.match(/(.*)/, "[browser_info.http_accept]");
                 expect(request.browser_info.http_user_agent).to.match(/(.*)/, "[browser_info.http_user_agent]");
                 expect(request.browser_info.ipaddr).to.match(/(.*)/, "[browser_info.ipaddr]");
@@ -259,7 +258,6 @@ describe('DSP2 field population', function () {
 
                     // Browser info
                     expect(request.browser_info.color_depth).to.match(/(.*)/, "[browser_info.color_depth]");
-                    expect(request.browser_info.device_fingerprint).to.match(/(.*)/, "[browser_info.device_fingerprint]");
                     expect(request.browser_info.http_accept).to.match(/(.*)/, "[browser_info.http_accept]");
                     expect(request.browser_info.http_user_agent).to.match(/(.*)/, "[browser_info.http_user_agent]");
                     expect(request.browser_info.ipaddr).to.match(/(.*)/, "[browser_info.ipaddr]");
@@ -369,7 +367,6 @@ describe('DSP2 field population', function () {
 
                     // Browser info
                     expect(request.browser_info.color_depth).to.match(/(.*)/, "[browser_info.color_depth]");
-                    expect(request.browser_info.device_fingerprint).to.match(/(.*)/, "[browser_info.device_fingerprint]");
                     expect(request.browser_info.http_accept).to.match(/(.*)/, "[browser_info.http_accept]");
                     expect(request.browser_info.http_user_agent).to.match(/(.*)/, "[browser_info.http_user_agent]");
                     expect(request.browser_info.ipaddr).to.match(/(.*)/, "[browser_info.ipaddr]");
@@ -467,7 +464,6 @@ describe('DSP2 field population', function () {
 
                     // Browser info
                     expect(request.browser_info.color_depth).to.match(/(.*)/, "[browser_info.color_depth]");
-                    expect(request.browser_info.device_fingerprint).to.match(/(.*)/, "[browser_info.device_fingerprint]");
                     expect(request.browser_info.http_accept).to.match(/(.*)/, "[browser_info.http_accept]");
                     expect(request.browser_info.http_user_agent).to.match(/(.*)/, "[browser_info.http_user_agent]");
                     expect(request.browser_info.ipaddr).to.match(/(.*)/, "[browser_info.ipaddr]");
@@ -551,7 +547,6 @@ describe('DSP2 field population', function () {
 
                     // Browser info
                     expect(request.browser_info.color_depth).to.match(/(.*)/, "[browser_info.color_depth]");
-                    expect(request.browser_info.device_fingerprint).to.match(/(.*)/, "[browser_info.device_fingerprint]");
                     expect(request.browser_info.http_accept).to.match(/(.*)/, "[browser_info.http_accept]");
                     expect(request.browser_info.http_user_agent).to.match(/(.*)/, "[browser_info.http_user_agent]");
                     expect(request.browser_info.ipaddr).to.match(/(.*)/, "[browser_info.ipaddr]");

@@ -62,7 +62,6 @@ class BrowserInfoFormatter extends ApiFormatterAbstract
             $browserInfo->screen_width = isset($this->params['browser_info']->screen_width) ? $this->params['browser_info']->screen_width : null;
             $browserInfo->timezone = isset($this->params['browser_info']->timezone) ? $this->params['browser_info']->timezone : null;
             $browserInfo->http_user_agent = isset($this->params['browser_info']->http_user_agent) ? $this->params['browser_info']->http_user_agent : null;
-            $browserInfo->device_fingerprint = isset($this->params['deviceFingerprint']) ? $this->params['deviceFingerprint'] : null;
         }
     }
 }
