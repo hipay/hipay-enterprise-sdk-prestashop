@@ -180,7 +180,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->customerBillingInfo = $this->getCustomerBillingInfo();
         $order->customerShippingInfo = $this->getCustomerShippingInfo();
         $order->cid = (int)$this->customer->id;
-        $order->ipaddr = $_SERVER ['REMOTE_ADDR'];
+        $order->ipaddr = Tools::getRemoteAddr();
         $order->language = $this->getLanguageCode($this->context->language->iso_code);
         $order->http_user_agent = $_SERVER ['HTTP_USER_AGENT'];
         $order->basket = $this->params["basket"];
