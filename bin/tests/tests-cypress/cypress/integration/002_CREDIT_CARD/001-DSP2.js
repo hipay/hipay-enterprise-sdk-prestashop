@@ -23,12 +23,7 @@ describe('DSP2 field population', function () {
         cy.selectMugItem(3);
         cy.selectVirtualItem(2);
 
-        cy.visit("/index.php?controller=authentication&create_account=1");
-        cy.get("#customer-form input[name='firstname']").type(this.customer.firstName)
-        cy.get("#customer-form input[name='lastname']").type(this.customer.lastName)
-        cy.get("#customer-form input[name='email']").type(this.customer.email)
-        cy.get("#customer-form input[name='password']").type(this.customer.password)
-        cy.get("#customer-form button[data-link-action='save-customer']").click();
+        cy.register();
 
         cy.goToCart();
 
@@ -102,7 +97,6 @@ describe('DSP2 field population', function () {
         });
     });
 
-
     it('Makes an authenticated order with one-click', function () {
         cy.logToAdmin();
         cy.goToHipayModuleAdmin();
@@ -120,12 +114,7 @@ describe('DSP2 field population', function () {
         cy.selectMugItem(3);
         cy.selectVirtualItem(2);
 
-        cy.visit("/index.php?controller=authentication&create_account=1");
-        cy.get("#customer-form input[name='firstname']").type(this.customer.firstName)
-        cy.get("#customer-form input[name='lastname']").type(this.customer.lastName)
-        cy.get("#customer-form input[name='email']").type(this.customer.email)
-        cy.get("#customer-form input[name='password']").type(this.customer.password)
-        cy.get("#customer-form button[data-link-action='save-customer']").click();
+        cy.register();
 
         cy.goToCart();
 
@@ -280,12 +269,7 @@ describe('DSP2 field population', function () {
         cy.changeProductStock(6, 0, '2025-08-01');
         cy.adminLogOut();
 
-        cy.visit("/index.php?controller=authentication&create_account=1");
-        cy.get("#customer-form input[name='firstname']").type(this.customer.firstName + "a")
-        cy.get("#customer-form input[name='lastname']").type(this.customer.lastName)
-        cy.get("#customer-form input[name='email']").type(this.customer.email)
-        cy.get("#customer-form input[name='password']").type(this.customer.password)
-        cy.get("#customer-form button[data-link-action='save-customer']").click();
+        cy.register();
 
         cy.selectShirtItem(5);
         cy.selectMugItem(3);
@@ -296,7 +280,7 @@ describe('DSP2 field population', function () {
         cy.get('#checkout-addresses-step > h1:nth-child(1) > span:nth-child(3)').click();
 
         cy.get('*[data-link-action="edit-address"]').click();
-        cy.get('*[name="firstname"').clear().type(this.customer.firstName);
+        cy.get('*[name="firstname"').clear().type(this.customer.firstName + "a");
         cy.get('#use_same_address').click();
 
         cy.get('#delivery-address .form-footer > .continue').click();
@@ -561,3 +545,4 @@ describe('DSP2 field population', function () {
         });
     });
 });
+
