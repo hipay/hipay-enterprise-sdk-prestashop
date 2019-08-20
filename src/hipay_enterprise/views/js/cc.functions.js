@@ -17,7 +17,6 @@ function afterTokenization(result) {
     var card_holder = result.card_holder;
     var issuer = result.issuer;
     var country = result.country;
-    var browser_info = result.browser_info;
 
     // set tokenization response
     $("#card-token").val(token);
@@ -28,8 +27,6 @@ function afterTokenization(result) {
     $("#card-expiry-year").val(card_expiry_year);
     $("#card-issuer").val(issuer);
     $("#card-country").val(country);
-
-    $("#browserInfo").val(JSON.stringify(browser_info));
 
     return true;
 }

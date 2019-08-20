@@ -36,5 +36,7 @@
             environment: api_tokenjs_mode,
             lang: lang
         });
+
+        document.getElementById("browserInfo").value = JSON.stringify(hipay.getBrowserInfo());
     });
 </script>

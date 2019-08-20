@@ -471,7 +471,7 @@ describe('DSP2 field population', function () {
         cy.changeProductStock(13, 300);
         cy.adminLogOut();
 
-        cy.selectVirtualItem(2);
+        cy.selectVirtualItem(15);
         cy.goToCart();
 
         cy.fillBillingForm();
