@@ -3,9 +3,10 @@
  *  - Populating DSP2 fields when they should be with the right values
  */
 var utils = require('../../support/utils');
+import cardDatas from '@hipay/hipay-cypress-utils/fixtures/payment-means/card.json';
 describe('DSP2 field population', function () {
     beforeEach(function () {
-        cy.fixture('cards').as("cards");
+        this.cards = cardDatas;
         cy.fixture('notification').as("notification");
         let customerFixture = "customerFR";
         cy.fixture(customerFixture).as("customer");
