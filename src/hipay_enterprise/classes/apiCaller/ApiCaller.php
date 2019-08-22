@@ -260,7 +260,13 @@ class ApiCaller
         $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE
             : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
 
-        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username, $password, $env, null, $proxy);
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
+            array(
+                "apiUsername" => $username,
+                "apiPassword" => $password,
+                "apiEnv" => $env,
+                "proxy" => $proxy
+            ));
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);

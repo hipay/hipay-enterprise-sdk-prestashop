@@ -149,7 +149,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
         }
 
         if($preOrder && $lastAvailableDate > $today){
-            return intval($lastAvailableDate->format('Ymd'));
+            return (int)($lastAvailableDate->format('Ymd'));
         }
 
         return null;

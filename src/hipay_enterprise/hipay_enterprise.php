@@ -38,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.7.1';
+        $this->version = '2.8.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -184,13 +184,15 @@ class Hipay_enterprise extends PaymentModule
             $return = $return && $return16;
         }
 
+        return $return && $this->installHook();
+    }
+
+    public function installHook(){
         $hook = new Hook();
         $hook->name = 'actionHipayApiRequest';
         $hook->title = 'HiPay API Request';
         $hook->description = 'This hook is called right before HiPay calls its payment API';
-        $return = $return && $hook->add();
-
-        return $return;
+        return $hook->add();
     }
 
     public function installAdminTab()
@@ -625,7 +627,6 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper->createTable();
         $this->dbSchemaManager->createOrderRefundCaptureTable();
         $this->dbSchemaManager->createCCTokenTable();
-        $this->dbSchemaManager->upgradeCCTokenTable();
         $this->dbSchemaManager->createHipayTransactionTable();
         $this->dbSchemaManager->createHipayOrderCaptureType();
         return true;

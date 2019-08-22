@@ -66,9 +66,9 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         $customerInfo = new CustomerInfo();
 
         if (!$this->customer->is_guest) {
-            $customerInfo->account_change = intval(date('Ymd', strtotime($this->customer->date_upd)));
-            $customerInfo->opening_account_date = intval(date('Ymd', strtotime($this->customer->date_add)));
-            $customerInfo->password_change = intval(date('Ymd', strtotime($this->customer->last_passwd_gen)));
+            $customerInfo->account_change = (int)(date('Ymd', strtotime($this->customer->date_upd)));
+            $customerInfo->opening_account_date = (int)(date('Ymd', strtotime($this->customer->date_add)));
+            $customerInfo->password_change = (int)(date('Ymd', strtotime($this->customer->last_passwd_gen)));
         }
 
         return $customerInfo;
@@ -90,16 +90,16 @@ class AccountInfoFormatter extends ApiFormatterAbstract
 
 
             $purchaseInfo->count = count(Order::getOrdersIdByDate($sixMonthAgo, $now, $this->customer->id));
-            $purchaseInfo->card_stored_24h = intval($this->dbToken->nbAttemptCreateCard(
+            $purchaseInfo->card_stored_24h = (int)($this->dbToken->nbAttemptCreateCard(
                 $this->customer->id,
                 $twentyFourHoursAgo
             ));
-            $purchaseInfo->payment_attempts_24h = intval($this->threeDSDB->getNbPaymentAttempt(
+            $purchaseInfo->payment_attempts_24h = (int)($this->threeDSDB->getNbPaymentAttempt(
                 $this->customer->id,
                 $twentyFourHoursAgo,
                 $this->cardPaymentProduct
             ));
-            $purchaseInfo->payment_attempts_1y = intval($this->threeDSDB->getNbPaymentAttempt(
+            $purchaseInfo->payment_attempts_1y = (int)($this->threeDSDB->getNbPaymentAttempt(
                 $this->customer->id,
                 $oneYearAgo,
                 $this->cardPaymentProduct
@@ -120,7 +120,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
             );
 
             if ($dateCartFirstUsed['created_at']) {
-                $paymentInfo->enrollment_date = intval(date('Ymd', strtotime($dateCartFirstUsed['created_at'])));
+                $paymentInfo->enrollment_date = (int)(date('Ymd', strtotime($dateCartFirstUsed['created_at'])));
             }
         }
 
@@ -133,7 +133,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
 
         if (!$this->customer->is_guest) {
             $addressFirstUsed = $this->threeDSDB->getDateAddressFirstUsed($this->delivery->id);
-            $shippingInfo->shipping_used_date = ($addressFirstUsed) ? intval(date('Ymd', strtotime($addressFirstUsed))) : null;
+            $shippingInfo->shipping_used_date = ($addressFirstUsed) ? (int)(date('Ymd', strtotime($addressFirstUsed))) : null;
 
             $customerFullName = $this->customer->firstname . $this->customer->lastname;
             $shippingName = $this->delivery->firstname . $this->delivery->lastname;
