@@ -95,12 +95,24 @@
                     </span>
                 </label>
                 <div class="col-lg-9">
-                    <span class="switch prestashop-switch fixed-width-lg">
+                    {if $config_hipay.account.global.sandbox_mode}
+                        {assign var="oneclickAvailable" value=(!empty($config_hipay.account.sandbox.api_tokenjs_username_sandbox) && !empty($config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox))}
+                    {else}
+                        {assign var="oneclickAvailable" value=(!empty($config_hipay.account.production.api_tokenjs_username_production) && !empty($config_hipay.account.production.api_tokenjs_password_publickey_production))}
+                    {/if}
+
+                    <span class="switch prestashop-switch fixed-width-lg label-tooltip"
+                            {if !$oneclickAvailable}
+                        data-toggle="tooltip"
+                        data-html="true"
+                        title=""
+                        data-original-title="{l s='Public credentials must be set in module settings to use Oneclick' mod='hipay_enterprise'}"
+                            {/if}>
                         <input type="radio" name="card_token" id="card_token_switchmode_on" value="1"
-                               {if $config_hipay.payment.global.card_token }checked="checked"{/if}>
+                               {if $config_hipay.payment.global.card_token && $oneclickAvailable}checked="checked"{/if} {if !$oneclickAvailable}disabled{/if}>
                         <label for="card_token_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                         <input type="radio" name="card_token" id="card_token_switchmode_off" value="0"
-                               {if $config_hipay.payment.global.card_token == false}checked="checked"{/if}>
+                               {if $config_hipay.payment.global.card_token == false || !$oneclickAvailable}checked="checked"{/if} {if !$oneclickAvailable}disabled{/if}>
                         <label for="card_token_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                         <a class="slide-button btn"></a>
                     </span>
@@ -189,7 +201,8 @@
                         </span>
                 </label>
                 <div class="col-lg-4">
-                    <input class="form-control" type="text" name="sdk_js_url" value="{$config_hipay.payment.global.sdk_js_url}">
+                    <input class="form-control" type="text" name="sdk_js_url"
+                           value="{$config_hipay.payment.global.sdk_js_url}">
                 </div>
             </div>
 

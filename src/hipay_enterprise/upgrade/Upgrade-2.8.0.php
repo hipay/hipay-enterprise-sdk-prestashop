@@ -24,9 +24,38 @@ function upgrade_module_2_8_0($module)
         $sql = "ALTER TABLE " . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . " ADD created_at DATE;";
         Db::getInstance()->execute($sql);
 
+        $log->logInfos('Deactivating oneclick for missing public credentials');
+        $shops = Shop::getShops(false);
+        foreach ($shops as $id => $shop) {
+            $log->logInfos(
+                "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
+            );
+
+            $configHipay = Tools::jsonDecode(
+                Configuration::get('HIPAY_CONFIG', null, $shop['id_shop_group'], $id),
+                true
+            );
+
+            if ($configHipay['account']['global']['sandbox_mode']){
+                if(empty($configHipay['account']["sandbox"]["api_tokenjs_username_sandbox"]) ||
+                    empty($configHipay['account']["sandbox"]["api_tokenjs_password_publickey_sandbox"])){
+                    $configHipay['payment']["global"]["card_token"] = 0;
+                }
+            } else {
+                if(empty($configHipay['account']["production"]["api_tokenjs_username_production"]) ||
+                    empty($configHipay['account']["production"]["api_tokenjs_password_publickey_production"])){
+                    $configHipay['payment']["global"]["card_token"] = 0;
+                }
+            }
+
+            $module->hipayConfigTool->setAllConfigHiPay($configHipay, $shop['id_shop_group'], $id);
+        }
+
         return true;
     } catch (Exception $e) {
         $log->logException($e);
         return false;
     }
+
+
 }
