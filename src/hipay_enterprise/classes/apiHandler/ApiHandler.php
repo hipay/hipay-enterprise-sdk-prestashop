@@ -84,8 +84,6 @@ class Apihandler
      */
     public function handleCreditCard($mode = ApiMode::HOSTED_PAGE, $params = array())
     {
-        $timestart = microtime(true);
-
         $this->baseParamsInit($params);
         $cart = $this->context->cart;
         $delivery = new Address((int)$cart->id_address_delivery);
@@ -94,9 +92,6 @@ class Apihandler
         $customer = new Customer((int)$cart->id_customer);
 
         $params["multi_use"] = !$customer->is_guest && Tools::isSubmit('saveTokenHipay');
-
-        $timeend = microtime(true);
-        $this->module->getLogs()->logRequest("Execution Time (DirectPost - Cart): " . ($timeend - $timestart));
 
         switch ($mode) {
             case ApiMode::DIRECT_POST:

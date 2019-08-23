@@ -119,9 +119,6 @@ class ApiCaller
     public static function requestDirectPost($moduleInstance, $params)
     {
         try {
-
-            $time_Totalstart = microtime(true);
-
             // Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
 
@@ -131,23 +128,8 @@ class ApiCaller
             $orderRequest = $directPostFormatter->generate();
             $moduleInstance->getLogs()->logRequest($orderRequest);
 
-            $time_formatend = microtime(true);
-            $moduleInstance->getLogs()->logRequest(
-                "Execution Time (DirectPost - Format): " . ($time_formatend - $time_Totalstart)
-            );
-
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $response = $gatewayClient->requestNewOrder($orderRequest);
-
-            $time_Totalend = microtime(true);
-
-            $moduleInstance->getLogs()->logRequest(
-                "Execution Time (DirectPost - Request): " . ($time_Totalend - $time_formatend)
-            );
-
-            $moduleInstance->getLogs()->logRequest(
-                "Execution Time (DirectPost - Total): " . ($time_Totalend - $time_Totalstart)
-            );
 
             return $response;
         } catch (Exception $e) {
