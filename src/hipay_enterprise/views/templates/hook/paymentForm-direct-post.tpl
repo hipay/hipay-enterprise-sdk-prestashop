@@ -37,6 +37,23 @@
             lang: lang
         });
 
+        $("#ioBB").val(hipay.getDeviceFingerprint());
+        if (hipay.getDeviceFingerprint() === undefined) {
+            let retryCounter = 0;
+            let interval = setInterval(function timeoutFunc() {
+                retryCounter++;
+                // If global_info init send event
+                if (hipay.getDeviceFingerprint() !== undefined) {
+                    $("#ioBB").val(hipay.getDeviceFingerprint());
+                    clearInterval(interval);
+                }
+                // Max retry = 3
+                if (retryCounter > 3) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
         document.getElementById("browserInfo").value = JSON.stringify(hipay.getBrowserInfo());
     });
 </script>
