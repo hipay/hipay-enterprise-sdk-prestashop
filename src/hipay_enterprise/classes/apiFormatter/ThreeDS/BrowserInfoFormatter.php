@@ -48,13 +48,10 @@ class BrowserInfoFormatter extends ApiFormatterAbstract
      */
     protected function mapRequest(&$browserInfo)
     {
-        $browserInfo->ipaddr = Tools::getRemoteAddr();
-        $browserInfo->http_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
-
-        // Si JS est désactivé, $this->params['browser_info'] est à false
-        $browserInfo->javascript_enabled = isset($this->params['browser_info']) && ($this->params['browser_info'] !== false);
-
-        if(isset($this->params['browser_info'])) {
+        if (isset($this->params['browser_info'])) {
+            $browserInfo->ipaddr = Tools::getRemoteAddr();
+            $browserInfo->http_accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
+            $browserInfo->javascript_enabled = isset($this->params['browser_info']) && ($this->params['browser_info'] !== false);
             $browserInfo->java_enabled = isset($this->params['browser_info']->java_enabled) ? $this->params['browser_info']->java_enabled : null;
             $browserInfo->language = isset($this->params['browser_info']->language) ? $this->params['browser_info']->language : null;
             $browserInfo->color_depth = isset($this->params['browser_info']->color_depth) ? $this->params['browser_info']->color_depth : null;

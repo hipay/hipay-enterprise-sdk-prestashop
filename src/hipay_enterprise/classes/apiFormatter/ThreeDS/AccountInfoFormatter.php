@@ -143,10 +143,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
             if ($customerFullName === "" || strtoupper($shippingName) === strtoupper($customerFullName)) {
                 $shippingInfo->name_indicator = NameIndicator::IDENTICAL;
             }
-        } else {
-            $shippingInfo->name_indicator = NameIndicator::IDENTICAL;
         }
-
 
         return $shippingInfo;
     }
