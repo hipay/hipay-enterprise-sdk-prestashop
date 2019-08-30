@@ -125,6 +125,8 @@ function initHostedFields() {
         }
     });
 
+    $("#browserInfo").val(JSON.stringify(hipay.getBrowserInfo()));
+
 }
 
 function handleErrorhipayHF(errors) {

@@ -17,7 +17,7 @@ require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/CardTokenFormat
 require_once(dirname(__FILE__) . '/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php');
-require_once(dirname(__FILE__) . '/../helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php');
 require_once(dirname(__FILE__) . '/../helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 
@@ -42,7 +42,7 @@ class Apihandler
         $this->module = $moduleInstance;
         $this->context = $contextInstance;
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
-        $this->db = new HipayDBQuery($this->module);
+        $this->dbUtils = new HipayDBUtils($this->module);
     }
 
     /**
@@ -402,17 +402,17 @@ class Apihandler
         //#################################################################
         $cart = $this->context->cart;
         $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
-        $this->db->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
+        $this->dbUtils->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
 
         HipayHelper::validateOrder(
             $this->module,
             $this->context,
             $this->configHipay,
-            $this->db,
+            $this->dbUtils,
             $cart,
             $params["methodDisplayName"]
         );
 
-        $this->db->releaseSQLLock('callValidateOrder' . $cart->id);
+        $this->dbUtils->releaseSQLLock('callValidateOrder' . $cart->id);
     }
 }

@@ -14,7 +14,7 @@
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../ApiFormatterInterface.php');
 require_once(dirname(__FILE__) . '/../../helper/HipayMapper.php');
-require_once(dirname(__FILE__) . '/../../helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../helper/dbquery/HipayDBMaintenance.php');
 
 /**
  *
@@ -33,10 +33,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->module = $module;
         $this->context = Context::getContext();
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
+        $this->dbMaintenance = new HipayDBMaintenance($module);
         $this->products = $params["products"];
         $this->discounts = $params["discounts"];
         $this->order = $params["order"];
-        $this->originalHipayBasket = $this->module->db->getOrderBasket($this->order->id);
+        $this->originalHipayBasket = $this->dbMaintenance->getOrderBasket($this->order->id);
         $this->cart = $params["cart"];
         $this->operation = $params["operation"];
         $this->captureRefundFee = $params["captureRefundFee"];
@@ -45,7 +46,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->transactionAttempt = $params["transactionAttempt"];
         $this->mapper = new HipayMapper($module);
         $this->totalItem = 0;
-        $this->db = new HipayDBQuery($module);
         $this->maintenanceData = $maintenanceData;
         $this->hipayCart = null;
     }

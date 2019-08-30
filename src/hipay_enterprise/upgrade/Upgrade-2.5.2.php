@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../classes/helper/dbquery/HipayDBQueryAbstract.php');
 
 function upgrade_module_2_5_2($module)
 {
@@ -22,7 +22,7 @@ function upgrade_module_2_5_2($module)
 
     try {
 
-        $sql = 'ALTER TABLE `' . _DB_PREFIX_ . HipayDBQuery::HIPAY_CC_TOKEN_TABLE . '` 
+        $sql = 'ALTER TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '` 
             CHANGE COLUMN `token` `token` VARCHAR(255) NOT NULL ;';
 
 

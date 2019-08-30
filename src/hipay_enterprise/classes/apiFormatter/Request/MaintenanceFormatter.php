@@ -13,7 +13,6 @@
 
 require_once(dirname(__FILE__) . '/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Cart/CartMaintenanceFormatter.php');
-require_once(dirname(__FILE__) . '/../../helper/HipayDBQuery.php');
 require_once(dirname(__FILE__) . '/../../helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../helper/HipayOrderMessage.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
@@ -43,7 +42,6 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
         $this->context = Context::getContext();
         $this->order = (isset($params["order"])) ? new Order($params["order"]) : false;
         $this->operation = (isset($params["operation"])) ? $params["operation"] : false;
-        $this->db = new HipayDBQuery($module);
         $this->cart = ($this->order) ? new Cart($this->order->id_cart) : false;
         $currency = ($this->order) ? new Currency($this->cart->id_currency) : null;
         $this->context->currency = $currency;

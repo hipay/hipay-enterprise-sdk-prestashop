@@ -66,7 +66,8 @@ class HipayHelper
     {
         if ($paymentProduct == 'credit_card') {
             if (isset($module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"])) {
-                $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"][$language->iso_code];
+                $paymentProductName = $module->hipayConfigTool->getPaymentGlobal(
+                )["ccDisplayName"][$language->iso_code];
             } else {
                 $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()["ccDisplayName"];
             }
@@ -534,14 +535,18 @@ class HipayHelper
                                             $address->phone_mobile : $address->phone;
 
                                         if (empty($phone)) {
-                                            $fieldMandatory[] = $module->l('Please enter your phone number to use this payment method.');
+                                            $fieldMandatory[] = $module->l(
+                                                'Please enter your phone number to use this payment method.'
+                                            );
                                         } elseif (!preg_match('"(0|\\+33|0033)[1-9][0-9]{8}"', $phone)) {
                                             $fieldMandatory[] = $module->l('Please check the phone number entered.');
                                         }
                                         break;
                                     case "gender":
                                         if (empty($customer->id_gender)) {
-                                            $fieldMandatory[] = $module->l('Please inform your civility to use this method of payment.');
+                                            $fieldMandatory[] = $module->l(
+                                                'Please inform your civility to use this method of payment.'
+                                            );
                                         }
                                         break;
                                     default:
@@ -590,12 +595,12 @@ class HipayHelper
      * @param $module
      * @param $context
      * @param $configHipay
-     * @param $db
+     * @param $dbUtils
      * @param $cart
      * @param $productName
      * @throws PrestaShopException
      */
-    public static function validateOrder($module, $context, $configHipay, $db, $cart, $productName)
+    public static function validateOrder($module, $context, $configHipay, $dbUtils, $cart, $productName)
     {
         $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
@@ -631,12 +636,12 @@ class HipayHelper
 
             // get order id
             $orderId = $module->currentOrder;
-            $db->releaseSQLLock('validateOrder');
+            $dbUtils->releaseSQLLock('validateOrder');
 
             Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
-            $db->releaseSQLLock("validateOrder ( order exist  $orderId )");
+            $dbUtils->releaseSQLLock("validateOrder ( order exist  $orderId )");
         }
 
         if ($customer) {

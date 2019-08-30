@@ -16,6 +16,8 @@ require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.p
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
 require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
 require_once(dirname(__FILE__) . '/../helper/HipayMaintenanceData.php');
+require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php');
+require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBThreeDSQuery.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 
 /**
@@ -122,17 +124,18 @@ class ApiCaller
 
             //Set data to send to the API
             $directPostFormatter = new DirectPostFormatter($moduleInstance, $params);
-
             // @var \HiPay\Fullservice\Gateway\Request\Order\OrderRequest
             $orderRequest = $directPostFormatter->generate();
             $moduleInstance->getLogs()->logRequest($orderRequest);
 
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-            return $gatewayClient->requestNewOrder($orderRequest);
+            $response = $gatewayClient->requestNewOrder($orderRequest);
+
+            return $response;
         } catch (Exception $e) {
-            $db = new HipayDBQuery($moduleInstance);
+            $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
-            $db->releaseSQLLock('requestDirectPost');
+            $dbUtils->releaseSQLLock('requestDirectPost');
             throw new GatewayException(
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
                 $e->getMessage() . ']',
@@ -239,7 +242,13 @@ class ApiCaller
         $env = ($sandbox) ? HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_STAGE
             : HiPay\Fullservice\HTTP\Configuration\Configuration::API_ENV_PRODUCTION;
 
-        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration($username, $password, $env, null, $proxy);
+        $config = new \HiPay\Fullservice\HTTP\Configuration\Configuration(
+            array(
+                "apiUsername" => $username,
+                "apiPassword" => $password,
+                "apiEnv" => $env,
+                "proxy" => $proxy
+            ));
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);

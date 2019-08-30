@@ -17,6 +17,7 @@ require_once(dirname(__FILE__) . '/../../classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/enums/ThreeDS.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/enums/UXMode.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/enums/CardPaymentProduct.php');
 
 /**
  * Class Hipay_enterprisePendingModuleFrontController
@@ -65,7 +66,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $this->deliveryCountry,
             $currency
         );
-
     }
 
     /**
@@ -78,22 +78,24 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
-                    $ccToken=  Tools::getValue('ccTokenHipay','') ;
+                    $ccToken = Tools::getValue('ccTokenHipay', '');
                     if ($this->module->hipayConfigTool->getPaymentGlobal()["card_token"]
                         && ((_PS_VERSION_ > '1.7' && !empty($ccToken) && $ccToken != "noToken")
-                        ||  (_PS_VERSION_ < '1.7' && (empty($ccToken) || (!empty($ccToken) && $ccToken != "noToken"))))) {
-                            $path = $this->apiSavedCC(
-                                Tools::getValue('ccTokenHipay'),
-                                $this->currentCart,
-                                $this->savedCC,
-                                $this->context
-                            );
-                            return $this->setTemplate($path);
+                            ||
+                            (_PS_VERSION_ < '1.7' &&
+                                (empty($ccToken) || (!empty($ccToken) && $ccToken != "noToken"))))) {
+                        $path = $this->apiSavedCC(
+                            Tools::getValue('ccTokenHipay'),
+                            $this->currentCart,
+                            $this->savedCC,
+                            $this->context
+                        );
+                        return $this->setTemplate($path);
                     } else {
                         $this->apiHandler->handleCreditCard(
                             ApiMode::HOSTED_PAGE,
                             array(
-                                "method" => "credit_card",
+                                "method" => CardPaymentProduct::HOSTED,
                                 "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
                             )
                         );
@@ -163,7 +165,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             'url' => $this->apiHandler->handleCreditCard(
                                 ApiMode::HOSTED_PAGE_IFRAME,
                                 array(
-                                    "method" => "credit_card",
+                                    "method" => CardPaymentProduct::HOSTED,
                                     "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
                                 )
                             )
@@ -194,7 +196,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     /**
      *  Assign Order template
      */
-    private function assignTemplate() {
+    private function assignTemplate()
+    {
         $this->context->smarty->assign(
             array(
                 'status_error' => '200', // Force to ok for first call
@@ -227,9 +230,15 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 "productlist" => $tokenDetails['brand'],
                 "cardtoken" => $tokenDetails['token'],
                 "card_holder" => $tokenDetails['card_holder'],
+                "card_pan" => $tokenDetails['pan'],
+                "card_expiration_date" => "0" .
+                    $tokenDetails['card_expiry_month'] .
+                    "/" .
+                    $tokenDetails['card_expiry_year'],
                 "oneClick" => true,
                 "method" => $tokenDetails['brand'],
-                "authentication_indicator" => $this->setAuthenticationIndicator($cart)
+                "authentication_indicator" => $this->setAuthenticationIndicator($cart),
+                "browser_info" => json_decode(Tools::getValue('browserInfo'))
             );
             $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
         } else {
@@ -276,9 +285,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     "deviceFingerprint" => Tools::getValue('ioBB'),
                     "productlist" => $selectedCC,
                     "cardtoken" => Tools::getValue('card-token'),
+                    "card_holder" => Tools::getValue('card-holder'),
+                    "card_pan" => Tools::getValue('card-pan'),
+                    "card_expiration_date" => Tools::getValue('card-expiry-month') .
+                        "/" .
+                        Tools::getValue('card-expiry-year'),
                     "method" => $selectedCC,
                     "authentication_indicator" => $this->setAuthenticationIndicator($cart),
-                    "card_holder" => Tools::getValue('card-holder')
+                    "browser_info" => json_decode(Tools::getValue('browserInfo'))
                 );
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {

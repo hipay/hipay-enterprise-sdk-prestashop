@@ -12,6 +12,8 @@
  */
 
 require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/enums/OperatingMode.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBUtils.php');
 
 /**
  * Handle config form data savings
@@ -33,6 +35,7 @@ class HipayConfigFormHandler
     {
         $this->context = Context::getContext();
         $this->module = $module_instance;
+        $this->dbUtils = new HipayDBUtils($this->module);
     }
 
     /**
@@ -155,6 +158,29 @@ class HipayConfigFormHandler
             //save configuration
             $this->module->hipayConfigTool->setConfigHiPay("account", $accountConfig);
 
+
+            // If merchant removed their public API credentials, we deactivate oneclick
+            $paymentConfig = array(
+                "global" => $this->module->hipayConfigTool->getPaymentGlobal(),
+                "credit_card" => $this->module->hipayConfigTool->getPaymentCreditCard(),
+                "local_payment" => $this->module->hipayConfigTool->getLocalPayment()
+            );
+
+            if($accountConfig["global"]["sandbox_mode"]){
+                if(empty($accountConfig["sandbox"]["api_tokenjs_username_sandbox"]) ||
+                    empty($accountConfig["sandbox"]["api_tokenjs_password_publickey_sandbox"])){
+                    $paymentConfig["global"]["card_token"] = 0;
+                }
+            } else {
+                if(empty($accountConfig["production"]["api_tokenjs_username_production"]) ||
+                    empty($accountConfig["production"]["api_tokenjs_password_publickey_production"])){
+                    $paymentConfig["global"]["card_token"] = 0;
+                }
+            }
+
+            $this->module->hipayConfigTool->setConfigHiPay("payment", $paymentConfig);
+
+
             $this->module->_successes[] = $this->module->l('Module settings saved successfully.');
             $this->module->logs->logInfos($this->module->hipayConfigTool->getConfigHipay());
 
@@ -189,7 +215,21 @@ class HipayConfigFormHandler
             //requirement : input name in tpl must be the same that name of indexes in $this->module->configHipay
 
             foreach ($this->module->hipayConfigTool->getPaymentGlobal() as $key => $value) {
-                if (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
+                if ($key == "card_token"){
+                    if ($this->module->hipayConfigTool->getAccountGlobal()['sandbox_mode']){
+                        $oneClickAvailable = (!empty($this->module->hipayConfigTool->getAccountSandbox()['api_tokenjs_username_sandbox']) &&
+                            !empty($this->module->hipayConfigTool->getAccountSandbox()['api_tokenjs_password_publickey_sandbox']));
+                    } else {
+                        $oneClickAvailable = (!empty($this->module->hipayConfigTool->getAccountProduction()['api_tokenjs_username_production']) &&
+                            !empty($this->module->hipayConfigTool->getAccountProduction()['api_tokenjs_password_publickey_production']));
+                    }
+
+                    if($oneClickAvailable){
+                        $fieldValue = Tools::getValue($key);
+                    } else {
+                        $fieldValue = "0";
+                    }
+                } elseif (is_bool(Tools::getValue($key)) && !Tools::getValue($key)) {
                     $fieldValue = $value;
                 } elseif ($key == "css_url" &&
                     Tools::getValue("css_url") &&
@@ -268,7 +308,7 @@ class HipayConfigFormHandler
                         if ($key == "currencies" && $fieldValue) {
                             foreach ($fieldValue as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
-                                    $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
+                                    $this->dbUtils->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
                             }
                         }
@@ -330,7 +370,7 @@ class HipayConfigFormHandler
                         if ($key == "currencies" && $fieldValue) {
                             foreach ($fieldValue as $currency) {
                                 if (!in_array($currency, $this->module->moduleCurrencies)) {
-                                    $this->module->db->setCurrencies($this->module->id, $context->shop->id, $currency);
+                                    $this->dbUtils->setCurrencies($this->module->id, $context->shop->id, $currency);
                                 }
                             }
                         }

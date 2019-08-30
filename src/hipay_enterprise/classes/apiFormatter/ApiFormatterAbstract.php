@@ -13,6 +13,7 @@
 
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
 require_once(dirname(__FILE__) . '/ApiFormatterInterface.php');
+require_once(dirname(__FILE__) . '/../helper/enums/CardPaymentProduct.php');
 
 use \HiPay\Fullservice\Enum\Customer\Gender as Gender;
 
@@ -28,6 +29,21 @@ use \HiPay\Fullservice\Enum\Customer\Gender as Gender;
 abstract class ApiFormatterAbstract implements ApiFormatterInterface
 {
     protected $module;
+    protected $cart;
+    protected $customer;
+    protected $dbUtils;
+    protected $threeDSDB;
+    protected $dbToken;
+    protected $delivery;
+    protected $cardPaymentProduct = array(
+        CardPaymentProduct::AMERICAN_EXPRESS,
+        CardPaymentProduct::BCMC,
+        CardPaymentProduct::CB,
+        CardPaymentProduct::MAESTRO,
+        CardPaymentProduct::MASTERCARD,
+        CardPaymentProduct::VISA,
+        CardPaymentProduct::HOSTED
+    );
 
     public function __construct($module, $cart = false)
     {
@@ -35,6 +51,9 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         $this->context = Context::getContext();
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
         $this->mapper = new HipayMapper($module);
+        $this->dbUtils = new HipayDBUtils($module);
+        $this->threeDSDB = new HipayDBThreeDSQuery($module);
+        $this->dbToken = new HipayDBTokenQuery($module);
         $this->cart = (!$cart) ? $this->context->cart : $cart;
         $this->customer = (is_null($this->cart)) ? false : new Customer((int)$this->cart->id_customer);
         $this->store = (is_null($this->cart)) ? false : new Store((int)$this->cart->id_shop);
@@ -51,7 +70,7 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
      */
     protected function getGender($idGender = null)
     {
-          switch ($idGender) {
+        switch ($idGender) {
             case '1':
                 $gender = Gender::MALE;
                 break;

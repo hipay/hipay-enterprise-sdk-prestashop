@@ -25,7 +25,7 @@ describe('Update notification box', function () {
             .should('be.visible')
             .should(($div) => {
                 const text = $div.text();
-                expect(text).to.match(/^(\s*)Une nouvelle version du module HiPay Enterprise est disponible\.(\s*)Voir les détails de la version 2\.7\.0(\s*)ou(\s*)mettre à jour\.(\s*)$/);
+                expect(text).to.match(/^(\s*)Une nouvelle version du module HiPay Enterprise est disponible\.(\s*)Voir les détails de la version [0-9]+\.[0-9]+\.[0-9]+(\s*)ou(\s*)mettre à jour\.(\s*)$/);
         });
         cy.adminLogOut();
     });
@@ -43,7 +43,7 @@ describe('Update notification box', function () {
             .should('have.class', 'alert-danger')
             .should(($div) => {
                 const text = $div.text();
-                expect(text).to.match(/^(\s*)Une nouvelle version du module HiPay Enterprise est disponible\.(\s*)Voir les détails de la version 2\.7\.0(\s*)ou(\s*)mettre à jour\.(\s*)$/);
+                expect(text).to.match(/^(\s*)Une nouvelle version du module HiPay Enterprise est disponible\.(\s*)Voir les détails de la version [0-9]+\.[0-9]+\.[0-9]+(\s*)ou(\s*)mettre à jour\.(\s*)$/);
             });
         cy.adminLogOut();
     });

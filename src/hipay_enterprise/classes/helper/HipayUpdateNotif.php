@@ -64,7 +64,7 @@ class HipayUpdateNotif
     {
         $this->module = $module;
         $this->context = Context::getContext();
-        $this->version = $module->db->getModuleVersion($module->name);
+        $this->version = $module->dbUtils->getModuleVersion($module->name);
 
         // We read info from the saved configuration first, to have values even if GitHub doesn't answer properly
         $this->readFromConf();

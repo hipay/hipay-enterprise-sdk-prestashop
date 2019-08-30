@@ -127,7 +127,8 @@ exports.personalInformation = function personalInformation(test) {
                 'input[name="id_gender"]': 'true',
                 'input[name="firstname"]': 'TEST',
                 'input[name="lastname"]': 'TEST',
-                'input[name="email"]': 'email@yopmail.com'
+                'input[name="email"]': 'email@yopmail.com',
+                'input[name="psgdpr"]': 'true'
             }, false);
             this.click("section#checkout-personal-information-step footer.form-footer button.continue");
             this.echo("Done", "COMMENT");

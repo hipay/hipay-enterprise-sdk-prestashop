@@ -1,3 +1,7 @@
+# Version 2.8.0
+
+- Add DPS2 security handling
+
 # Version 2.7.1
 
 - Get payment method configuration from PHP SDK
