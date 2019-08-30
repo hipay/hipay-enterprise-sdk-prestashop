@@ -499,7 +499,7 @@ class HipayConfig
      * @return bool
      * @throws Exception
      */
-    private function setAllConfigHiPay($arrayHipay = null, $id_shop_group = null, $id_shop = null)
+    public function setAllConfigHiPay($arrayHipay = null, $id_shop_group = null, $id_shop = null)
     {
         // use this function if you have a few variables to update
         if ($arrayHipay != null) {

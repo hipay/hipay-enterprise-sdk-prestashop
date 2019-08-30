@@ -28,7 +28,6 @@ function afterTokenization(result) {
     $("#card-issuer").val(issuer);
     $("#card-country").val(country);
 
-
     return true;
 }
 

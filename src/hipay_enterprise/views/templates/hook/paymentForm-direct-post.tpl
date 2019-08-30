@@ -28,4 +28,15 @@
         hiPayInputControl.addInput('cc', 'the-card-name-id', null, true);
         hiPayInputControl.addInput('cc', 'cvc', 'cvc', true);
     })();
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var hipay = HiPay({
+            username: api_tokenjs_username,
+            password: api_tokenjs_password_publickey,
+            environment: api_tokenjs_mode,
+            lang: lang
+        });
+
+        document.getElementById("browserInfo").value = JSON.stringify(hipay.getBrowserInfo());
+    });
 </script>

@@ -50,9 +50,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_dcff891b1393af8c2f13bc
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_147b202e5d808b32bd8d1eaaa135a58e'] = 'Montant total de la commande :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_41683156a02a5458061f1ceff3a7b7e4'] = 'ID de la transaction :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_cab7966508bf13075ade294cdf147b53'] = 'Statut HiPay :';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez renseigner votre numéro de téléphone pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisi.';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_6d12f60dbfa06b3da45091a331957382'] = 'Configuration du module sauvegardée avec succès';
@@ -301,6 +299,8 @@ $_MODULE['<{hipay_enterprise}prestashop>technicals_e81c4e4f2b7b93b481e13a8553c2a
 $_MODULE['<{hipay_enterprise}prestashop>technicals_c1cf9b68cf476dfd37470588f5988a2a'] = 'mettre à jour';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_212ea586c003e48370f63110b60862ef'] = 'Votre module est configuré pour utiliser l\'API de HiPay en mode TEST, mais vos identifiants de compte test ne sont pas renseignés.';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_1493c34b452a9681e0832d8531841a2a'] = 'Votre module est configuré pour utiliser l\'API de HiPay en mode PRODUCTION, mais vos identifiants de compte production ne sont pas renseignés.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_bd881d66367e0dae92ebdf428003c15f'] = 'Votre module est configuré pour utiliser l\'API de HiPay en mode TEST, mais vos identifiants publics de compte test ne sont pas renseignés. Le paiement One-click ne fonctionnera pas tant que ces identifiants ne seront pas renseignés.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_efa493705b2503b73d7bf3f4b7701548'] = 'Votre module est configuré pour utiliser l\'API de HiPay en mode PRODUCTION, mais vos identifiants publics de compte production ne sont pas renseignés. Le paiement One-click ne fonctionnera pas tant que ces identifiants ne seront pas renseignés.';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_a3aec75b615b642506fb9d97be5c32a3'] = 'Vous devez mapper vos catégories de produits et vos méthodes de livraison avec les catégories de HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_c4a571009fbdbae6c3266eb058fb331e'] = 'HiPay est une plateforme de paiement en ligne internationale conçue pour répondre à tous vos besoins.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_f1192832eadebee22a2a5da7d146e8d7'] = 'Outil complet et personnalisable de lutte contre la fraude, solution unique d’analyse des données, expérience omnicanale et processus de réconciliation financière automatisé.';
@@ -508,6 +508,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_f292a2d958154cf06bc0339c6ae72840'
 $_MODULE['<{hipay_enterprise}prestashop>global_d7cfe6e13c9f24b30bbb8a7306845cab'] = 'Toutes les transactions seront automatiquement capturées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_77987fb829b11a87eb76803d31dfe377'] = 'Permet aux clients de sauvegarder leurs cartes pour les réutiliser.';
 $_MODULE['<{hipay_enterprise}prestashop>global_105fd50db93c10f27601854eff3d6e0d'] = 'Utiliser le paiement One-click';
+$_MODULE['<{hipay_enterprise}prestashop>global_626beb352073bec00fcdd3a1a692adaf'] = 'Vos identifiants publics doivent être renseignés pour utiliser le paiement One-click';
 $_MODULE['<{hipay_enterprise}prestashop>global_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
 $_MODULE['<{hipay_enterprise}prestashop>global_bafd7322c6e97d25b6299b5d6fe8920b'] = 'Non';
 $_MODULE['<{hipay_enterprise}prestashop>global_d0ef6f754455dcb305eb26b3decbc401'] = 'Envoyer les données du panier lors des appels de l\'API HiPay.';

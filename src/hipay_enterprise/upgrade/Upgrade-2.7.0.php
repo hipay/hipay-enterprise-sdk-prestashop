@@ -11,8 +11,6 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../classes/helper/HipayDBQuery.php');
-
 function upgrade_module_2_7_0($module)
 {
     $log = $module->getLogs();

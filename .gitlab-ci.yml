@@ -57,7 +57,7 @@ test-casper-17-1:
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml stop
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml rm -fv
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml up -d
-    - sleep 300
+    - until docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml logs | grep -m 1 "DOCKER PRESTASHOP TO HIPAY stage IS UP" ; do sleep 1 ; done
     - docker-compose -p $PROJECT_NAME_TEST_PS17_1 -f docker-compose.test.yml logs
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
@@ -74,7 +74,7 @@ test-casper-17-2:
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml stop
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml rm -fv
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml up -d
-    - sleep 300
+    - until docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml logs | grep -m 1 "DOCKER PRESTASHOP TO HIPAY stage IS UP" ; do sleep 1 ; done
     - docker-compose -p $PROJECT_NAME_TEST_PS17_2 -f docker-compose.test.yml logs
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
@@ -92,7 +92,7 @@ test-cypress-17-1:
     - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml stop
     - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml rm -fv
     - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml up -d
-    - sleep 300
+    - until docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml logs | grep -m 1 "DOCKER PRESTASHOP TO HIPAY stage IS UP" ; do sleep 1 ; done
     - docker-compose -p $PROJECT_NAME_TEST_PS17_3 -f docker-compose.test.yml logs
     - curl --retry 10 --retry-delay 20 -v http:\/\/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}-web/
     - cd bin/tests/tests-cypress

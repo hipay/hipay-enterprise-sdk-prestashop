@@ -13,7 +13,6 @@
 
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
 
 /**
  * Class AdminHiPayMotoController

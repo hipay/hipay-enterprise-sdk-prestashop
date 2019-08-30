@@ -121,7 +121,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $totalPaid = $this->order->getTotalPaid();
                 // remaining amount to capture
                 $stillToCapture = Tools::ps_round($this->order->total_paid_tax_incl - $totalPaid, 2);
-                $capturedDiscounts = $this->db->discountsAreCaptured($this->order->id);
+                $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
 
                 //check if no items has been sent
                 if (array_sum($refundItems) == 0 &&

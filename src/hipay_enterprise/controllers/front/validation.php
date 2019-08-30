@@ -11,7 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/dbquery/HipayDBUtils.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../classes/exceptions/PaymentProductNotFoundException.php');
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
@@ -32,15 +32,14 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
      */
     public function postProcess()
     {
-
         $context = Context::getContext();
         $cartId = Tools::getValue('orderId');
-        $db = new HipayDBQuery($this->module);
+        $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
         if (!$cartId) {
             // if not we retrieve the last cart
-            $objCart = $db->getLastCartFromUser($context->customer->id);
+            $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
         } else {
             // load cart
             $objCart = new Cart((int)$cartId);
@@ -63,7 +62,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         // SQL LOCK
         //#################################################################
 
-        $db->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
+        $dbUtils->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
         try {
             $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('product'));
         } catch (PaymentProductNotFoundException $e) {
@@ -81,7 +80,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $this->module,
             $context,
             $this->module->hipayConfigTool->getConfigHipay(),
-            $db,
+            $dbUtils,
             $objCart,
             $paymentProductName
         );

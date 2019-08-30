@@ -13,7 +13,7 @@
 
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
 require_once(dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php');
-require_once(dirname(__FILE__) . '/../../classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/../../classes/helper/dbquery/HipayDBMaintenance.php');
 
 
 /**
@@ -43,6 +43,12 @@ class AdminHiPayActionsController extends ModuleAdminController
      */
     protected $params;
 
+    protected $apiHandler;
+
+    protected $db;
+
+    protected $dbMaintenance;
+
     /**
      *
      * AdminHiPayChallengeController constructor.
@@ -57,7 +63,7 @@ class AdminHiPayActionsController extends ModuleAdminController
         parent::__construct();
 
         $this->apiHandler = new ApiHandler($this->module, $this->context);
-        $this->db = new HipayDBQuery($this->module);
+        $this->dbMaintenance = new HipayDBMaintenance($this->module);
     }
 
     /**
@@ -73,8 +79,8 @@ class AdminHiPayActionsController extends ModuleAdminController
                 throw new PrestaShopException('Can\'t load Order object');
             }
             ShopUrl::cacheMainDomainForShop((int)$this->order->id_shop);
-            $this->transactionReference = $this->db->getTransactionReference($this->order->id);
-            $paymentProduct = $this->db->getPaymentProductFromMessage($this->order->id);
+            $this->transactionReference = $this->dbMaintenance->getTransactionReference($this->order->id);
+            $paymentProduct = $this->dbMaintenance->getPaymentProductFromMessage($this->order->id);
             $this->params = array(
                 "method" => $paymentProduct,
                 "order" => $this->order->id,

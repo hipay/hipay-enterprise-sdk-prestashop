@@ -115,7 +115,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             $this->module->getLogs()->logInfos('# Refund Capture with basket order ID {$this->order->id}');
             // we can refund only what has been captured
             $refundableAmount = $this->order->getTotalPaid();
-            $refundedDiscounts = $this->db->discountsAreRefunded($this->order->id);
+            $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
             //refund with basket
             if (Tools::getValue('hipay_refund_type') == "partial") {
