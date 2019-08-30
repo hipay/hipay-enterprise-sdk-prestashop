@@ -5,7 +5,7 @@
     "vendor-dir": "lib/vendor"
   }, 
   "require": {
-    "hipay/hipay-fullservice-sdk-php": "dev-feature/EC-782"
+    "hipay/hipay-fullservice-sdk-php": "^2.3.0"
   }, 
   "authors": [
     {
