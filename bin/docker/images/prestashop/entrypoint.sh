@@ -33,8 +33,13 @@ if [ ! -f /var/www/html/prestashopConsole.phar ];then
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    cd /var/www/html/modules/hipay_enterprise/ \
-    && composer install --no-dev
+    cd /var/www/html/modules/hipay_enterprise/
+
+    cp composer.json composer.json.bak
+    cat composer.json.bak | python -c "import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = {'post-install-cmd': ['@managePiDataURLDev'], 'post-update-cmd': ['@managePiDataURLDev'], 'managePiDataURLDev': [\"sed -i 's@https://stage-data.hipay.com@"$PI_DATA_URL"@g' lib/vendor/hipay/hipay-fullservice-sdk-php/lib/HiPay/Fullservice/HTTP/Configuration/Configuration.php\", \"sed -i 's@https://data.hipay.com@"$PI_DATA_URL"@g' lib/vendor/hipay/hipay-fullservice-sdk-php/lib/HiPay/Fullservice/HTTP/Configuration/Configuration.php\"]}; print json.dumps(composerObj, False, True, True, True, None, 2);" > composer.json
+    rm composer.json.bak
+
+    composer install --no-dev
 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
@@ -103,7 +108,12 @@ fi
 chown -R www-data:www-data /var/www/html
 chmod -R $MOD_DROITS /var/www/html
 
-
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+printf "\n${COLOR_SUCCESS}           HOSTS CONGIGURATION           ${NC}\n"
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+cp /etc/hosts ~/hosts.bak
+sed -i 's/^127\.0\.0\.1\s*localhost/127.0.0.1    localhost    data.hipay.com    stage-data.hipay.com/g' ~/hosts.bak
+cp  ~/hosts.bak /etc/hosts
 
 #===================================#
 #       START WEBSERVER
