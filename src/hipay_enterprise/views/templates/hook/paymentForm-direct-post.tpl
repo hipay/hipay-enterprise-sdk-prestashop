@@ -37,14 +37,24 @@
             lang: lang
         });
 
-        $("#ioBB").val(hipay.getDeviceFingerprint());
+        let deviceFingerprintInput = $('#realFingerprint');
+        if(deviceFingerprintInput.length === 0) {
+            deviceFingerprintInput = $('<input/>', {
+                id: 'realFingerprint',
+                type: 'hidden',
+                name: 'ioBB'
+            });
+            $("#ioBB").attr('name', "ioBB_old");
+            $("#ioBB").parent().append(deviceFingerprintInput);
+        }
+        deviceFingerprintInput.val(hipay.getDeviceFingerprint());
         if (hipay.getDeviceFingerprint() === undefined) {
             let retryCounter = 0;
             let interval = setInterval(function timeoutFunc() {
                 retryCounter++;
                 // If global_info init send event
                 if (hipay.getDeviceFingerprint() !== undefined) {
-                    $("#ioBB").val(hipay.getDeviceFingerprint());
+                    deviceFingerprintInput.val(hipay.getDeviceFingerprint());
                     clearInterval(interval);
                 }
                 // Max retry = 3
