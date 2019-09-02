@@ -100,7 +100,7 @@ class MerchantRiskStatementFormatter extends ApiFormatterAbstract
 
     private function getShippingIndicator()
     {
-        if (!$this->cart->hasRealProducts()) {
+        if ($this->cart->isVirtualCart()) {
             return ShippingIndicator::DIGITAL_GOODS;
         }
 

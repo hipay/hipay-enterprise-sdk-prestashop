@@ -72,13 +72,12 @@ if [ "$1" = 'init' ] && [ "$2" = '' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database smtp
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database smtp
+     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database
      rm -Rf data/
      rm -Rf web16/
-     rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" mysql smtp
-     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database smtp
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" database
+     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database
 fi
 
 if [ "$1" = 'restart' ];then
@@ -87,8 +86,8 @@ if [ "$1" = 'restart' ];then
 fi
 
 if [ "$1" = 'kill' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database smtp
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
