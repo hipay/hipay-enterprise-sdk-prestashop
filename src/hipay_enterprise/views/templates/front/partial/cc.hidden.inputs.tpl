@@ -18,3 +18,4 @@
 <input id="card-issuer" type='hidden' name='card-issuer' value=''/>
 <input id="card-country" type='hidden' name='card-country' value=''/>
 <input id="ioBB" type="hidden" name="ioBB">
+<input id="browserInfo" type="hidden" name="browserInfo">

@@ -14,10 +14,15 @@
 require_once(dirname(__FILE__) . '/CommonRequestFormatterAbstract.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerBillingInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../Info/CustomerShippingInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/BrowserInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/MerchantRiskStatementFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/AccountInfoFormatter.php');
+require_once(dirname(__FILE__) . '/../ThreeDS/PreviousAuthInfoFormatter.php');
 require_once(dirname(__FILE__) . '/../../helper/HipayHelper.php');
 require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
+use HiPay\Fullservice\Enum\ThreeDSTwo\DeviceChannel;
 
 /**
  *
@@ -41,12 +46,23 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
     /**
      * map prestashop order informations to request fields (shared information between Hpayment, Iframe and Direct Post)
-     * @param type $order
+     * @param \HiPay\Fullservice\Gateway\Request\Order\OrderRequest $order
      */
     protected function mapRequest(&$order)
     {
         parent::mapRequest($order);
         $this->setCustomData($order, $this->cart, $this->params);
+
+        if (in_array(strtolower($this->params["method"]), $this->cardPaymentProduct)) {
+            $order->browser_info = $this->getBrowserInfo();
+            $order->previous_auth_info = $this->getPreviousAuthInfo();
+            $order->merchant_risk_statement = $this->getMerchantRiskStatement();
+            $order->account_info = $this->getAccountInfo();
+            $order->device_channel = DeviceChannel::BROWSER;
+
+            // Triggering apiRequest hook to allow merchants to add their own data to the request
+            Hook::exec('actionHipayApiRequest', array("OrderRequest" => &$order, "Cart" => $this->cart));
+        }
 
         $order->orderid = $this->cart->id . "(" . time() . ")";
         if ($this->moto) {
@@ -164,7 +180,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->customerBillingInfo = $this->getCustomerBillingInfo();
         $order->customerShippingInfo = $this->getCustomerShippingInfo();
         $order->cid = (int)$this->customer->id;
-        $order->ipaddr = $_SERVER ['REMOTE_ADDR'];
+        $order->ipaddr = Tools::getRemoteAddr();
         $order->language = $this->getLanguageCode($this->context->language->iso_code);
         $order->http_user_agent = $_SERVER ['HTTP_USER_AGENT'];
         $order->basket = $this->params["basket"];
@@ -173,8 +189,8 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
     }
 
     /**
-     * return well formatted order descritpion
-     * @param type $order
+     * return well formatted order description
+     * @param \HiPay\Fullservice\Gateway\Request\Order\OrderRequest $order
      * @return string
      */
     protected function generateDescription($order)
@@ -223,4 +239,33 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         return $billingInfo->generate();
     }
+
+    private function getBrowserInfo()
+    {
+        $browserInfo = new BrowserInfoFormatter($this->module, $this->cart, $this->params);
+
+        return $browserInfo->generate();
+    }
+
+    private function getPreviousAuthInfo()
+    {
+        $previousAuthInfo = new PreviousAuthInfoFormatter($this->module, $this->cart);
+
+        return $previousAuthInfo->generate();
+    }
+
+    private function getMerchantRiskStatement()
+    {
+        $merchantRiskStatement = new MerchantRiskStatementFormatter($this->module, $this->cart);
+
+        return $merchantRiskStatement->generate();
+    }
+
+    private function getAccountInfo()
+    {
+        $accountInfo = new AccountInfoFormatter($this->module, $this->cart, $this->params);
+
+        return $accountInfo->generate();
+    }
+
 }

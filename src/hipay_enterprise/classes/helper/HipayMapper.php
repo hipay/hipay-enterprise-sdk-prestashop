@@ -12,7 +12,8 @@
  */
 
 require_once(dirname(__FILE__) . '/../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBSchemaManager.php');
+require_once(dirname(__FILE__) . '/dbquery/HipayDBMapperQuery.php');
 
 /**
  * Handle category and carrier mapping
@@ -33,7 +34,8 @@ class HipayMapper
         $this->context = Context::getContext();
         $this->module = $moduleInstance;
         $this->logs = $this->module->getLogs();
-        $this->db = new HipayDBQuery($this->module);
+        $this->dbMapperQuery = new HipayDBMapperQuery($this->module);
+        $this->dbSchemaManager = new HipayDBSchemaManager($this->module);
     }
 
     /**
@@ -84,7 +86,7 @@ class HipayMapper
      */
     public function getMappedCategories($idShop)
     {
-        $categoriesDB = $this->db->getHipayMappedCategories($idShop);
+        $categoriesDB = $this->dbMapperQuery->getHipayMappedCategories($idShop);
 
         if (!$categoriesDB) {
             $categories = array();
@@ -104,7 +106,7 @@ class HipayMapper
      */
     public function getMappedCarriers($idShop)
     {
-        $carriersDB = $this->db->getHipayMappedCarriers($idShop);
+        $carriersDB = $this->dbMapperQuery->getHipayMappedCarriers($idShop);
 
         if (!$carriersDB) {
             $carriers = array();
@@ -127,7 +129,7 @@ class HipayMapper
      */
     public function getMappedHipayCatFromPSId($PSId)
     {
-        $hipayCatId = $this->db->getHipayCatFromPSId($PSId);
+        $hipayCatId = $this->dbMapperQuery->getHipayCatFromPSId($PSId);
 
         if ($hipayCatId) {
             return (int)$hipayCatId["hp_cat_id"];
@@ -142,7 +144,7 @@ class HipayMapper
      */
     public function getMappedHipayCarrierFromPSId($PSId)
     {
-        $hipayCarrier = $this->db->getHipayCarrierFromPSId($PSId);
+        $hipayCarrier = $this->dbMapperQuery->getHipayCarrierFromPSId($PSId);
         if ($hipayCarrier) {
             return $hipayCarrier;
         }
@@ -155,7 +157,7 @@ class HipayMapper
      */
     public function createTable()
     {
-        if (!$this->db->createCatMappingTable() || !$this->db->createCarrierMappingTable()) {
+        if (!$this->dbSchemaManager->createCatMappingTable() || !$this->dbSchemaManager->createCarrierMappingTable()) {
             $this->logs->logErros('# Cannot create Mapping table');
             die('Module DB Error');
         }
@@ -166,7 +168,7 @@ class HipayMapper
      */
     public function deleteTable()
     {
-        if (!$this->db->deleteCatMappingTable() || !$this->db->deleteCarrierMappingTable()) {
+        if (!$this->dbSchemaManager->deleteCatMappingTable() || !$this->dbSchemaManager->deleteCarrierMappingTable()) {
             $this->logs->logErrors('# Cannot delete Mapping table');
         }
     }
@@ -203,7 +205,7 @@ class HipayMapper
                         }
                     }
 
-                    return $this->db->setHipayCatMapping($row, $this->context->shop->id);
+                    return $this->dbMapperQuery->setHipayCatMapping($row, $this->context->shop->id);
                 }
                 return true;
             case HipayMapper::HIPAY_CARRIER_MAPPING:
@@ -219,7 +221,7 @@ class HipayMapper
                         );
                     }
 
-                    $this->db->setHipayCarrierMapping($row, $this->context->shop->id);
+                    $this->dbMapperQuery->setHipayCarrierMapping($row, $this->context->shop->id);
                 }
                 return true;
         }
@@ -264,7 +266,7 @@ class HipayMapper
                 "shop_id" => (int)$this->context->shop->id
             );
 
-            $this->db->setHipayCarrierMapping($row, $this->context->shop->id);
+            $this->dbMapperQuery->setHipayCarrierMapping($row, $this->context->shop->id);
         }
 
         return true;

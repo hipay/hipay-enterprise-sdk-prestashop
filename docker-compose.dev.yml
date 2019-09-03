@@ -34,7 +34,7 @@ prestashop17:
 # dockerfile: ./bin/docker/images/prestashop/Dockerfile16
 # build: .
 # ports:
-#   - "8087:80"
+#   - "8086:80"
 # links:
 ##   - smtp
 #   - database
@@ -42,6 +42,6 @@ prestashop17:
 #   - ./bin/docker/conf/development/env
 #   - ./bin/docker/conf/development/env16
 # volumes:
-#   - ./web17:/var/www/html
+#   - ./web16:/var/www/html
 #   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
 # mem_limit: 500M

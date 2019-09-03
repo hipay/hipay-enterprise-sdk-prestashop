@@ -7,6 +7,41 @@ pathPreFile=${header}000*/*.js
 pathLibHipay=${header}000*/*/*/*.js
 pathDir=${header}0*
 
+manageComposerForData() {
+    COMPOSER_JSON_FILE="src/hipay_enterprise/composer.json"
+
+    echo "Setting up git pre-commit hook..."
+
+    echo "#!/bin/bash" > .git/hooks/pre-commit
+    echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >> .git/hooks/pre-commit
+    echo "git status --porcelain -uno | grep \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
+    echo "if [ $? -eq 0 ]" >> .git/hooks/pre-commit
+    echo "then" >> .git/hooks/pre-commit
+    echo "    cp \$COMPOSER_JSON_FILE \$COMPOSER_JSON_FILE.bak" >> .git/hooks/pre-commit
+    echo "    cat \$COMPOSER_JSON_FILE.bak | python -c \"import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = None; del composerObj['scripts']; print json.dumps(composerObj, False, True, True, True, None, 2);\" > \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
+    echo "    git add \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
+    echo "fi" >> .git/hooks/pre-commit
+    echo "exit 0" >> .git/hooks/pre-commit
+
+    chmod 775 .git/hooks/pre-commit
+
+
+    echo "Setting up git post-commit hook..."
+
+    echo "#!/bin/bash" > .git/hooks/post-commit
+    echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >> .git/hooks/post-commit
+    echo "if [ -f \$COMPOSER_JSON_FILE.bak ]" >> .git/hooks/post-commit
+    echo "then" >> .git/hooks/post-commit
+    echo "    cp \$COMPOSER_JSON_FILE.bak \$COMPOSER_JSON_FILE" >> .git/hooks/post-commit
+    echo "    rm \$COMPOSER_JSON_FILE.bak" >> .git/hooks/post-commit
+    echo "fi" >> .git/hooks/post-commit
+    echo "exit 0" >> .git/hooks/post-commit
+
+    chmod 775 .git/hooks/post-commit
+}
+
+manageComposerForData
+
 #=============================================================================
 #  Use this script build hipay images and run Hipay Professional's containers
 #==============================================================================
@@ -37,13 +72,12 @@ if [ "$1" = 'init' ] && [ "$2" = '' ];then
 fi
 
 if [ "$1" = 'init' ] && [ "$2" != '' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database smtp
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database smtp
+     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database
      rm -Rf data/
      rm -Rf web16/
-     rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" mysql smtp
-     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database smtp
+     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" database
+     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database
 fi
 
 if [ "$1" = 'restart' ];then
@@ -52,8 +86,8 @@ if [ "$1" = 'restart' ];then
 fi
 
 if [ "$1" = 'kill' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database smtp
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database smtp
+     docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database
      rm -Rf data/
      rm -Rf web16/
      rm -Rf web17/
@@ -104,3 +138,11 @@ if [ "$1" = 'test' ]; then
 
    casperjs test $pathPreFile ${pathDir}/[0-1]*/[1-1][4-4][0-0][0-0]-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
 fi
+
+if [ "$1" = 'clear-smarty' ] && [ "$2" != '' ]; then
+   cd web$2/var/cache/dev/smarty/compile
+   sudo chmod -R 775 .
+   rm -r ./*
+   echo "Cleared"
+fi
+

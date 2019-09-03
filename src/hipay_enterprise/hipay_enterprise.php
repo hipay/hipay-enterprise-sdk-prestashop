@@ -38,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.7.1';
+        $this->version = '2.8.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -58,8 +58,8 @@ class Hipay_enterprise extends PaymentModule
         // init mapper object
         $this->mapper = new HipayMapper($this);
 
-        // init query object
-        $this->db = new HipayDBQuery($this);
+        $this->dbSchemaManager = new HipayDBSchemaManager($this);
+        $this->dbUtils = new HipayDBUtils($this);
 
         // init token manger object
         $this->token = new HipayCCToken($this);
@@ -154,6 +154,12 @@ class Hipay_enterprise extends PaymentModule
             $this->deleteHipayTable();
     }
 
+    /**
+     * Installation procedure for the HiPay module
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function installHipay()
     {
         $return = $this->installAdminTab();
@@ -177,7 +183,16 @@ class Hipay_enterprise extends PaymentModule
                 $this->registerHook('displayPaymentEU');
             $return = $return && $return16;
         }
-        return $return;
+
+        return $return && $this->installHook();
+    }
+
+    public function installHook(){
+        $hook = new Hook();
+        $hook->name = 'actionHipayApiRequest';
+        $hook->title = 'HiPay API Request';
+        $hook->description = 'This hook is called right before HiPay calls its payment API';
+        return $hook->add();
     }
 
     public function installAdminTab()
@@ -610,10 +625,10 @@ class Hipay_enterprise extends PaymentModule
     private function createHipayTable()
     {
         $this->mapper->createTable();
-        $this->db->createOrderRefundCaptureTable();
-        $this->db->createCCTokenTable();
-        $this->db->createHipayTransactionTable();
-        $this->db->createHipayOrderCaptureType();
+        $this->dbSchemaManager->createOrderRefundCaptureTable();
+        $this->dbSchemaManager->createCCTokenTable();
+        $this->dbSchemaManager->createHipayTransactionTable();
+        $this->dbSchemaManager->createHipayOrderCaptureType();
         return true;
     }
 
@@ -623,8 +638,7 @@ class Hipay_enterprise extends PaymentModule
     private function deleteHipayTable()
     {
         $this->mapper->deleteTable();
-//        $this->db->deleteOrderRefundCaptureTable();
-        $this->db->deleteCCTokenTable();
+        $this->dbSchemaManager->deleteCCTokenTable();
         return true;
     }
 }
@@ -642,7 +656,7 @@ require_once(dirname(__FILE__) . '/classes/helper/HipayConfig.php');
 require_once(dirname(__FILE__) . '/classes/forms/HipayForm.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayMapper.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
-require_once(dirname(__FILE__) . '/classes/helper/HipayDBQuery.php');
+require_once(dirname(__FILE__) . '/classes/helper/dbquery/HipayDBSchemaManager.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php');
 require_once(dirname(__FILE__) . '/classes/helper/HipayFormControl.php');

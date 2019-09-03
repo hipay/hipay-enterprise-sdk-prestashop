@@ -20,17 +20,25 @@ Cypress.Commands.add("selectItemAndGoToCart", (qty) => {
 
 Cypress.Commands.add("selectShirtItem", (qty) => {
     cy.selectItem(
-        '/index.php?id_product=1&id_product_attribute=1&rewrite=hummingbird-printed-t-shirt&controller=product#/1-taille-s/8-couleur-blanc',
+        '/index.php?id_product=1&rewrite=hummingbird-printed-t-shirt&controller=product#/1-taille-s/8-couleur-blanc',
         qty
     );
 });
 
 Cypress.Commands.add("selectMugItem", (qty) => {
     cy.selectItem(
-        '/index.php?id_product=6&id_product_attribute=0&rewrite=mug-the-best-is-yet-to-come&controller=product',
+        '/index.php?id_product=6&rewrite=mug-the-best-is-yet-to-come&controller=product',
         qty
     );
 });
+
+Cypress.Commands.add("selectVirtualItem", (qty) => {
+    cy.selectItem(
+        '/index.php?id_product=13&rewrite=illustration-vectorielle-ours-brun&controller=product',
+        qty
+    );
+});
+
 
 Cypress.Commands.add("selectItem", (url, qty) => {
 
@@ -65,6 +73,8 @@ Cypress.Commands.add("fillBillingForm", (country) => {
         cy.get('#customer-form input[name="firstname"]').type(customer.firstName);
         cy.get('#customer-form input[name="lastname"]').type(customer.lastName);
         cy.get('#customer-form input[name="email"]').type(customer.email);
+        cy.get("#customer-form input[name='psgdpr']").click();
+
         cy.get('#customer-form > .form-footer > .continue').click();
     });
 });
@@ -88,6 +98,8 @@ Cypress.Commands.add("fillShippingForm", (country) => {
         if (customer.state !== undefined) {
             cy.get('#billing_state').select(customer.state, {force: true});
         }
+
+
         cy.get('#delivery-address .form-footer > .continue').click();
     });
 });
@@ -151,4 +163,25 @@ Cypress.Commands.add("checkCaptureStatusMessage", () => {
 Cypress.Commands.add("checkRefundStatusMessage", () => {
     cy.get(".message-item").contains("Statut HiPay :124");
     cy.get("#id_order_state_chosen span").contains("Remboursement demandé (HiPay)");
+});
+
+/**
+ * Register account
+ */
+Cypress.Commands.add("register", (customerLang) => {
+    let customerFixture = "customerFR";
+
+    if(customerLang != undefined){
+        customerFixture = "customer" + customerLang;
+    }
+
+    cy.fixture(customerFixture).then((customer) => {
+        cy.visit("/index.php?controller=authentication&create_account=1");
+        cy.get("#customer-form input[name='firstname']").type(customer.firstName);
+        cy.get("#customer-form input[name='lastname']").type(customer.lastName);
+        cy.get("#customer-form input[name='email']").type(customer.email);
+        cy.get("#customer-form input[name='password']").type(customer.password);
+        cy.get("#customer-form input[name='psgdpr']").click();
+        cy.get("#customer-form button[data-link-action='save-customer']").click();
+    });
 });

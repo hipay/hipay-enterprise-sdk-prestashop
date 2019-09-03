@@ -75,6 +75,22 @@
             </div>
         {/if}
 
+        {if $config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_tokenjs_username_sandbox) || empty($config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox))}
+            <div class="row">
+                <div class="alert alert-warning">
+                    {l s='The API gateway is configured in TEST mode but your public test IDs are not filled in. Oneclick won\'t work until you fill in your public test IDs.' mod='hipay_enterprise'}
+                </div>
+            </div>
+        {/if}
+
+        {if !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.production.api_tokenjs_username_production) || empty($config_hipay.account.production.api_tokenjs_password_publickey_production))}
+            <div class="row">
+                <div class="alert alert-warning">
+                    {l s='The API gateway is configured in PRODUCTION mode but your public IDs are not filled in. Oneclick won\'t work until you fill in your public IDs.' mod='hipay_enterprise'}
+                </div>
+            </div>
+        {/if}
+
         {if empty($mappedCarriers) || empty($mappedCategories)}
             <div class="row">
                 <div class="alert alert-warning">
