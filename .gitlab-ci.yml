@@ -31,7 +31,7 @@ variables:
     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./bin/docker/conf/test/env
     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
-     - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/test/env
+    - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/test/env
   artifacts:
     paths:
       - bin/tests/errors
