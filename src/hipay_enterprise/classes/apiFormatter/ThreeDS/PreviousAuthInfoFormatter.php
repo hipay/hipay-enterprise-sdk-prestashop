@@ -47,10 +47,7 @@ class PreviousAuthInfoFormatter extends ApiFormatterAbstract
     protected function mapRequest(&$previousAuthInfo)
     {
         if (!$this->customer->is_guest) {
-            $lastOrder = $this->threeDSDB->getLastOrder($this->customer->id);
-            if($lastOrder){
-                $previousAuthInfo->transaction_reference = $this->threeDSDB->getTransactionReference($lastOrder);
-            }
+            $previousAuthInfo->transaction_reference = $this->threeDSDB->getLastTransactionReference($this->customer->id);
         }
     }
 }

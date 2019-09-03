@@ -85,27 +85,13 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
         return false;
     }
 
-    public function getLastOrder($customerId)
-    {
-        $sql = 'SELECT id_order, reference FROM `' . _DB_PREFIX_ . 'orders`' .
-            ' WHERE id_customer = ' . pSQL((int)$customerId) .
-            ' ORDER BY date_add DESC;';
-
-        $result = Db::getInstance()->getRow($sql);
-
-        if (isset($result)) {
-            return $result;
-        }
-
-        return false;
-
-    }
-
-    public function getTransactionReference($lastOrder)
+    public function getLastTransactionReference($customerId)
     {
         $sql = 'SELECT transaction_id FROM `' . _DB_PREFIX_ . 'order_payment`' .
-            ' WHERE order_reference = \'' . pSQL($lastOrder['reference']) . '\'' .
-            ' ORDER BY date_add ASC;';
+            ' JOIN `' . _DB_PREFIX_ . 'orders` o ON order_reference = o.id_order' .
+            ' WHERE id_customer = ' . pSQL((int)$customerId) .
+            ' AND transaction_id IS NOT NULL' .
+            ' ORDER BY o.date_add DESC;';
 
         $result = Db::getInstance()->getRow($sql);
 
@@ -117,8 +103,10 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
             }
             return $transactionId;
         } else {
-            $sql = 'SELECT transaction_ref FROM `' . _DB_PREFIX_ . 'hipay_transaction`' .
-                ' WHERE order_id = ' . pSQL((int)$lastOrder['id_order']) .
+            $sql = 'SELECT transaction_ref FROM `' . _DB_PREFIX_ . 'hipay_transaction` ht' .
+                ' JOIN `' . _DB_PREFIX_ . 'orders` o ON ht.order_id = o.id_order' .
+                ' WHERE id_customer = ' . pSQL((int)$customerId) .
+                ' AND transaction_ref IS NOT NULL' .
                 ' ORDER BY hp_id ASC;';
 
             $result = Db::getInstance()->getRow($sql);
