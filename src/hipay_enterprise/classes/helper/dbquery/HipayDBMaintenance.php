@@ -11,6 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
+
 require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
 
 /**
