@@ -442,7 +442,7 @@ describe('DSP2 field population', function () {
                     expect(request.account_info.payment.enrollment_date).to.eq("", "[account_info.payment.enrollment_date]");
                     //  -> Shipping
                     expect(request.account_info.shipping.shipping_used_date).to.eq("", "[account_info.shipping.shipping_used_date]");
-                    expect(request.account_info.shipping.name_indicator).to.eq("1", "[account_info.shipping.name_indicator]");
+                    expect(request.account_info.shipping.name_indicator).to.eq("", "[account_info.shipping.name_indicator]");
 
                     // Device Channel
                     expect(request.device_channel).to.eq("2", "[device_channel]");
@@ -525,7 +525,7 @@ describe('DSP2 field population', function () {
                     expect(request.account_info.payment.enrollment_date).to.eq("", "[account_info.payment.enrollment_date]");
                     //  -> Shipping
                     expect(request.account_info.shipping.shipping_used_date).to.eq("", "[account_info.shipping.shipping_used_date]");
-                    expect(request.account_info.shipping.name_indicator).to.eq("1", "[account_info.shipping.name_indicator]");
+                    expect(request.account_info.shipping.name_indicator).to.eq("", "[account_info.shipping.name_indicator]");
 
                     // Device Channel
                     expect(request.device_channel).to.eq("2", "[device_channel]");
