@@ -1,3 +1,9 @@
+# Version 2.8.1
+
+- Fix: Error message when opening an order on prestashop's admin panel
+- Fix: Maintenance requests errors when no wrapping selected
+- Fix: Challenge requests errors
+
 # Version 2.8.0
 
 - Added 3DSv2 handling

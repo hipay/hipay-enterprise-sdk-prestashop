@@ -1,12 +1,13 @@
 {
   "name": "Hipay Enterprise Prestashop", 
   "license": "Apache 2.0", 
-  "config": {
-    "vendor-dir": "lib/vendor"
+  "require-dev": {
+    "phpunit/phpunit": "5.6.1"
   }, 
   "require": {
     "hipay/hipay-fullservice-sdk-php": "^2.3.0"
   }, 
+  "version": "1.0.0", 
   "authors": [
     {
       "homepage": "http://www.hipay.com", 
@@ -14,9 +15,8 @@
       "email": "support.tpp@hipay.com"
     }
   ], 
-  "version": "1.0.0", 
-  "require-dev": {
-    "phpunit/phpunit": "5.6.1"
+  "config": {
+    "vendor-dir": "lib/vendor"
   }, 
   "description": "Hipay enterprise module for Prestashop"
 }
