@@ -10,7 +10,7 @@ Read the **[project documentation][doc-home]** for comprehensive information abo
 
 ## Latest package for installation/upgrade in Prestashop Module Management
 
-Download the package ZIP available in the folder "_package-ready-for-prestashop_" : [Download the package](package-ready-for-prestashop/hipayenterprise-2.0.0-beta.zip)
+Download the package ZIP available in the folder "_package-ready-for-prestashop_" : [Download the package](https://github.com/hipay/hipay-enterprise-sdk-prestashop/releases/latest)
 
 ## Resources
 - [Full project documentation][doc-home] — To have a comprehensive understanding of the workflow and get the installation procedure

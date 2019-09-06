@@ -80,8 +80,9 @@ casper.test.begin('Test manual capture', function (test) {
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Open order detail  ...", "INFO");
                 this.click("li#subtab-AdminParentOrders a");
+                this.click("li#subtab-AdminOrders a");
                 this.waitForSelector("table.order", function success() {
-                    this.click(x('//td[contains(., "' + order.getReference() + '")]'));
+                    this.click(x('//td[contains(., "' + order.getReference() + '")]/../td[12]/div/a'));
                     this.waitForUrl(/AdminOrders&id_order/, function success() {
                         test.info("Order tab is ready for capture");
                     }, function fail() {
@@ -154,8 +155,9 @@ casper.test.begin('Test manual capture', function (test) {
             this.waitForSelector("li#subtab-AdminOrders", function success() {
                 this.echo("Open order detail  ...", "INFO");
                 this.click("li#subtab-AdminParentOrders a");
+                this.click("li#subtab-AdminOrders a");
                 this.waitForSelector("table.order", function success() {
-                    this.click(x('//td[contains(., "' + order.getReference() + '")]'));
+                    this.click(x('//td[contains(., "' + order.getReference() + '")]/../td[12]/div/a'));
                     this.waitForUrl(/AdminOrders&id_order/, function success() {
                         test.info("Order tab is ready for capture");
                     }, function fail() {

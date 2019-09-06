@@ -86,7 +86,9 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         // Discount items
         if ($this->captureRefundWrapping) {
             $item = $this->getWrappingGoodItem();
-            $cart->addItem($item);
+            if ($item) {
+                $cart->addItem($item);
+            }
         }
 
         // Discount items
@@ -104,11 +106,16 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
     }
 
-    private function getWrappingGoodItem()
+    private
+    function getWrappingGoodItem()
     {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
 
         $originalWrapping = $this->getOriginalGood("wrapping");
+
+        if ($originalWrapping === null) {
+            return false;
+        }
 
         $item->__constructItem(
             null,
@@ -153,8 +160,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param type $good
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getGoodItem($product, $qty)
-    {
+    private
+    function getGoodItem(
+        $product,
+        $qty
+    ) {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $productFromCart = $this->cart->getProducts(true, (int)$product["product_id"])[0];
 
@@ -229,8 +239,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param $name
      * @return mixed
      */
-    private function getOriginalDiscount($name)
-    {
+    private
+    function getOriginalDiscount(
+        $name
+    ) {
         foreach ($this->originalHipayBasket as $key => $value) {
             if ($value["name"] == $name
                 && $value["type"] == 'discount') {
@@ -245,8 +257,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param $productReference
      * @return mixed
      */
-    private function getOriginalGood($productReference)
-    {
+    private
+    function getOriginalGood(
+        $productReference
+    ) {
         foreach ($this->originalHipayBasket as $key => $value) {
             if ($value["product_reference"] == $productReference) {
                 return $value;
@@ -258,7 +272,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * create a discount item from discount line informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getDiscountItem()
+    private
+    function getDiscountItem()
     {
         $product_reference = array();
         $name = array();
@@ -314,7 +329,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * create a Fees item from cart informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private function getFeesItem()
+    private
+    function getFeesItem()
     {
         $carrier = new Carrier($this->order->id_carrier);
         $delivery = new Address($this->order->id_address_delivery);
@@ -356,7 +372,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     /**
      * Get Total Amount
      */
-    public function getTotalAmount()
+    public
+    function getTotalAmount()
     {
         $amount = 0;
         if ($this->hipayCart == null) {

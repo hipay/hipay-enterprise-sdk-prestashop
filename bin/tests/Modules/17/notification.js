@@ -35,8 +35,9 @@ exports.checkOrderStatus = function checkOrderStatus(test, authorize, request, c
         this.waitForSelector("li#subtab-AdminOrders", function success() {
             this.echo("Checking status notifications in order ...", "INFO");
             this.click("li#subtab-AdminParentOrders a");
+            this.click("li#subtab-AdminOrders a");
             this.waitForSelector("table.order", function success() {
-                this.click(x('//td[contains(., "' + order.getReference() + '")]'));
+                this.click(x('//td[contains(., "' + order.getReference() + '")]/../td[12]/div/a'));
                 this.waitForUrl(/AdminOrders&id_order/, function success() {
                     checkHistoryByNotification(test, authorize, request, capture, partial);
                 }, function fail() {
