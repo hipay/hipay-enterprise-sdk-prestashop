@@ -11,6 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
+
 require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
 
 /**
@@ -300,8 +302,9 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getPaymentProductFromMessage($orderId)
     {
         $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
-            '` WHERE order_id=' . pSQL((int)$orderId) . ' AND status =' . TransactionStatus::AUTHORIZED . ' LIMIT 1;';
-
+            '` WHERE order_id=' . pSQL((int)$orderId) .
+            ' AND ( status =' . TransactionStatus::AUTHORIZED .' OR status =' . TransactionStatus::AUTHORIZED_AND_PENDING . ')  
+             LIMIT 1;';
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {
             return $result[0]["payment_product"];
