@@ -11,6 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+use PrestaShop\PrestaShop\Adapter\Entity\Order;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -115,6 +117,9 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Hash Algorithm for %s was already set with %s');
         $fake = $this->l('Hash Algorithm for %s has been syncrhonize with %s');
         $fake = $this->l('Hash Algorithm for %s has not been updated : You must filled credentials.');
+        $fake = $this->l('The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay\'s BackOffice');
+        $fake = $this->l('There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay\'s BackOffice');
+        $fake = $this->l('Message was : ');
 
     }
 
@@ -172,6 +177,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionAdminDeleteBefore');
         $return &= $this->registerHook('actionAdminBulKDeleteBefore');
         $return &= $this->registerHook('dashboardZoneOne');
+        $return &= $this->registerHook('actionOrderStatusUpdate');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -187,7 +193,8 @@ class Hipay_enterprise extends PaymentModule
         return $return && $this->installHook();
     }
 
-    public function installHook(){
+    public function installHook()
+    {
         $hook = new Hook();
         $hook->name = 'actionHipayApiRequest';
         $hook->title = 'HiPay API Request';
@@ -248,6 +255,42 @@ class Hipay_enterprise extends PaymentModule
             }
         }
         return true;
+    }
+
+    /**
+     * Changing order status
+     *
+     * @param array $params
+     */
+    public function hookActionOrderStatusUpdate($params)
+    {
+        /**
+         * @var OrderState $newOrderStatus
+         */
+        $newOrderStatus = $params['newOrderStatus'];
+        $idOrder = $params['id_order'];
+        $order = new Order($idOrder);
+
+        if ($newOrderStatus->id == Configuration::get('PS_OS_CANCELED') &&
+            ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
+            $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING'))) {
+            $maintenaceDBHelper = new HipayDBMaintenance($this);
+            try {
+                $transactionId = $maintenaceDBHelper->getTransactionReference($idOrder);
+            } catch (PrestaShopDatabaseException $e) {
+                $transactionId = "";
+            }
+
+            $apiHandler = new Apihandler($this, $this->context);
+            $cancelResult = $apiHandler->handleCancel(
+                array(
+                    "order" => $idOrder,
+                    "transaction_reference" => $transactionId,
+                    "operation" => \HiPay\Fullservice\Enum\Transaction\Operation::CANCEL
+                )
+            );
+
+        }
     }
 
     /**
@@ -409,7 +452,8 @@ class Hipay_enterprise extends PaymentModule
      * @param $params
      * @return mixed
      */
-    public function hookDashboardZoneOne($params){
+    public function hookDashboardZoneOne($params)
+    {
         return $this->hipayUpdateNotif->displayBlock();
     }
 

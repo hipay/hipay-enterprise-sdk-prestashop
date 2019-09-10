@@ -19,6 +19,9 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa118794cbb'] = 'L\'algorithme de hachage pour %s n\'a pas été mis à jour: Vous devez renseigner les informations d\'identification.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_18e7b66a010a007cf7bdd84dc94110eb'] = 'La transaction HiPay n\'a pas été annulée car il n\'y a pas de numéro de transaction. Vous pouvez consulter et directement annuler la transaction depuis le back-office HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0a85c9464c3fae8874b886e07393507'] = 'Une erreur est survenue lors de l\'annulation de la transaction HiPay. Vous pouvez consulter et directement annuler la transaction depuis le back-office HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e9a645f9920b7db55c62f023b89d34c5'] = 'Le message d\'erreur est : ';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';

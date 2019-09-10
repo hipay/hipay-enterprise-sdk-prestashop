@@ -30,9 +30,8 @@ class HipayOrderMessage
      * @param type $orderId
      * @param type $transaction
      */
-    public static function orderMessage($module, $orderId, $customerId, $transaction)
+    public static function orderMessage($module, $orderId, $customerId, $data)
     {
-        $data = HipayOrderMessage::formatOrderData($module, $transaction);
         HipayOrderMessage::addMessage($orderId, $customerId, $data);
     }
 
@@ -63,6 +62,26 @@ class HipayOrderMessage
         $message .= "\n";
         $message .= $module->l('Transaction ID: ') . $transaction->getTransactionReference() . "\n";
         $message .= $module->l('HiPay status: ') . $transaction->getStatus() . "\n";
+        if (Validate::isCleanHtml($message)) {
+            return $message;
+        }
+
+        return "Something went wrong";
+    }
+
+    /**
+     * format error data for order message
+     * @param $module
+     * @param string $message
+     * @param string $transactionReference
+     * @param string $transactionStatus
+     * @return string
+     */
+    public static function formatErrorOrderData($module, $message, $transactionReference, $transactionStatus)
+    {
+        $message .= "\n";
+        $message .= $module->l('Transaction ID: ') . $transactionReference . "\n";
+        $message .= $module->l('HiPay status: ') . $transactionStatus . "\n";
         if (Validate::isCleanHtml($message)) {
             return $message;
         }

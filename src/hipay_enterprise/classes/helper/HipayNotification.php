@@ -645,7 +645,8 @@ class HipayNotification
         );
 
         $this->dbMaintenance->setHipayTransaction($data);
-        HipayOrderMessage::orderMessage($this->module, $this->order->id, $this->order->id_customer, $this->transaction);
+        HipayOrderMessage::orderMessage($this->module, $this->order->id, $this->order->id_customer,
+            HipayOrderMessage::formatOrderData($this->module, $this->transaction));
     }
 
     /**
