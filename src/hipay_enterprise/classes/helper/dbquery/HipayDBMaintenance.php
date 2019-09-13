@@ -293,6 +293,23 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * return order transaction from hipay transaction
+     * @param $transaction_reference
+     */
+    public function getTransactionById($transaction_reference)
+    {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
+            '` WHERE transaction_ref="' . pSQL($transaction_reference) . '" LIMIT 1 ;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return $result[0];
+        }
+        return false;
+    }
+
+
+    /**
      * return order payment product from hipay transaction
      *
      * @param $orderId

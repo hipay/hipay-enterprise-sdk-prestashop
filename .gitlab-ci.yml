@@ -31,6 +31,10 @@ variables:
     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./bin/docker/conf/test/env
     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_API_MOTO_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_API_MOTO_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/test/env
+    - sed -i -e "s/{HIPAY_MOTO_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
+    - sed -i "s/$(echo {HIPAY_MOTO_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
     - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/test/env
   artifacts:
     paths:
@@ -182,6 +186,10 @@ deploy2recette:
      - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env16
      - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env17
      - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_API_MOTO_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_API_MOTO_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/acceptance/env
+     - sed -i -e "s/{HIPAY_MOTO_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/acceptance/env
+     - sed -i "s/$(echo {HIPAY_MOTO_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
      - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/acceptance/env
 
       # Substitute env variables which doesn't exists on the distant machine

@@ -640,7 +640,8 @@ class HipayNotification
             "authorization_code" => $this->transaction->getAuthorizationCode(),
             "basket" => $this->transaction->getBasket(),
             "attempt_create_multi_use" => (isset($customData["multiUse"]) && $customData["multiUse"]) ? 1 : 0,
-            "customer_id" => $this->order->id_customer
+            "customer_id" => $this->order->id_customer,
+            "eci" => $this->transaction->getEci()
         );
 
         $this->dbMaintenance->setHipayTransaction($data);

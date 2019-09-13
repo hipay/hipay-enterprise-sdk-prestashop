@@ -35,7 +35,6 @@ Cypress.Commands.add("resetProductionConfigForm", () => {
     cy.get('input[name="api_moto_secret_passphrase_production"]').clear({force: true});
 });
 
-
 /**
  *  Activate Payment Methods
  */
