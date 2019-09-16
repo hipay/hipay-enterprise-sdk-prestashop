@@ -180,10 +180,6 @@ class HipayNotification
                     $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
                     // set capture type on authorized
                     $this->setOrderCaptureType();
-                    $customData = $this->transaction->getCustomData();
-                    if (isset($customData["multiUse"]) && $customData["multiUse"]) {
-                        $this->saveCardToken();
-                    }
                     break;
                 case TransactionStatus::CAPTURED: //118
                 case TransactionStatus::CAPTURE_REQUESTED: //117
@@ -213,6 +209,16 @@ class HipayNotification
                     break;
             }
 
+            /*
+             * If 116 or 118, we save the token
+             */
+            if ($this->transaction->getStatus() === TransactionStatus::AUTHORIZED ||
+                $this->transaction->getStatus() === TransactionStatus::CAPTURED) {
+                $customData = $this->transaction->getCustomData();
+                if (isset($customData["multiUse"]) && $customData["multiUse"]) {
+                    $this->saveCardToken();
+                }
+            }
 
             $this->dbUtils->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
         } catch (Exception $e) {
