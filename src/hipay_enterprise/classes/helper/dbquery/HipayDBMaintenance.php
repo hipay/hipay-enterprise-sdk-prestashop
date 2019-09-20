@@ -293,6 +293,27 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * return true if cancel notification has ever been received for order
+     *
+     * @param $orderId
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
+    public function isTransactionCancelled($orderId)
+    {
+        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
+            '` WHERE order_id=' . pSQL((int)$orderId) .
+            ' AND ( status =' . TransactionStatus::CANCELLED . ') LIMIT 1 ;';
+
+        $result = Db::getInstance()->executeS($sql);
+        if (!empty($result)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * return order transaction from hipay transaction
      * @param $transaction_reference
      */
@@ -307,28 +328,6 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
         }
         return false;
     }
-
-
-    /**
-     * return order transaction from hipay transaction
-     *
-     * @param $orderId
-     * @return bool
-     * @throws PrestaShopDatabaseException
-     */
-    public function getTransaction($orderId)
-    {
-        $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
-            '` WHERE order_id=' . pSQL((int)$orderId) . ' AND ( status =' . TransactionStatus::AUTHORIZED . ' 
-                OR status =' . TransactionStatus::AUTHORIZED_AND_PENDING . ') LIMIT 1 ;';
-
-        $result = Db::getInstance()->executeS($sql);
-        if (!empty($result)) {
-            return $result[0];
-        }
-        return false;
-    }
-
 
     /**
      * return order payment product from hipay transaction

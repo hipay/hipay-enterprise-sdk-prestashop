@@ -56,6 +56,12 @@ class HipayOrderMessage
                     $transaction->getRefundedAmount() .
                     "\n";
                 break;
+            case 175: //175
+                $message .= $module->l('Transaction cancellation requested') . "\n";
+                break;
+            case TransactionStatus::CANCELLED: //115
+                $message .= $module->l('Transaction cancelled') . "\n";
+                break;
         }
 
         $message .= $module->l('Order total amount :') . $transaction->getAuthorizedAmount() . "\n";

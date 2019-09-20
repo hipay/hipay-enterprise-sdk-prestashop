@@ -11,8 +11,6 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-use PrestaShop\PrestaShop\Adapter\Entity\Order;
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -118,8 +116,10 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Hash Algorithm for %s has been syncrhonize with %s');
         $fake = $this->l('Hash Algorithm for %s has not been updated : You must filled credentials.');
         $fake = $this->l('The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay\'s BackOffice');
+        $fake = $this->l('The HiPay transaction was not canceled because it\'s status doesn\'t allow cancellation. You can see and cancel the transaction directly from HiPay\'s BackOffice');
         $fake = $this->l('There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay\'s BackOffice');
         $fake = $this->l('Message was : ');
+        $fake = $this->l('Transaction cancellation requested');
 
     }
 
@@ -269,11 +269,9 @@ class Hipay_enterprise extends PaymentModule
          */
         $newOrderStatus = $params['newOrderStatus'];
         $idOrder = $params['id_order'];
-        $order = new Order($idOrder);
+        $order = new OrderCore($idOrder);
 
-        if ($newOrderStatus->id == Configuration::get('PS_OS_CANCELED') &&
-            ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
-            $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING'))) {
+        if ($newOrderStatus->id == Configuration::get('PS_OS_CANCELED')) {
             $maintenaceDBHelper = new HipayDBMaintenance($this);
             try {
                 $transactionId = $maintenaceDBHelper->getTransactionReference($idOrder);

@@ -173,7 +173,7 @@ class HiPayOrderStatus
                     'module_name' => $module->name,
                     'send_email' => false,
                 ),
-                "name_FR" => "Capture demmandé (HiPay)",
+                "name_FR" => "Capture demandée (HiPay)",
                 "name_EN" => "Capture requested (HiPay)",
             ),
             "HIPAY_OS_CAPTURED" => array(
