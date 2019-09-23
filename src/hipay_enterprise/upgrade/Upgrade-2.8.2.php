@@ -21,6 +21,15 @@ function upgrade_module_2_8_2($module)
 
     try {
         $log->logInfos('Upgrade Hipay transaction table');
+        $sql = "ALTER TABLE " . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . " ADD attempt_create_multi_use INT(10)";
+        Db::getInstance()->execute($sql);
+
+        $sql = "ALTER TABLE " . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . " ADD customer_id INT(10)";
+        Db::getInstance()->execute($sql);
+
+        $sql = "ALTER TABLE " . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . " ADD auth_info_method VARCHAR(2)";
+        Db::getInstance()->execute($sql);
+
         $sql = "ALTER TABLE " . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . " ADD eci VARCHAR(3)";
         Db::getInstance()->execute($sql);
 
