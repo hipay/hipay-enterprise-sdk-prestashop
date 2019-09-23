@@ -240,7 +240,7 @@ class Apihandler
                                 try {
                                     $result = ApiCaller::requestMaintenance($this->module, $params);
 
-                                    if (!in_array($result->getStatus(), array(175, TransactionStatus::CANCELLED))) {
+                                    if (!in_array($result->getStatus(), array(TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED, TransactionStatus::CANCELLED))) {
                                         $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
                                         $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)";
                                         $status = $result->getStatus();

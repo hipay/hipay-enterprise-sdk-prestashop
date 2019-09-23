@@ -303,7 +303,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     {
         $sql = 'SELECT * FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
             '` WHERE order_id=' . pSQL((int)$orderId) .
-            ' AND ( status =' . TransactionStatus::CANCELLED . ') LIMIT 1 ;';
+            ' AND ( status IN (' . TransactionStatus::CANCELLED . ', ' . TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED . ')) LIMIT 1 ;';
 
         $result = Db::getInstance()->executeS($sql);
         if (!empty($result)) {

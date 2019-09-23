@@ -173,6 +173,7 @@ class HipayNotification
                 case TransactionStatus::EXPIRED:
                     $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED', null, null, 1));
                     break;
+                case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
                 case TransactionStatus::CANCELLED:
                     $this->updateOrderStatus(_PS_OS_CANCELED_);
                     break;
