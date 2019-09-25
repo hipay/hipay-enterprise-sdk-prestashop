@@ -1,3 +1,9 @@
+# Version 2.8.2
+
+- Fix: Missing BDD upgrade script (refund and capture not working)
+- Fix: MO/TO credentials retrieval
+- Fix: Save oneclick cards on 116 and 118 notification
+
 # Version 2.8.1
 
 - Fix: Error message when opening an order on prestashop's admin panel
