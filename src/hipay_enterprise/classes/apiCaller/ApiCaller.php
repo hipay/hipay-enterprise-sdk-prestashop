@@ -158,8 +158,11 @@ class ApiCaller
     public static function requestMaintenance($moduleInstance, $params)
     {
         try {
+            $hipayDBMaintenance = new HipayDBMaintenance($moduleInstance);
+            $transaction = $hipayDBMaintenance->getTransactionById($params["transaction_reference"]);
+
             //Create your gateway client
-            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, (\HiPay\Fullservice\Enum\Transaction\ECI::MOTO == $transaction['eci']));
 
             //Manage maintenance data local storage
             $maintenanceData = new HipayMaintenanceData($moduleInstance);
