@@ -99,8 +99,7 @@ class HipayMaintenanceBlock
                 'refundStartedFromBo' => false,
                 'id_currency' => $this->order->id_currency,
                 'orderId' => $this->order->id,
-                'employeeId' => $this->context->employee->id,
-
+                'employeeId' => $this->context->employee->id
             )
         );
 

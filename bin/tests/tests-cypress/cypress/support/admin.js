@@ -58,6 +58,15 @@ Cypress.Commands.add("activateOneClick", (method) => {
 
 
 /**
+ *  Change capture mode
+ */
+Cypress.Commands.add("setCaptureMode", (mode) => {
+    cy.get('#capture_mode').select(mode);
+    cy.get('#panel-global-settings > form:nth-child(1) > div:nth-child(2) > button:nth-child(2)').click();
+});
+
+
+/**
  *  Activate Basket
  */
 Cypress.Commands.add("activateBasket", () => {

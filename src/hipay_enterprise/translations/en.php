@@ -19,6 +19,11 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'Hash Algorithm for %s was already set with %.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Hash Algorithm for %s has been syncrhonize with %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa118794cbb'] = 'Hash Algorithm for %s has not been updated : You must filled credentials';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_18e7b66a010a007cf7bdd84dc94110eb'] = 'The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay\'s BackOffice';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_f83cdc74fbdce5e140f31c4cf64afb96'] = 'The HiPay transaction was not canceled because it\'s status doesn\'t allow cancellation. You can see and cancel the transaction directly from HiPay\'s BackOffice';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0a85c9464c3fae8874b886e07393507'] = 'There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay\'s BackOffice';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e9a645f9920b7db55c62f023b89d34c5'] = 'Message was : ';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_4098bae6c4134130dabf2bb934c1c331'] = 'Transaction cancellation requested';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'You have to enable the SOAP extension on your server to install this module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Pay by credit card';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Pay by';
@@ -47,6 +52,8 @@ $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_058990c1e83284d157854bf34bb0309d'] = 'Refused payment for order %s';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Registered notification from HiPay about captured amount of	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_dcff891b1393af8c2f13bcb13307d6dc'] = 'Registered notification from HiPay about refunded amount of	';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_4098bae6c4134130dabf2bb934c1c331'] = 'Transaction cancellation requested';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_f2bd8afb82ef2e9a6ca19bfe415b8bce'] = 'Transaction cancelled';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_147b202e5d808b32bd8d1eaaa135a58e'] = 'Order total amount:';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_41683156a02a5458061f1ceff3a7b7e4'] = 'Transaction ID:	';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_cab7966508bf13075ade294cdf147b53'] = 'HiPay status:	';

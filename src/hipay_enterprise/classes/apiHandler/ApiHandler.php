@@ -23,6 +23,7 @@ require_once(dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
 use HiPay\Fullservice\Enum\Transaction\Operation;
+use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
 /**
  * Handle Hipay Api call
@@ -190,6 +191,12 @@ class Apihandler
         return $this->handleMaintenance(Operation::DENY_CHALLENGE, $params);
     }
 
+
+    public function handleCancel($params)
+    {
+        return $this->handleMaintenance(Operation::CANCEL, $params);
+    }
+
     /**
      * handle maintenance request
      *
@@ -217,6 +224,65 @@ class Apihandler
                     $params["operation"] = Operation::DENY_CHALLENGE;
                     ApiCaller::requestMaintenance($this->module, $params);
                     break;
+                case Operation::CANCEL:
+                    $params["operation"] = Operation::CANCEL;
+                    $displayMsg = null;
+                    $order = new Order($params['order']);
+
+                    if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
+                        $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING')) {
+                        if ($params['transaction_reference'] !== false) {
+                            $hipayDbMaintenance = new HipayDBMaintenance($this->module);
+
+                            // If current transaction status is cancelled, it means we are currently handling the 115 notification from HiPay,
+                            // and the transaction is already cancelled
+                            if (!$hipayDbMaintenance->isTransactionCancelled($order->id)) {
+                                try {
+                                    $result = ApiCaller::requestMaintenance($this->module, $params);
+
+                                    if (!in_array($result->getStatus(), array(TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED, TransactionStatus::CANCELLED))) {
+                                        $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
+                                        $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)";
+                                        $status = $result->getStatus();
+                                        $transactionRef = $result->getTransactionReference();
+                                    } else {
+                                        HipayOrderMessage::orderMessage($this->module, $order->id, $order->id_customer,
+                                            HipayOrderMessage::formatOrderData($this->module, $result));
+                                    }
+                                } catch (GatewayException $e) {
+                                    $errorMsg = array();
+                                    $transaction = $hipayDbMaintenance->getTransactionById($order->id);
+
+                                    preg_match("/\\[(.*)\\]/s", $e->getMessage(), $errorMsg);
+                                    $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
+                                    $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)\n";
+                                    $displayMsg .= $this->module->l("Message was : ") . preg_replace("/\r|\n/", "", $errorMsg[0]);
+
+                                    $transactionRef = $transaction['transaction_ref'];
+                                    $status = $transaction['status'];
+                                }
+                            }
+                        } else {
+                            $displayMsg = $this->module->l("The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay's BackOffice");
+                            $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)";
+
+                            $transactionRef = "";
+                            $status = "";
+                        }
+                    } else {
+                        $displayMsg = $this->module->l("The HiPay transaction was not canceled because it's status doesn't allow cancellation. You can see and cancel the transaction directly from HiPay's BackOffice");
+                        $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)";
+
+                        $transactionRef = "";
+                        $status = "";
+                    }
+
+                    if (!empty($displayMsg)) {
+                        HipayOrderMessage::orderMessage($this->module, $order->id, $order->id_customer,
+                            HipayOrderMessage::formatErrorOrderData($this->module, $displayMsg, $transactionRef, $status));
+                    }
+
+                    break;
                 default:
                     $this->module->getLogs()->logInfos("# Unknown maintenance operation");
             }
@@ -225,6 +291,7 @@ class Apihandler
             $errorMessage = $this->module->l('An error occured during request Maintenance.', 'capture');
             $this->context->cookie->__set('hipay_errors', $errorMessage);
             return false;
+        } catch (PrestaShopDatabaseException $e) {
         }
     }
 
