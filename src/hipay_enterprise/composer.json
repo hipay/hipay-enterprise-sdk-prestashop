@@ -5,9 +5,9 @@
     "phpunit/phpunit": "5.6.1"
   }, 
   "require": {
-    "hipay/hipay-fullservice-sdk-php": "^2.3.0"
+    "hipay/hipay-fullservice-sdk-php": "^2.5.0"
   }, 
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "authors": [
     {
       "homepage": "http://www.hipay.com", 

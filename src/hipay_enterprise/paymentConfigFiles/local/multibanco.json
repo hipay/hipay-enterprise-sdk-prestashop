@@ -1,0 +1,29 @@
+{
+  "name": "multibanco",
+  "config": {
+    "displayNameBO": "Multibanco",
+    "displayName":  {
+      "fr": "Multibanco",
+      "en": "Multibanco"
+    },
+    "frontPosition": 31,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries",
+      "orderExpirationTime"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "orderExpirationTime": 3,
+    "logo": "multibanco.png"
+  }
+}

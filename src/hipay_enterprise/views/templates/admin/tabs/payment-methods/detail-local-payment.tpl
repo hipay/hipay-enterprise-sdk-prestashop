@@ -131,6 +131,20 @@
                 </div>
             </div>
         {/if}
+        {if "orderExpirationTime"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Order expiration date' mod='hipay_enterprise'}</label>
+                    <div class="input-group col-lg-2">
+                        <select name="{$key}_orderExpirationTime">
+                            <option value="3" {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "3"}selected="selected"{/if}>3 jours</option>
+                            <option value="30" {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "30"}selected="selected"{/if}>30 jours</option>
+                            <option value="90" {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "90"}selected="selected"{/if}>90 jours</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {/if}
         {if $method["currencySelectorReadOnly"]}
             <div class="row">
                 <div class="form-group">
