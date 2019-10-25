@@ -32,6 +32,10 @@ class HipayConfig
     private $context;
     private $configHipay = array();
 
+    private static $_deprecatedMethods = array(
+        "webmoney-transfer"
+    );
+
     /**
      * HipayConfig constructor.
      * @param $module_instance
@@ -564,28 +568,31 @@ class HipayConfig
 
         if (preg_match('/(.*)\.json/', $file) == 1) {
             $json = Tools::jsonDecode(Tools::file_get_contents($this->jsonFilesPath . $folderName . $file), true);
-            $paymentMethod[$json["name"]] = $json["config"];
+            if (!in_array($json["name"], static::$_deprecatedMethods)) {
 
-            $sdkConfig = HiPay\Fullservice\Data\PaymentProduct\Collection::getItem($json["name"]);
+                $paymentMethod[$json["name"]] = $json["config"];
 
-            if ($sdkConfig !== null) {
-                $paymentMethod[$json["name"]] = array_merge($sdkConfig->toArray(), $paymentMethod[$json["name"]]);
+                $sdkConfig = HiPay\Fullservice\Data\PaymentProduct\Collection::getItem($json["name"]);
+
+                if ($sdkConfig !== null) {
+                    $paymentMethod[$json["name"]] = array_merge($sdkConfig->toArray(), $paymentMethod[$json["name"]]);
+                }
+
+                if (
+                    isset($paymentMethod[$json["name"]]["currencies"]) &&
+                    empty($paymentMethod[$json["name"]]["currencies"])
+                ) {
+                    $paymentMethod[$json["name"]]["currencies"] = $this->getActiveCurrencies();
+                }
+
+                if (
+                    isset($paymentMethod[$json["name"]]["countries"]) &&
+                    empty($paymentMethod[$json["name"]]["countries"])
+                ) {
+                    $paymentMethod[$json["name"]]["countries"] = $this->getActiveCountries();
+                }
+
             }
-
-            if (
-                isset($paymentMethod[$json["name"]]["currencies"]) &&
-                empty($paymentMethod[$json["name"]]["currencies"])
-            ) {
-                $paymentMethod[$json["name"]]["currencies"] = $this->getActiveCurrencies();
-            }
-
-            if (
-                isset($paymentMethod[$json["name"]]["countries"]) &&
-                empty($paymentMethod[$json["name"]]["countries"])
-            ) {
-                $paymentMethod[$json["name"]]["countries"] = $this->getActiveCountries();
-            }
-
         }
 
         return $paymentMethod;

@@ -19,10 +19,6 @@ function upgrade_module_2_8_3($module)
 
     $log->logInfos("Upgrade to 2.8.3");
 
-    if(file_exists(dirname(__FILE__) . '/../paymentConfigFiles/local/webmoney.json')){
-        unlink(dirname(__FILE__) . '/../paymentConfigFiles/local/webmoney.json');
-    }
-
     try {
         $keepParameters = array(
             "visa" => array(
