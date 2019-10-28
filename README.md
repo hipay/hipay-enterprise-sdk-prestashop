@@ -57,7 +57,6 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 - Przelewy24
 - Sisal
 - Sofort Überweisung
-- WebMoney Transfer
 - Yandex Money
 - AstroPay: Aura, Banamex, Banco Do Brazil, BBVA Bancomer, Boleto Bancario, Bradesco, Caïxa, Itau, Oxxo, Santander Cash, Santander HomeBanking
 
