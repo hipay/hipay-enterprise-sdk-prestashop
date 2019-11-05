@@ -11,14 +11,14 @@ PS_DEV_MODE=0
 PS_FOLDER_ADMIN=admin-hipay
 PS_FOLDER_INSTALL=installOLD
 PS_HANDLE_DYNAMIC_DOMAIN=0
-DB_SERVER={DB_HOST}
+DB_SERVER=database
 DB_USER=root
 DB_PASSWD=admin
 
 #====================================================
 # Configuration for mysql container
 #=====================================================
-MYSQL_HOST={DB_HOST}
+MYSQL_HOST=database
 MYSQL_ROOT_PASSWORD=admin
 
 #====================================================
