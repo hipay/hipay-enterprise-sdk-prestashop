@@ -186,6 +186,10 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->basket = $this->params["basket"];
         $order->delivery_information = $this->params["delivery_informations"];
         $order->authentication_indicator = $this->params["authentication_indicator"];
+
+        if(isset($this->params["paymentProduct"]['orderExpirationTime'])) {
+            $order->expiration_limit = $this->params["paymentProduct"]['orderExpirationTime'];
+        }
     }
 
     /**
