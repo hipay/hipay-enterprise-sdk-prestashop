@@ -1,3 +1,7 @@
+# Version 2.9.0
+
+- **New**: Add Multibanco support
+
 # Version 2.8.2
 
 - Fix: Missing BDD upgrade script (refund and capture not working)
