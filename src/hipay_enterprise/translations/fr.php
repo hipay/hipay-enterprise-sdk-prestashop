@@ -19,6 +19,11 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_85640588e13fe53dd5601fa118794cbb'] = 'L\'algorithme de hachage pour %s n\'a pas été mis à jour: Vous devez renseigner les informations d\'identification.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_18e7b66a010a007cf7bdd84dc94110eb'] = 'La transaction HiPay n\'a pas été annulée car il n\'y a pas de numéro de transaction. Vous pouvez consulter et directement annuler la transaction depuis le back-office HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_f83cdc74fbdce5e140f31c4cf64afb96'] = 'La transaction HiPay n\'a pas été annulée car son statut ne le permet pas. Vous pouvez consulter et directement annuler la transaction depuis le back-office HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0a85c9464c3fae8874b886e07393507'] = 'Une erreur est survenue lors de l\'annulation de la transaction HiPay. Vous pouvez consulter et directement annuler la transaction depuis le back-office HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e9a645f9920b7db55c62f023b89d34c5'] = 'Le message d\'erreur est : ';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_4098bae6c4134130dabf2bb934c1c331'] = 'Annulation de la transaction demandée';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
@@ -47,6 +52,8 @@ $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_3e47effda726a2571c6f8ea7b3bf9f73'] = 'Notification enregistrée envoyée par HiPay concernant un montant capturé de';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_dcff891b1393af8c2f13bcb13307d6dc'] = 'Notification enregistrée envoyée par HiPay concernant un montant remboursé de ';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_4098bae6c4134130dabf2bb934c1c331'] = 'Annulation de la transaction demandée';
+$_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_f2bd8afb82ef2e9a6ca19bfe415b8bce'] = 'Transaction annulée';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_147b202e5d808b32bd8d1eaaa135a58e'] = 'Montant total de la commande :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_41683156a02a5458061f1ceff3a7b7e4'] = 'ID de la transaction :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_cab7966508bf13075ade294cdf147b53'] = 'Statut HiPay :';
@@ -488,6 +495,10 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b4bc22cc77824a64935
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_a025e05161bb17cbab898f0e77b09a2b'] = 'Iframe';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b16854ceee6fb9499c2ad3aac40d539e'] = 'Montant de commande minimum';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_abcac9aebb2505b3cf76c42e1bfbe8f7'] = 'Montant de commande maximum';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_999009378d302fc9172934a0f50c26cc'] = 'Délai d\'expiration de la commande';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_45fe0d3293152fa29cf10ef8a3c1871d'] = '3 jours';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_947d8520f04473da621f2718138f3bc6'] = '30 jours';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_ed0c9b5fb2f44a77915d0ce45d0c501c'] = '90 jours';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_fa31b6e88cdc95eab570d83db23e2c3d'] = 'Devises activées';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_4107daf5746a644e08bca169bf6eba65'] = 'Cette devise n\'est pas activée dans votre boutique PrestaShop .';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_9e0bb754171ca97e4fb8e0dd8ccdef64'] = 'Pays activés';

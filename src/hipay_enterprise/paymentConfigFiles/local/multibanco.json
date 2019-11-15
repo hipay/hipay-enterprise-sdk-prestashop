@@ -1,18 +1,19 @@
 {
-  "name": "webmoney-transfer",
+  "name": "multibanco",
   "config": {
-    "displayNameBO": "WebMoney Transfer",
+    "displayNameBO": "Multibanco",
     "displayName":  {
-      "fr": "WebMoney Transfer",
-      "en": "WebMoney Transfer"
+      "fr": "Multibanco",
+      "en": "Multibanco"
     },
-    "frontPosition": 29,
+    "frontPosition": 31,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
       "minAmount",
       "maxAmount",
-      "countries"
+      "countries",
+      "orderExpirationTime"
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
@@ -22,6 +23,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "webmoney.png"
+    "orderExpirationTime": 3,
+    "logo": "multibanco.png"
   }
 }

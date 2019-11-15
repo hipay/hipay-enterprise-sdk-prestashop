@@ -47,12 +47,39 @@ Cypress.Commands.add("activateLocalPaymentMethods", (method) => {
     cy.get('#local_payment_form > .panel-footer > .col-md-12 > .pull-right').click();
 });
 
+Cypress.Commands.add("configurePaymentMethods", (method, option, value) => {
+    cy.get('*[name="' + method + '_' + option + '"]').then(($input) => {
+        if($input.is('input')){
+            if($input.type='checkbox'){
+                if ($input.attr('checked') !== value) {
+                    cy.wrap($input).click({force: true});
+                }
+            } else {
+                cy.wrap($input).clear({force: true}).type(value, {force: true});
+            }
+        } else if($input.is('select')) {
+            cy.wrap($input).select(value, {force: true});
+        }
+    });
+    cy.get('#local_payment_form > .panel-footer > .col-md-12 > .pull-right').click();
+});
+
+
 Cypress.Commands.add("activateOneClick", (method) => {
     cy.get('#card_token_switchmode_on').then(($input) => {
         if ($input.attr('checked') === undefined) {
             $input.click();
         }
     });
+    cy.get('#panel-global-settings > form:nth-child(1) > div:nth-child(2) > button:nth-child(2)').click();
+});
+
+
+/**
+ *  Change capture mode
+ */
+Cypress.Commands.add("setCaptureMode", (mode) => {
+    cy.get('#capture_mode').select(mode);
     cy.get('#panel-global-settings > form:nth-child(1) > div:nth-child(2) > button:nth-child(2)').click();
 });
 
@@ -75,6 +102,20 @@ Cypress.Commands.add("importCountry", (country) => {
     cy.get("#import_localization_pack_iso_localization_pack").select(country, {force: true});
     cy.get("form[name='import_localization_pack'] .card-footer .btn").click();
 });
+
+Cypress.Commands.add("activateCountry", (country) => {
+    cy.visit('/admin-hipay/index.php?controller=AdminCountries&id_country=' + country + '&updatecountry=1');
+    cy.get('.btn-continue').click();
+
+    cy.get('#active_on').then(($input) => {
+        if ($input.attr('checked') === undefined) {
+            $input.click();
+        }
+
+        cy.get("#country_form_submit_btn").click();
+    });
+});
+
 
 /**
  *  Connect and go to detail of an order
