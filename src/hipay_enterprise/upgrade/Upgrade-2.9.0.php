@@ -13,11 +13,11 @@
 
 require_once(dirname(__FILE__) . '/../classes/helper/HipayDBQuery.php');
 
-function upgrade_module_2_8_3($module)
+function upgrade_module_2_9_0($module)
 {
     $log = $module->getLogs();
 
-    $log->logInfos("Upgrade to 2.8.3");
+    $log->logInfos("Upgrade to 2.9.0");
 
     try {
         $keepParameters = array(
@@ -312,6 +312,13 @@ function upgrade_module_2_8_3($module)
                 "activated" => ""
             ),
             "mybank" => array(
+                "displayName" => "",
+                "frontPosition" => "",
+                "minAmount" => "",
+                "maxAmount" => "",
+                "activated" => ""
+            ),
+            "multibanco" => array(
                 "displayName" => "",
                 "frontPosition" => "",
                 "minAmount" => "",
