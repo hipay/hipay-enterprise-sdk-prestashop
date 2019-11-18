@@ -658,6 +658,20 @@ class HipayHelper
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
     }
 
+    public static function duplicateCart()
+    {
+        $context = Context::getContext();
+        $cart = new Cart($context->cookie->id_cart);
+        $duplication = $cart->duplicate();
+
+        if($duplication['success']) {
+            $context->cookie->id_cart = $duplication['cart']->id;
+        }
+        $context->cookie->write();
+        $context->cookie->update();
+        return true;
+    }
+
     /**
      * sorting function for payment products
      * @param type $a
