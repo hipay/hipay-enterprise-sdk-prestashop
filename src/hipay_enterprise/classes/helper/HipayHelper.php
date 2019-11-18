@@ -658,6 +658,10 @@ class HipayHelper
         return Tools::redirect('index.php?controller=order-confirmation&' . $params);
     }
 
+    /**
+     * Duplicates cart when payment is declined, so prestashop will keep the customer's cart alive
+     * @return bool
+     */
     public static function duplicateCart()
     {
         $context = Context::getContext();
@@ -666,10 +670,12 @@ class HipayHelper
 
         if($duplication['success']) {
             $context->cookie->id_cart = $duplication['cart']->id;
+            $context->cookie->write();
+            $context->cookie->update();
+            return true;
         }
-        $context->cookie->write();
-        $context->cookie->update();
-        return true;
+
+        return false;
     }
 
     /**
