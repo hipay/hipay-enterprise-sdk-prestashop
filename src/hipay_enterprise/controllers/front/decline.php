@@ -37,6 +37,8 @@ class Hipay_enterpriseDeclineModuleFrontController extends ModuleFrontController
 
         if (!(bool)$this->module->hipayConfigTool->getPaymentGlobal()["regenerate_cart_on_decline"]) {
             HipayHelper::unsetCart();
+        } else {
+            HipayHelper::duplicateCart();
         }
 
         $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
