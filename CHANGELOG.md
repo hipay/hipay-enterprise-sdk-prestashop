@@ -1,3 +1,7 @@
+# Version 2.9.2
+
+- **Fix**: Password and account changing date on DSP2
+
 # Version 2.9.1
 
 - **Fix**: Basket saving on payment failure

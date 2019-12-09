@@ -66,9 +66,15 @@ class AccountInfoFormatter extends ApiFormatterAbstract
         $customerInfo = new CustomerInfo();
 
         if (!$this->customer->is_guest) {
-            $customerInfo->account_change = (int)(date('Ymd', strtotime($this->customer->date_upd)));
             $customerInfo->opening_account_date = (int)(date('Ymd', strtotime($this->customer->date_add)));
-            $customerInfo->password_change = (int)(date('Ymd', strtotime($this->customer->last_passwd_gen)));
+
+            $accountChange = ($this->customer->date_upd && strtotime($this->customer->date_upd) > strtotime($this->customer->date_add)) ?
+                $this->customer->date_upd : $this->customer->date_add;
+            $customerInfo->account_change = (int)(date('Ymd', strtotime($accountChange)));
+
+            $passwordChange = ($this->customer->last_passwd_gen && strtotime($this->customer->last_passwd_gen) > strtotime($this->customer->date_add)) ?
+                $this->customer->last_passwd_gen : $this->customer->date_add;
+            $customerInfo->password_change = (int)(date('Ymd', strtotime($passwordChange)));
         }
 
         return $customerInfo;
