@@ -4,7 +4,7 @@ Hipay custom data helper
 Add custom data
 -------------------
 
-1. Copy the "HipayEnterpriseHelperCustomData.php" file at the roof of the "hipay_enterprise/classes/helper" folder
+1. Copy the "HipayEnterpriseHelperCustomData.php" file at the roof of the "hipay_enterprise/classes/" folder
 2. Add new rows to the **$customData** array
 
 ```php
