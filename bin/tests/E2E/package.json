@@ -1,0 +1,20 @@
+{
+  "name": "tests-codecept-gherkin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "codeceptjs": "^2.4.1",
+    "puppeteer": "^2.0.0",
+    "@codeceptjs/ui": "^0.2.5"
+  },
+  "dependencies": {
+    "@hipay/hipay-cypress-utils": "^1.1.7"
+  }
+}
