@@ -1,7 +1,8 @@
 {
   "firstName": "Didier",
   "lastName": "Denis",
-  "email": "d.denis@hipay.com",
+  "registeredEmail": "pi-autotest-logged@hipay.com",
+  "email": "pi-autotest-guest@hipay.com",
   "streetAddress": "10 rue Cornulier",
   "city": "Nantes",
   "zipCode": "44000",

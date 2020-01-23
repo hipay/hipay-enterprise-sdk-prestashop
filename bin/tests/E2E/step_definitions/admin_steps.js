@@ -1,5 +1,3 @@
-const urlModule = require('url');
-const querystring = require('querystring');
 const fs = require('fs');
 
 const { I } = inject();
@@ -19,17 +17,27 @@ Given('Je veux payer en mode {string}', async (paymentMode) => {
 
     I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
 
-    I.clickIfVisible('a.btn-continue');
+    I.click('a.btn-continue');
 
     I.click('//a[@href="#payment_form"]');
     I.selectOption('#operating_mode', opModes[paymentMode]);
     I.click('//button[@name="submitGlobalPaymentMethods"]');
 });
 
+Given('Je veux activer le One-click', () => {
+    I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
+
+    I.click('a.btn-continue');
+
+    I.click('//a[@href="#payment_form"]');
+    I.click('//label[@for="card_token_switchmode_on"]');
+    I.click('//button[@name="submitGlobalPaymentMethods"]');
+});
+
 Given('Je veux payer en carte {string}', async (paymentMethod) => {
     I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
 
-    I.clickIfVisible('a.btn-continue');
+    I.click('a.btn-continue');
 
     I.click('//a[@href="#payment_form"]');
     I.click('//a[@href="#' + paymentMethod.toLowerCase() + '"]');
@@ -37,17 +45,52 @@ Given('Je veux payer en carte {string}', async (paymentMethod) => {
     I.click('//button[@name="creditCardSubmit"]');
 });
 
-When('J\'ouvre la commande {string}', async (varName) => {
-    let orderId = await I.getValue(varName);
-    orderId = orderId.lastOrderId;
-    I.amOnPage('/admin-hipay/index.php?controller=AdminOrders&id_order=' + orderId + '&vieworder');
-    I.clickIfVisible('a.btn-continue');
+Given('Je veux payer avec le mode de paiement {string}', (paymentMethod) => {
+    I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
+
+    I.click('a.btn-continue');
+
+    I.click('//a[@href="#payment_form"]');
+    I.click('//a[@href="#' + paymentMethod.toLowerCase() + '"]');
+    I.click('//label[@for="' + paymentMethod.toLowerCase() + '_activated_on"]');
+    I.fillField('//input[@name="' + paymentMethod.toLowerCase() + '_minAmount[EUR]"]', '0');
+    I.clearField('//input[@name="' + paymentMethod.toLowerCase() + '_maxAmount[EUR]"]');
+
+    I.click('//button[@name="localPaymentSubmit"]');
 });
 
-Then('La notification {string} est reçue', (notifCode) => {
-    I.see(notifCode, '.message-item-text');
+Given("J'active le 3DS {string}", (mode) => {
+    I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
+
+    I.click('a.btn-continue');
+    I.click('//a[@href="#payment_form"]');
+
+    I.selectOption('#activate_3d_secure', mode);
+    I.click('//button[@name="submitGlobalPaymentMethods"]');
 });
 
-Then('La commande est à l\'état {string}', (statusText) => {
-    I.see(statusText, '#id_order_state_chosen a.chosen-single span');
+
+Given('Je supprime tous les comptes utilisateurs', async () => {
+    I.amOnPage('/admin-hipay/index.php/sell/customers/');
+    I.click('a.btn-outline-danger');
+
+    const customerExists = await I.checkIfVisible('#customer_id_customer');
+    if (customerExists) {
+        I.click('//input[@id="customer_grid_bulk_action_select_all"]/../../label');
+        I.click('//button[contains(text(), "Actions groupées")]');
+        I.click('#customer_grid_bulk_action_delete_selection');
+        I.click('//div[@id="customer_grid_delete_customers_modal"]//button[contains(text(), "Supprimer")]');
+    }
+});
+
+Given('Je veux payer en capture {string}', (captureMode) => {
+    let captureModeList = JSON.parse(fs.readFileSync('./fixtures/enum/CaptureMode.json', 'utf8'));
+
+    I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
+
+    I.click('a.btn-continue');
+
+    I.click('//a[@href="#payment_form"]');
+    I.selectOption('#capture_mode', captureModeList[captureMode]);
+    I.click('//button[@name="submitGlobalPaymentMethods"]');
 });

@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@codeceptjs/ui": "^0.2.5",
+    "@wdio/selenium-standalone-service": "^5.16.10",
     "codeceptjs": "^2.4.1",
-    "puppeteer": "^2.0.0",
-    "@codeceptjs/ui": "^0.2.5"
+    "nightmare": "^3.0.2",
+    "puppeteer": "^2.0.0"
   },
   "dependencies": {
     "@hipay/hipay-cypress-utils": "^1.1.7"
