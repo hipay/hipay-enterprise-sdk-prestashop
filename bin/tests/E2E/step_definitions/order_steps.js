@@ -20,6 +20,8 @@ When('Je capture partiellement {string} objets la commande', (nObj) => {
     I.selectOption('#hipay_capture_type', captureStyle);
     I.fillField('#good-selector-1', nObj);
 
+    I.wait(1);
+
     I.click('//button[@name="hipay_capture_basket_submit"]');
     I.acceptPopup();
 });

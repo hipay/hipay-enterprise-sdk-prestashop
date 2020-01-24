@@ -3,6 +3,14 @@ let Helper = codecept_helper;
 const assert = require('assert');
 
 class MyHelper extends Helper {
+    async clickSlider(selector, ...options) {
+        const { page } = this.helpers.Puppeteer;
+        await page.waitForSelector(selector);
+
+        await page.evaluate((selector) => {
+            document.querySelector(selector).click();
+        }, selector);
+    }
 
     async fillFieldInIFrame(iFrameSelector, fieldSelector, value, ...options) {
         const { page } = this.helpers.Puppeteer;

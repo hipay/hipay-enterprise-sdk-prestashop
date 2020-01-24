@@ -4,7 +4,7 @@ exports.config = {
         Puppeteer: {
             url: 'http://localhost:8087',
             browser: 'chrome',
-            show: true,
+            show: false,
             waitForNavigation: ['domcontentloaded', 'networkidle0'],
             chrome: {
                 args: [
@@ -42,7 +42,8 @@ exports.config = {
             './step_definitions/payment_steps.js',
             './step_definitions/order_steps.js',
             './node_modules/@hipay/hipay-cypress-utils/step_definitions/bo_hipay_steps.js',
-            './node_modules/@hipay/hipay-cypress-utils/step_definitions/paypal_payment_steps.js'
+            './node_modules/@hipay/hipay-cypress-utils/step_definitions/paypal_payment_steps.js',
+            './node_modules/@hipay/hipay-cypress-utils/step_definitions/utilities_steps.js'
         ]
     },
     plugins: {

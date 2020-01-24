@@ -41,18 +41,22 @@ Given('Je veux payer en carte {string}', async (paymentMethod) => {
 
     I.click('//a[@href="#payment_form"]');
     I.click('//a[@href="#' + paymentMethod.toLowerCase() + '"]');
-    I.click('//label[@for="' + paymentMethod.toLowerCase() + '_activated_on"]');
+
+    await I.clickSlider('label[for="' + paymentMethod.toLowerCase() + '_activated_on"]');
+
     I.click('//button[@name="creditCardSubmit"]');
 });
 
-Given('Je veux payer avec le mode de paiement {string}', (paymentMethod) => {
+Given('Je veux payer avec le mode de paiement {string}', async (paymentMethod) => {
     I.amOnPage('/admin-hipay/index.php?controller=AdminModules&configure=hipay_enterprise');
 
     I.click('a.btn-continue');
 
     I.click('//a[@href="#payment_form"]');
     I.click('//a[@href="#' + paymentMethod.toLowerCase() + '"]');
-    I.click('//label[@for="' + paymentMethod.toLowerCase() + '_activated_on"]');
+
+    await I.clickSlider('label[for="' + paymentMethod.toLowerCase() + '_activated_on"]');
+
     I.fillField('//input[@name="' + paymentMethod.toLowerCase() + '_minAmount[EUR]"]', '0');
     I.clearField('//input[@name="' + paymentMethod.toLowerCase() + '_maxAmount[EUR]"]');
 
