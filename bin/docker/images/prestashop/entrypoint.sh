@@ -65,7 +65,11 @@ if [ ! -f /var/www/html/prestashopConsole.phar ];then
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    ./prestashopConsole.phar module:install hipay_enterprise
+    if [[ "$PS_VERSION" == *"1.7"* ]]; then
+        bin/console prestashop:module install hipay_enterprise
+    else
+        ./prestashopConsole.phar module:install hipay_enterprise
+    fi
 
     # Configure module credentials
     # Installation  HiPay's module
