@@ -103,6 +103,7 @@ services:
 build-prestashop16:
   stage: build
   when: manual
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
   script:
     - docker build -f bin/docker/images/prestashop/Dockerfile16 . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web16:${CI_COMMIT_REF_SLUG}
     - /tools/auth-as-end-user.sh
@@ -116,6 +117,7 @@ build-prestashop16:
 build-prestashop17:
   stage: build
   when: manual
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
   script:
     - docker build -f bin/docker/images/prestashop/Dockerfile17 . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web17:${CI_COMMIT_REF_SLUG}
     - /tools/auth-as-end-user.sh
