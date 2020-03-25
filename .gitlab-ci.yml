@@ -151,9 +151,9 @@ deploy2recette-prestashop16:
       --set hipay_tokenjs_username_test="$HIPAY_TOKENJS_USERNAME_RE7"
       --set hipay_tokenjs_publickey_test="$HIPAY_TOKENJS_PUBLICKEY_RE7"
       --set hipay_secret_passphrase_test="$HIPAY_SECRET_PASSPHRASE_RE7"
-      --set hipay_api_moto_user_test="$HIPAY_API_USER_TEST"
-      --set hipay_api_moto_password_test="$HIPAY_API_PASSWORD_TEST"
-      --set hipay_moto_secret_passphrase_test="$HIPAY_SECRET_PASSPHRASE_TEST"
+      --set hipay_api_moto_user_test=""
+      --set hipay_api_moto_password_test=""
+      --set hipay_moto_secret_passphrase_test=""
       --set pi_data_url="$PI_CI_DATA_URL"
     - /tools/logout-end-user.sh
   allow_failure: true
