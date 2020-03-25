@@ -50,6 +50,8 @@ spec:
     spec:
       containers:
       - image: {{ .Values.mysql_image }}:{{ .Values.mysql_tag }}
+        args:
+          - "--ignore-db-dir=lost+found"
         name: mysql-{{ .Release.Name }}
         resources:
           requests:
@@ -67,6 +69,7 @@ spec:
         volumeMounts:
           - name: mysql-storage-{{ .Release.Name }}
             mountPath: /var/lib/mysql
+            subPath: mysql
       volumes:
         - name: mysql-storage-{{ .Release.Name }}
           persistentVolumeClaim:
