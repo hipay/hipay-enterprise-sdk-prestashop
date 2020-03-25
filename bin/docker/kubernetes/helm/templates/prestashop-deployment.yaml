@@ -111,10 +111,10 @@ spec:
           - containerPort: 80
             name: prestashop
         volumeMounts:
-          - name: prestashop-persistent-storage-{{ .Release.Name }}
+          - name: ps-storage-{{ .Release.Name }}
             mountPath: /var/www/html
       volumes:
-        - name: prestashop-persistent-storage-{{ .Release.Name }}
+        - name: ps-storage-{{ .Release.Name }}
           persistentVolumeClaim:
             claimName: ps-pv-claim-{{ .Release.Name }}
       nodeSelector:

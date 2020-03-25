@@ -65,10 +65,10 @@ spec:
           - containerPort: 3306
             name: mysql
         volumeMounts:
-          - name: mysql-persistent-storage-{{ .Release.Name }}
+          - name: mysql-storage-{{ .Release.Name }}
             mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-persistent-storage-{{ .Release.Name }}
+        - name: mysql-storage-{{ .Release.Name }}
           persistentVolumeClaim:
             claimName: mysql-pv-claim-{{ .Release.Name }}
       nodeSelector:
