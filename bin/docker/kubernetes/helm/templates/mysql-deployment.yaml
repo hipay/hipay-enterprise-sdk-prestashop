@@ -52,6 +52,7 @@ spec:
       - image: {{ .Values.mysql_image }}:{{ .Values.mysql_tag }}
         args:
           - "--ignore-db-dir=lost+found"
+          - "--innodb-buffer-pool-size=256M"
         name: mysql-{{ .Release.Name }}
         resources:
           requests:
