@@ -53,6 +53,7 @@ spec:
         args:
           - "--ignore-db-dir=lost+found"
           - "--innodb-buffer-pool-size=256M"
+          - "--innodb-force-recovery=1"
         name: mysql-{{ .Release.Name }}
         resources:
           requests:
