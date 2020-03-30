@@ -50,10 +50,6 @@ spec:
     spec:
       containers:
       - image: {{ .Values.mysql_image }}:{{ .Values.mysql_tag }}
-        args:
-          - "--ignore-db-dir=lost+found"
-          - "--innodb-buffer-pool-size=256M"
-          - "--innodb-force-recovery=1"
         name: mysql-{{ .Release.Name }}
         resources:
           requests:
