@@ -58,20 +58,6 @@ spec:
       middlewares:
         - name: hipay-ipwhitelist
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: ps-pv-claim-{{ .Release.Name }}
-  labels:
-    app: prestashop-{{ .Release.Name }}
-    cd-hipay: cron-delete
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -110,13 +96,6 @@ spec:
         ports:
           - containerPort: 80
             name: prestashop
-        volumeMounts:
-          - name: ps-storage-{{ .Release.Name }}
-            mountPath: /var/www/html
-      volumes:
-        - name: ps-storage-{{ .Release.Name }}
-          persistentVolumeClaim:
-            claimName: ps-pv-claim-{{ .Release.Name }}
       nodeSelector:
         node_type: default
       tolerations:
