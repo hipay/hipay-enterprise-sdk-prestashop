@@ -90,10 +90,6 @@ services:
       --set pi_data_url="$PI_CI_DATA_URL"
     - /tools/logout-end-user.sh
   allow_failure: true
-  environment:
-    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
-    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
-    on_stop: stop_review-prestashop${PS_VERSION}
   only:
     - branches
   tags:
@@ -182,12 +178,20 @@ deploy2recette-prestashop16:
     PS_VERSION: 16
     PS_FULL_VERSION: 1.6.1.16
   extends: .deploy2recette-prestashop
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    on_stop: stop_review-prestashop16
 
 deploy2recette-prestashop17:
   variables:
     PS_VERSION: 17
     PS_FULL_VERSION: 1.7.2.0
   extends: .deploy2recette-prestashop
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    on_stop: stop_review-prestashop17
 
 stop_review-prestashop16:
   variables:
