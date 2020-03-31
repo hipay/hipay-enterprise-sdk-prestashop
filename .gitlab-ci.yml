@@ -49,6 +49,20 @@ services:
       - bin/tests/tests-cypress/cypress/screenshots
     when: always
 
+.build-prestashop:
+  stage: build
+  when: manual
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
+  script:
+    - echo ${PS_VERSION}
+    - sleep 90
+    - docker build -f bin/docker/images/prestashop/Dockerfile${PS_VERSION} . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
+    - /tools/auth-as-end-user.sh
+    - docker push ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
+    - /tools/logout-end-user.sh
+  tags:
+    - gcp-default-runner-prod
+
 #########################
 ####  JOBS          ####
 ########################
@@ -101,32 +115,14 @@ services:
     - gcp-default-runner
 
 build-prestashop16:
-  stage: build
-  when: manual
-  image: $REGISTRY_CI/gitlab-ci-base:deployment
-  script:
-    - docker build -f bin/docker/images/prestashop/Dockerfile16 . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web16:${CI_COMMIT_REF_SLUG}
-    - /tools/auth-as-end-user.sh
-    - docker push ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web16:${CI_COMMIT_REF_SLUG}
-    - /tools/logout-end-user.sh
-  environment:
-    name: review-16/${CI_COMMIT_REF_SLUG}
-  tags:
-    - gcp-default-runner-prod
+  variables:
+    PS_VERSION: 16
+  extends: .build-prestashop
 
 build-prestashop17:
-  stage: build
-  when: manual
-  image: $REGISTRY_CI/gitlab-ci-base:deployment
-  script:
-    - docker build -f bin/docker/images/prestashop/Dockerfile17 . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web17:${CI_COMMIT_REF_SLUG}
-    - /tools/auth-as-end-user.sh
-    - docker push ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web17:${CI_COMMIT_REF_SLUG}
-    - /tools/logout-end-user.sh
-  environment:
-    name: review-17/${CI_COMMIT_REF_SLUG}
-  tags:
-    - gcp-default-runner-prod
+  variables:
+    PS_VERSION: 17
+  extends: .build-prestashop
 
 deploy2recette-prestashop16:
   stage: deploy
