@@ -116,7 +116,7 @@ services:
 ####  JOBS          ####
 ########################
 
-.build-test:
+build-test:
   stage: build-test
   script:
     - docker-compose -f docker-compose.test.yml build
@@ -124,19 +124,19 @@ services:
   tags:
     - gcp-default-runner
 
-.test-casper-17-1:
+test-casper-17-1:
   <<: *test_definition
   script:
     - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/localhost:8087/
   retry: 2
 
-.test-casper-17-2:
+test-casper-17-2:
   <<: *test_definition
   script:
     - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/localhost:8087/
   retry: 2
 
-.test-cypress-17-1:
+test-cypress-17-1:
   <<: *test_definition
   script:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
@@ -145,7 +145,7 @@ services:
     - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http:\/\/localhost:8087/ --env $CYPRESS_ENV
   retry: 2
 
-.package:
+package:
   stage: package
   before_script:
     - apt-get install -y zip sshpass
