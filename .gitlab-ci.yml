@@ -23,7 +23,7 @@ services:
 .test_template: &test_definition
   stage: test
   tags:
-    - gcp-cypress-runner
+    - gcp-high-load-runner-prod
   allow_failure: false
   before_script:
     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
@@ -122,7 +122,7 @@ build-test:
     - docker-compose -f docker-compose.test.yml build
     - docker-compose -f docker-compose.test.yml push
   tags:
-    - gcp-default-runner
+    - gcp-default-runner-prod
 
 test-casper-17-1:
   <<: *test_definition
@@ -161,7 +161,7 @@ package:
     paths:
       - ./package-ready-for-prestashop
   tags:
-    - gcp-default-runner
+    - gcp-default-runner-prod
 
 build-prestashop16:
   variables:
