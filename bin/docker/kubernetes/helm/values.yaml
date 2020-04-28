@@ -1,0 +1,22 @@
+mysql_image: "mysql"
+mysql_tag: "5.7"
+
+prestashop_image: ""
+prestashop_tag: ""
+
+prestashop_url: ""
+
+hipay_api_user_test: ""
+hipay_api_password_test: ""
+hipay_tokenjs_username_test: ""
+hipay_tokenjs_publickey_test: ""
+hipay_secret_passphrase_test: ""
+hipay_api_moto_user_test: ""
+hipay_api_moto_password_test: ""
+hipay_moto_secret_passphrase_test: ""
+
+pi_data_url: ""
+
+ps_version: ""
+ps_domain: ""
+db_name: ""
