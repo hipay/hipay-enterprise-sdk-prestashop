@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prestashop-mysql-{{ .Release.Name }}
+  labels:
+    app: prestashop-{{ .Release.Name }}
+    cd-hipay: cron-delete
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: prestashop-{{ .Release.Name }}
+    tier: mysql-{{ .Release.Name }}
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim-{{ .Release.Name }}
+  labels:
+    app: prestashop-{{ .Release.Name }}
+    cd-hipay: cron-delete
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prestashop-mysql-{{ .Release.Name }}
+  labels:
+    app: prestashop-{{ .Release.Name }}
+    cd-hipay: cron-delete
+spec:
+  selector:
+    matchLabels:
+      app: prestashop-{{ .Release.Name }}
+      tier: mysql-{{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prestashop-{{ .Release.Name }}
+        tier: mysql-{{ .Release.Name }}
+        cd-hipay: cron-delete
+    spec:
+      containers:
+      - image: {{ .Values.mysql_image }}:{{ .Values.mysql_tag }}
+        name: mysql-{{ .Release.Name }}
+        resources:
+          requests:
+            memory: "256M"
+            cpu: "500m"
+          limits:
+            memory: "512M"
+            cpu: "1000m"
+        envFrom:
+          - configMapRef:
+              name: prestashop-configmap-{{ .Release.Name }}
+        ports:
+          - containerPort: 3306
+            name: mysql
+        volumeMounts:
+          - name: mysql-storage-{{ .Release.Name }}
+            mountPath: /var/lib/mysql
+            subPath: mysql
+      volumes:
+        - name: mysql-storage-{{ .Release.Name }}
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim-{{ .Release.Name }}
+      nodeSelector:
+        node_type: default
+      tolerations:
+        - key: cd_service
+          operator: Equal
+          value: only
+          effect: NoExecute
