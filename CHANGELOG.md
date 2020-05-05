@@ -1,3 +1,8 @@
+# Version 2.9.3
+
+- **Fix**: Notification reception when Prestashop receives HiPay's notifications in the wrong order
+- **Fix**: Documentation regarding custom data
+
 # Version 2.9.2
 
 - **Fix**: Password and account changing date on DSP2

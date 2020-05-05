@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prestashop-configmap-{{ .Release.Name }}
+  labels:
+    cd-hipay: cron-delete
+data:
+  PS_VERSION: "{{ .Values.ps_version }}"
+  PS_DOMAIN: "{{ .Values.ps_domain }}"
+  # Prestashop env var
+  ADMIN_MAIL: demo@hipay.com
+  ADMIN_PASSWD: hipay123
+  PS_ERASE_DB: "1"
+  PS_LANGUAGE: fr
+  PS_COUNTRY: fr
+  PS_INSTALL_AUTO: "1"
+  PS_DEV_MODE: "1"
+  PS_FOLDER_ADMIN: admin-hipay
+  PS_FOLDER_INSTALL: installOLD
+  PS_HANDLE_DYNAMIC_DOMAIN: "0"
+  PS_ALL_LANGUAGES: "0"
+  DB_SERVER: prestashop-mysql-{{ .Release.Name }}
+  DB_USER: root
+  DB_PASSWD: admin
+  DB_NAME: "{{ .Values.db_name }}"
+  # Mysql env vars
+  MYSQL_HOST: prestashop-mysql-{{ .Release.Name }}
+  MYSQL_ROOT_PASSWORD: admin
+  # Prod env vars
+  HIPAY_INSTALL_AUTO: "0"
+  ENVIRONMENT: production
+  # Auth env vars
+  HIPAY_API_USER_TEST: "{{ .Values.hipay_api_user_test }}"
+  HIPAY_API_PASSWORD_TEST: "{{ .Values.hipay_api_password_test }}"
+  HIPAY_TOKENJS_USERNAME_TEST: "{{ .Values.hipay_tokenjs_username_test }}"
+  HIPAY_TOKENJS_PUBLICKEY_TEST: "{{ .Values.hipay_tokenjs_publickey_test }}"
+  HIPAY_SECRET_PASSPHRASE_TEST: "{{ .Values.hipay_secret_passphrase_test }}"
+  HIPAY_API_MOTO_USER_TEST: "{{ .Values.hipay_api_moto_user_test }}"
+  HIPAY_API_MOTO_PASSWORD_TEST: "{{ .Values.hipay_api_moto_password_test }}"
+  HIPAY_MOTO_SECRET_PASSPHRASE_TEST: "{{ .Values.hipay_moto_secret_passphrase_test }}"
+  PI_DATA_URL: "{{ .Values.pi_data_url }}"

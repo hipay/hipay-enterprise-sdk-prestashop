@@ -246,14 +246,18 @@ class HipayNotification
                 (int)$this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
                 !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)
             ) {
-                // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
-                if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
-                    && ($newState == _PS_OS_PAYMENT_)
-                ) {
-                    $newState = _PS_OS_OUTOFSTOCK_PAID_;
+                // If pending and we have already received authorization, then we do not change the status
+                if (!($newState == Configuration::get('HIPAY_OS_PENDING', null, null, 1) &&
+                    $this->controleIfStatushistoryExist(Configuration::get("HIPAY_OS_AUTHORIZED"), $newState, true))) {
+                    // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
+                    if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
+                        && ($newState == _PS_OS_PAYMENT_)
+                    ) {
+                        $newState = _PS_OS_OUTOFSTOCK_PAID_;
+                    }
+                    $this->changeOrderStatus($newState);
+                    $return = true;
                 }
-                $this->changeOrderStatus($newState);
-                $return = true;
             }
 
             if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED &&

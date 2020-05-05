@@ -1,11 +1,11 @@
-image: gcr.io/pi-dev-sandbox/gitlab-ci-base:jessie
+image: $REGISTRY_CI/gitlab-ci-base:buster
 
 stages:
- - build-test
- - test
- - package
- - build
- - deploy
+  - build-test
+  - test
+  - package
+  - build
+  - deploy
 
 variables:
   DOCKER_HOST: tcp://localhost:2375/
@@ -23,7 +23,7 @@ services:
 .test_template: &test_definition
   stage: test
   tags:
-      - gcp-cypress-runner
+    - gcp-high-load-runner-prod
   allow_failure: false
   before_script:
     - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
@@ -49,6 +49,69 @@ services:
       - bin/tests/tests-cypress/cypress/screenshots
     when: always
 
+.build-prestashop:
+  stage: build
+  when: manual
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
+  script:
+    - docker build -f bin/docker/images/prestashop/Dockerfile${PS_VERSION} . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
+    - /tools/auth-as-end-user.sh
+    - docker push ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
+    - /tools/logout-end-user.sh
+  tags:
+    - gcp-default-runner-prod
+
+.deploy2recette-prestashop:
+  stage: deploy
+  when: manual
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
+  variables:
+    GPC_ACCOUNT: ""
+    RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
+  script:
+    - echo $RELEASE_NAME
+    - /tools/auth-to-cd-cluster.sh
+    - >
+      helm install $RELEASE_NAME ./bin/docker/kubernetes/helm/
+      --set prestashop_image="${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}"
+      --set prestashop_tag="${CI_COMMIT_REF_SLUG}"
+      --set prestashop_url="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}"
+      --set ps_version="${PS_FULL_VERSION}"
+      --set ps_domain="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}"
+      --set db_name="prestashop${PS_VERSION}"
+      --set hipay_api_user_test="$HIPAY_API_USER_RE7"
+      --set hipay_api_password_test="$HIPAY_API_PASSWORD_RE7"
+      --set hipay_tokenjs_username_test="$HIPAY_TOKENJS_USERNAME_RE7"
+      --set hipay_tokenjs_publickey_test="$HIPAY_TOKENJS_PUBLICKEY_RE7"
+      --set hipay_secret_passphrase_test="$HIPAY_SECRET_PASSPHRASE_RE7"
+      --set hipay_api_moto_user_test=""
+      --set hipay_api_moto_password_test=""
+      --set hipay_moto_secret_passphrase_test=""
+      --set pi_data_url="$PI_CI_DATA_URL"
+    - /tools/logout-end-user.sh
+  allow_failure: true
+  only:
+    - branches
+  tags:
+    - gcp-default-runner-prod
+
+.stop_review-prestashop:
+  stage: deploy
+  image: $REGISTRY_CI/gitlab-ci-base:deployment
+  variables:
+    GIT_STRATEGY: none
+    RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
+  script:
+    - /tools/auth-to-cd-cluster.sh
+    - helm uninstall $RELEASE_NAME
+    - /tools/logout-end-user.sh
+  when: manual
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    action: stop
+  tags:
+    - gcp-default-runner-prod
+
 #########################
 ####  JOBS          ####
 ########################
@@ -59,7 +122,7 @@ build-test:
     - docker-compose -f docker-compose.test.yml build
     - docker-compose -f docker-compose.test.yml push
   tags:
-    - gcp-default-runner
+    - gcp-default-runner-prod
 
 test-casper-17-1:
   <<: *test_definition
@@ -83,65 +146,59 @@ test-cypress-17-1:
   retry: 2
 
 package:
- stage: package
- before_script:
-  - apt-get install -y zip sshpass
- script:
-  - echo "Package module $CI_COMMIT_REF_SLUG"
-  - cd src/hipay_enterprise
-  - composer install --no-dev
-  - cd ../..
-  - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
-  - chmod u+x bin/deployment/deploy_package.sh
-  - ./bin/deployment/deploy_package.sh
- artifacts:
-  paths:
-    - ./package-ready-for-prestashop
- tags:
-    - gcp-default-runner
-
-build:
-  stage: build
-  when: manual
+  stage: package
   before_script:
-    - /tools/docker-rmi.sh ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-16:${CI_COMMIT_REF_SLUG}
-    - /tools/docker-rmi.sh ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-17:${CI_COMMIT_REF_SLUG}
+    - apt-get install -y zip sshpass
   script:
-    - docker-compose -f docker-compose.acceptance.yml build
-    - docker-compose -f docker-compose.acceptance.yml push
-  after_script:
-    - docker rmi ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-16:${CI_COMMIT_REF_SLUG}
-    - docker rmi ${REGISTRY_URL}/${DOCKER_STACK}-${DOCKER_SERVICE}_web-17:${CI_COMMIT_REF_SLUG}
+    - echo "Package module $CI_COMMIT_REF_SLUG"
+    - cd src/hipay_enterprise
+    - composer install --no-dev
+    - cd ../..
+    - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
+#    - chmod u+x bin/deployment/deploy_package.sh
+#    - ./bin/deployment/deploy_package.sh
+  artifacts:
+    paths:
+      - ./package-ready-for-prestashop
   tags:
-    - pi-commerce-no-overlay
+    - gcp-default-runner-prod
 
-deploy2recette:
-  stage: deploy
-  when: manual
-  before_script:
-     - sed -i -e "s/{HIPAY_API_USER_RECETTE\}/$HIPAY_API_USER_RE7/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_API_PASSWORD_RECETTE\}/$HIPAY_API_PASSWORD_RE7/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_RECETTE\}/$HIPAY_TOKENJS_PUBLICKEY_RE7/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_RECETTE\}/$HIPAY_TOKENJS_USERNAME_RE7/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_RECETTE\}/$HIPAY_SECRET_PASSPHRASE_RE7/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{DB_HOST\}/${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${CI_JOB_ID}_database/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-16.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env16
-     - sed -i -e "s/{PS_DOMAIN\}/${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-17.hipay-pos-platform.com/" ./bin/docker/conf/acceptance/env17
-     - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_RECETTE} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_RE7' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_API_MOTO_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_API_MOTO_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s/{HIPAY_MOTO_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/acceptance/env
-     - sed -i "s/$(echo {HIPAY_MOTO_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/acceptance/env
-     - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/acceptance/env
+build-prestashop16:
+  variables:
+    PS_VERSION: 16
+  extends: .build-prestashop
 
-      # Substitute env variables which doesn't exists on the distant machine
-     - /tools/substitute-env-var.sh docker-compose.acceptance.yml
-     # Change path for relative path to environment files
-     - sed -i -e "s|bin/docker/conf/acceptance/env|env|g" docker-compose.acceptance.yml
-     - sed -i -e "s|bin/docker/conf/acceptance/env16|env16|g" docker-compose.acceptance.yml
-     - sed -i -e "s|bin/docker/conf/acceptance/env17|env17|g" docker-compose.acceptance.yml
-  script:
-    - bash /tools/deployToDockerMachine.sh -e ./bin/docker/conf/acceptance/env -e ./bin/docker/conf/acceptance/env16 -e ./bin/docker/conf/acceptance/env17 -s docker-compose.acceptance.yml -n $DOCKER_STACK-$DOCKER_SERVICE-$CI_COMMIT_REF_SLUG
-  allow_failure: true
-  tags:
-    - pi-commerce-no-overlay
+build-prestashop17:
+  variables:
+    PS_VERSION: 17
+  extends: .build-prestashop
+
+deploy2recette-prestashop16:
+  variables:
+    PS_VERSION: 16
+    PS_FULL_VERSION: 1.6.1.16
+  extends: .deploy2recette-prestashop
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    on_stop: stop_review-prestashop16
+
+deploy2recette-prestashop17:
+  variables:
+    PS_VERSION: 17
+    PS_FULL_VERSION: 1.7.2.0
+  extends: .deploy2recette-prestashop
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    on_stop: stop_review-prestashop17
+
+stop_review-prestashop16:
+  variables:
+    PS_VERSION: 16
+  extends: .stop_review-prestashop
+
+stop_review-prestashop17:
+  variables:
+    PS_VERSION: 17
+  extends: .stop_review-prestashop
