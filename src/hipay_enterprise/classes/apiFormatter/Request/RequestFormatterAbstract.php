@@ -196,7 +196,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
                 array(
                     "merchantPromotion" => !empty($this->params["paymentProduct"]['merchantPromotion']) ?
                     $this->params["paymentProduct"]['merchantPromotion'] :
-                    \HiPay\Fullservice\Helper\Calcul::calculMerchantPromotion(
+                    \HiPay\Fullservice\Helper\MerchantPromotionCalculator::calculate(
                         $this->params["productlist"],
                         $order->amount
                     )
