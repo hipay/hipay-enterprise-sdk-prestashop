@@ -148,7 +148,7 @@
         {if "merchantPromotion"|in_array:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
-                    <label class="control-label col-lg-2">{l s='Merchant promotion' mod='hipay_enterprise'}</label>
+                    <label class="control-label col-lg-2">{l s='Merchant Promotion' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <input title="OPC provided by Oney" type="text" name="{$key}_merchantPromotion" value="{$method.merchantPromotion}"/>
                     </div>
