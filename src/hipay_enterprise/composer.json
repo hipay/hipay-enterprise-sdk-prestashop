@@ -5,7 +5,7 @@
     "vendor-dir": "lib/vendor"
   }, 
   "require": {
-    "hipay/hipay-fullservice-sdk-php": "2.5.2"
+    "hipay/hipay-fullservice-sdk-php": "2.5.3"
   }, 
   "version": "1.0.0", 
   "authors": [
