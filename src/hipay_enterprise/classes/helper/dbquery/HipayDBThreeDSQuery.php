@@ -23,28 +23,37 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
 {
     public function cartAlreadyOrdered($customerId, $products)
     {
-        $where = array();
-        foreach ($products as $product) {
-            $where[] = 'EXISTS (' .
-                'SELECT * FROM `' . _DB_PREFIX_ . 'order_detail` od '.
-                ' WHERE product_id = ' . $product["product_id"] .
-                ' AND product_quantity = ' . $product["product_quantity"] .
-                ' AND id_shop = ' . $product["id_shop"] .
-                ' AND product_attribute_id = ' . $product["product_attribute_id"] .
-                ' AND od.id_order = o.id_order' .
-                ')';
+        $sql = 'SELECT id_order FROM `' . _DB_PREFIX_ . 'orders` o' .
+            ' WHERE id_customer = ' . $customerId .
+            ' AND (SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'order_detail` od WHERE od.id_order = o.id_order) = ' . count($products);
+
+        $result = Db::getInstance()->executeS($sql);
+
+        // If account has at least one order with item number matching current
+        if(count($result) > 0){
+            // We now go through every matching order to check on the products themselves
+            foreach($result as $line){
+                $detailsSQL = 'SELECT product_id, product_quantity, id_shop, product_attribute_id FROM `' . _DB_PREFIX_ . 'order_detail` od '.
+                ' WHERE od.id_order = ' . $line["id_order"];
+
+                $orderDetails = Db::getInstance()->executeS($detailsSQL);
+
+                $found = true;
+                // Going through ordered products
+                foreach ($orderDetails as $aDetail){
+                    // If an ordered product doesn't match current order, we skip to the next
+                    if(!in_array($aDetail, $products)){
+                        $found = false;
+                        break;
+                    }
+                }
+
+                if($found){
+                    return true;
+                }
+            }
         }
 
-        $sql = 'SELECT count(id_order) as count FROM `' . _DB_PREFIX_ . 'orders` o' .
-		' WHERE id_customer = ' . $customerId .
-        ' AND (SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'order_detail` od WHERE od.id_order = o.id_order) = ' . count($products) .
-        ' AND (' . implode(" AND ", $where) . ')';
-
-        $result = Db::getInstance()->getRow($sql);
-
-        if (isset($result['count']) && $result['count'] > 0) {
-            return true;
-        }
         return false;
     }
 

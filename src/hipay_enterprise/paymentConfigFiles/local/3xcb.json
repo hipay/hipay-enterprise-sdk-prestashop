@@ -16,7 +16,8 @@
       "displayName",
       "minAmount",
       "maxAmount",
-      "countries"
+      "countries",
+      "merchantPromotion"
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
@@ -26,6 +27,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "oney.png"
+    "logo": "oney.png",
+    "merchantPromotion": false
   }
 }

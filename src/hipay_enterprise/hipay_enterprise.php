@@ -38,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.9.2';
+        $this->version = '2.10.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->currencies = true;
@@ -120,7 +120,6 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay\'s BackOffice');
         $fake = $this->l('Message was : ');
         $fake = $this->l('Transaction cancellation requested');
-
     }
 
     public function getLogs()
@@ -287,7 +286,6 @@ class Hipay_enterprise extends PaymentModule
                     "operation" => \HiPay\Fullservice\Enum\Transaction\Operation::CANCEL
                 )
             );
-
         }
     }
 

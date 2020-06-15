@@ -187,8 +187,21 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         $order->delivery_information = $this->params["delivery_informations"];
         $order->authentication_indicator = $this->params["authentication_indicator"];
 
-        if(isset($this->params["paymentProduct"]['orderExpirationTime'])) {
+        if (isset($this->params["paymentProduct"]['orderExpirationTime'])) {
             $order->expiration_limit = $this->params["paymentProduct"]['orderExpirationTime'];
+        }
+
+        if (isset($this->params["paymentProduct"]['merchantPromotion'])) {
+            $order->payment_product_parameters = json_encode(
+                array(
+                    "merchantPromotion" => !empty($this->params["paymentProduct"]['merchantPromotion']) ?
+                    $this->params["paymentProduct"]['merchantPromotion'] :
+                    \HiPay\Fullservice\Helper\MerchantPromotionCalculator::calculate(
+                        $this->params["productlist"],
+                        $order->amount
+                    )
+                )
+            );
         }
     }
 
@@ -271,5 +284,4 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         return $accountInfo->generate();
     }
-
 }
