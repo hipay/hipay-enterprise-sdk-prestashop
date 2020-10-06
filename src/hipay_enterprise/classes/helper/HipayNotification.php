@@ -184,12 +184,21 @@ class HipayNotification
                     break;
                 case TransactionStatus::CAPTURED: //118
                 case TransactionStatus::CAPTURE_REQUESTED: //117
-                    $orderState = _PS_OS_PAYMENT_;
-                    if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
-                        $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
-                    }
-                    if ($this->updateOrderStatus($orderState)) {
-                        $this->captureOrder();
+                    if ($this->controleIfStatushistoryExist(
+                        Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
+                        Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
+                        true
+                    )
+                    ) {
+                        $orderState = _PS_OS_PAYMENT_;
+                        if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
+                            $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
+                        }
+                        if ($this->updateOrderStatus($orderState)) {
+                            $this->captureOrder();
+                        }
+                    } else {
+                        throw new Exception("Order is not Authorized, could not capture Payment.");
                     }
                     break;
                 case TransactionStatus::PARTIALLY_CAPTURED: //119
