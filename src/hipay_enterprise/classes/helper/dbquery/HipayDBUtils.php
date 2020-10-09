@@ -227,4 +227,11 @@ class HipayDBUtils extends HipayDBQueryAbstract
         }
     }
 
+    public function getNotificationsForOrder($orderId){
+        $sql = 'SELECT status FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
+            '` WHERE order_id=' . pSQL((int)$orderId) . ' ;';
+
+        return array_map(function($value) { return $value['status']; }, Db::getInstance()->executeS($sql));
+    }
+
 }

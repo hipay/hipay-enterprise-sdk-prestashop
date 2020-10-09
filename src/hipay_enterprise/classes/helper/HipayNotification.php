@@ -35,6 +35,15 @@ class HipayNotification
     const TRANSACTION_REF_CAPTURE_SUFFIX = "capture";
     const TRANSACTION_REF_REFUND_SUFFIX = "refund";
 
+    const REPEATABLE_NOTIFICATIONS = [
+        TransactionStatus::REFUND_REQUESTED,
+        TransactionStatus::PARTIALLY_REFUNDED,
+        TransactionStatus::CAPTURE_REQUESTED,
+        TransactionStatus::PARTIALLY_CAPTURED,
+        TransactionStatus::CAPTURE_REFUSED
+    ];
+
+
     protected $transaction;
     protected $cart;
     protected $orderExist = false;
@@ -107,7 +116,6 @@ class HipayNotification
     public function processTransaction()
     {
         try {
-            $this->dbUtils->setSQLLockForCart($this->cart->id, "# ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logInfos(
                 "# ProcessTransaction for cart ID : " .
                 $this->cart->id .
@@ -115,122 +123,139 @@ class HipayNotification
                 $this->transaction->getStatus()
             );
 
-            //Fix Bug where Order is created while transaction is processed
-            if (HipayHelper::orderExists($this->cart->id)) {
-                // can't use Order::getOrderByCartId 'cause add shop restrictions
-                $idOrder = $this->dbUtils->getOrderByCartId($this->cart->id);
-                if ($idOrder) {
-                    $this->order = new Order((int)$idOrder);
-                    $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
-                }
+            $idOrder = $this->dbUtils->getOrderByCartId($this->cart->id);
+            if ($idOrder) {
+                $this->order = new Order((int)$idOrder);
+                $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
+            } else {
+                throw new Exception('Order not found for cart ID ' . $this->cart->id);
             }
 
-            switch ($this->transaction->getStatus()) {
-                // Do nothing - Just log the status and skip further processing
-                case TransactionStatus::CREATED:
-                case TransactionStatus::CARD_HOLDER_ENROLLED:
-                case TransactionStatus::CARD_HOLDER_NOT_ENROLLED:
-                case TransactionStatus::UNABLE_TO_AUTHENTICATE:
-                case TransactionStatus::CARD_HOLDER_AUTHENTICATED:
-                case TransactionStatus::AUTHENTICATION_ATTEMPTED:
-                case TransactionStatus::COULD_NOT_AUTHENTICATE:
-                case TransactionStatus::AUTHENTICATION_FAILED:
-                case TransactionStatus::COLLECTED:
-                case TransactionStatus::ACQUIRER_FOUND:
-                case TransactionStatus::ACQUIRER_NOT_FOUND:
-                case TransactionStatus::RISK_ACCEPTED:
-                default:
-                    $orderState = 'skip';
-                    break;
-                case TransactionStatus::BLOCKED:
-                case TransactionStatus::CHARGED_BACK:
-                    $this->updateOrderStatus(_PS_OS_ERROR_);
-                    break;
-                case TransactionStatus::DENIED:
-                case TransactionStatus::REFUSED:
-                    if (!$this->controleIfStatushistoryExist(
-                        _PS_OS_PAYMENT_,
-                        Configuration::get('HIPAY_OS_DENIED', null, null, 1),
-                        true
-                    )
-                    ) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_DENIED', null, null, 1));
+            if($this->transactionIsValid()){
+                $this->dbUtils->setSQLLockForCart($this->cart->id, "# ProcessTransaction for cart ID : " . $this->cart->id);
 
-                        // Notify website admin for a challenged transaction
-                        HipayMail::sendMailPaymentDeny($this->context, $this->module, $this->order);
-                    }
-                    break;
-                case TransactionStatus::AUTHORIZED_AND_PENDING:
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1));
-                    // Notify website admin for a challenged transaction
-                    HipayMail::sendMailPaymentFraud($this->context, $this->module, $this->order);
-                    break;
-                case TransactionStatus::AUTHENTICATION_REQUESTED:
-                case TransactionStatus::AUTHORIZATION_REQUESTED:
-                case TransactionStatus::PENDING_PAYMENT:
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_PENDING', null, null, 1));
-                    break;
-                case TransactionStatus::EXPIRED:
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED', null, null, 1));
-                    break;
-                case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
-                case TransactionStatus::CANCELLED:
-                    $this->updateOrderStatus(_PS_OS_CANCELED_);
-                    break;
-                case TransactionStatus::AUTHORIZED: //116
-                    $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
-                    // set capture type on authorized
-                    $this->setOrderCaptureType();
-                    break;
-                case TransactionStatus::CAPTURED: //118
-                case TransactionStatus::CAPTURE_REQUESTED: //117
-                    if ($this->controleIfStatushistoryExist(
-                        Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
-                        Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
-                        true
-                    )
-                    ) {
-                        $orderState = _PS_OS_PAYMENT_;
-                        if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
-                            $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
+
+                $orderHasBeenPaid = (int)$this->order->getCurrentState() == _PS_OS_OUTOFSTOCK_PAID_ ||
+                    $this->controleIfStatushistoryExist(_PS_OS_PAYMENT_);
+
+                switch ($this->transaction->getStatus()) {
+                    // Do nothing - Just log the status and skip further processing
+                    case TransactionStatus::CREATED:
+                    case TransactionStatus::CARD_HOLDER_ENROLLED:
+                    case TransactionStatus::CARD_HOLDER_NOT_ENROLLED:
+                    case TransactionStatus::UNABLE_TO_AUTHENTICATE:
+                    case TransactionStatus::CARD_HOLDER_AUTHENTICATED:
+                    case TransactionStatus::AUTHENTICATION_ATTEMPTED:
+                    case TransactionStatus::COULD_NOT_AUTHENTICATE:
+                    case TransactionStatus::AUTHENTICATION_FAILED:
+                    case TransactionStatus::COLLECTED:
+                    case TransactionStatus::ACQUIRER_FOUND:
+                    case TransactionStatus::ACQUIRER_NOT_FOUND:
+                    case TransactionStatus::RISK_ACCEPTED:
+                    default:
+                        $orderState = 'skip';
+                        break;
+                    case TransactionStatus::BLOCKED:
+                    case TransactionStatus::CHARGED_BACK:
+                        if(!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(_PS_OS_ERROR_);
                         }
-                        if ($this->updateOrderStatus($orderState)) {
+                        break;
+                    case TransactionStatus::DENIED:
+                    case TransactionStatus::REFUSED:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_DENIED', null, null, 1));
+
+                            // Notify website admin for a challenged transaction
+                            HipayMail::sendMailPaymentDeny($this->context, $this->module, $this->order);
+                        }
+                        break;
+                    case TransactionStatus::AUTHORIZED_AND_PENDING:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1));
+                            // Notify website admin for a challenged transaction
+                            HipayMail::sendMailPaymentFraud($this->context, $this->module, $this->order);
+                        }
+                        break;
+                    case TransactionStatus::AUTHENTICATION_REQUESTED:
+                    case TransactionStatus::AUTHORIZATION_REQUESTED:
+                    case TransactionStatus::PENDING_PAYMENT:
+                        // If pending and we have already received authorization, then we do not change the status
+                        if (!$this->controleIfStatushistoryExist(Configuration::get("HIPAY_OS_AUTHORIZED")) && !$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_PENDING', null, null, 1));
+                        }
+                        break;
+                    case TransactionStatus::EXPIRED:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED', null, null, 1));
+                        }
+                        break;
+                    case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
+                    case TransactionStatus::CANCELLED:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(_PS_OS_CANCELED_);
+                        }
+                        break;
+                    case TransactionStatus::AUTHORIZED: //116
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get("HIPAY_OS_AUTHORIZED"));
+                        }
+                        // set capture type on authorized
+                        $this->setOrderCaptureType();
+                        break;
+                    case TransactionStatus::CAPTURED: //118
+                    case TransactionStatus::CAPTURE_REQUESTED: //117
+                        if ($this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1))) {
+                            $orderState = _PS_OS_PAYMENT_;
+                            if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
+                                $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
+                            }
+                            if (!$orderHasBeenPaid) {
+                                $this->updateOrderStatus($orderState);
+                                $this->captureOrder();
+                            }
+                        } else {
+                            throw new Exception("Order is not Authorized, could not capture Payment.");
+                        }
+                        break;
+                    case TransactionStatus::PARTIALLY_CAPTURED: //119
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1));
                             $this->captureOrder();
                         }
-                    } else {
-                        throw new Exception("Order is not Authorized, could not capture Payment.");
-                    }
-                    break;
-                case TransactionStatus::PARTIALLY_CAPTURED: //119
-                    if ($this->updateOrderStatus(Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1))) {
-                        $this->captureOrder();
-                    }
-                    break;
-                case TransactionStatus::REFUND_REQUESTED: //124
-                case TransactionStatus::REFUNDED: //125
-                case TransactionStatus::PARTIALLY_REFUNDED: //126
-                    $this->refundOrder();
-                    break;
-                case TransactionStatus::CHARGED_BACK:
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHARGEDBACK', null, null, 1));
-                    break;
-                case TransactionStatus::CAPTURE_REFUSED:
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_CAPTURE_REFUSED', null, null, 1));
-                    break;
-            }
-
-            /*
-             * If 116 or 118, we save the token
-             */
-            if ($this->transaction->getStatus() === TransactionStatus::AUTHORIZED ||
-                $this->transaction->getStatus() === TransactionStatus::CAPTURED) {
-                $customData = $this->transaction->getCustomData();
-                if (isset($customData["multiUse"]) && $customData["multiUse"]) {
-                    $this->saveCardToken();
+                        break;
+                    case TransactionStatus::REFUND_REQUESTED: //124
+                    case TransactionStatus::REFUNDED: //125
+                    case TransactionStatus::PARTIALLY_REFUNDED: //126
+                        $this->refundOrder();
+                        break;
+                    case TransactionStatus::CHARGED_BACK:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHARGEDBACK', null, null, 1));
+                        }
+                        break;
+                    case TransactionStatus::CAPTURE_REFUSED:
+                        if (!$orderHasBeenPaid) {
+                            $this->updateOrderStatus(Configuration::get('HIPAY_OS_CAPTURE_REFUSED', null, null, 1));
+                        }
+                        break;
                 }
-            }
 
-            $this->dbUtils->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
+                $this->dbUtils->releaseSQLLock("# ProcessTransaction for cart ID : " . $this->cart->id);
+
+                /*
+                 * If 116 or 118, we save the token
+                 */
+                if ($this->transaction->getStatus() === TransactionStatus::AUTHORIZED ||
+                    $this->transaction->getStatus() === TransactionStatus::CAPTURED) {
+                    $customData = $this->transaction->getCustomData();
+                    if (isset($customData["multiUse"]) && $customData["multiUse"]) {
+                        $this->saveCardToken();
+                    }
+                }
+            } else {
+                die('Notification already received and handled.');
+            }
         } catch (Exception $e) {
             $this->dbUtils->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logException($e);
@@ -239,107 +264,36 @@ class HipayNotification
     }
 
     /**
-     * update order status or create order if it doesn't exist
+     * update order status
      *
      * @param $newState
-     * @return bool
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     private function updateOrderStatus($newState)
     {
-        $return = true;
-        if (HipayHelper::orderExists($this->cart->id)) {
+        if ((int)$this->order->getCurrentState() != (int)$newState) {
+            // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
+            if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_))
+                && ($newState == _PS_OS_PAYMENT_)
+            ) {
+                $newState = _PS_OS_OUTOFSTOCK_PAID_;
+            }
+            HipayHelper::changeOrderStatus($this->order, $newState);
             $this->addOrderMessage();
-            if ((int)$this->order->getCurrentState() != (int)$newState &&
-                (int)$this->order->getCurrentState() != _PS_OS_OUTOFSTOCK_PAID_ &&
-                !$this->controleIfStatushistoryExist(_PS_OS_PAYMENT_, $newState, true)
-            ) {
-                // If pending and we have already received authorization, then we do not change the status
-                if (!($newState == Configuration::get('HIPAY_OS_PENDING', null, null, 1) &&
-                    $this->controleIfStatushistoryExist(Configuration::get("HIPAY_OS_AUTHORIZED"), $newState, true))) {
-                    // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
-                    if (($this->controleIfStatushistoryExist(_PS_OS_OUTOFSTOCK_UNPAID_, $newState, true))
-                        && ($newState == _PS_OS_PAYMENT_)
-                    ) {
-                        $newState = _PS_OS_OUTOFSTOCK_PAID_;
-                    }
-                    $this->changeOrderStatus($newState);
-                    $return = true;
-                }
-            }
-
-            if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED &&
-                $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()
-            ) {
-                $this->log->logInfos(
-                    'captured_amount (' .
-                    $this->transaction->getCapturedAmount() .
-                    ') is < than authorized_amount (' .
-                    $this->transaction->getAuthorizedAmount() .
-                    ')'
-                );
-                $return = true;
-            }
-            return $return;
-        } else {
-            $this->log->logInfos('no status changed because there are no order');
-            return $this->registerOrder($newState);
         }
-    }
 
-    /**
-     * register order if don't exist
-     *
-     * @param $state
-     * @return bool
-     * @throws Exception
-     * @throws PrestaShopException
-     */
-    private function registerOrder($state)
-    {
-        if (!HipayHelper::orderExists($this->cart->id)) {
-            $this->log->logInfos('Register New order: ' . $this->cart->id);
-            $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
-
-            // init context
-            Context::getContext()->cart = new Cart((int)$this->cart->id);
-            $address = new Address((int)Context::getContext()->cart->id_address_invoice);
-            Context::getContext()->country = new Country((int)$address->id_country);
-            Context::getContext()->customer = new Customer((int)Context::getContext()->cart->id_customer);
-            Context::getContext()->language = new Language((int)Context::getContext()->cart->id_lang);
-            Context::getContext()->currency = new Currency((int)Context::getContext()->cart->id_currency);
-            $customer = new Customer((int)Context::getContext()->cart->id_customer);
-            $shop_id = $this->cart->id_shop;
-            $shop = new Shop($shop_id);
-            Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
-
-            $paymentProductName = $this->getPaymentProductName();
-
-            try {
-                $this->log->logInfos('Prepare Validate order from registerOrder');
-                $this->module->validateOrder(
-                    Context::getContext()->cart->id,
-                    $state,
-                    (float)$this->transaction->getAuthorizedAmount(),
-                    $paymentProductName,
-                    $message,
-                    array(),
-                    Context::getContext()->cart->id_currency,
-                    false,
-                    $customer->secure_key,
-                    $shop
-                );
-                $this->order = new Order($this->module->currentOrder);
-
-                $this->addOrderMessage();
-                return true;
-            } catch (Exception $e) {
-                $this->log->logException($e);
-                throw $e;
-            }
+        if ($this->transaction->getStatus() == TransactionStatus::CAPTURE_REQUESTED &&
+            $this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()
+        ) {
+            $this->log->logInfos(
+                'captured_amount (' .
+                $this->transaction->getCapturedAmount() .
+                ') is < than authorized_amount (' .
+                $this->transaction->getAuthorizedAmount() .
+                ')'
+            );
         }
-        return true;
     }
 
     /**
@@ -569,7 +523,7 @@ class HipayNotification
             }
 
             if ($this->transaction->getStatus() == TransactionStatus::REFUND_REQUESTED) {
-                $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
+                HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
                 return true;
             }
 
@@ -581,13 +535,13 @@ class HipayNotification
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
                     $this->log->logInfos('# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
-                    $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
+                    HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
                 } else {
                     $this->log->logInfos(
                         '# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)
                     );
 
-                    $this->changeOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
+                    HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
                 }
             }
         }
@@ -596,34 +550,16 @@ class HipayNotification
     }
 
     /**
-     * change order status
-     *
-     * @param $newState
-     * @throws PrestaShopDatabaseException
-     * @throws PrestaShopException
-     */
-    private function changeOrderStatus($newState)
-    {
-        $orderHistory = new OrderHistory();
-        $orderHistory->id_order = $this->order->id;
-        $orderHistory->changeIdOrderState($newState, $this->order, true);
-
-        $orderHistory->addWithemail(true);
-    }
-
-    /**
      * check if order is already at status "payment accepted"
      *
      * @param $paymentStatus
-     * @param $orderState
-     * @param bool $forceCtrl
      * @return bool
      */
-    private function controleIfStatushistoryExist($paymentStatus, $orderState, $forceCtrl = false)
+    private function controleIfStatushistoryExist($paymentStatus)
     {
-        $this->log->logInfos("# ControleIfStatushistoryExist Status " . $orderState);
+        $this->log->logInfos("# ControleIfStatushistoryExist Status " . $paymentStatus);
 
-        if (($orderState == $paymentStatus || $forceCtrl) && $this->order != null) {
+        if ($this->order != null) {
             $this->log->logInfos("# ControleIfStatushistoryExist Status exist");
             return $this->dbUtils->checkOrderStatusExist($paymentStatus, $this->order->id);
         }
@@ -710,5 +646,15 @@ class HipayNotification
         }
 
         return $amount;
+    }
+
+    private function transactionIsValid(){
+        if(in_array($this->transaction->getStatus(), self::REPEATABLE_NOTIFICATIONS)){
+            return true;
+        } elseif(!in_array($this->transaction->getStatus(), $this->dbUtils->getNotificationsForOrder($this->order->id))){
+            return true;
+        }
+
+        return false;
     }
 }

@@ -594,13 +594,12 @@ class HipayHelper
      *
      * @param $module
      * @param $context
-     * @param $configHipay
-     * @param $dbUtils
      * @param $cart
      * @param $productName
+     * @return array
      * @throws PrestaShopException
      */
-    public static function validateOrder($module, $context, $configHipay, $dbUtils, $cart, $productName)
+    public static function validateOrder($module, $context, $cart, $productName)
     {
         $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
@@ -626,36 +625,27 @@ class HipayHelper
                 Configuration::get('HIPAY_OS_PENDING'),
                 (float)$cart->getOrderTotal(true),
                 $productName,
-                $module->l('Order created by HiPay after success payment.'),
+                $module->l('Order created by HiPay.'),
                 array(),
                 $context->currency->id,
                 false,
                 $customer->secure_key,
                 $shop
             );
-
-            // get order id
-            $orderId = $module->currentOrder;
-            $dbUtils->releaseSQLLock('validateOrder');
-
-            Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
-            $dbUtils->releaseSQLLock("validateOrder ( order exist  $orderId )");
         }
 
         if ($customer) {
-            $params = http_build_query(
-                array(
-                    'id_cart' => $cart->id,
-                    'id_module' => $module->id,
-                    'id_order' => $orderId,
-                    'key' => $customer->secure_key,
-                )
+            $params = array(
+                'id_cart' => $cart->id,
+                'id_module' => $module->id,
+                'id_order' => $orderId,
+                'key' => $customer->secure_key
             );
         }
 
-        return Tools::redirect('index.php?controller=order-confirmation&' . $params);
+        return $params;
     }
 
     /**
@@ -753,4 +743,22 @@ class HipayHelper
 
         return abs($amount);
     }
+
+    /**
+     * change order status
+     *
+     * @param $order
+     * @param $newState
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public static function changeOrderStatus($order, $newState)
+    {
+        $orderHistory = new OrderHistory();
+        $orderHistory->id_order = $order->id;
+        $orderHistory->changeIdOrderState($newState, $order, true);
+
+        $orderHistory->addWithemail(true);
+    }
+
 }
