@@ -137,7 +137,6 @@ class ApiCaller
         } catch (Exception $e) {
             $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
-            $dbUtils->releaseSQLLock('requestDirectPost');
             throw new GatewayException(
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
                 $e->getMessage() . ']',

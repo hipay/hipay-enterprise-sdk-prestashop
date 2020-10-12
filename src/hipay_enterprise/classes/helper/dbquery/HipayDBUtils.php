@@ -68,20 +68,20 @@ class HipayDBUtils extends HipayDBQueryAbstract
     /**
      * start sql transaction
      *
-     * @param int $cartId
+     * @param int $orderId
      */
-    public function setSQLLockForCart($cartId, $origin)
+    public function setSQLLockForCart($orderId, $origin)
     {
-        $this->logs->logInfos('# Start LockSQL  for id_cart = ' . $cartId . 'in :' . $origin);
+        $this->logs->logInfos('# Start LockSQL  for id_order = ' . $orderId . 'in :' . $origin);
 
-        $sql = 'begin;';
-        $sql .= 'SELECT id_cart FROM ' . _DB_PREFIX_ . 'cart WHERE id_cart = ' . pSQL((int)$cartId) . ' FOR UPDATE;';
+        $sql = 'START TRANSACTION;';
+        $sql .= 'SELECT hp_id, order_id FROM ' . _DB_PREFIX_ . 'hipay_transaction WHERE order_id = ' . pSQL((int)$orderId) . ' FOR UPDATE;';
 
         if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_cart = ' . $cartId);
+            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_order = ' . $orderId);
             die('Lock not initiated');
         }
-        $this->logs->logInfos('# LockSQL for id_cart = ' . $cartId . 'in :' . $origin . ' is now free');
+        $this->logs->logInfos('# LockSQL for id_order = ' . $orderId . 'in :' . $origin . ' is now free');
     }
 
     /**
