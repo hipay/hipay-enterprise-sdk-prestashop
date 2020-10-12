@@ -499,7 +499,6 @@ class HipayNotification
         );
 
         if (HipayHelper::orderExists($this->cart->id)) {
-            $this->addOrderMessage();
 
             // If Capture is originated in the TPP BO the Operation field is null
             // Otherwise transaction has already been saved
@@ -523,7 +522,7 @@ class HipayNotification
             }
 
             if ($this->transaction->getStatus() == TransactionStatus::REFUND_REQUESTED) {
-                HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
+                $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
                 return true;
             }
 
@@ -535,13 +534,12 @@ class HipayNotification
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
                     $this->log->logInfos('# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
-                    HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
+                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
                 } else {
                     $this->log->logInfos(
                         '# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)
                     );
-
-                    HipayHelper::changeOrderStatus($this->order, Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
+                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
                 }
             }
         }
