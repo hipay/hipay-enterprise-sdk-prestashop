@@ -59,13 +59,6 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             Tools::redirect($redirectUrl);
         }
 
-        if (_PS_VERSION_ >= '1.7.1.0') {
-            $orderId = Order::getIdByCartId($objCart->id);
-        } else {
-            $orderId = Order::getOrderByCartId($objCart->id);
-        }
-        $customer = new Customer((int)$objCart->id_customer);
-
         try {
             $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('product'));
         } catch (PaymentProductNotFoundException $e) {
@@ -78,15 +71,11 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $context->language
         );
 
-        $currentOrder = new Order($orderId);
-        $currentOrder->payment = $paymentProductName;
-        $currentOrder->save();
-
-        $redirectParams = array(
-            'id_cart' => $objCart->id,
-            'id_module' => $this->module->id,
-            'id_order' => $orderId,
-            'key' => $customer->secure_key,
+        $redirectParams = HipayHelper::validateOrder(
+            $this->module,
+            $this->context,
+            $objCart,
+            $paymentProductName
         );
 
         Tools::redirect('index.php?controller=order-confirmation&' . http_build_query($redirectParams));

@@ -359,13 +359,6 @@ class Apihandler
     private function handleHostedPayment($params, $cart = false, $moto = false)
     {
         try {
-            HipayHelper::validateOrder(
-                $this->module,
-                $this->context,
-                $this->context->cart,
-                "Hosted Payment Pending"
-            );
-
             $params['iframe'] = false;
             Tools::redirect(ApiCaller::getHostedPaymentPage($this->module, $params, $cart, $moto));
         } catch (GatewayException $e) {
@@ -380,13 +373,6 @@ class Apihandler
      */
     private function handleIframe($params)
     {
-        HipayHelper::validateOrder(
-            $this->module,
-            $this->context,
-            $this->context->cart,
-            $params["methodDisplayName"]
-        );
-
         try {
             $params['iframe'] = true;
             return ApiCaller::getHostedPaymentPage($this->module, $params);
@@ -415,14 +401,6 @@ class Apihandler
                 $this->module,
                 $this->context->language
             );
-
-            $redirectParams = HipayHelper::validateOrder(
-                $this->module,
-                $this->context,
-                $this->context->cart,
-                $params["methodDisplayName"]
-            );
-            $orderId = $redirectParams['id_order'];
         } catch(Exception $e){
             Tools::redirect($exceptionUrl);
             die();
@@ -435,10 +413,24 @@ class Apihandler
 
             switch ($response->getState()) {
                 case TransactionState::COMPLETED:
+                    $redirectParams = HipayHelper::validateOrder(
+                        $this->module,
+                        $this->context,
+                        $this->context->cart,
+                        $params["methodDisplayName"]
+                    );
+
                     Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $orderId));
                     $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);
                     break;
                 case TransactionState::PENDING:
+                    HipayHelper::validateOrder(
+                        $this->module,
+                        $this->context,
+                        $this->context->cart,
+                        $params["methodDisplayName"]
+                    );
+
                     $redirectUrl = $pendingUrl;
                     break;
                 case TransactionState::FORWARDING:
@@ -456,7 +448,6 @@ class Apihandler
                     $this->module->getLogs()->logInfos(
                         'There was an error request new transaction: ' . $reason['message']
                     );
-                    HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
                     $redirectUrl = $exceptionUrl;
                     break;
                 default:
@@ -465,7 +456,6 @@ class Apihandler
 
             Tools::redirect($redirectUrl);
         } catch (GatewayException $e) {
-            HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
             $e->handleException();
         }
     }

@@ -128,7 +128,12 @@ class HipayNotification
                 $this->order = new Order((int)$idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
             } else {
-                throw new Exception('Order not found for cart ID ' . $this->cart->id);
+                if($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
+                    $this->transaction->getAttemptId() >= 4){
+                    $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
+                } else {
+                    throw new Exception('Order not found for cart ID ' . $this->cart->id);
+                }
             }
 
             if($this->transactionIsValid()){
@@ -294,6 +299,61 @@ class HipayNotification
                 ')'
             );
         }
+    }
+
+    /**
+     * register order if don't exist
+     *
+     * @param $state
+     * @return bool
+     * @throws Exception
+     * @throws PrestaShopException
+     */
+    private function registerOrder($state)
+    {
+        if (!HipayHelper::orderExists($this->cart->id)) {
+            $this->log->logInfos('Register New order: ' . $this->cart->id);
+            $message = HipayOrderMessage::formatOrderData($this->module, $this->transaction);
+
+            // init context
+            Context::getContext()->cart = new Cart((int)$this->cart->id);
+            $address = new Address((int)Context::getContext()->cart->id_address_invoice);
+            Context::getContext()->country = new Country((int)$address->id_country);
+            Context::getContext()->customer = new Customer((int)Context::getContext()->cart->id_customer);
+            Context::getContext()->language = new Language((int)Context::getContext()->cart->id_lang);
+            Context::getContext()->currency = new Currency((int)Context::getContext()->cart->id_currency);
+            $customer = new Customer((int)Context::getContext()->cart->id_customer);
+            $shop_id = $this->cart->id_shop;
+            $shop = new Shop($shop_id);
+            Shop::setContext(Shop::CONTEXT_SHOP, $this->cart->id_shop);
+
+            $paymentProductName = $this->getPaymentProductName();
+
+            try {
+                $this->log->logInfos('Prepare Validate order from registerOrder');
+                $this->module->validateOrder(
+                    Context::getContext()->cart->id,
+                    $state,
+                    (float)$this->transaction->getAuthorizedAmount(),
+                    $paymentProductName,
+                    $message,
+                    array(),
+                    Context::getContext()->cart->id_currency,
+                    false,
+                    $customer->secure_key,
+                    $shop
+                );
+                $this->order = new Order($this->module->currentOrder);
+
+                $this->addOrderMessage();
+                return true;
+            } catch (Exception $e) {
+                $this->log->logException($e);
+                throw $e;
+            }
+        }
+
+        return true;
     }
 
     /**

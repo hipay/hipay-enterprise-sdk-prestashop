@@ -98,12 +98,15 @@ class HipayHelper
     /**
      *
      * empty customer cart
+     * @param $cart
      * @return boolean
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-    public static function unsetCart()
+    public static function unsetCart($cart)
     {
         $context = Context::getContext();
-        $cart = new Cart($context->cookie->id_cart);
+
         unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
@@ -599,7 +602,7 @@ class HipayHelper
      * @return array
      * @throws PrestaShopException
      */
-    public static function validateOrder($module, $context, $cart, $productName)
+    public static function validateOrder($module, $context, $cart, $productName, $status = null)
     {
         $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
@@ -613,16 +616,19 @@ class HipayHelper
         if ($cart && (!$orderId || empty($orderId))) {
             $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
 
-            HipayHelper::unsetCart();
+            if(!$status){
+                $status = Configuration::get('HIPAY_OS_PENDING');
+            }
+
+            HipayHelper::unsetCart($cart);
 
             $shopId = $cart->id_shop;
             $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
-
             $module->validateOrder(
                 (int)$cart->id,
-                Configuration::get('HIPAY_OS_PENDING'),
+                $status,
                 (float)$cart->getOrderTotal(true),
                 $productName,
                 $module->l('Order created by HiPay.'),
@@ -650,12 +656,12 @@ class HipayHelper
 
     /**
      * Duplicates cart when payment is declined, so prestashop will keep the customer's cart alive
+     * @param $cart
      * @return bool
      */
-    public static function duplicateCart()
+    public static function duplicateCart($cart)
     {
         $context = Context::getContext();
-        $cart = new Cart($context->cookie->id_cart);
         $duplication = $cart->duplicate();
 
         if($duplication['success']) {

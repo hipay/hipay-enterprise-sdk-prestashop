@@ -35,7 +35,18 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         $this->display_column_right = false;
         parent::initContent();
 
-        HipayHelper::unsetCart();
+        $context = Context::getContext();
+
+        $dbUtils = new HipayDBUtils($this->module);
+        if (!$context->cookie->id_cart) {
+            // if not we retrieve the last cart
+            $cart = $dbUtils->getLastCartFromUser($context->customer->id);
+        } else {
+            // load cart
+            $cart = new Cart($context->cookie->id_cart);
+        }
+
+        HipayHelper::unsetCart($cart);
 
         $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
             $this->module->name .
