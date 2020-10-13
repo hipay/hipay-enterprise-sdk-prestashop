@@ -433,4 +433,51 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
 
         return false;
     }
+
+    public function getNotificationAttempt(array $data)
+    {
+        $sql = 'SELECT attempt_number
+                FROM `' .
+            _DB_PREFIX_ .
+            HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE .
+            '`
+                WHERE `cart_id` = ' .
+            pSQL((int)$data['cart_id']) .
+            ' AND `transaction_ref` = "' .
+            pSQL((int)$data['transaction_ref']) .
+            '" AND `notification_code` = "' .
+            pSQL((int)$data['notification_code']) .
+            '" AND `status` != "SUCCESS"' .
+            ' AND `status` != "NOT HANDLED"';
+        $result = Db::getInstance()->executeS($sql);
+
+        if (empty($result)) {
+            return false;
+        }
+
+        return $result[0]['attempt_number'];
+    }
+
+    public function saveHipayNotification(array $data)
+    {
+        $safeData = [];
+        foreach ($data as $key => $value) {
+            $safeData[$key] = pSQL($value);
+        }
+
+        if($data['attempt_number'] === 1) {
+            return Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData);
+        } else {
+            $where = '`cart_id` = ' .
+            pSQL((int)$data['cart_id']) .
+            ' AND `transaction_ref` = "' .
+            pSQL((int)$data['transaction_ref']) .
+            '" AND `notification_code` = "' .
+            pSQL((int)$data['notification_code']) .
+            '" AND `status` != "SUCCESS"' .
+            ' AND `status` != "NOT HANDLED"';
+
+            return Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData, $where);
+        }
+    }
 }

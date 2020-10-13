@@ -149,6 +149,24 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         return Db::getInstance()->execute($sql);
     }
 
+    public function createHipayNotificationTable()
+    {
+        $this->logs->logInfos('Create Hipay Notification table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`(
+                `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `cart_id` INT(10) UNSIGNED NOT NULL,
+                `transaction_ref` VARCHAR(45) NOT NULL,
+                `notification_code` INT(4) UNSIGNED NOT NULL,
+                `attempt_number` INT(3) UNSIGNED NOT NULL,
+                `status` VARCHAR(255) NOT NULL,
+                PRIMARY KEY (`hp_id`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+
     /**
      * Delete Hipay mapping table
      *
@@ -190,4 +208,13 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`';
         return Db::getInstance()->execute($sql);
     }
+
+    public function deleteHipayNotificationTable()
+    {
+        $this->logs->logInfos('Delete Hipay Notification table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`';
+        return Db::getInstance()->execute($sql);
+    }
+
 }

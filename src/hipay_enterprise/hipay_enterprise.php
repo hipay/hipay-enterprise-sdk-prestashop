@@ -669,6 +669,7 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->createCCTokenTable();
         $this->dbSchemaManager->createHipayTransactionTable();
         $this->dbSchemaManager->createHipayOrderCaptureType();
+        $this->dbSchemaManager->createHipayNotificationTable();
         return true;
     }
 
@@ -679,6 +680,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->mapper->deleteTable();
         $this->dbSchemaManager->deleteCCTokenTable();
+        $this->dbSchemaManager->deleteHipayNotificationTable();
         return true;
     }
 }

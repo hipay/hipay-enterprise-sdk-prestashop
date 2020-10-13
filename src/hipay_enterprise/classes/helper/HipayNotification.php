@@ -123,16 +123,20 @@ class HipayNotification
                 $this->transaction->getStatus()
             );
 
+            $currentAttempt = $this->saveNotificationAttempt();
+
             $idOrder = $this->dbUtils->getOrderByCartId($this->cart->id);
             if ($idOrder) {
                 $this->order = new Order((int)$idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
             } else {
                 if($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
-                    $this->transaction->getAttemptId() >= 4){
+                    $currentAttempt >= 4){
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
-                    throw new Exception('Order not found for cart ID ' . $this->cart->id);
+                    $e = new Exception('Order not found for cart ID ' . $this->cart->id);
+                    $e->returnCode = 'HTTP/1.0 404 Not found';
+                    throw $e;
                 }
             }
 
@@ -258,10 +262,14 @@ class HipayNotification
                         $this->saveCardToken();
                     }
                 }
+
+                $this->updateNotificationState('SUCCESS');
             } else {
+                $this->updateNotificationState('NOT HANDLED');
                 die('Notification already received and handled.');
             }
         } catch (Exception $e) {
+            $this->updateNotificationState('ERROR');
             $this->dbUtils->releaseSQLLock("Exception # ProcessTransaction for cart ID : " . $this->cart->id);
             $this->log->logException($e);
             throw $e;
@@ -344,8 +352,6 @@ class HipayNotification
                     $shop
                 );
                 $this->order = new Order($this->module->currentOrder);
-
-                $this->addOrderMessage();
                 return true;
             } catch (Exception $e) {
                 $this->log->logException($e);
@@ -655,6 +661,46 @@ class HipayNotification
         $this->dbMaintenance->setHipayTransaction($data);
         HipayOrderMessage::orderMessage($this->module, $this->order->id, $this->order->id_customer,
             HipayOrderMessage::formatOrderData($this->module, $this->transaction));
+    }
+
+    private function saveNotificationAttempt(){
+        $data = array(
+            "cart_id" => $this->cart->id,
+            "transaction_ref" => $this->transaction->getTransactionReference(),
+            "notification_code" => $this->transaction->getStatus()
+        );
+
+        $currentAttempt = $this->dbMaintenance->getNotificationAttempt($data);
+
+        if(!$currentAttempt) {
+            $currentAttempt = 1;
+        } else {
+            $currentAttempt += 1;
+        }
+
+        $this->log->logInfos("# Received Notification " . $data['notification_code'] . " for cart " . $data['cart_id'] . " (received " . $currentAttempt . " times)");
+
+        $data['attempt_number'] = $currentAttempt;
+        $data['status'] = 'IN PROGRESS';
+
+        $this->dbMaintenance->saveHipayNotification($data);
+
+        return $currentAttempt;
+    }
+
+    private function updateNotificationState($status){
+        $data = array(
+            "cart_id" => $this->cart->id,
+            "transaction_ref" => $this->transaction->getTransactionReference(),
+            "notification_code" => $this->transaction->getStatus(),
+            "status" => $status
+        );
+
+        $data['attempt_number'] = $this->dbMaintenance->getNotificationAttempt($data);
+
+        $this->log->logInfos("# Notification " . $data['notification_code'] . " for cart " . $data['cart_id'] . " (received " . $data['attempt_number'] . " times) is on status " . $status);
+
+        $this->dbMaintenance->saveHipayNotification($data);
     }
 
     /**

@@ -71,7 +71,11 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         try {
             $notificationHandler->processTransaction();
         } catch (Exception $e) {
-            header("HTTP/1.0 500 Internal server error");
+            if($e->returnCode){
+                header($e->returnCode);
+            } else {
+                header("HTTP/1.0 500 Internal server error");
+            }
             die($e->getMessage());
         }
 
