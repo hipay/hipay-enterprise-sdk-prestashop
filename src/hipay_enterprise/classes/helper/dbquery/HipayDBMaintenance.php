@@ -14,6 +14,7 @@
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
 require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
+require_once(dirname(__FILE__) . '/../enums/NotificationStatus.php');
 
 /**
  *
