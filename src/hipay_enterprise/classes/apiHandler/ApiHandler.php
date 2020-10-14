@@ -415,7 +415,7 @@ class Apihandler
                         $params["methodDisplayName"]
                     );
 
-                    Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $redirectParams['$orderId']));
+                    Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $redirectParams['id_order']));
                     $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);
                     break;
                 case TransactionState::PENDING:
