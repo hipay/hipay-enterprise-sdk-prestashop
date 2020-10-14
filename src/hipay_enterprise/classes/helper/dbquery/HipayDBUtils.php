@@ -75,7 +75,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
         $this->logs->logInfos('# Start LockSQL  for id_order = ' . $orderId . 'in :' . $origin);
 
         $sql = 'START TRANSACTION;';
-        $sql .= 'SELECT hp_id, order_id FROM ' . _DB_PREFIX_ . 'hipay_transaction WHERE order_id = ' . pSQL((int)$orderId) . ' FOR UPDATE;';
+        $sql .= 'SELECT hp_id, order_id FROM ' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . ' WHERE order_id = ' . pSQL((int)$orderId) . ' FOR UPDATE;';
 
         if (!Db::getInstance()->execute($sql)) {
             $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_order = ' . $orderId);

@@ -401,12 +401,7 @@ class Apihandler
                 $this->module,
                 $this->context->language
             );
-        } catch(Exception $e){
-            Tools::redirect($exceptionUrl);
-            die();
-        }
 
-        try {
             $response = ApiCaller::requestDirectPost($this->module, $params);
 
             $forwardUrl = $response->getForwardUrl();
@@ -420,7 +415,7 @@ class Apihandler
                         $params["methodDisplayName"]
                     );
 
-                    Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $orderId));
+                    Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $redirectParams['$orderId']));
                     $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);
                     break;
                 case TransactionState::PENDING:
@@ -457,6 +452,9 @@ class Apihandler
             Tools::redirect($redirectUrl);
         } catch (GatewayException $e) {
             $e->handleException();
+        } catch(Exception $e){
+            HipayHelper::redirectToExceptionPage($this->context, $this->module);
+            die();
         }
     }
 

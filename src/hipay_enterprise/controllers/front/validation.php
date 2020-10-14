@@ -78,6 +78,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $paymentProductName
         );
 
+        Hook::exec('displayHiPayAccepted', array('cart' => $objCart, "order_id" => $redirectParams['$orderId']));
         Tools::redirect('index.php?controller=order-confirmation&' . http_build_query($redirectParams));
     }
 }

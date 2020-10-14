@@ -614,11 +614,12 @@ class HipayHelper
         $customer = new Customer((int)$cart->id_customer);
 
         if ($cart && (!$orderId || empty($orderId))) {
-            $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
 
             if(!$status){
                 $status = Configuration::get('HIPAY_OS_PENDING');
             }
+
+            $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId with status $status");
 
             HipayHelper::unsetCart($cart);
 
@@ -767,4 +768,23 @@ class HipayHelper
         $orderHistory->addWithemail(true);
     }
 
+    /**
+     * Retrieves cart pointed by the cookies OR last used cart for a customer
+     * @param $module
+     * @return bool|Cart
+     */
+    public static function getCustomerCart($module){
+        $context = Context::getContext();
+
+        $dbUtils = new HipayDBUtils($module);
+        if (!$context->cookie->id_cart) {
+            // if not we retrieve the last cart
+            $cart = $dbUtils->getLastCartFromUser($context->customer->id);
+        } else {
+            // load cart
+            $cart = new Cart($context->cookie->id_cart);
+        }
+
+        return $cart;
+    }
 }

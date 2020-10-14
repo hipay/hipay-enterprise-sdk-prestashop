@@ -447,8 +447,11 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
             pSQL((int)$data['transaction_ref']) .
             '" AND `notification_code` = "' .
             pSQL((int)$data['notification_code']) .
-            '" AND `status` != "SUCCESS"' .
-            ' AND `status` != "NOT HANDLED"';
+            '" AND `status` != "' .
+            pSQL(NotificationStatus::SUCCESS) .
+            '" AND `status` != "' .
+            pSQL(NotificationStatus::NOT_HANDLED) . '"';
+
         $result = Db::getInstance()->executeS($sql);
 
         if (empty($result)) {
@@ -474,8 +477,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
             pSQL((int)$data['transaction_ref']) .
             '" AND `notification_code` = "' .
             pSQL((int)$data['notification_code']) .
-            '" AND `status` != "SUCCESS"' .
-            ' AND `status` != "NOT HANDLED"';
+            '" AND `status` != "' .
+            pSQL(NotificationStatus::SUCCESS) .
+            '" AND `status` != "' .
+            pSQL(NotificationStatus::NOT_HANDLED) . '"';
 
             return Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData, $where);
         }
