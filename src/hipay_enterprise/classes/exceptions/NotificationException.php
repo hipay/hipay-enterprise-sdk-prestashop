@@ -12,14 +12,14 @@
  */
 
 /**
- * Class NotificationExpection
+ * Class NotificationException
  *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
-class NotificationExpection extends Exception
+class NotificationException extends Exception
 {
     private $context;
     private $returnCode;

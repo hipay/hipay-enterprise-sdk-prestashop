@@ -19,6 +19,7 @@ require_once(dirname(__FILE__) . '/HipayHelper.php');
 require_once(dirname(__FILE__) . '/HipayOrderMessage.php');
 require_once(dirname(__FILE__) . '/HipayMail.php');
 require_once(dirname(__FILE__) . '/../exceptions/PaymentProductNotFoundException.php');
+require_once(dirname(__FILE__) . '/../exceptions/NotificationException.php');
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
@@ -111,7 +112,7 @@ class HipayNotification
      * Process notification
      *
      * @throws Exception
-     * @throws NotificationExpection
+     * @throws NotificationException
      */
     public function processTransaction()
     {
@@ -135,7 +136,7 @@ class HipayNotification
                     $this->log->logInfos('Received 4 116 Notifications for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
-                    throw new NotificationExpection('Order not found for cart ID ' . $this->cart->id,
+                    throw new NotificationException('Order not found for cart ID ' . $this->cart->id,
                         Context::getContext(),
                         $this->module,
                         'HTTP/1.0 404 Not found'
@@ -271,7 +272,7 @@ class HipayNotification
             }
 
             $this->updateNotificationState(NotificationStatus::SUCCESS);
-        } catch(NotificationExpection $e) {
+        } catch(NotificationException $e) {
             $this->log->logException($e);
             throw $e;
         } catch (Exception $e) {

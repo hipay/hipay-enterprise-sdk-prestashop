@@ -11,6 +11,7 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
+require_once(dirname(__FILE__) . '/../../classes/exceptions/NotificationException.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayNotification.php');
 require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
 
@@ -70,7 +71,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
 
         try {
             $notificationHandler->processTransaction();
-        } catch (NotificationExpection $e) {
+        } catch (NotificationException $e) {
             header($e->getReturnCode());
             die($e->getMessage());
         } catch (Exception $e) {
