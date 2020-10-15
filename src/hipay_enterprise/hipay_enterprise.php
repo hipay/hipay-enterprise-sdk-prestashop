@@ -189,6 +189,8 @@ class Hipay_enterprise extends PaymentModule
             $return = $return && $return16;
         }
 
+        Configuration::updateValue('HIPAY_NOTIFICATION_THRESHOLD', 4);
+
         return $return && $this->installHook();
     }
 

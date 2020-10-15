@@ -23,6 +23,7 @@ function upgrade_module_2_11_0($module)
         $hipaySchemaManager = new HipayDBSchemaManager($module);
         $hipaySchemaManager->createHipayNotificationTable();
 
+        Configuration::updateValue('HIPAY_NOTIFICATION_THRESHOLD', 4);
         return true;
     } catch (Exception $e) {
         $log->logException($e);

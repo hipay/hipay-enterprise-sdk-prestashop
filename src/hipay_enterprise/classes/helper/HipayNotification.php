@@ -137,7 +137,7 @@ class HipayNotification
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
             } else {
                 if($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
-                    $currentAttempt >= 4){
+                    $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')){
                     $this->log->logInfos('Received 4 116 Notifications for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
@@ -178,6 +178,7 @@ class HipayNotification
                 case TransactionStatus::ACQUIRER_FOUND:
                 case TransactionStatus::ACQUIRER_NOT_FOUND:
                 case TransactionStatus::RISK_ACCEPTED:
+                case TransactionStatus::CAPTURE_REQUESTED:
                 default:
                     $orderState = 'skip';
                     break;
@@ -230,7 +231,6 @@ class HipayNotification
                     $this->setOrderCaptureType();
                     break;
                 case TransactionStatus::CAPTURED: //118
-                case TransactionStatus::CAPTURE_REQUESTED: //117
                     if ($this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1))) {
                         $orderState = _PS_OS_PAYMENT_;
                         if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
@@ -286,7 +286,6 @@ class HipayNotification
 
             $this->updateNotificationState(NotificationStatus::SUCCESS);
         } catch(NotificationException $e) {
-            $this->log->logException($e);
             throw $e;
         } catch (Exception $e) {
             $this->updateNotificationState(NotificationStatus::ERROR);
