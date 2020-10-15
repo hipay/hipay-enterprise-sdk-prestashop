@@ -253,7 +253,8 @@ class ApiCaller
                 "apiUsername" => $username,
                 "apiPassword" => $password,
                 "apiEnv" => $env,
-                "proxy" => $proxy
+                "proxy" => $proxy,
+                "timeout" => 30
             ));
 
         //Instantiate client provider with configuration object
