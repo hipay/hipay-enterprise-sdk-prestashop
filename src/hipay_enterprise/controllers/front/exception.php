@@ -66,7 +66,9 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
             $orderId = Order::getOrderByCartId($objCart->id);
         }
 
-        HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
+        if($orderId){
+            HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
+        }
 
         $this->setTemplate($path);
     }

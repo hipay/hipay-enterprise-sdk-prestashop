@@ -40,10 +40,15 @@ class HipayNotification
         TransactionStatus::REFUND_REQUESTED,
         TransactionStatus::PARTIALLY_REFUNDED,
         TransactionStatus::CAPTURE_REQUESTED,
+        TransactionStatus::CAPTURED,
         TransactionStatus::PARTIALLY_CAPTURED,
         TransactionStatus::CAPTURE_REFUSED
     ];
 
+    const NO_ORDER_NEEDED_NOTIFICATIONS = [
+        TransactionStatus::REFUSED,
+        TransactionStatus::AUTHENTICATION_FAILED
+    ];
 
     protected $transaction;
     protected $cart;
@@ -136,6 +141,10 @@ class HipayNotification
                     $this->log->logInfos('Received 4 116 Notifications for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
+                    if(in_array($this->transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)){
+                        die();
+                    }
+
                     throw new NotificationException('Order not found for cart ID ' . $this->cart->id,
                         Context::getContext(),
                         $this->module,
@@ -232,7 +241,11 @@ class HipayNotification
                             $this->captureOrder();
                         }
                     } else {
-                        throw new Exception("Order is not Authorized, could not capture Payment.");
+                        throw new NotificationException("Order is not Authorized, could not capture Payment.",
+                            Context::getContext(),
+                            $this->module,
+                            'HTTP/1.0 409 Conflict'
+                        );
                     }
                     break;
                 case TransactionStatus::PARTIALLY_CAPTURED: //119
