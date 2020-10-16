@@ -59,10 +59,6 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             Tools::redirect($redirectUrl);
         }
 
-        // SQL LOCK
-        //#################################################################
-
-        $dbUtils->setSQLLockForCart($objCart->id, 'postProcess' . $cartId);
         try {
             $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('product'));
         } catch (PaymentProductNotFoundException $e) {
@@ -75,14 +71,14 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $context->language
         );
 
-        $this->module->getLogs()->logInfos("# Prepare Validate Order from Validation");
-        HipayHelper::validateOrder(
+        $redirectParams = HipayHelper::validateOrder(
             $this->module,
-            $context,
-            $this->module->hipayConfigTool->getConfigHipay(),
-            $dbUtils,
+            $this->context,
             $objCart,
             $paymentProductName
         );
+
+        Hook::exec('displayHiPayAccepted', array('cart' => $objCart, "order_id" => $redirectParams['id_order']));
+        Tools::redirect('index.php?controller=order-confirmation&' . http_build_query($redirectParams));
     }
 }

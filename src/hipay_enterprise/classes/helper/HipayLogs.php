@@ -205,7 +205,14 @@ class HipayLogs
         $debugReplacePrivateDataKeys = array_map('strtolower', $this->privateDataKeys);
 
         foreach (array_keys($debugData) as $key) {
-            if (in_array(Tools::strtolower($key), $debugReplacePrivateDataKeys)) {
+            if (strpos( $key, "\0" ) !== false){
+                $newKey = str_replace("\0", '', $key);
+                $debugData[$newKey] = $debugData[$key];
+                unset($debugData[$key]);
+                $key = $newKey;
+            }
+
+            if (in_array(preg_replace('/^[^a-z]+/','', Tools::strtolower($key)), $debugReplacePrivateDataKeys)) {
                 $debugData[$key] = self::DEBUG_KEYS_MASK;
             } elseif (is_array($debugData[$key])) {
                 $debugData[$key] = $this->filterDebugData($debugData[$key]);

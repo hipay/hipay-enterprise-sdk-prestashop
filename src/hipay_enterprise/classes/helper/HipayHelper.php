@@ -98,12 +98,15 @@ class HipayHelper
     /**
      *
      * empty customer cart
+     * @param $cart
      * @return boolean
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-    public static function unsetCart()
+    public static function unsetCart($cart)
     {
         $context = Context::getContext();
-        $cart = new Cart($context->cookie->id_cart);
+
         unset($context->cookie->id_cart, $cart, $context->cookie->checkedTOS);
         $context->cookie->check_cgv = false;
         $context->cookie->write();
@@ -594,13 +597,12 @@ class HipayHelper
      *
      * @param $module
      * @param $context
-     * @param $configHipay
-     * @param $dbUtils
      * @param $cart
      * @param $productName
+     * @return array
      * @throws PrestaShopException
      */
-    public static function validateOrder($module, $context, $configHipay, $dbUtils, $cart, $productName)
+    public static function validateOrder($module, $context, $cart, $productName, $status = null)
     {
         $params = array();
         if (_PS_VERSION_ >= '1.7.1.0') {
@@ -612,60 +614,55 @@ class HipayHelper
         $customer = new Customer((int)$cart->id_customer);
 
         if ($cart && (!$orderId || empty($orderId))) {
-            $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId");
 
-            HipayHelper::unsetCart();
+            if(!$status){
+                $status = Configuration::get('HIPAY_OS_PENDING');
+            }
+
+            $module->getLogs()->logInfos("## Validate order for cart $cart->id $orderId with status $status");
+
+            HipayHelper::unsetCart($cart);
 
             $shopId = $cart->id_shop;
             $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
-
             $module->validateOrder(
                 (int)$cart->id,
-                Configuration::get('HIPAY_OS_PENDING'),
+                $status,
                 (float)$cart->getOrderTotal(true),
                 $productName,
-                $module->l('Order created by HiPay after success payment.'),
+                $module->l('Order created by HiPay.'),
                 array(),
                 $context->currency->id,
                 false,
                 $customer->secure_key,
                 $shop
             );
-
-            // get order id
-            $orderId = $module->currentOrder;
-            $dbUtils->releaseSQLLock('validateOrder');
-
-            Hook::exec('displayHiPayAccepted', array('cart' => $cart, "order_id" => $orderId));
         } else {
             $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
-            $dbUtils->releaseSQLLock("validateOrder ( order exist  $orderId )");
         }
 
         if ($customer) {
-            $params = http_build_query(
-                array(
-                    'id_cart' => $cart->id,
-                    'id_module' => $module->id,
-                    'id_order' => $orderId,
-                    'key' => $customer->secure_key,
-                )
+            $params = array(
+                'id_cart' => $cart->id,
+                'id_module' => $module->id,
+                'id_order' => $orderId,
+                'key' => $customer->secure_key
             );
         }
 
-        return Tools::redirect('index.php?controller=order-confirmation&' . $params);
+        return $params;
     }
 
     /**
      * Duplicates cart when payment is declined, so prestashop will keep the customer's cart alive
+     * @param $cart
      * @return bool
      */
-    public static function duplicateCart()
+    public static function duplicateCart($cart)
     {
         $context = Context::getContext();
-        $cart = new Cart($context->cookie->id_cart);
         $duplication = $cart->duplicate();
 
         if($duplication['success']) {
@@ -752,5 +749,42 @@ class HipayHelper
         }
 
         return abs($amount);
+    }
+
+    /**
+     * change order status
+     *
+     * @param $order
+     * @param $newState
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public static function changeOrderStatus($order, $newState)
+    {
+        $orderHistory = new OrderHistory();
+        $orderHistory->id_order = $order->id;
+        $orderHistory->changeIdOrderState($newState, $order, true);
+
+        $orderHistory->addWithemail(true);
+    }
+
+    /**
+     * Retrieves cart pointed by the cookies OR last used cart for a customer
+     * @param $module
+     * @return bool|Cart
+     */
+    public static function getCustomerCart($module){
+        $context = Context::getContext();
+
+        $dbUtils = new HipayDBUtils($module);
+        if (!$context->cookie->id_cart) {
+            // if not we retrieve the last cart
+            $cart = $dbUtils->getLastCartFromUser($context->customer->id);
+        } else {
+            // load cart
+            $cart = new Cart($context->cookie->id_cart);
+        }
+
+        return $cart;
     }
 }

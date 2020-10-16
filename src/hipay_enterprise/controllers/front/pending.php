@@ -35,7 +35,9 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         $this->display_column_right = false;
         parent::initContent();
 
-        HipayHelper::unsetCart();
+        $cart = HipayHelper::getCustomerCart($this->module);
+
+        HipayHelper::unsetCart($cart);
 
         $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
             $this->module->name .
