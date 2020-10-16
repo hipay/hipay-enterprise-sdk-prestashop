@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.11.0
+
+- **Fix**: Changed order creation moment and notification handling
+
 ## Version 2.10.0
 
 - **Add**: Added merchant promotion field for Oney With or Without Fees payment methods
