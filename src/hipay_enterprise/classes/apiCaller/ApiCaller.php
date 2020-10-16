@@ -92,6 +92,7 @@ class ApiCaller
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest);
             $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage " . $orderRequest->orderid);
+            $moduleInstance->getLogs()->logCallback($transaction);
 
             return $transaction->getForwardUrl();
         } catch (Exception $e) {
@@ -130,12 +131,12 @@ class ApiCaller
 
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $response = $gatewayClient->requestNewOrder($orderRequest);
+            $moduleInstance->getLogs()->logCallback($response);
 
             return $response;
         } catch (Exception $e) {
             $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
-            $dbUtils->releaseSQLLock('requestDirectPost');
             throw new GatewayException(
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
                 $e->getMessage() . ']',
@@ -180,6 +181,8 @@ class ApiCaller
                 null,
                 $maintenanceRequest
             );
+            $moduleInstance->getLogs()->logCallback($transaction);
+
             // save maintenance data in db
             $maintenanceData->saveData();
             return $transaction;
@@ -250,7 +253,8 @@ class ApiCaller
                 "apiUsername" => $username,
                 "apiPassword" => $password,
                 "apiEnv" => $env,
-                "proxy" => $proxy
+                "proxy" => $proxy,
+                "timeout" => 30
             ));
 
         //Instantiate client provider with configuration object

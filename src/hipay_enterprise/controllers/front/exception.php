@@ -46,6 +46,30 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
             $this->module->name .
             self::PATH_TEMPLATE_PS_17 : self::PATH_TEMPLATE_PS_16);
         $this->module->getLogs()->logInfos("# Exception payment");
+
+        $context = Context::getContext();
+        $cartId = Tools::getValue('orderId');
+        $dbUtils = new HipayDBUtils($this->module);
+        // --------------------------------------------------------------------------
+        // check if data are sent by payment page
+        if (!$cartId) {
+            // if not we retrieve the last cart
+            $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
+        } else {
+            // load cart
+            $objCart = new Cart((int)$cartId);
+        }
+
+        if (_PS_VERSION_ >= '1.7.1.0') {
+            $orderId = Order::getIdByCartId($objCart->id);
+        } else {
+            $orderId = Order::getOrderByCartId($objCart->id);
+        }
+
+        if($orderId){
+            HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
+        }
+
         $this->setTemplate($path);
     }
 }

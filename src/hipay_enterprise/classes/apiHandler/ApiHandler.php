@@ -389,6 +389,10 @@ class Apihandler
      */
     private function handleDirectOrder($params)
     {
+        $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
+        $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
+        $exceptionUrl = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
+
         try {
             $params["paymentProduct"] = $this->module->hipayConfigTool->getPaymentProduct($params["method"]);
 
@@ -400,16 +404,28 @@ class Apihandler
 
             $response = ApiCaller::requestDirectPost($this->module, $params);
 
-            $failUrl = $this->context->link->getModuleLink($this->module->name, 'decline', array(), true);
-            $pendingUrl = $this->context->link->getModuleLink($this->module->name, 'pending', array(), true);
-            $exceptionUrl = $this->context->link->getModuleLink($this->module->name, 'exception', array(), true);
             $forwardUrl = $response->getForwardUrl();
 
             switch ($response->getState()) {
                 case TransactionState::COMPLETED:
-                    $this->callValidateOrder($params);
+                    $redirectParams = HipayHelper::validateOrder(
+                        $this->module,
+                        $this->context,
+                        $this->context->cart,
+                        $params["methodDisplayName"]
+                    );
+
+                    Hook::exec('displayHiPayAccepted', array('cart' => $this->context->cart, "order_id" => $redirectParams['id_order']));
+                    $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);
                     break;
                 case TransactionState::PENDING:
+                    HipayHelper::validateOrder(
+                        $this->module,
+                        $this->context,
+                        $this->context->cart,
+                        $params["methodDisplayName"]
+                    );
+
                     $redirectUrl = $pendingUrl;
                     break;
                 case TransactionState::FORWARDING:
@@ -436,6 +452,9 @@ class Apihandler
             Tools::redirect($redirectUrl);
         } catch (GatewayException $e) {
             $e->handleException();
+        } catch(Exception $e){
+            HipayHelper::redirectToExceptionPage($this->context, $this->module);
+            die();
         }
     }
 
@@ -455,31 +474,5 @@ class Apihandler
         }
 
         return $paymentMethod->generate();
-    }
-
-    /**
-     * create order (Api Order)
-     *
-     * @param $params
-     * @throws PrestaShopException
-     */
-    private function callValidateOrder($params)
-    {
-        // SQL LOCK
-        //#################################################################
-        $cart = $this->context->cart;
-        $this->module->getLogs()->logInfos('callValidateOrder' . $cart->id);
-        $this->dbUtils->setSQLLockForCart($cart->id, 'callValidateOrder' . $cart->id);
-
-        HipayHelper::validateOrder(
-            $this->module,
-            $this->context,
-            $this->configHipay,
-            $this->dbUtils,
-            $cart,
-            $params["methodDisplayName"]
-        );
-
-        $this->dbUtils->releaseSQLLock('callValidateOrder' . $cart->id);
     }
 }
