@@ -160,7 +160,6 @@ class HipayNotification
 
             $this->dbUtils->setSQLLockForCart($this->order->id, "# ProcessTransaction for order ID : " . $this->order->id);
 
-
             $orderHasBeenPaid = (int)$this->order->getCurrentState() == _PS_OS_OUTOFSTOCK_PAID_ ||
                 $this->controleIfStatushistoryExist(_PS_OS_PAYMENT_);
 
