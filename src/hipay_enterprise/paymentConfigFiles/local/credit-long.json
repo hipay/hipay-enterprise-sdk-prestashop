@@ -1,0 +1,33 @@
+{
+  "name": "credit-long",
+  "config": {
+    "group": {
+      "code": "oney",
+      "label": "Oney"
+    },
+    "displayNameBO": "Credit Long - Oney",
+    "displayName": {
+      "fr": "Long Credit - Oney",
+      "en": "Credit Long - Oney"
+    },
+    "frontPosition": 33,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries",
+      "merchantPromotion"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "oney.png",
+    "merchantPromotion": false
+  }
+}
