@@ -543,22 +543,23 @@ class HipayHelper
                                             );
                                         } else {
                                             try {
+                                                $errorMsg = 'The format of the phone number must match %s phone.';
+                                                $countryCode = Country::getIsoById($address->id_country);
+                                                switch ($countryCode) {
+                                                    case 'FR':
+                                                        $errorMsg = sprintf($errorMsg, 'a French');
+                                                        break;
+                                                }
+                                                $errorMsg = $module->l($errorMsg);
+
                                                 $phoneNumberUtil = libphonenumber\PhoneNumberUtil::getInstance();
-                                                $phoneNumber = $phoneNumberUtil->parse(
-                                                    $phone,
-                                                    Country::getIsoById($address->id_country)
-                                                );
+                                                $phoneNumber = $phoneNumberUtil->parse($phone, $countryCode);
 
                                                 if (!$phoneNumberUtil->isValidNumber($phoneNumber)) {
-                                                    $fieldMandatory[] = $module->l(
-                                                        'Please check the phone number entered.'
-                                                    );
+                                                    $fieldMandatory[] = $errorMsg;
                                                 }
-                                            } catch (libphonenumber\NumberParseException | Exception $e) {
-                                                $module->getLogs()->logErrors($e);
-                                                $fieldMandatory[] = $module->l(
-                                                    'Please check the phone number entered.'
-                                                );
+                                            } catch (Exception $e) {
+                                                $fieldMandatory[] = $errorMsg;
                                             }
                                         }
                                         break;

@@ -105,8 +105,10 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
                     );
                 }
             }
-        } finally {
-            return $phone;
+        } catch (libphonenumber\NumberParseException | Exception $e) {
+            $this->module->getLogs()->logErrors($e);
         }
+
+        return $phone;
     }
 }
