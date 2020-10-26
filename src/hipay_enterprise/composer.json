@@ -11,7 +11,7 @@
     },
     "description": "Hipay enterprise module for Prestashop",
     "license": "Apache 2.0",
-    "name": "Hipay Enterprise Prestashop",
+    "name": "hipay/hipay-enterprise-sdk-prestashop",
     "require": {
         "giggsey/libphonenumber-for-php": "8.12.*",
         "hipay/hipay-fullservice-sdk-php": "2.6.0"
