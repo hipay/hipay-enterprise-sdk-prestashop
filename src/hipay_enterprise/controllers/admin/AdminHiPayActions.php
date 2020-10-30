@@ -58,10 +58,14 @@ class AdminHiPayActionsController extends ModuleAdminController
     {
         $this->module = 'hipay_enterprise';
         $this->bootstrap = true;
-        $this->context = Context::getContext();
 
         parent::__construct();
 
+        if (Tools::isSubmit('id_order') && Tools::getValue('id_order') > 0) {
+            $order = new Order(Tools::getValue('id_order'));
+            Shop::setContext(Shop::CONTEXT_SHOP, (int)$order->id_shop);
+        }
+        $this->context = Context::getContext();
         $this->apiHandler = new ApiHandler($this->module, $this->context);
         $this->dbMaintenance = new HipayDBMaintenance($this->module);
     }
