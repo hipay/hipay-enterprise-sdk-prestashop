@@ -173,6 +173,7 @@ class ApiCaller
 
             $maintenanceRequest = $maintenanceFormatter->generate();
             $moduleInstance->getLogs()->logRequest($maintenanceRequest);
+
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $transaction = $gatewayClient->requestMaintenanceOperation(
                 $params["operation"],

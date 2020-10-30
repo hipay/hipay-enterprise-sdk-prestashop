@@ -54,6 +54,8 @@ class HipayConfig
      */
     public function getConfigHipay()
     {
+        // Reload context if updated in multi shop context
+        $this->context = Context::getContext();
         if (empty($this->configHipay)) {
             $this->initConfigHiPay();
         }
@@ -202,7 +204,7 @@ class HipayConfig
     private function initConfigHiPay()
     {
         // init multistore
-        $id_shop = (int)$this->context->shop->id;
+        $id_shop = (int)Shop::getContextShopID();
         $id_shop_group = (int)Shop::getContextShopGroupID();
         $this->configHipay = Tools::jsonDecode(
             Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
