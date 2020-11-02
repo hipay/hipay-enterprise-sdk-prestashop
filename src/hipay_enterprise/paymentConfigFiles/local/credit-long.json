@@ -1,16 +1,16 @@
 {
-  "name": "3xcb",
+  "name": "credit-long",
   "config": {
     "group": {
       "code": "oney",
       "label": "Oney"
     },
-    "displayNameBO": "3x Carte Bancaire - Oney",
+    "displayNameBO": "Credit Long - Oney",
     "displayName": {
-      "fr": "3x Carte Bancaire - Oney",
-      "en": "3x Credit Card - Oney"
+      "fr": "Credit Long - Oney",
+      "en": "Credit Long - Oney"
     },
-    "frontPosition": 3,
+    "frontPosition": 33,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
@@ -27,7 +27,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "3xcb.png",
+    "logo": "oney-credit-long.png",
     "merchantPromotion": false
   }
 }

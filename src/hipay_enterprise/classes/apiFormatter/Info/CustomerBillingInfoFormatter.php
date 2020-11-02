@@ -11,8 +11,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
-require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
+require_once dirname(__FILE__) . '/../../../lib/vendor/autoload.php';
+require_once dirname(__FILE__) . '/../ApiFormatterAbstract.php';
 
 /**
  *
@@ -26,12 +26,12 @@ require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 class CustomerBillingInfoFormatter extends ApiFormatterAbstract
 {
 
-    public function __construct($module, $cart = false, $payment_product = "")
+    public function __construct($module, $cart = false, $payment_product = '')
     {
         parent::__construct($module, $cart);
         // fields only used for customer billing mapping
-        $this->invoice = new Address((int)$this->cart->id_address_invoice);
-        $this->country = new Country((int)$this->invoice->id_country);
+        $this->invoice = new Address((int) $this->cart->id_address_invoice);
+        $this->country = new Country((int) $this->invoice->id_country);
         $this->payment_product = $payment_product;
     }
 
@@ -72,10 +72,6 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
         $customerBillingInfo->country = $this->country->iso_code;
         $customerBillingInfo->phone = $this->getPhone();
 
-        if ($this->payment_product == 'bnpp-3xcb' || $this->payment_product == 'bnpp-4xcb') {
-            $customerBillingInfo->phone =  preg_replace('/^(\+33)|(33)/','0',$customerBillingInfo->phone);
-        }
-
         $customerBillingInfo->state = ($this->deliveryState) ? $this->deliveryState->name : '';
         $customerBillingInfo->recipientinfo = $this->store->name;
     }
@@ -86,12 +82,33 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
      */
     private function getPhone()
     {
-        if (isset($this->invoice->phone) && $this->invoice->phone != '') {
-            return $this->invoice->phone;
-        } elseif (isset($this->invoice->phone_mobile) && $this->invoice->phone_mobile != '') {
-            return $this->invoice->phone_mobile;
-        } else {
-            return '';
+        $phone = '';
+        if (isset($this->invoice->phone) && !empty($this->invoice->phone)) {
+            $phone = $this->invoice->phone;
+        } elseif (isset($this->invoice->phone_mobile) && !empty($this->invoice->phone_mobile)) {
+            $phone = $this->invoice->phone_mobile;
         }
+
+        try {
+            if (!empty($phone)) {
+                $phoneNumberUtil = libphonenumber\PhoneNumberUtil::getInstance();
+
+                $phoneNumber = $phoneNumberUtil->parse(
+                    $phone,
+                    Country::getIsoById($this->invoice->id_country)
+                );
+
+                if ($phoneNumberUtil->isValidNumber($phoneNumber)) {
+                    $phone = $phoneNumberUtil->format(
+                        $phoneNumber,
+                        libphonenumber\PhoneNumberFormat::E164
+                    );
+                }
+            }
+        } catch (libphonenumber\NumberParseException | Exception $e) {
+            $this->module->getLogs()->logErrors($e);
+        }
+
+        return $phone;
     }
 }

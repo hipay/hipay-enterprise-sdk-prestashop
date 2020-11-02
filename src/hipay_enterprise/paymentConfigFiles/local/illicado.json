@@ -1,33 +1,30 @@
 {
-  "name": "3xcb",
+  "name": "illicado",
   "config": {
-    "group": {
-      "code": "oney",
-      "label": "Oney"
-    },
-    "displayNameBO": "3x Carte Bancaire - Oney",
+    "displayNameBO": "Illicado",
     "displayName": {
-      "fr": "3x Carte Bancaire - Oney",
-      "en": "3x Credit Card - Oney"
+      "fr": "Illicado",
+      "en": "Illicado"
     },
-    "frontPosition": 3,
+    "frontPosition": 32,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
       "minAmount",
       "maxAmount",
       "countries",
-      "merchantPromotion"
+      "iframe"
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
+    "forceHpayment": 1,
+    "iframe": 0,
     "minAmount": {
       "EUR": 0
     },
     "maxAmount": {
       "EUR": false
     },
-    "logo": "3xcb.png",
-    "merchantPromotion": false
+    "logo": "illicado.png"
   }
 }

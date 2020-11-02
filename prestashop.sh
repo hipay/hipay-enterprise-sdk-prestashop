@@ -6,38 +6,38 @@ header="bin/tests/"
 pathPreFile=${header}000*/*.js
 pathLibHipay=${header}000*/*/*/*.js
 pathDir=${header}0*
+psVersion=${2:-"17"}
 
 manageComposerForData() {
-    COMPOSER_JSON_FILE="src/hipay_enterprise/composer.json"
+     COMPOSER_JSON_FILE="src/hipay_enterprise/composer.json"
 
-    echo "Setting up git pre-commit hook..."
+     echo "Setting up git pre-commit hook..."
 
-    echo "#!/bin/bash" > .git/hooks/pre-commit
-    echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >> .git/hooks/pre-commit
-    echo "git status --porcelain -uno | grep \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
-    echo "if [ $? -eq 0 ]" >> .git/hooks/pre-commit
-    echo "then" >> .git/hooks/pre-commit
-    echo "    cp \$COMPOSER_JSON_FILE \$COMPOSER_JSON_FILE.bak" >> .git/hooks/pre-commit
-    echo "    cat \$COMPOSER_JSON_FILE.bak | python -c \"import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = None; del composerObj['scripts']; print( json.dumps(composerObj, sort_keys=True, indent=4));\" > \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
-    echo "    git add \$COMPOSER_JSON_FILE" >> .git/hooks/pre-commit
-    echo "fi" >> .git/hooks/pre-commit
-    echo "exit 0" >> .git/hooks/pre-commit
+     echo "#!/bin/bash" >.git/hooks/pre-commit
+     echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >>.git/hooks/pre-commit
+     echo "git status --porcelain -uno | grep \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
+     echo "if [ $? -eq 0 ]" >>.git/hooks/pre-commit
+     echo "then" >>.git/hooks/pre-commit
+     echo "    cp \$COMPOSER_JSON_FILE \$COMPOSER_JSON_FILE.bak" >>.git/hooks/pre-commit
+     echo "    cat \$COMPOSER_JSON_FILE.bak | python -c \"import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = None; del composerObj['scripts']; print( json.dumps(composerObj, sort_keys=True, indent=4));\" > \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
+     echo "    git add \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
+     echo "fi" >>.git/hooks/pre-commit
+     echo "exit 0" >>.git/hooks/pre-commit
 
-    chmod 775 .git/hooks/pre-commit
+     chmod 775 .git/hooks/pre-commit
 
+     echo "Setting up git post-commit hook..."
 
-    echo "Setting up git post-commit hook..."
+     echo "#!/bin/bash" >.git/hooks/post-commit
+     echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >>.git/hooks/post-commit
+     echo "if [ -f \$COMPOSER_JSON_FILE.bak ]" >>.git/hooks/post-commit
+     echo "then" >>.git/hooks/post-commit
+     echo "    cp \$COMPOSER_JSON_FILE.bak \$COMPOSER_JSON_FILE" >>.git/hooks/post-commit
+     echo "    rm \$COMPOSER_JSON_FILE.bak" >>.git/hooks/post-commit
+     echo "fi" >>.git/hooks/post-commit
+     echo "exit 0" >>.git/hooks/post-commit
 
-    echo "#!/bin/bash" > .git/hooks/post-commit
-    echo "COMPOSER_JSON_FILE='"$COMPOSER_JSON_FILE"'" >> .git/hooks/post-commit
-    echo "if [ -f \$COMPOSER_JSON_FILE.bak ]" >> .git/hooks/post-commit
-    echo "then" >> .git/hooks/post-commit
-    echo "    cp \$COMPOSER_JSON_FILE.bak \$COMPOSER_JSON_FILE" >> .git/hooks/post-commit
-    echo "    rm \$COMPOSER_JSON_FILE.bak" >> .git/hooks/post-commit
-    echo "fi" >> .git/hooks/post-commit
-    echo "exit 0" >> .git/hooks/post-commit
-
-    chmod 775 .git/hooks/post-commit
+     chmod 775 .git/hooks/post-commit
 }
 
 manageComposerForData
@@ -45,47 +45,39 @@ manageComposerForData
 #=============================================================================
 #  Use this script build hipay images and run Hipay Professional's containers
 #==============================================================================
-if [ "$1" = '' ] || [ "$1" = '--help' ];then
-    printf "\n                                                                                  "
-    printf "\n ================================================================================ "
-    printf "\n                                  HiPay'S HELPER                                 "
-    printf "\n                                                                                  "
-    printf "\n For each commands, you may specify the prestashop version "16" or "17"           "
-    printf "\n ================================================================================ "
-    printf "\n                                                                                  "
-    printf "\n                                                                                  "
-    printf "\n      - init      : Build images and run containers (Delete existing volumes)     "
-    printf "\n      - restart   : Run all containers if they already exist                      "
-    printf "\n      - up        : Up containters                                                "
-    printf "\n      - exec      : Bash prestashop.                                              "
-    printf "\n      - log       : Log prestashop.                                               "
-    printf "\n                                                                                  "
+if [ "$1" = '' ] || [ "$1" = '--help' ]; then
+     printf "\n                                                                                         "
+     printf "\n ================================================================================        "
+     printf "\n                                  HiPay'S HELPER                                         "
+     printf "\n                                                                                         "
+     printf "\n For each commands, you may specify the prestashop version "16" or "17". Default "17"    "
+     printf "\n ================================================================================        "
+     printf "\n                                                                                         "
+     printf "\n                                                                                         "
+     printf "\n      - init      : Build images and run containers (Delete existing volumes)            "
+     printf "\n      - restart   : Run all containers if they already exist                             "
+     printf "\n      - up        : Up containters                                                       "
+     printf "\n      - exec      : Bash prestashop.                                                     "
+     printf "\n      - log       : Log prestashop.                                                      "
+     printf "\n                                                                                         "
 fi
 
-if [ "$1" = 'init' ] && [ "$2" = '' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop17 database
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop17 database
+if [ "$1" = 'init' ]; then
+     docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
      rm -Rf data/
-     rm -Rf web17/
-     docker-compose -f docker-compose.dev.yml build --no-cache prestashop17 database
-     docker-compose -f docker-compose.dev.yml up -d prestashop17 database
+     rm -Rf web$psVersion/
+     docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml build prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
 fi
 
-if [ "$1" = 'init' ] && [ "$2" != '' ];then
-     docker-compose -f docker-compose.dev.yml stop prestashop"$2" database
-     docker-compose -f docker-compose.dev.yml rm -fv prestashop"$2" database
-     rm -Rf data/
-     rm -Rf web16/
-     docker-compose -f docker-compose.dev.yml build --no-cache prestashop"$2" database
-     docker-compose -f docker-compose.dev.yml up  -d prestashop"$2" database
+if [ "$1" = 'restart' ]; then
+     docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
 fi
 
-if [ "$1" = 'restart' ];then
-     docker-compose -f docker-compose.dev.yml  stop prestashop17 database
-     docker-compose -f docker-compose.dev.yml  up -d prestashop17 database
-fi
-
-if [ "$1" = 'kill' ];then
+if [ "$1" = 'kill' ]; then
      docker-compose -f docker-compose.dev.yml stop prestashop16 prestashop17 database
      docker-compose -f docker-compose.dev.yml rm -fv prestashop16 prestashop17 database
      rm -Rf data/
@@ -93,56 +85,55 @@ if [ "$1" = 'kill' ];then
      rm -Rf web17/
 fi
 
-if [ "$1" = 'exec' ] && [ "$2" != '' ];then
-     docker exec -it hipay-enterprise-shop-ps"$2" bash
+if [ "$1" = 'exec' ]; then
+     docker exec -it hipay-enterprise-shop-ps$psVersion bash
 fi
 
-if [ "$1" = 'log' ] && [ "$2" != '' ];then
-    docker logs -f hipay-enterprise-shop-ps"$2"
+if [ "$1" = 'log' ]; then
+     docker logs -f hipay-enterprise-shop-ps$psVersion
 fi
 
-if [ "$1" = 'console' ] && [ "$2" != '' ] && [ "$3" != '' ];then
+if [ "$1" = 'console' ] && [ "$2" != '' ] && [ "$3" != '' ]; then
      docker exec -it hipay-enterprise-shop-ps"$2" bash php console/console.php "$3"
 fi
 
 if [ "$1" = 'udpate-lib' ]; then
-   cd bin/tests/000_lib
-   bower install hipay-casperjs-lib#develop --allow-root
+     cd bin/tests/000_lib
+     bower install hipay-casperjs-lib#develop --allow-root
 fi
 
 if [ "$1" = 'test' ]; then
-   #setBackendCredentials
-   #setPaypalCredentials
+     #setBackendCredentials
+     #setPaypalCredentials
 
-   rm -rf bin/tests/errors/*
-   printf "Errors from previous tests cleared !\n\n"
+     rm -rf bin/tests/errors/*
+     printf "Errors from previous tests cleared !\n\n"
 
-   if [ "$(ls -A ~/.local/share/Ofi\ Labs/PhantomJS/)" ]; then
-       rm -rf ~/.local/share/Ofi\ Labs/PhantomJS/*
-       printf "Cache cleared !\n\n"
-   else
-       printf "Pas de cache à effacer !\n\n"
-   fi
+     if [ "$(ls -A ~/.local/share/Ofi\ Labs/PhantomJS/)" ]; then
+          rm -rf ~/.local/share/Ofi\ Labs/PhantomJS/*
+          printf "Cache cleared !\n\n"
+     else
+          printf "Pas de cache à effacer !\n\n"
+     fi
 
-   cd bin/tests/000_lib
-#   npm install
-   cd ../../../;
+     cd bin/tests/000_lib
+     #   npm install
+     cd ../../../
 
-   if [ "$2" = '17' ]; then
-    BASE_URL="http://localhost:8087/"
-    PRESTASHOP_VERSION=1.7
-   else
-    BASE_URL="http://localhost:8086/"
-    PRESTASHOP_VERSION=1.6
-   fi
+     if [ "$psVersion" = '17' ]; then
+          BASE_URL="http://localhost:8087/"
+          PRESTASHOP_VERSION=1.7
+     else
+          BASE_URL="http://localhost:8086/"
+          PRESTASHOP_VERSION=1.6
+     fi
 
-   casperjs test $pathPreFile ${pathDir}/[0-1]*/0202-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL  --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
+     casperjs test $pathPreFile ${pathDir}/[0-1]*/0202-*.js --url=$BASE_URL --ps-version=$PRESTASHOP_VERSION --url-mailcatcher=$URL_MAILCATCHER --login-backend=$LOGIN_BACKEND --pass-backend=$PASS_BACKEND --login-paypal=$LOGIN_PAYPAL --pass-paypal=$PASS_PAYPAL --xunit=${header}result.xml --ignore-ssl-errors=true --ssl-protocol=any --cookies-keep-session --web-security=false --fail-fast
 fi
 
-if [ "$1" = 'clear-smarty' ] && [ "$2" != '' ]; then
-   cd web$2/var/cache/dev/smarty/compile
-   sudo chmod -R 775 .
-   rm -r ./*
-   echo "Cleared"
+if [ "$1" = 'clear-smarty' ]; then
+     cd web$psVersion/var/cache/dev/smarty/compile
+     sudo chmod -R 775 .
+     rm -r ./*
+     echo "Cleared"
 fi
-
