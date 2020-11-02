@@ -15,6 +15,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2d2a9e31222bd2645ec042f
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisis.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1f6647801910cf3c2408f51395ce6cc'] = 'Le format du numéro de téléphone doit correspondre à un numéro Français.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Algorithme de hachage pour %s a été synchronisé avec %s.';
@@ -42,9 +43,8 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_f2bd8afb82ef2e9a6ca19b
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_147b202e5d808b32bd8d1eaaa135a58e'] = 'Montant total de la commande :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_41683156a02a5458061f1ceff3a7b7e4'] = 'ID de la transaction :';
 $_MODULE['<{hipay_enterprise}prestashop>hipayordermessage_cab7966508bf13075ade294cdf147b53'] = 'Statut HiPay :';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisi.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_95de3b921c187aee5af0a38652383790'] = 'Commande créée par HiPay après un paiement effectué avec succès ';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_3df9bf54943f02ca59a3a32496f5f4b1'] = 'Commande créée par HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_6d12f60dbfa06b3da45091a331957382'] = 'Configuration du module sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_8458084c5456ab2d8eef1aa3a2adb68b'] = 'Configuration globale des méthodes de paiement sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_edd17fcd44ef5daf55530049faf68592'] = 'Configuration des cartes de crédit sauvegardée avec succès';

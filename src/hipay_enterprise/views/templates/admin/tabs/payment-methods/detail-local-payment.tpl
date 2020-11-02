@@ -192,21 +192,23 @@
 
         {if $method["countrySelectorReadOnly"]}
             <div class="row">
-                <div class="form-group">
+                <div class="form-group vertical-align">
                     <label class="control-label col-lg-2">{l s='Activated Countries' mod='hipay_enterprise'}</label>
-                    {foreach  $method["countries"] as $country }
-                        {if isset($limitedCountries[$country])}
-                            <span class="col-lg-2 label-value">{$limitedCountries[$country]}</span>
-                            <input type="hidden" readonly value="{$country}"
-                                   name="{$key}_countries[]"/>
-                        {else}
-                            <span class="label-value col-lg-4">{$country}
-                                {l s='This country is not activated in your prestashop shop' mod='hipay_enterprise'}
-                            </span>
-                            <input type="hidden" value="{$country}"
-                                   name="{$key}_countries[]"/>
-                        {/if}
-                    {/foreach}
+                    <div class="inline-grid">
+                        {foreach  $method["countries"] as $country }
+                            {if isset($limitedCountries[$country])}
+                                <span class="col-lg-6 label-value">{$limitedCountries[$country]}</span>
+                                <input type="hidden" readonly value="{$country}"
+                                    name="{$key}_countries[]"/>
+                            {else}
+                                <span class="label-value col-lg-8">{$country}
+                                    {l s='This country is not activated in your prestashop shop' mod='hipay_enterprise'}
+                                </span>
+                                <input type="hidden" value="{$country}"
+                                    name="{$key}_countries[]"/>
+                            {/if}
+                        {/foreach}
+                    </div>
                 </div>
             </div>
         {else}
