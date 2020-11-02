@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.12.0
+
+- **New** payment methods :
+  - Credit Long - Oney
+  - Illicado
+- **Add**: Oney restrictions
+
 ## Version 2.11.0
 
 - **Fix**: Changed order creation moment and notification handling

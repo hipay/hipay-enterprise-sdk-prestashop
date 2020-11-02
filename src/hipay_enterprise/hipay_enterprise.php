@@ -38,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.11.0';
+        $this->version = '2.12.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -430,14 +430,14 @@ class Hipay_enterprise extends PaymentModule
                         'cta_text' => $this->l('Pay by credit card'),
                         'logo' => Media::getMediaPath($this->_path . 'views/img/amexa200.png'),
                         'action' => $this->context->link->getModuleLink($this->name, 'redirect', [], true),
-                    ];
+                        ];
                 } else {
                     $paymentOptions[] =
                         [
                         'cta_text' => $this->l('Pay by') . ' ' . $paymentProduct['displayName'],
                         'logo' => Media::getMediaPath($paymentProduct['payment_button']),
                         'action' => $paymentProduct['link'],
-                    ];
+                        ];
                 }
             }
         }
