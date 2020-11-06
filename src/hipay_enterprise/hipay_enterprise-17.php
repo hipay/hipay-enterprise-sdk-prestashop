@@ -11,11 +11,11 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once dirname(__FILE__) . '/classes/apiCaller/ApiCaller.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayCCToken.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayHelper.php';
-require_once dirname(__FILE__) . '/classes/apiHandler/ApiHandler.php';
-require_once dirname(__FILE__) . '/classes/helper/enums/UXMode.php';
+require_once(dirname(__FILE__) . '/classes/apiCaller/ApiCaller.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/classes/apiHandler/ApiHandler.php');
+require_once(dirname(__FILE__) . '/classes/helper/enums/UXMode.php');
 
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
@@ -135,8 +135,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
         ) {
             $iframe = false;
 
-            if (
-                isset($this->hipayConfigTool->getLocalPayment()[$name]['iframe'])
+            if (isset($this->hipayConfigTool->getLocalPayment()[$name]['iframe'])
                 && $this->hipayConfigTool->getLocalPayment()[$name]['iframe']
             ) {
                 $iframe = true;
@@ -190,12 +189,12 @@ class HipayEnterpriseNew extends Hipay_enterprise
     {
         if (!empty($paymentProduct['products'])) {
             if (isset(
-                $this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'][$this->context->language->iso_code])
+                $this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'][$this->context->language->iso_code]
+            )
             ) {
                 $displayName = $this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'][$this->context->language->iso_code];
             } else {
-                if (
-                    isset($this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'])
+                if (isset($this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'])
                     && !is_array($this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'])
                 ) {
                     $displayName = $this->hipayConfigTool->getPaymentGlobal()['ccDisplayName'];
@@ -280,7 +279,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
         // Only on order page
         if ('order' === $this->context->controller->php_self) {
-
             $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/card-js.min.css', 'all');
             $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
 
