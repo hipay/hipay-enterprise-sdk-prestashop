@@ -11,8 +11,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
 
-require_once dirname(__FILE__) . '/../../../lib/vendor/autoload.php';
-require_once dirname(__FILE__) . '/../ApiFormatterAbstract.php';
+require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../../../lib/vendor/autoload.php');
+require_once(dirname(__FILE__) . '/../ApiFormatterAbstract.php');
 
 /**
  *

@@ -688,21 +688,21 @@ class Hipay_enterprise extends PaymentModule
 
 if (_PS_VERSION_ >= '1.7') {
     // version 1.7
-    require_once dirname(__FILE__) . '/hipay_enterprise-17.php';
+    require_once(dirname(__FILE__) . '/hipay_enterprise-17.php');
 } elseif (_PS_VERSION_ < '1.6') {
     // Version < 1.6
     Tools::displayError('The module HiPay Enterprise is not compatible with your PrestaShop');
 }
 
-require_once dirname(__FILE__) . '/classes/helper/HipayLogs.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayConfig.php';
-require_once dirname(__FILE__) . '/classes/forms/HipayForm.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayMapper.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayHelper.php';
-require_once dirname(__FILE__) . '/classes/helper/dbquery/HipayDBSchemaManager.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayCCToken.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayFormControl.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php';
+require_once(dirname(__FILE__) . '/classes/helper/HipayLogs.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayConfig.php');
+require_once(dirname(__FILE__) . '/classes/forms/HipayForm.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayMapper.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayHelper.php');
+require_once(dirname(__FILE__) . '/classes/helper/dbquery/HipayDBSchemaManager.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayCCToken.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayOrderStatus.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayFormControl.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php');
+require_once(dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php');
