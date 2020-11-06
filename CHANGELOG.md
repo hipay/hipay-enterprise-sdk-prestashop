@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.2
+
+- **Fix** 2.12.0 upgrade script
+
 ## Version 2.12.1
 
 - **Fix** catch notation for PHP versions prior to 7
