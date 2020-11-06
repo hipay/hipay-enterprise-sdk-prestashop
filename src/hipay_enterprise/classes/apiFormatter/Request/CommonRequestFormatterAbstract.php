@@ -121,7 +121,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
     {
         //PS 1.6 fix
         if (in_array($class_name, array('HipayEnterpriseHelperCustomData'))) {
-            require_once dirname(__FILE__) . '/../../' . $class_name . '.php';
+            require_once(dirname(__FILE__) . '/../../' . $class_name . '.php');
         }
     }
 }
