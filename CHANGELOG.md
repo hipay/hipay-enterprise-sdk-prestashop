@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.1
+
+- **Fix** catch notation for PHP versions prior to 7
+
 ## Version 2.12.0
 
 - **New** payment methods :
