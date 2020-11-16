@@ -135,6 +135,14 @@ class HipayNotification
             if ($idOrder) {
                 $this->order = new Order((int)$idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
+
+                if(!$this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_PENDING'))){
+                    throw new NotificationException('Order not ready for cart ID ' . $this->cart->id,
+                        Context::getContext(),
+                        $this->module,
+                        'HTTP/1.0 404 Not found'
+                    );
+                }
             } else {
                 if($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
                     $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')){
