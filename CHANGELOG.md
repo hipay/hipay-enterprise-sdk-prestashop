@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.12.3
+
+- **Fix**: Changed notification handling 
+
 ## Version 2.12.2
 
 - **Fix** 2.12.0 upgrade script
