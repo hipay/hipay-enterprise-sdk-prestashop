@@ -74,7 +74,8 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
         $customerBillingInfo->phone = $this->getPhone();
 
         $customerBillingInfo->state = ($this->deliveryState) ? $this->deliveryState->name : '';
-        $customerBillingInfo->recipientinfo = $this->store->name;
+        $customerBillingInfo->recipientinfo = ($this->store->name && is_array($this->store->name)) ?
+            $this->store->name[array_key_first($this->store->name)] : $this->store->name;
     }
 
     /**
