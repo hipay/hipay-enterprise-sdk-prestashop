@@ -478,6 +478,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f100e26792ddf7
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a18295f253eaa7e65233705d5fa79261'] = 'Afficher le sélecteur de cartes';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'Non';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b85e524ba0a22b91316785b595dea3db'] = 'Pas pris en compte si vous utilisez la Hosted Page v2.';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_62588e1f645aa6b71c35f84283e4b429'] = 'URL de la CSS';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b6f1af8cece3ea29a95f4f2f3adedbc3'] = 'URL de votre CSS (feuille de style) pour personnaliser votre page hébergée ou votre iFrame (Important : le protocole HTTPS est requis).';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_2a9621ba11cb428fcaefde69ca952016'] = 'Activer le 3-D Secure';
