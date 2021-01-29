@@ -255,8 +255,10 @@ class ApiCaller
                 "apiPassword" => $password,
                 "apiEnv" => $env,
                 "proxy" => $proxy,
-                "timeout" => 30
-            ));
+                "timeout" => 30,
+                "hostedPageV2" => true
+            )
+        );
 
         //Instantiate client provider with configuration object
         $clientProvider = new \HiPay\Fullservice\HTTP\SimpleHTTPClient($config);
