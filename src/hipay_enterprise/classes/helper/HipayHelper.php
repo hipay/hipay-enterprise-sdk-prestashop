@@ -71,7 +71,7 @@ class HipayHelper
             } else {
                 $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'];
             }
-        } else if (is_array($paymentProduct['displayName'])) {
+        } elseif (is_array($paymentProduct['displayName'])) {
             if (isset($paymentProduct['displayName'][$language->iso_code])) {
                 $paymentProductName = $paymentProduct['displayName'][$language->iso_code];
             } else {
@@ -147,8 +147,7 @@ class HipayHelper
         $hashAlgorithm = $config['account']['hash_algorithm'][$environment];
         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
 
-        if (
-            !$isValidSignature
+        if (!$isValidSignature
             && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)
         ) {
             $module->getLogs()->logInfos(
@@ -549,6 +548,11 @@ class HipayHelper
                                                     case 'FR':
                                                         $errorMsg = sprintf($errorMsg, 'a French');
                                                         break;
+                                                    case 'PT':
+                                                        $errorMsg = sprintf($errorMsg, 'a Portuguese');
+                                                        break;
+                                                    default:
+                                                        $errorMsg = 'The format of the phone number is incorrect.';
                                                 }
                                                 $errorMsg = $module->l($errorMsg);
 
