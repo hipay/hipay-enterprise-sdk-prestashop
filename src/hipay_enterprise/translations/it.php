@@ -471,14 +471,14 @@ $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Se abilitato, l\'URL del vostro sito sarà inviato quando il pagamento e le notifiche verranno inviate da questo URL. Da utilizzare solo in caso di multi-sito.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Elimina modifiche';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Salva modifiche configurazione';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f3689b7c15897c74cd0f02cde4d5551b'] = 'Abilitare API V2';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Si';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_e4a113b3a517f62528bd2258c1ebd09d'] = 'Mostra Hosted Page';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_4202ef115ebede37eb22297113f5fb32'] = 'Redirezione';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a025e05161bb17cbab898f0e77b09a2b'] = 'iFrame';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f100e26792ddf73e60254cecd5a97f0f'] = 'Mostra selettore carte nel iFrame o hosted page.';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a18295f253eaa7e65233705d5fa79261'] = 'Mostra selettore carte';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Si';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b85e524ba0a22b91316785b595dea3db'] = 'Non preso in considerazione se si utilizza la Hosted Page v2.';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_62588e1f645aa6b71c35f84283e4b429'] = 'Url CSS';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b6f1af8cece3ea29a95f4f2f3adedbc3'] = 'URL al tuo CSS (style sheet) per personalizzare la tua hosted page o iFrame (Importante: è richiesto il protocollo HTTPS).';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_2a9621ba11cb428fcaefde69ca952016'] = 'Attiva 3-D Secure';
