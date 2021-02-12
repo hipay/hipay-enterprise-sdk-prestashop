@@ -256,7 +256,7 @@ class ApiCaller
                 "apiEnv" => $env,
                 "proxy" => $proxy,
                 "timeout" => 30,
-                "hostedPageV2" => true
+                "hostedPageV2" => $moduleInstance->hipayConfigTool->getPaymentGlobal()["enable_api_v2"] ? true : false
             )
         );
 
