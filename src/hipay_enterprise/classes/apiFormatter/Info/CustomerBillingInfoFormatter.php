@@ -61,7 +61,10 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
 
         $dob = $this->customer->birthday;
         if (!is_null($dob) && !empty($dob)) {
-            $customerBillingInfo->birthdate = str_replace('-', '', $dob);
+            $dob = str_replace('-', '', $dob);
+            if (!preg_match("/00000000/", $dob)) {
+                $customerBillingInfo->birthdate = $dob;
+            }
         }
 
         $customerBillingInfo->gender = $this->getGender($this->customer->id_gender);
