@@ -16,6 +16,8 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Si prega di verificare le informazioni inserite.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Si prega di verificare il numero di telefono inserito.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1f6647801910cf3c2408f51395ce6cc'] = 'Il formato del numero di telefono deve corrispondere a un telefono francese.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_33d6bb7c26f10680687a46cba1bdd719'] = 'Il formato del numero di telefono deve corrispondere a un telefono portoghese.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_a9df256bcc47831e2243aa7be7fb5c18'] = 'Il formato del numero di telefono non è corretto.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Il pagamento per l\'ordine  %s è stato rifiutato.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algoritmo di hash  per %s era già stato definito con %s.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'L\'algoritmo di hash  per %s era già stato sincronizzato con %s.';
