@@ -1,8 +1,14 @@
 # Changelog
 
+## Version 2.13.0
+
+- **Add** : Hosted Page v2 option for credit card on HostedPage
+- **Add** : MBWay payment method
+- **Fix** : jQuery conflicts with other modules
+
 ## Version 2.12.3
 
-- **Fix**: Changed notification handling 
+- **Fix**: Changed notification handling
 
 ## Version 2.12.2
 
