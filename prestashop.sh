@@ -63,7 +63,11 @@ if [ "$1" = '' ] || [ "$1" = '--help' ]; then
 fi
 
 if [ "$1" = 'init' ]; then
-     docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
+     if docker inspect hipay-enterprise-shop-ps$psVersion >/dev/null 2>&1; then
+          if [ "$(docker inspect -f '{{.State.Running}}' hipay-enterprise-shop-ps$psVersion)" = 'true' ]; then
+               docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
+          fi
+     fi
      rm -Rf data/
      rm -Rf web$psVersion/
      docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database

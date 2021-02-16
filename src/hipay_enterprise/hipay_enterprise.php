@@ -38,7 +38,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.12.3';
+        $this->version = '2.13.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -111,6 +111,8 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Please check the information entered.');
         $fake = $this->l('Please check the phone number entered.');
         $fake = $this->l('The format of the phone number must match a French phone.');
+        $fake = $this->l('The format of the phone number must match a Portuguese phone.');
+        $fake = $this->l('The format of the phone number is incorrect.');
         $fake = $this->l('Refused payment for order %s');
         $fake = $this->l('Hash Algorithm for %s was already set with %s');
         $fake = $this->l('Hash Algorithm for %s has been syncrhonize with %s');
