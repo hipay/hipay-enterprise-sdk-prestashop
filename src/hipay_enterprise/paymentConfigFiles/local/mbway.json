@@ -1,0 +1,27 @@
+{
+  "name": "mbway",
+  "config": {
+    "displayNameBO": "MB Way",
+    "displayName": {
+      "fr": "MB Way",
+      "en": "MB Way"
+    },
+    "frontPosition": 34,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "mbway.png"
+  }
+}

@@ -383,6 +383,7 @@ class HipayConfig
             "payment" => array(
                 "global" => array(
                     "operating_mode" => OperatingMode::getOperatingMode(UXMode::DIRECT_POST),
+                    "enable_api_v2" => 0,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "display_hosted_page" => "redirect",
@@ -571,7 +572,6 @@ class HipayConfig
         if (preg_match('/(.*)\.json/', $file) == 1) {
             $json = Tools::jsonDecode(Tools::file_get_contents($this->jsonFilesPath . $folderName . $file), true);
             if (!in_array($json["name"], static::$_deprecatedMethods)) {
-
                 $paymentMethod[$json["name"]] = $json["config"];
 
                 $sdkConfig = HiPay\Fullservice\Data\PaymentProduct\Collection::getItem($json["name"]);
@@ -580,27 +580,24 @@ class HipayConfig
                     $paymentMethod[$json["name"]] = array_merge($sdkConfig->toArray(), $paymentMethod[$json["name"]]);
                 }
 
-                if (
-                    isset($paymentMethod[$json["name"]]["currencies"]) &&
+                if (isset($paymentMethod[$json["name"]]["currencies"]) &&
                     empty($paymentMethod[$json["name"]]["currencies"])
                 ) {
                     $paymentMethod[$json["name"]]["currencies"] = $this->getActiveCurrencies();
                 }
 
-                if (
-                    isset($paymentMethod[$json["name"]]["countries"]) &&
+                if (isset($paymentMethod[$json["name"]]["countries"]) &&
                     empty($paymentMethod[$json["name"]]["countries"])
                 ) {
                     $paymentMethod[$json["name"]]["countries"] = $this->getActiveCountries();
                 }
-
             }
         }
-
         return $paymentMethod;
     }
 
-    private function getActiveCurrencies(){
+    private function getActiveCurrencies()
+    {
         $activeCurrenciesIso = array();
         $activeCurrencies = Currency::getCurrencies(false, true);
 

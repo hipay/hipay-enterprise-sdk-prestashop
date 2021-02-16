@@ -16,6 +16,8 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Please check the information entered.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Please check the phone number entered.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1f6647801910cf3c2408f51395ce6cc'] = 'The format of the phone number must match a French phone.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_33d6bb7c26f10680687a46cba1bdd719'] = 'The format of the phone number must match a Portuguese phone.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_a9df256bcc47831e2243aa7be7fb5c18'] = 'The format of the phone number is incorrect.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Refused payment for order %s';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'Hash Algorithm for %s was already set with %.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_1ef3f246df0161fbdd35caf4e839f5bd'] = 'Hash Algorithm for %s has been syncrhonize with %s.';
@@ -471,13 +473,14 @@ $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'If so, then the URL of your site is sent during the payment and notifications will be sent to this URL. To use only for multi site.';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Discard changes';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Save configuration changes';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f3689b7c15897c74cd0f02cde4d5551b'] = 'Enable API V2';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Yes';
+$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_e4a113b3a517f62528bd2258c1ebd09d'] = 'Display Hosted Page';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_4202ef115ebede37eb22297113f5fb32'] = 'Redirect';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a025e05161bb17cbab898f0e77b09a2b'] = 'iFrame';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f100e26792ddf73e60254cecd5a97f0f'] = 'Display card selector on iFrame or hosted page.';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_a18295f253eaa7e65233705d5fa79261'] = 'Display card selector';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Yes';
-$_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_62588e1f645aa6b71c35f84283e4b429'] = 'CSS Url';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_b6f1af8cece3ea29a95f4f2f3adedbc3'] = 'URL to your CSS (style sheet) to customize your hosted page or iFrame (Important: the HTTPS protocol is required).';
 $_MODULE['<{hipay_enterprise}prestashop>3ds.forms.partial_2a9621ba11cb428fcaefde69ca952016'] = 'Activate 3-D Secure';
