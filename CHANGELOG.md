@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.1
+
+- **Fix** : recipient info parameter in order
+
 ## Version 2.13.0
 
 - **Add** : Hosted Page v2 option for credit card on HostedPage
