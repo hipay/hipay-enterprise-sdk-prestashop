@@ -35,13 +35,27 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
 
     if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ]; then
-        # INSTALL X DEBUG
+        if [[ "$PS_VERSION" == *"1.7"* ]]; then
+            XDEBUG_VERSION=3.0.4
+        else
+            XDEBUG_VERSION=2.6.1
+        fi
 
+        # INSTALL X DEBUG
         if ! pecl list | grep xdebug >/dev/null 2>&1; then
-            echo '' | pecl install xdebug-2.6.1
+            printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+            printf "\n${COLOR_SUCCESS}            INSTALLATION XDEBUG          ${NC}\n"
+            printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+
+            echo '' | pecl install xdebug-${XDEBUG_VERSION}
         fi
 
         echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >/usr/local/etc/php/conf.d/xdebug.ini
+
+        echo "xdebug.mode=debug" >>/usr/local/etc/php/conf.d/xdebug.ini
+        echo "xdebug.idekey=PHPSTORM" >>/usr/local/etc/php/conf.d/xdebug.ini
+        echo "$XDEBUG_CONFIG" >>/usr/local/etc/php/conf.d/xdebug.ini
+
         echo "xdebug.remote_enable=on" >>/usr/local/etc/php/conf.d/xdebug.ini
         echo "xdebug.remote_autostart=off" >>/usr/local/etc/php/conf.d/xdebug.ini
     fi

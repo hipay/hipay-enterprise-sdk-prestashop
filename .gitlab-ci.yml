@@ -75,9 +75,9 @@ services:
       helm install $RELEASE_NAME ./bin/docker/kubernetes/helm/
       --set prestashop_image="${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}"
       --set prestashop_tag="${CI_COMMIT_REF_SLUG}"
-      --set prestashop_url="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}"
+      --set prestashop_url="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}"
       --set ps_version="${PS_FULL_VERSION}"
-      --set ps_domain="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}"
+      --set ps_domain="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}"
       --set db_name="prestashop${PS_VERSION}"
       --set hipay_api_user_test="$HIPAY_API_USER_RE7"
       --set hipay_api_password_test="$HIPAY_API_PASSWORD_RE7"
@@ -180,7 +180,7 @@ deploy2recette-prestashop16:
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
-    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
     on_stop: stop_review-prestashop16
 
 deploy2recette-prestashop17:
@@ -190,7 +190,7 @@ deploy2recette-prestashop17:
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
-    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${PI_CD_URL}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
     on_stop: stop_review-prestashop17
 
 stop_review-prestashop16:

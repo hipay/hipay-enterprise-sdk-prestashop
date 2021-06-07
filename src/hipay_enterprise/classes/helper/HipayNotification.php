@@ -52,6 +52,10 @@ class HipayNotification
 
     protected $transaction;
     protected $cart;
+
+    /**
+     * @var Order
+     */
     protected $order = null;
     protected $ccToken;
     protected $module;
@@ -198,7 +202,7 @@ class HipayNotification
                 case TransactionStatus::DENIED:
                 case TransactionStatus::REFUSED:
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_DENIED', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_DENIED'));
 
                         // Notify website admin for a challenged transaction
                         HipayMail::sendMailPaymentDeny($this->context, $this->module, $this->order);
@@ -206,7 +210,7 @@ class HipayNotification
                     break;
                 case TransactionStatus::AUTHORIZED_AND_PENDING:
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHALLENGED'));
                         // Notify website admin for a challenged transaction
                         HipayMail::sendMailPaymentFraud($this->context, $this->module, $this->order);
                     }
@@ -216,12 +220,12 @@ class HipayNotification
                 case TransactionStatus::PENDING_PAYMENT:
                     // If pending and we have already received authorization, then we do not change the status
                     if (!$this->controleIfStatushistoryExist(Configuration::get("HIPAY_OS_AUTHORIZED")) && !$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_PENDING', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_PENDING'));
                     }
                     break;
                 case TransactionStatus::EXPIRED:
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_EXPIRED'));
                     }
                     break;
                 case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
@@ -238,10 +242,10 @@ class HipayNotification
                     $this->setOrderCaptureType();
                     break;
                 case TransactionStatus::CAPTURED: //118
-                    if ($this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1))) {
+                    if ($this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_AUTHORIZED'))) {
                         $orderState = _PS_OS_PAYMENT_;
                         if ($this->transaction->getCapturedAmount() < $this->transaction->getAuthorizedAmount()) {
-                            $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1);
+                            $orderState = Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED');
                         }
                         if (!$orderHasBeenPaid) {
                             $this->updateOrderStatus($orderState);
@@ -257,7 +261,7 @@ class HipayNotification
                     break;
                 case TransactionStatus::PARTIALLY_CAPTURED: //119
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED'));
                         $this->captureOrder();
                     }
                     break;
@@ -268,12 +272,12 @@ class HipayNotification
                     break;
                 case TransactionStatus::CHARGED_BACK:
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHARGEDBACK', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CHARGEDBACK'));
                     }
                     break;
                 case TransactionStatus::CAPTURE_REFUSED:
                     if (!$orderHasBeenPaid) {
-                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CAPTURE_REFUSED', null, null, 1));
+                        $this->updateOrderStatus(Configuration::get('HIPAY_OS_CAPTURE_REFUSED'));
                     }
                     break;
             }
@@ -450,16 +454,34 @@ class HipayNotification
                 $invoice = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
 
                 if ($this->order && Validate::isLoadedObject($this->order)) {
+                    $orderPaymentResult = false;
+
+                    if($refund){
+                        if(-1 * $amount !== floatval($this->order->total_paid)) {
+                            $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
+                        } else {
+                            $productArray = $this->order->getProducts();
+
+                            foreach($productArray as &$product){
+                                $product['unit_price'] = $product['unit_price_tax_excl'];
+                                $product['product_quantity_refunded'] = $product['product_quantity'];
+                                $product['quantity'] = $product['product_quantity'];
+                            }
+
+                            $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                        }
+                    } else {
+                        $orderPaymentResult = $this->order->addOrderPayment(
+                            $amount,
+                            $paymentProduct,
+                            $payment_transaction_id,
+                            $currency,
+                            $payment_date,
+                            $invoice
+                        );
+                    }
                     // Add order payment
-                    if ($this->order->addOrderPayment(
-                        $amount,
-                        $paymentProduct,
-                        $payment_transaction_id,
-                        $currency,
-                        $payment_date,
-                        $invoice
-                    )
-                    ) {
+                    if ($orderPaymentResult) {
                         $this->log->logInfos("# Order payment created with success {$this->order->id}");
                         $orderPayment = $this->dbUtils->findOrderPayment(
                             $this->order->reference,
@@ -616,7 +638,7 @@ class HipayNotification
             }
 
             if ($this->transaction->getStatus() == TransactionStatus::REFUND_REQUESTED) {
-                $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1));
+                $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUND_REQUESTED'));
                 return true;
             }
 
@@ -627,13 +649,13 @@ class HipayNotification
 
                 //force refund order status
                 if ($this->transaction->getRefundedAmount() == $this->transaction->getAuthorizedAmount()) {
-                    $this->log->logInfos('# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED', null, null, 1));
+                    $this->log->logInfos('# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED'));
+                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED'));
                 } else {
                     $this->log->logInfos(
-                        '# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)
+                        '# RefundOrder: ' . Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY')
                     );
-                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1));
+                    $this->updateOrderStatus(Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY'));
                 }
             }
         }

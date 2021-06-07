@@ -751,21 +751,32 @@ class HipayHelper
     /**
      * Calculate refunded or captured amount from Order Payments
      *
-     * @param $order
+     * @param Order $order
      * @param bool $refund
      * @return float|int
      */
     public static function getOrderPaymentAmount($order, $refund = false)
     {
-        $orderPayments = $order->getOrderPaymentCollection();
-        $amount = 0;
+        if($refund){
+            $orderSlips = $order->getOrderSlipsCollection();
+            $amount = 0;
 
-        foreach ($orderPayments as $payment) {
-            // negative Order Payments are refunds
-            if ($payment->amount < 0 && $refund) {
-                $amount += $payment->amount;
-            } elseif ($payment->amount > 0 && !$refund) {
-                $amount += $payment->amount;
+            foreach ($orderSlips as $slip) {
+                /**
+                 * @var OrderSlip $slip
+                 */
+                if ($slip->order_slip_type === "1") {
+                    $amount += $slip->total_products_tax_incl;
+                }
+            }
+        } else {
+            $orderPayments = $order->getOrderPaymentCollection();
+            $amount = 0;
+
+            foreach ($orderPayments as $payment) {
+                if ($payment->amount > 0) {
+                    $amount += $payment->amount;
+                }
             }
         }
 

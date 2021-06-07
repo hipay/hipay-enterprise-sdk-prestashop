@@ -43,35 +43,35 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             if (!$refund_amount) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount', 'refund');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+
+                $url = $this->context->link->getAdminLink('AdminOrders');
+                $baseUrl = explode('?', $url);
+
+
+                $this->redirectToOrder();
                 die('');
             }
             if ($refund_amount <= 0) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero', 'refund');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+
+                $url = $this->context->link->getAdminLink('AdminOrders');
+                $baseUrl = explode('?', $url);
+
+
+                $this->redirectToOrder();
                 die('');
             }
 
             if (!is_numeric($refund_amount)) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount', 'refund');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+
+                $url = $this->context->link->getAdminLink('AdminOrders');
+                $baseUrl = explode('?', $url);
+
+
+                $this->redirectToOrder();
                 die('');
             }
             // we can refund only what has been captured
@@ -80,12 +80,12 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             if (round($refund_amount, 2) > round($refundableAmount, 2)) {
                 $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount', 'refund');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+
+                $url = $this->context->link->getAdminLink('AdminOrders');
+                $baseUrl = explode('?', $url);
+
+
+                $this->redirectToOrder();
                 die('');
             }
 
@@ -95,12 +95,12 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $this->module->getLogs()->logInfos('# Refund errors Message {$hipay_redirect_status} ');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
 
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+
+                $url = $this->context->link->getAdminLink('AdminOrders');
+                $baseUrl = explode('?', $url);
+
+
+                $this->redirectToOrder();
                 die('');
             }
 
@@ -129,32 +129,32 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->module->getLogs()->logInfos('# Refund errors Message {$hipay_redirect_status} ');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+
+                    $url = $this->context->link->getAdminLink('AdminOrders');
+                    $baseUrl = explode('?', $url);
+
+
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('total-refund-input') <= 0) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be greater than zero.', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+
+                    $url = $this->context->link->getAdminLink('AdminOrders');
+                    $baseUrl = explode('?', $url);
+
+
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('total-refund-input') > $refundableAmount) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be lower than the amount still to be refunded.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+
+                    $url = $this->context->link->getAdminLink('AdminOrders');
+                    $baseUrl = explode('?', $url);
+
+
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('hipay_refund_discount')) {
                     if (!$refundedDiscounts &&
@@ -164,12 +164,12 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     ) {
                         $hipay_redirect_status = $this->module->l('You must refund discount because next refund amount will be lower than total discount amount.');
                         $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                        Tools::redirectAdmin(
-                            $this->context->link->getAdminLink('AdminOrders') .
-                            '&id_order=' .
-                            (int)$this->order->id .
-                            '&vieworder#hipay'
-                        );
+
+                        $url = $this->context->link->getAdminLink('AdminOrders');
+                        $baseUrl = explode('?', $url);
+
+
+                        $this->redirectToOrder();
                         die('');
                     }
                 }
@@ -195,11 +195,6 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             }
         }
 
-        Tools::redirectAdmin(
-            $this->context->link->getAdminLink('AdminOrders') .
-            '&id_order=' .
-            (int)$this->order->id .
-            '&vieworder#hipay'
-        );
+        $this->redirectToOrder();
     }
 }
