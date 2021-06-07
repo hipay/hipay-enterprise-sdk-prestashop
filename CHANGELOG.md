@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.13.2
+
+- **Fix** : Fixed Refund process for prestashop v1.7.7+
+- **Fix** : Fixed Notification handling error when Hipay module was installed on the second shop 
+- **Fix** : Upgraded Hipay API timeout to 35 seconds
+
 ## Version 2.13.1
 
 - **Fix** : recipient info parameter in order
