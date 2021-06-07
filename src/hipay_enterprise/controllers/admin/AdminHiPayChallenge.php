@@ -54,23 +54,13 @@ class AdminHiPayChallengeController extends AdminHiPayActionsController
                     '# Errors Challenge from Back-Office reason :  ' . $e->getMessage()
                 );
                 $this->context->cookie->__set('hipay_errors', $e->getMessage());
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
             }
         }
 
         $this->module->getLogs()->logInfos('# Challenge success');
         $this->context->cookie->__set('hipay_success', $this->module->l('The challenge has been validated'));
-        Tools::redirectAdmin(
-            $this->context->link->getAdminLink('AdminOrders') .
-            '&id_order=' .
-            (int)$this->order->id .
-            '&vieworder#hipay'
-        );
+        $this->redirectToOrder();
     }
 
     /**

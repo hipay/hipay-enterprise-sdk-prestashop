@@ -52,6 +52,10 @@ class HipayNotification
 
     protected $transaction;
     protected $cart;
+
+    /**
+     * @var Order
+     */
     protected $order = null;
     protected $ccToken;
     protected $module;
@@ -450,16 +454,34 @@ class HipayNotification
                 $invoice = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
 
                 if ($this->order && Validate::isLoadedObject($this->order)) {
+                    $orderPaymentResult = false;
+
+                    if($refund){
+                        if(-1 * $amount !== floatval($this->order->total_paid)) {
+                            $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
+                        } else {
+                            $productArray = $this->order->getProducts();
+
+                            foreach($productArray as &$product){
+                                $product['unit_price'] = $product['unit_price_tax_excl'];
+                                $product['product_quantity_refunded'] = $product['product_quantity'];
+                                $product['quantity'] = $product['product_quantity'];
+                            }
+
+                            $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                        }
+                    } else {
+                        $orderPaymentResult = $this->order->addOrderPayment(
+                            $amount,
+                            $paymentProduct,
+                            $payment_transaction_id,
+                            $currency,
+                            $payment_date,
+                            $invoice
+                        );
+                    }
                     // Add order payment
-                    if ($this->order->addOrderPayment(
-                        $amount,
-                        $paymentProduct,
-                        $payment_transaction_id,
-                        $currency,
-                        $payment_date,
-                        $invoice
-                    )
-                    ) {
+                    if ($orderPaymentResult) {
                         $this->log->logInfos("# Order payment created with success {$this->order->id}");
                         $orderPayment = $this->dbUtils->findOrderPayment(
                             $this->order->reference,

@@ -112,11 +112,6 @@ class AdminHiPayMotoController extends ModuleAdminController
         }
 
 
-        Tools::redirectAdmin(
-            $this->context->link->getAdminLink('AdminOrders') .
-            '&id_order=' .
-            (int)$this->order->id .
-            '&vieworder#hipay'
-        );
+        $this->redirectToOrder();
     }
 }

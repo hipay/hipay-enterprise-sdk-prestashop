@@ -43,35 +43,20 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             if (!$capture_amount) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
                 die('');
             }
             if ($capture_amount <= 0) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount greater than zero', 'capture');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
                 die('');
             }
 
             if (!is_numeric($capture_amount)) {
                 $hipay_redirect_status = $this->module->l('Please enter an amount', 'capture');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
                 die('');
             }
 
@@ -83,12 +68,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             if (round($capture_amount, 2) > round($stillToCapture, 2)) {
                 $hipay_redirect_status = $this->module->l('Amount exceeding authorized amount', 'capture');
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
                 die('');
             }
 
@@ -96,12 +76,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 $hipay_redirect_status = $this->module->l('No transaction reference link to this order', 'capture');
 
                 $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                Tools::redirectAdmin(
-                    $this->context->link->getAdminLink('AdminOrders') .
-                    '&id_order=' .
-                    (int)$this->order->id .
-                    '&vieworder#hipay'
-                );
+                $this->redirectToOrder();
                 die('');
             }
 
@@ -131,32 +106,17 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 ) {
                     $hipay_redirect_status = $this->module->l('Select at least one item to capture', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('total-capture-input') <= 0) {
                     $hipay_redirect_status = $this->module->l('Capture amount must be greater than zero.', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('total-capture-input') > $stillToCapture + 0.01) {
                     $hipay_redirect_status = $this->module->l('Capture amount must be lower than the amount still to be captured.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                    Tools::redirectAdmin(
-                        $this->context->link->getAdminLink('AdminOrders') .
-                        '&id_order=' .
-                        (int)$this->order->id .
-                        '&vieworder#hipay'
-                    );
+                    $this->redirectToOrder();
                     die('');
                 } else if (Tools::getValue('hipay_capture_discount')) {
                     if (!$capturedDiscounts &&
@@ -166,12 +126,7 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                     ) {
                         $hipay_redirect_status = $this->module->l('You must capture discount because next capture amount will be lower than total discount amount.');
                         $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
-                        Tools::redirectAdmin(
-                            $this->context->link->getAdminLink('AdminOrders') .
-                            '&id_order=' .
-                            (int)$this->order->id .
-                            '&vieworder#hipay'
-                        );
+                        $this->redirectToOrder();
                         die('');
                     }
                 }
@@ -192,11 +147,6 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             }
         }
 
-        Tools::redirectAdmin(
-            $this->context->link->getAdminLink('AdminOrders') .
-            '&id_order=' .
-            (int)$this->order->id .
-            '&vieworder#hipay'
-        );
+        $this->redirectToOrder();
     }
 }

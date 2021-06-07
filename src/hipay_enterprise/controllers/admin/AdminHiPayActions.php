@@ -92,4 +92,19 @@ class AdminHiPayActionsController extends ModuleAdminController
             );
         }
     }
+
+    protected function redirectToOrder()
+    {
+        if (_PS_VERSION_ >= '1.7.7') {
+            $url = $this->context->link->getAdminLink('AdminOrders');
+            $baseUrl = explode('?', $url);
+            $redirectUrl = $baseUrl[0] . (int)$this->order->id . '/view?' . $baseUrl[1] . '#hipay';
+        } else {
+            $redirectUrl = $this->context->link->getAdminLink('AdminOrders') . '&id_order=' .
+                (int)$this->order->id . '&vieworder#hipay';
+
+        }
+
+        Tools::redirectAdmin($redirectUrl);
+    }
 }
