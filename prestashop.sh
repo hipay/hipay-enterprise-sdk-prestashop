@@ -64,31 +64,30 @@ if [ "$1" = '' ] || [ "$1" = '--help' ]; then
 fi
 
 if [ "$1" = 'init' ]; then
-    if docker inspect hipay-enterprise-shop-ps$psVersion >/dev/null 2>&1; then
-        if [ "$(docker inspect -f '{{.State.Running}}' hipay-enterprise-shop-ps$psVersion)" = 'true' ]; then
-            docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
-        fi
-    fi
-    rm -Rf data/
-    rm -Rf web$psVersion/
-    docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
-    docker-compose -f docker-compose.dev.yml rm -fv prestashop$psVersion database
-    docker-compose -f docker-compose.dev.yml build prestashop$psVersion database
+     if docker inspect hipay-enterprise-shop-ps$psVersion >/dev/null 2>&1; then
+          if [ "$(docker inspect -f '{{.State.Running}}' hipay-enterprise-shop-ps$psVersion)" = 'true' ]; then
+               docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
+          fi
+     fi
+     rm -Rf data/ web$psVersion/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
+     docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml rm -fv prestashop$psVersion database
+     docker-compose -f docker-compose.dev.yml build prestashop$psVersion database
 
-    if [ "$follow" = "-f" ]; then
-        docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
-    else
-        docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
-    fi
+     if [ "$follow" = "-f" ]; then
+          docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
+     else
+          docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+     fi
 fi
 
 if [ "$1" = 'restart' ]; then
      docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
-    if [ "$follow" = "-f" ]; then
-        docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
-    else
-        docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
-    fi
+     if [ "$follow" = "-f" ]; then
+          docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
+     else
+          docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+     fi
 fi
 
 if [ "$1" = 'kill' ]; then
