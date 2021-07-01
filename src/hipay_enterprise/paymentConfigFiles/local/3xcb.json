@@ -28,6 +28,7 @@
       "EUR": false
     },
     "logo": "3xcb.png",
-    "merchantPromotion": false
+    "merchantPromotion": false,
+    "maxLengthDescription": 50
   }
 }

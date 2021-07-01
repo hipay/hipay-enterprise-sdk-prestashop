@@ -28,6 +28,7 @@
       "EUR": false
     },
     "logo": "oney-credit-long.png",
-    "merchantPromotion": false
+    "merchantPromotion": false,
+    "maxLengthDescription": 50
   }
 }

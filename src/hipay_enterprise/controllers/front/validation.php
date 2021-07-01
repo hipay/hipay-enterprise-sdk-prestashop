@@ -40,16 +40,19 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         if (!$cartId) {
             // if not we retrieve the last cart
             $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
+            $this->module->getLogs()->logInfos("Last cart $objCart->id loaded from customer " . $context->customer->id);
         } else {
             // load cart
             $objCart = new Cart((int)$cartId);
+            $this->module->getLogs()->logInfos("Cart $objCart->id loaded from orderId $cardId");
         }
 
         $token = Tools::getValue('token');
+        $hipayToken = HipayHelper::getHipayToken($objCart->id);
 
         //check request integrity
-        if ($token != HipayHelper::getHipayToken($objCart->id)) {
-            $this->module->getLogs()->logErrors("# Wrong token on payment validation");
+        if ($token != $hipayToken) {
+            $this->module->getLogs()->logErrors("# Wrong token on payment validation.\r\nToken: $token\r\nHiPayToken: $hipayToken");
             $redirectUrl = $context->link->getModuleLink(
                 $this->module->name,
                 'exception',
