@@ -1,9 +1,16 @@
 # Changelog
 
+## Version 2.13.3
+
+- **Fix** : Fixed behavior on multi use token parameter
+- **Fix** : Fixed delivery address for Oney payment methods when pick up in store
+- **Fix** : Fixed description max length for Oney payment methods
+- **Fix** : Increased Hipay API timeout
+
 ## Version 2.13.2
 
 - **Fix** : Fixed Refund process for prestashop v1.7.7+
-- **Fix** : Fixed Notification handling error when Hipay module was installed on the second shop 
+- **Fix** : Fixed Notification handling error when Hipay module was installed on the second shop
 - **Fix** : Upgraded Hipay API timeout to 35 seconds
 
 ## Version 2.13.1
