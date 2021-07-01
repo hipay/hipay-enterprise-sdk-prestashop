@@ -227,6 +227,9 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         }
         // If description exceeds 255 char, trim back to 255
         $max_length = 255;
+        if (isset($this->params["paymentProduct"]['maxLengthDescription'])) {
+            $max_length = $this->params["paymentProduct"]['maxLengthDescription'];
+        }
         if (Tools::strlen($description) > $max_length) {
             $offset = ($max_length - 3) - Tools::strlen($description);
             $description = Tools::substr($description, 0, strrpos($description, ' ', $offset)) . '...';

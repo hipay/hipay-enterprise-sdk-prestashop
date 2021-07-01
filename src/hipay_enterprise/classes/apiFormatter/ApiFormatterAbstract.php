@@ -57,10 +57,48 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         $this->cart = (!$cart) ? $this->context->cart : $cart;
         $this->customer = (is_null($this->cart)) ? false : new Customer((int)$this->cart->id_customer);
         $this->store = (is_null($this->cart)) ? false : new Store((int)$this->cart->id_shop);
-        $this->delivery = (is_null($this->cart)) ? false : new Address((int)$this->cart->id_address_delivery);
+        $this->delivery = (is_null($this->cart)) ? false : $this->getDeliveryAddress();
         $this->deliveryCountry = (is_null($this->cart)) ? false : new Country((int)$this->delivery->id_country);
         $this->deliveryState = (is_null($this->cart)) ? false : new State((int)$this->delivery->id_state);
         $this->currency = (is_null($this->cart)) ? false : new Currency((int)$this->cart->id_currency);
+    }
+
+    /**
+     * Return correct delivery address
+     */
+    private function getDeliveryAddress()
+    {
+        $defaultAddress = new Address((int)$this->cart->id_address_delivery);
+        try {
+            $mappedCarrier = $this->mapper->getMappedHipayCarrierFromPSId((int)$this->cart->id_carrier);
+            $method = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('method'));
+            if ($mappedCarrier['hp_carrier_mode'] === 'STORE' && isset($method['group']['label']) && $method['group']['label'] === 'Oney') {
+                // Create Address using store address fields
+                $address = $defaultAddress;
+                $address->address1 = $this->store->address1;
+                if (is_array($address->address1)) {
+                    $address->address1 = array_shift($address->address1);
+                }
+                $address->address2 = $this->store->address2;
+                if (is_array($address->address2)) {
+                    $address->address2 = array_shift($address->address2);
+                }
+                $address->postcode = $this->store->postcode;
+                $address->city = $this->store->city;
+                $address->phone = $this->store->phone;
+                $address->country = Country::getNameById($this->cart->id_lang, $this->store->id_country);
+                $address->id_country = $this->store->id_country;
+                $address->id_state = $this->store->id_state;
+                return $address;
+            }
+
+            return $defaultAddress;
+        } catch (Exception $e) {
+            if (!$e instanceof PaymentProductNotFoundException) {
+                $this->module->getLogs()->logErrors($e->getMessage());
+            }
+            return $defaultAddress;
+        }
     }
 
     /**

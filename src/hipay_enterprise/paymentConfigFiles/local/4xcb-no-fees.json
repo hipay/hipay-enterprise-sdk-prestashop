@@ -28,6 +28,7 @@
       "EUR": false
     },
     "logo": "4xcb-no-fees.png",
-    "merchantPromotion": false
+    "merchantPromotion": false,
+    "maxLengthDescription": 50
   }
 }
