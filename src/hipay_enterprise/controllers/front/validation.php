@@ -33,7 +33,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
     public function postProcess()
     {
         $context = Context::getContext();
-        $cartId = Tools::getValue('orderId');
+        $cartId = Tools::getValue('orderid');
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
@@ -44,7 +44,7 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         } else {
             // load cart
             $objCart = new Cart((int)$cartId);
-            $this->module->getLogs()->logInfos("Cart $objCart->id loaded from orderId $cardId");
+            $this->module->getLogs()->logInfos("Cart $objCart->id loaded from orderId $cartId");
         }
 
         $token = Tools::getValue('token');

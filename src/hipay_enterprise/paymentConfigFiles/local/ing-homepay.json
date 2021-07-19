@@ -2,7 +2,7 @@
   "name": "ing-homepay",
   "config": {
     "displayNameBO": "ING Home'Pay",
-    "displayName":  {
+    "displayName": {
       "fr": "ING Home'Pay",
       "en": "ING Home'Pay"
     },
@@ -22,6 +22,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "ing-homepay.png"
+    "logo": "ing-homepay.png",
+    "orderOnPending": true
   }
 }

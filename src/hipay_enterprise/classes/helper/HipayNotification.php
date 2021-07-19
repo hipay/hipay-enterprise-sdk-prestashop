@@ -140,24 +140,31 @@ class HipayNotification
                 $this->order = new Order((int)$idOrder);
                 $this->log->logInfos("# Order with cart ID {$this->cart->id} ");
 
-                if(!$this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_PENDING'))){
-                    throw new NotificationException('Order not ready for cart ID ' . $this->cart->id,
+                if (!$this->controleIfStatushistoryExist(Configuration::get('HIPAY_OS_PENDING'))) {
+                    throw new NotificationException(
+                        'Order not ready for cart ID ' . $this->cart->id,
                         Context::getContext(),
                         $this->module,
                         'HTTP/1.0 404 Not found'
                     );
                 }
             } else {
-                if($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
-                    $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')){
+                if ($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
+                    $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')) {
                     $this->log->logInfos('Received 4 116 Notifications for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
+                } elseif (isset($this->getPaymentProductConfig()['orderOnPending']) &&
+                    $this->getPaymentProductConfig()['orderOnPending'] &&
+                    $this->transaction->getStatus() === TransactionStatus::AUTHORIZATION_REQUESTED) {
+                    $this->log->logInfos('Received 142 Notification for cart : ' . $this->cart->id . ', creating order now');
+                    $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
-                    if(in_array($this->transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)){
+                    if (in_array($this->transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {
                         die();
                     }
 
-                    throw new NotificationException('Order not found for cart ID ' . $this->cart->id,
+                    throw new NotificationException(
+                        'Order not found for cart ID ' . $this->cart->id,
                         Context::getContext(),
                         $this->module,
                         'HTTP/1.0 404 Not found'
@@ -165,7 +172,7 @@ class HipayNotification
                 }
             }
 
-            if(!$this->transactionIsValid()) {
+            if (!$this->transactionIsValid()) {
                 $this->updateNotificationState(NotificationStatus::NOT_HANDLED);
                 die('Notification already received and handled.');
             }
@@ -252,7 +259,8 @@ class HipayNotification
                             $this->captureOrder();
                         }
                     } else {
-                        throw new NotificationException("Order is not Authorized, could not capture Payment.",
+                        throw new NotificationException(
+                            "Order is not Authorized, could not capture Payment.",
                             Context::getContext(),
                             $this->module,
                             'HTTP/1.0 409 Conflict'
@@ -296,7 +304,7 @@ class HipayNotification
             }
 
             $this->updateNotificationState(NotificationStatus::SUCCESS);
-        } catch(NotificationException $e) {
+        } catch (NotificationException $e) {
             throw $e;
         } catch (Exception $e) {
             $this->updateNotificationState(NotificationStatus::ERROR);
@@ -402,7 +410,6 @@ class HipayNotification
     private function setOrderCaptureType()
     {
         if ($this->order !== null && !$this->dbMaintenance->OrderCaptureTypeExist($this->order->id)) {
-
             $customData = $this->transaction->getCustomData();
 
             $captureType = array(
@@ -414,10 +421,7 @@ class HipayNotification
         }
     }
 
-    /**
-     * @return mixed
-     */
-    private function getPaymentProductName()
+    private function getPaymentProductConfig()
     {
         $paymentProductName = $this->transaction->getPaymentProduct();
 
@@ -427,8 +431,16 @@ class HipayNotification
             $paymentProduct = $paymentProductName;
         }
 
+        return $paymentProduct;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getPaymentProductName()
+    {
         return HipayHelper::getPaymentProductName(
-            $paymentProduct,
+            $this->getPaymentProductConfig(),
             $this->module,
             $this->context->language
         );
@@ -456,13 +468,13 @@ class HipayNotification
                 if ($this->order && Validate::isLoadedObject($this->order)) {
                     $orderPaymentResult = false;
 
-                    if($refund){
-                        if(-1 * $amount !== floatval($this->order->total_paid)) {
+                    if ($refund) {
+                        if (-1 * $amount !== floatval($this->order->total_paid)) {
                             $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
                         } else {
                             $productArray = $this->order->getProducts();
 
-                            foreach($productArray as &$product){
+                            foreach ($productArray as &$product) {
                                 $product['unit_price'] = $product['unit_price_tax_excl'];
                                 $product['product_quantity_refunded'] = $product['product_quantity'];
                                 $product['quantity'] = $product['product_quantity'];
@@ -513,7 +525,6 @@ class HipayNotification
                     $this->transaction->getPaymentProduct()
                 )];
                 if (isset($configCC['canRecurring']) && $configCC['canRecurring']) {
-
                     $card = array(
                         "token" => $this->transaction->getPaymentMethod()->getToken(),
                         "brand" => $this->transaction->getPaymentProduct(),
@@ -615,7 +626,6 @@ class HipayNotification
         );
 
         if (HipayHelper::orderExists($this->cart->id)) {
-
             // If Capture is originated in the TPP BO the Operation field is null
             // Otherwise transaction has already been saved
             if ($this->transaction->getOperation() == null && $this->transaction->getAttemptId() < 2) {
@@ -708,11 +718,16 @@ class HipayNotification
         );
 
         $this->dbMaintenance->setHipayTransaction($data);
-        HipayOrderMessage::orderMessage($this->module, $this->order->id, $this->order->id_customer,
-            HipayOrderMessage::formatOrderData($this->module, $this->transaction));
+        HipayOrderMessage::orderMessage(
+            $this->module,
+            $this->order->id,
+            $this->order->id_customer,
+            HipayOrderMessage::formatOrderData($this->module, $this->transaction)
+        );
     }
 
-    private function saveNotificationAttempt(){
+    private function saveNotificationAttempt()
+    {
         $data = array(
             "cart_id" => $this->cart->id,
             "transaction_ref" => $this->transaction->getTransactionReference(),
@@ -721,7 +736,7 @@ class HipayNotification
 
         $currentAttempt = $this->dbMaintenance->getNotificationAttempt($data);
 
-        if(!$currentAttempt) {
+        if (!$currentAttempt) {
             $currentAttempt = 1;
         } else {
             $currentAttempt += 1;
@@ -737,7 +752,8 @@ class HipayNotification
         return $currentAttempt;
     }
 
-    private function updateNotificationState($status){
+    private function updateNotificationState($status)
+    {
         $data = array(
             "cart_id" => $this->cart->id,
             "transaction_ref" => $this->transaction->getTransactionReference(),
@@ -793,18 +809,19 @@ class HipayNotification
 
         if ($refund) {
             $amount = -1 * ($this->transaction->getRefundedAmount() - HipayHelper::getOrderPaymentAmount(
-                        $this->order,
-                        true
-                    ));
+                $this->order,
+                true
+            ));
         }
 
         return $amount;
     }
 
-    private function transactionIsValid(){
-        if(in_array($this->transaction->getStatus(), self::REPEATABLE_NOTIFICATIONS)){
+    private function transactionIsValid()
+    {
+        if (in_array($this->transaction->getStatus(), self::REPEATABLE_NOTIFICATIONS)) {
             return true;
-        } elseif(!in_array($this->transaction->getStatus(), $this->dbUtils->getNotificationsForOrder($this->order->id))){
+        } elseif (!in_array($this->transaction->getStatus(), $this->dbUtils->getNotificationsForOrder($this->order->id))) {
             return true;
         }
 

@@ -2,7 +2,7 @@
   "name": "giropay",
   "config": {
     "displayNameBO": "Giropay",
-    "displayName":  {
+    "displayName": {
       "fr": "Giropay",
       "en": "Giropay"
     },
@@ -22,6 +22,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "giropay.png"
+    "logo": "giropay.png",
+    "orderOnPending": true
   }
 }

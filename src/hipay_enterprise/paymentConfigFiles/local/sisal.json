@@ -2,7 +2,7 @@
   "name": "sisal",
   "config": {
     "displayNameBO": "Sisal",
-    "displayName":  {
+    "displayName": {
       "fr": "Sisal",
       "en": "Sisal"
     },
@@ -22,6 +22,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "sisal.png"
+    "logo": "sisal.png",
+    "orderOnPending": true
   }
 }

@@ -2,7 +2,7 @@
   "name": "sdd",
   "config": {
     "displayNameBO": "SEPA Direct Debit",
-    "displayName":  {
+    "displayName": {
       "fr": "SEPA Direct Debit",
       "en": "SEPA Direct Debit"
     },
@@ -22,6 +22,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "sdd.png"
+    "logo": "sdd.png",
+    "orderOnPending": true
   }
 }

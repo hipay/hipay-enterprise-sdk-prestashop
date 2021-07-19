@@ -48,7 +48,7 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
         $this->module->getLogs()->logInfos("# Exception payment");
 
         $context = Context::getContext();
-        $cartId = Tools::getValue('orderId');
+        $cartId = Tools::getValue('orderid');
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
@@ -66,7 +66,7 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
             $orderId = Order::getOrderByCartId($objCart->id);
         }
 
-        if($orderId){
+        if ($orderId) {
             HipayHelper::changeOrderStatus(new Order($orderId), _PS_OS_ERROR_);
         }
 
