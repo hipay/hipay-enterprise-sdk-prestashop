@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.4
+
+- **Fix** : Fixed order creation on notification for transactions in pending
+
 ## Version 2.13.3
 
 - **Fix** : Fixed behavior on multi use token parameter
