@@ -2,7 +2,7 @@
   "name": "multibanco",
   "config": {
     "displayNameBO": "Multibanco",
-    "displayName":  {
+    "displayName": {
       "fr": "Multibanco",
       "en": "Multibanco"
     },
@@ -24,6 +24,7 @@
       "EUR": false
     },
     "orderExpirationTime": 3,
-    "logo": "multibanco.png"
+    "logo": "multibanco.png",
+    "orderOnPending": true
   }
 }
