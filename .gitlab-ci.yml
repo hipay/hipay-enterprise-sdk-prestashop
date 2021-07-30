@@ -10,7 +10,7 @@ stages:
 variables:
   DOCKER_HOST: tcp://localhost:2375/
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
+  DOCKER_TLS_CERTDIR: ''
   GIT_DEPTH: 10
 
 services:
@@ -48,10 +48,16 @@ services:
       - bin/tests/tests-cypress/cypress/videos
       - bin/tests/tests-cypress/cypress/screenshots
     when: always
+  except:
+    variables:
+      - $ACCESS_TOKEN
 
 .build-prestashop:
   stage: build
-  when: manual
+  rules:
+    - if: $ACCESS_TOKEN
+      when: on_success
+    - when: manual
   image: $REGISTRY_CI/gitlab-ci-base:deployment
   script:
     - docker build -f bin/docker/images/prestashop/Dockerfile${PS_VERSION} . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
@@ -63,10 +69,13 @@ services:
 
 .deploy2recette-prestashop:
   stage: deploy
-  when: manual
+  rules:
+    - if: $ACCESS_TOKEN
+      when: on_success
+    - when: manual
   image: $REGISTRY_CI/gitlab-ci-base:deployment
   variables:
-    GPC_ACCOUNT: ""
+    GPC_ACCOUNT: ''
     RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
   script:
     - echo $RELEASE_NAME
@@ -90,8 +99,6 @@ services:
       --set pi_data_url="$PI_CI_DATA_URL"
     - /tools/logout-end-user.sh
   allow_failure: true
-  only:
-    - branches
   tags:
     - gcp-default-runner-prod
 
@@ -105,7 +112,10 @@ services:
     - /tools/auth-to-cd-cluster.sh
     - helm uninstall $RELEASE_NAME
     - /tools/logout-end-user.sh
-  when: manual
+  rules:
+    - if: $ACCESS_TOKEN
+      when: on_success
+    - when: manual
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     action: stop
@@ -121,6 +131,9 @@ build-test:
   script:
     - docker-compose -f docker-compose.test.yml build
     - docker-compose -f docker-compose.test.yml push
+  except:
+    variables:
+      - $ACCESS_TOKEN
   tags:
     - gcp-default-runner-prod
 
@@ -155,13 +168,16 @@ package:
     - composer install --no-dev
     - cd ../..
     - ./package-ready-for-prestashop/builder/module_builder.sh -v $CI_COMMIT_REF_SLUG
-#    - chmod u+x bin/deployment/deploy_package.sh
-#    - ./bin/deployment/deploy_package.sh
+  #    - chmod u+x bin/deployment/deploy_package.sh
+  #    - ./bin/deployment/deploy_package.sh
   artifacts:
     paths:
       - ./package-ready-for-prestashop
   tags:
     - gcp-default-runner-prod
+  except:
+    variables:
+      - $ACCESS_TOKEN
 
 build-prestashop16:
   variables:
