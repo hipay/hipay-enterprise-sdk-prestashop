@@ -168,7 +168,7 @@ class HipayConfig
     {
         // Use this function only if you have just one variable to update
         // init multistore
-        $id_shop = (int)$this->context->shop->id;
+        $id_shop = (int)Shop::getContextShopID();
         $id_shop_group = (int)Shop::getContextShopGroupID();
 
         // the config is stacked in JSON
@@ -516,7 +516,7 @@ class HipayConfig
         }
 
         // init multistore
-        $id_shop = (is_null($id_shop)) ? (int)$this->context->shop->id : $id_shop;
+        $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : (int)$id_shop;
         $id_shop_group = (is_null($id_shop_group)) ? (int)Shop::getContextShopGroupID() : $id_shop_group;
         if (Configuration::updateValue(
             'HIPAY_CONFIG',

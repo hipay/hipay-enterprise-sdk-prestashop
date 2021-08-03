@@ -13,28 +13,28 @@
     <div class="row">
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-danger">Error Logs</a>
+                <a href="#logs" class="list-group-item list-group-item-danger">Error Logs</a>
                 {foreach from=$logs['error'] item=select}
                     <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
-                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                        class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-info">Info Logs</a>
+                <a href="#logs" class="list-group-item list-group-item-info">Info Logs</a>
                 {foreach from=$logs['infos'] item=select}
                     <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
-                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                        class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-info">Callback Logs</a>
+                <a href="#logs" class="list-group-item list-group-item-info">Callback Logs</a>
                 {foreach from=$logs['callback'] item=select}
                     <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
-                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                        class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>
@@ -42,10 +42,10 @@
     <div class="row">
         <div class="col-md-4 col-xs-4">
             <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-warning">Request Logs</a>
+                <a href="#logs" class="list-group-item list-group-item-warning">Request Logs</a>
                 {foreach from=$logs['request'] item=select}
                     <a href="{$module_url}&logfile={$select|escape:'htmlall':'UTF-8'}" target="_blank"
-                       class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
+                        class="list-group-item ">{$select|escape:'html':'UTF-8'}</a>
                 {/foreach}
             </div>
         </div>

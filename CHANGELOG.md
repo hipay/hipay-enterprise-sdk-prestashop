@@ -1,5 +1,10 @@
 # Changelog
 
+##  Version 2.13.5
+
+- **Fix** : Fixed saving of HiPay module settings
+- **Fix** : Fixed order creation on status 112
+
 ## Version 2.13.4
 
 - **Fix** : Fixed order creation on notification for transactions in pending
