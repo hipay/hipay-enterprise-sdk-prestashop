@@ -89,8 +89,7 @@
                                                         {if $localPayment["group"]["code"] == $localPaymentDetail["group"]["code"]}
                                                             <div role="tabpanel" class="tab-pane {if $firstElement} active {/if}"
                                                                 id="payment_form__{$groupSummary}__{$localPaymentDetail@key}">
-                                                                {include file='./detail-local-payment.tpl' method=$localPaymentDetail key="payment_form__{$groupSummary}__{$localPaymentDetail@key}"
-                                                                first=$localPaymentDetail@first}
+                                                                {include file='./detail-local-payment.tpl' method=$localPaymentDetail key=$localPaymentDetail@key first=$localPaymentDetail@first}
                                                             </div>
                                                             {assign var="firstElement" value=false}
                                                         {/if}
@@ -103,8 +102,10 @@
                             {/if}
 
                             {if !$itemInGroup}
-                                {include file='./detail-local-payment.tpl' method=$localPayment key="payment_form__{$localPayment@key}"
-                                first=$localPayment@first}
+                                <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}"
+                                    id="payment_form__{$localPayment@key}">
+                                    {include file='./detail-local-payment.tpl' method=$localPayment key=$localPayment@key first=$localPayment@first}
+                                </div>
                             {/if}
                         {/foreach}
                     </div>

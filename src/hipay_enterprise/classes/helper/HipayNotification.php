@@ -149,14 +149,14 @@ class HipayNotification
                     );
                 }
             } else {
-                if ($this->transaction->getStatus() === TransactionStatus::AUTHORIZED &&
-                    $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')) {
-                    $this->log->logInfos('Received 4 116 Notifications for cart : ' . $this->cart->id . ', creating order now');
+                if (in_array($this->transaction->getStatus(), [TransactionStatus::AUTHORIZED, TransactionStatus::AUTHORIZED_AND_PENDING])
+                    && $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')) {
+                    $this->log->logInfos('Received ' . $currentAttempt . ' ' . $this->transaction->getStatus() . ' Notifications for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } elseif (isset($this->getPaymentProductConfig()['orderOnPending']) &&
                     $this->getPaymentProductConfig()['orderOnPending'] &&
                     $this->transaction->getStatus() === TransactionStatus::AUTHORIZATION_REQUESTED) {
-                    $this->log->logInfos('Received 142 Notification for cart : ' . $this->cart->id . ', creating order now');
+                    $this->log->logInfos('Received ' . $this->transaction->getStatus() . ' Notification for cart : ' . $this->cart->id . ', creating order now');
                     $this->registerOrder(Configuration::get('HIPAY_OS_PENDING'));
                 } else {
                     if (in_array($this->transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {

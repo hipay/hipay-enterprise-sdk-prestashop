@@ -516,7 +516,7 @@ class HipayConfig
         }
 
         // init multistore
-        $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : $id_shop;
+        $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : (int)$id_shop;
         $id_shop_group = (is_null($id_shop_group)) ? (int)Shop::getContextShopGroupID() : $id_shop_group;
         if (Configuration::updateValue(
             'HIPAY_CONFIG',

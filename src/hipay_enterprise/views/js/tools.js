@@ -18,6 +18,12 @@ jQuery(($) => {
     }
   });
 
+  $('form[action]').on('submit', function () {
+    var _this = $(this);
+    _this.attr('action', _this.attr('action') + window.location.hash);
+    return true;
+  });
+
   // If hash, click on clickable elements parsing hash value
   if (window.location.hash) {
     var hash = window.location.hash;
