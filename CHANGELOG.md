@@ -1,5 +1,11 @@
 # Changelog
 
+##  Version 2.13.6
+
+- **Fix** : Fixed merchan_promotion for oney
+- **Fix** : Fixed Mbway phone
+- **Fix** : Fixed Oney category
+
 ##  Version 2.13.5
 
 - **Fix** : Fixed saving of HiPay module settings
