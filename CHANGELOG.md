@@ -1,5 +1,11 @@
 # Changelog
 
+
+##  Version 2.13.6
+
+- **Fix** : Fixed merchant_promotion for Oney 
+- **Fix** : Fixed default category for item fee with Oney 
+
 ##  Version 2.13.5
 
 - **Fix** : Fixed saving of HiPay module settings
