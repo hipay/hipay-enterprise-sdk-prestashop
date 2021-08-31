@@ -194,7 +194,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         if (isset($this->params["paymentProduct"]['merchantPromotion'])) {
             $order->payment_product_parameters = json_encode(
                 array(
-                    "merchantPromotion" => !empty($this->params["paymentProduct"]['merchantPromotion']) ?
+                    "merchant_promotion" => !empty($this->params["paymentProduct"]['merchantPromotion']) ?
                     $this->params["paymentProduct"]['merchantPromotion'] :
                     \HiPay\Fullservice\Helper\MerchantPromotionCalculator::calculate(
                         $this->params["productlist"],

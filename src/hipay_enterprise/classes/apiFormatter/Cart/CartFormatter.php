@@ -231,7 +231,7 @@ class CartFormatter extends ApiFormatterAbstract
                 $total_amount
             );
             // forced category
-            $item->setProductCategory(1);
+            $item->setProductCategory(11);
 
             return $item;
         }
