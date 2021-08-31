@@ -25,8 +25,8 @@ prestashop17:
    - ./bin/docker/conf/development/env
    - ./bin/docker/conf/development/env17
  volumes:
-   - ./web17:/var/www/html
-   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+   - ./web17:/var/www/html:delegated
+   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
  mem_limit: 500M
 
 prestashop16:
@@ -42,6 +42,6 @@ prestashop16:
    - ./bin/docker/conf/development/env
    - ./bin/docker/conf/development/env16
  volumes:
-   - ./web16:/var/www/html
-   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+   - ./web16:/var/www/html:delegated
+   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
  mem_limit: 500M

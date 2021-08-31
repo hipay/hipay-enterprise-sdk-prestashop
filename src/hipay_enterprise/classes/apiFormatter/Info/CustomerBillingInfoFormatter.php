@@ -101,11 +101,19 @@ class CustomerBillingInfoFormatter extends ApiFormatterAbstract
                     Country::getIsoById($this->invoice->id_country)
                 );
 
-                if ($phoneNumberUtil->isValidNumber($phoneNumber)) {
+                if ($phoneNumberUtil->isValidNumber($phoneNumber) ) {
+                    $format = libphonenumber\PhoneNumberFormat::E164;
+                    if ($this->payment_product == "mbway" ) {
+                        $format = libphonenumber\PhoneNumberFormat::NATIONAL;
+                    }
+
                     $phone = $phoneNumberUtil->format(
                         $phoneNumber,
-                        libphonenumber\PhoneNumberFormat::E164
+                        $format
                     );
+
+                    // To Remove in futur release.
+                    $phone = $this->payment_product == "mbway" ? str_replace(' ','',$phone) : $phone;
                 }
             }
         } catch (Exception $e) {
