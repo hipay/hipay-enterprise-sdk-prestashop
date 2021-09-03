@@ -1,10 +1,10 @@
 {
   "name": "sisal",
   "config": {
-    "displayNameBO": "Sisal",
+    "displayNameBO": "Mooney",
     "displayName": {
-      "fr": "Sisal",
-      "en": "Sisal"
+      "fr": "Mooney",
+      "en": "Mooney"
     },
     "frontPosition": 27,
     "activated": 0,
