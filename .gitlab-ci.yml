@@ -135,7 +135,7 @@ build-test:
     variables:
       - $ACCESS_TOKEN
   tags:
-    - gcp-default-runner-prod
+    - gcp-high-load-runner-prod
 
 test-casper-17-1:
   <<: *test_definition
