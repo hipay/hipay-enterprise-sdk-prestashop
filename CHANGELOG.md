@@ -1,10 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- **Fix** : Replaced Sisal displayName and Logo by Mooney
+- **Fix** : Enabled HostedPage v2 by default
 
 ##  Version 2.13.6
 
-- **Fix** : Fixed merchant_promotion for Oney 
-- **Fix** : Fixed default category for item fee with Oney 
+- **Fix** : Fixed merchant_promotion for Oney
+- **Fix** : Fixed default category for item fee with Oney
 
 ##  Version 2.13.5
 

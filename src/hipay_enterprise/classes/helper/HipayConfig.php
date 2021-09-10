@@ -383,7 +383,7 @@ class HipayConfig
             "payment" => array(
                 "global" => array(
                     "operating_mode" => OperatingMode::getOperatingMode(UXMode::DIRECT_POST),
-                    "enable_api_v2" => 0,
+                    "enable_api_v2" => 1,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,
                     "display_hosted_page" => "redirect",
