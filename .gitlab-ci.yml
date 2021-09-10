@@ -135,7 +135,24 @@ build-test:
     variables:
       - $ACCESS_TOKEN
   tags:
-    - gcp-high-load-runner-prod
+    - gcp-default-runner-prod
+
+
+build-test-kaniko:
+  stage: build-test
+  image:
+    name: gcr.io/kaniko-project/executor:v1.6.0-debug
+  script:
+     - /kaniko/executor
+            --cache=true
+            --context "dir://${CI_PROJECT_DIR}"
+            --dockerfile "./bin/docker/images/prestashop/Dockerfile17"
+            --destination "$CI_REGISTRY/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}"
+  except:
+    variables:
+      - $ACCESS_TOKEN
+  tags:
+    - gcp-default-runner-prod
 
 test-casper-17-1:
   <<: *test_definition
