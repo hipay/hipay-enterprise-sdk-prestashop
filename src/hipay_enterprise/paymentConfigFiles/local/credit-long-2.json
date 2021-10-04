@@ -5,12 +5,12 @@
       "code": "oney",
       "label": "Oney"
     },
-    "displayNameBO": "Credit Long 2 - Oney",
+    "displayNameBO": "Credit Long Secondary - Oney",
     "displayName": {
-      "fr": "Credit Long 2 - Oney",
-      "en": "Credit Long 2 - Oney"
+      "fr": "Credit Long Secondaire - Oney",
+      "en": "Credit Long Secondary - Oney"
     },
-    "frontPosition": 33,
+    "frontPosition": 34,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
