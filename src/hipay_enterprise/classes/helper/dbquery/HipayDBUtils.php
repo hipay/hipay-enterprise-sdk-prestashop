@@ -190,16 +190,28 @@ class HipayDBUtils extends HipayDBQueryAbstract
      * When order is set to Payed order status Prestashop create order payment with remaining amount to pay
      * we need to erase this line
      *
-     * @param $orderReference
+     * @param $order
+     * @throws PrestaShopDatabaseException
      */
-    public function deleteOrderPaymentDuplicate($orderReference)
+    public function deleteOrderPaymentDuplicate($order)
     {
         // delete
         $where = "payment_method='" .
             HipayDBQueryAbstract::HIPAY_PAYMENT_ORDER_PREFIX .
             "' AND transaction_id='' AND order_reference='" .
-            $orderReference .
+            pSQL($order->reference) .
             "'";
+
+        // Querying for to-be-deleted order payments to substract total_paid_real on order
+        $originalData = Db::getInstance()->executeS('SELECT * FROM `' .
+            _DB_PREFIX_ .
+            'order_payment` WHERE ' . $where);
+
+        foreach($originalData as $paymentRow){
+            $order->total_paid_real -= $paymentRow['amount'];
+        }
+        $order->save();
+
         Db::getInstance()->delete('order_payment', $where);
     }
 
