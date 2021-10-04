@@ -1,9 +1,12 @@
 # Changelog
 
-## Unreleased
+## Version 2.13.7
 
 - **Fix** : Replaced Sisal displayName and Logo by Mooney
 - **Fix** : Enabled HostedPage v2 by default
+- **Fix** : Fixed missing translation error
+- **Fix** : Fixed total paid value error
+- **Fix** : Added new payment method duplicating Oney credit-long to allow for multiple credit-long configurations
 
 ##  Version 2.13.6
 
