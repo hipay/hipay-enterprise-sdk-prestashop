@@ -577,7 +577,7 @@ class HipayNotification
     {
         $this->log->logInfos("# Capture Order {$this->order->reference}");
 
-        $this->dbUtils->deleteOrderPaymentDuplicate($this->order->reference);
+        $this->dbUtils->deleteOrderPaymentDuplicate($this->order);
 
         // If Capture is originated in the TPP BO the Operation field is null
         // Otherwise transaction has already been saved
