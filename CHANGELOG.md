@@ -1,10 +1,18 @@
 # Changelog
 
+## Version 2.13.7
+
+- **Fix** : Replaced Sisal displayName and Logo by Mooney
+- **Fix** : Enabled HostedPage v2 by default
+- **Fix** : Fixed missing translation error
+- **Fix** : Fixed total paid value error
+- **Fix** : Added new payment method duplicating Oney credit-long to allow for multiple credit-long configurations
+
 ##  Version 2.13.6
 
-- **Fix** : Fixed merchan_promotion for oney
+- **Fix** : Fixed merchant_promotion for Oney
+- **Fix** : Fixed default category for item fee with Oney
 - **Fix** : Fixed Mbway phone
-- **Fix** : Fixed Oney category
 
 ##  Version 2.13.5
 

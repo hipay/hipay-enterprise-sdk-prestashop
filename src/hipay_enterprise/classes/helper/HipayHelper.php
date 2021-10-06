@@ -66,8 +66,12 @@ class HipayHelper
     {
         if ($paymentProduct == 'credit_card') {
             if (isset($module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'])) {
-                $paymentProductName = $module->hipayConfigTool->getPaymentGlobal(
-                )['ccDisplayName'][$language->iso_code];
+                if (isset($module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'][$language->iso_code])) {
+                    $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'][$language->iso_code];
+                } else {
+                    $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName']['en'];
+                }
+
             } else {
                 $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'];
             }
@@ -128,19 +132,19 @@ class HipayHelper
 
         // Init passphrase and Environment for production
         $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_MOTO) ?
-        $config['account']['production']['api_moto_secret_passphrase_production']
-        : $config['account']['production']['api_secret_passphrase_production'];
+            $config['account']['production']['api_moto_secret_passphrase_production']
+            : $config['account']['production']['api_secret_passphrase_production'];
 
         $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_MOTO) ?
-        self::PRODUCTION_MOTO : self::PRODUCTION;
+            self::PRODUCTION_MOTO : self::PRODUCTION;
 
         // Get Environment and passphrase for sandbox
         if ($config['account']['global']['sandbox_mode']) {
             $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
-            self::TEST_MOTO : self::TEST;
+                self::TEST_MOTO : self::TEST;
             $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
-            $config['account']['sandbox']['api_moto_secret_passphrase_sandbox']
-            : $config['account']['sandbox']['api_secret_passphrase_sandbox'];
+                $config['account']['sandbox']['api_moto_secret_passphrase_sandbox']
+                : $config['account']['sandbox']['api_secret_passphrase_sandbox'];
         }
 
         // Validate Signature with Hash
@@ -248,10 +252,10 @@ class HipayHelper
             }
         } else {
             $reference = $product['id_product'] .
-            '-' .
-            $product['id_product_attribute'] .
-            '-' .
-            HipayHelper::slugify($product['name']);
+                '-' .
+                $product['id_product_attribute'] .
+                '-' .
+                HipayHelper::slugify($product['name']);
             if (isset($product['attributes_small'])) {
                 $reference .= '-' . HipayHelper::slugify($product['attributes_small']);
             }
@@ -444,7 +448,8 @@ class HipayHelper
         $orderTotal = 1,
         $address,
         $customer
-    ) {
+    )
+    {
         $activatedCreditCard = [];
         $creditCards = self::getActivatedPaymentByCountryAndCurrency(
             $module,
@@ -498,7 +503,8 @@ class HipayHelper
         $orderTotal = 1,
         $address = null,
         $customer = null
-    ) {
+    )
+    {
         $context = Context::getContext();
         $activatedPayment = [];
         foreach ($configHipay['payment'][$paymentMethodType] as $name => $settings) {
@@ -527,14 +533,14 @@ class HipayHelper
                         $checkoutFieldsMandatory = isset(
                             $module->hipayConfigTool->getLocalPayment()[$name]['checkoutFieldsMandatory']
                         ) ?
-                        $module->hipayConfigTool->getLocalPayment()[$name]['checkoutFieldsMandatory'] : '';
+                            $module->hipayConfigTool->getLocalPayment()[$name]['checkoutFieldsMandatory'] : '';
                         $fieldMandatory = [];
                         if (!empty($checkoutFieldsMandatory)) {
                             foreach ($checkoutFieldsMandatory as $field) {
                                 switch ($field) {
                                     case 'phone':
                                         $phone = (isset($address->phone_mobile) && $address->phone_mobile != '') ?
-                                        $address->phone_mobile : $address->phone;
+                                            $address->phone_mobile : $address->phone;
 
                                         if (empty($phone)) {
                                             $fieldMandatory[] = $module->l(
@@ -633,7 +639,7 @@ class HipayHelper
             $orderId = Order::getOrderByCartId($cart->id);
         }
 
-        $customer = new Customer((int) $cart->id_customer);
+        $customer = new Customer((int)$cart->id_customer);
 
         if ($cart && (!$orderId || empty($orderId))) {
             if (!$status) {
@@ -649,9 +655,9 @@ class HipayHelper
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
             $module->validateOrder(
-                (int) $cart->id,
+                (int)$cart->id,
                 $status,
-                (float) $cart->getOrderTotal(true),
+                (float)$cart->getOrderTotal(true),
                 $productName,
                 $module->l('Order created by HiPay.'),
                 [],
@@ -719,8 +725,8 @@ class HipayHelper
     public static function orderExists($cart_id)
     {
         if ($cart_id) {
-            $result = (bool) Db::getInstance()->getValue(
-                'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int) $cart_id
+            $result = (bool)Db::getInstance()->getValue(
+                'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
             );
 
             return $result;
@@ -757,7 +763,7 @@ class HipayHelper
      */
     public static function getOrderPaymentAmount($order, $refund = false)
     {
-        if($refund){
+        if ($refund) {
             $orderSlips = $order->getOrderSlipsCollection();
             $amount = 0;
 

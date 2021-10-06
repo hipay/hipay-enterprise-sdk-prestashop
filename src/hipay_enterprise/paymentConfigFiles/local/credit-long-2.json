@@ -1,0 +1,50 @@
+{
+  "name": "credit-long-2",
+  "config": {
+    "group": {
+      "code": "oney",
+      "label": "Oney"
+    },
+    "displayNameBO": "Credit Long Secondary - Oney",
+    "displayName": {
+      "fr": "Credit Long Secondaire - Oney",
+      "en": "Credit Long Secondary - Oney"
+    },
+    "frontPosition": 34,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries",
+      "merchantPromotion"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "oney-credit-long.png",
+    "merchantPromotion": false,
+    "maxLengthDescription": 50,
+    "productCode": "credit-long",
+    "brandName": "Credit Long - Oney",
+    "category": "debit-card",
+    "comment": "Available only in France, Italia or Portugal.",
+    "can3ds": 1,
+    "canRecurring": 0,
+    "canManualCapture": 1,
+    "canManualCapturePartially": 1,
+    "canRefund": 1,
+    "canRefundPartially": 1,
+    "basketRequired": 1,
+    "currencies": ["EUR"],
+    "countries": ["FR", "IT", "PT"],
+    "checkoutFieldsMandatory": ["phone"],
+    "additionalFields": {},
+    "priority": 30
+  }
+}
