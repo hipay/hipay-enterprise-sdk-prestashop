@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.8
+
+- **Fix** : Update PHP SDK to fix some errors on PSD2 fields
+
 ## Version 2.13.7
 
 - **Fix** : Replaced Sisal displayName and Logo by Mooney
