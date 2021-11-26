@@ -104,12 +104,9 @@ jQuery(document).ready(function ($) {
   initDirectPost();
 });
 
-//Support module One Page Checkout
+//Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
 //--------------------------------
 window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
-  initDirectPost();
-});
-$(document).on('opc-load-payment:completed', function() {
   initDirectPost();
 });
 //--------------------------------

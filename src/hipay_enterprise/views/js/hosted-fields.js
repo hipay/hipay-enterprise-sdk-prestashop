@@ -57,13 +57,9 @@ var hipayHF;
 
 document.addEventListener('DOMContentLoaded', initHostedFields, false);
 
-//Support module One Page Checkout
+//Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
 //--------------------------------
 window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
-  initEventsHostedFields();
-  initHostedFields();
-});
-$(document).on('opc-load-payment:completed', function() {
   initEventsHostedFields();
   initHostedFields();
 });
