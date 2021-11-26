@@ -10,6 +10,7 @@
 * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
 *}
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+
 <form id="tokenizerForm" action="{$action}" enctype="application/x-www-form-urlencoded"
       class="form-horizontal hipay-form-17" method="post"
       name="tokenizerForm" autocomplete="off">
@@ -61,11 +62,21 @@
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
+    //Support module One Page Checkout PS - PresTeamShop
+    //--------------------------------
+    window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
+        setSelectedPaymentMethod();
+    });
+    $(document).on('opc-load-payment:completed', function() {
+        setSelectedPaymentMethod();
+    });
+    //--------------------------------
+
     var activatedCreditCard = [];
     {foreach $activatedCreditCard as $cc}
     activatedCreditCard.push("{$cc}");
     {/foreach}
-    var lang = "{$language.iso_code}";
+    var lang = "{$LanguagueIsoCode}";
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;
 

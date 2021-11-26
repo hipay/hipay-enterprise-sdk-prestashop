@@ -60,6 +60,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
+    //Support module One Page Checkout PS - PresTeamShop
+    //--------------------------------
+    window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
+        setSelectedPaymentMethod();
+    });
+    $(document).on('opc-load-payment:completed', function() {
+        setSelectedPaymentMethod();
+    });
+    //--------------------------------
+
     {if $confHipay.account.global.sandbox_mode}
     var api_tokenjs_mode = "stage";
     var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
@@ -82,7 +92,7 @@
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
     var oneClick = !!{$confHipay.payment.global.card_token};
 
-    var lang = "{$language.iso_code}";
+    var lang = "{$LanguagueIsoCode}";
 
     var myPaymentMethodSelected = false;
 

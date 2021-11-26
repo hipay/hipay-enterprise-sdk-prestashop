@@ -9,7 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-jQuery(document).ready(function ($) {
+
+function initDirectPost() {
   $("#card-number").focus(function () {
     $("#radio-no-token").prop("checked", true);
   });
@@ -97,4 +98,18 @@ jQuery(document).ready(function ($) {
       );
     }
   });
+}
+
+jQuery(document).ready(function ($) {
+  initDirectPost();
 });
+
+//Support module One Page Checkout
+//--------------------------------
+window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
+  initDirectPost();
+});
+$(document).on('opc-load-payment:completed', function() {
+  initDirectPost();
+});
+//--------------------------------

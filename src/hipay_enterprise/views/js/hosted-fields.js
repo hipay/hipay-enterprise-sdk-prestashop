@@ -1,4 +1,8 @@
 jQuery(document).ready(function ($) {
+  initEventsHostedFields();
+});
+
+function initEventsHostedFields() {
   $('#card-number').focus(function () {
     $('#radio-no-token').prop('checked', true);
   });
@@ -47,10 +51,23 @@ jQuery(document).ready(function ($) {
       );
     }
   });
-});
+}
+
 var hipayHF;
 
 document.addEventListener('DOMContentLoaded', initHostedFields, false);
+
+//Support module One Page Checkout
+//--------------------------------
+window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
+  initEventsHostedFields();
+  initHostedFields();
+});
+$(document).on('opc-load-payment:completed', function() {
+  initEventsHostedFields();
+  initHostedFields();
+});
+//--------------------------------
 
 function allowMultiUse(saveTokenEl) {
   return oneClick && $(saveTokenEl).is(':checked');

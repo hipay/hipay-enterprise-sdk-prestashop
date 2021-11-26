@@ -59,7 +59,7 @@
             var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
             {/if}
 
-            var lang = "{$language.iso_code}";
+            var lang = "{$LanguagueIsoCode}";
 
             var hipay = HiPay({
                 username: api_tokenjs_username,
@@ -97,4 +97,3 @@
         false
     );
 </script>
-
