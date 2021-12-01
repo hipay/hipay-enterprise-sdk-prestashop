@@ -59,10 +59,15 @@ document.addEventListener('DOMContentLoaded', initHostedFields, false);
 
 //Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
 //--------------------------------
-window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
-  initEventsHostedFields();
-  initHostedFields();
-});
+if (window.opc_dispatcher && window.opc_dispatcher.events) {
+  window.opc_dispatcher.events.addEventListener(
+    'payment-getPaymentList-complete',
+    () => {
+      initEventsHostedFields();
+      initHostedFields();
+    }
+  );
+}
 //--------------------------------
 
 function allowMultiUse(saveTokenEl) {
