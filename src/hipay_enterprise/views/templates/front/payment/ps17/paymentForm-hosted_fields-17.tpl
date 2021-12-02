@@ -91,7 +91,7 @@
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
     var oneClick = !!{$confHipay.payment.global.card_token};
 
-    var lang = "{$language.iso_code}";
+    var lang = "{$languageIsoCode}";
 
     var myPaymentMethodSelected = false;
 

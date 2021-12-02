@@ -75,7 +75,7 @@
     {foreach $activatedCreditCard as $cc}
         activatedCreditCard.push("{$cc}");
     {/foreach}
-    var lang = "{$language.iso_code}";
+    var lang = "{$languageIsoCode}";
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
     var myPaymentMethodSelected = false;
 
