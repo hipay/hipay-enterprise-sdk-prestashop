@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.13.9
+
+- **Fix** : Update PHP SDK
+
 ## Version 2.13.8
 
 - **Fix** : Update PHP SDK to fix some errors on PSD2 fields
