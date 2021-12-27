@@ -469,18 +469,34 @@ class HipayNotification
                     $orderPaymentResult = false;
 
                     if ($refund) {
-                        if (-1 * $amount !== floatval($this->order->total_paid)) {
-                            $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
-                        } else {
-                            $productArray = $this->order->getProducts();
+                        // Get existing slip for this order
+                        $orderSlips = $this->order->getOrderSlipsCollection();
 
-                            foreach ($productArray as &$product) {
-                                $product['unit_price'] = $product['unit_price_tax_excl'];
-                                $product['product_quantity_refunded'] = $product['product_quantity'];
-                                $product['quantity'] = $product['product_quantity'];
+                        $alreadyExists = false;
+                        foreach ($orderSlips AS $orderSlip) {
+                            if ($orderSlip->amount === $amount) {
+                                $alreadyExists = true;
+                                break;
                             }
+                        }
 
-                            $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                        // If an other slip exists with the same amount for that order
+                        // It means it was created using the shopify interface
+                        // No need to create an other one
+                        if (!$alreadyExists) {
+                            if (-1 * $amount !== floatval($this->order->total_paid)) {
+                                $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
+                            } else {
+                                $productArray = $this->order->getProducts();
+
+                                foreach ($productArray as &$product) {
+                                    $product['unit_price'] = $product['unit_price_tax_excl'];
+                                    $product['product_quantity_refunded'] = $product['product_quantity'];
+                                    $product['quantity'] = $product['product_quantity'];
+                                }
+
+                                $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                            }
                         }
                     } else {
                         $orderPaymentResult = $this->order->addOrderPayment(
