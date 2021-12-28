@@ -481,7 +481,7 @@ class HipayNotification
                         }
 
                         // If an other slip exists with the same amount for that order
-                        // It means it was created using the shopify interface
+                        // It means it was created using the prestashop interface
                         // No need to create an other one
                         if (!$alreadyExists) {
                             if (-1 * $amount !== floatval($this->order->total_paid)) {
