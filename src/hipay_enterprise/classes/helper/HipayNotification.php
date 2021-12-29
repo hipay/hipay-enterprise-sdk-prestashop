@@ -474,7 +474,7 @@ class HipayNotification
 
                         $alreadyExists = false;
                         foreach ($orderSlips AS $orderSlip) {
-                            if ($orderSlip->amount === $amount) {
+                            if (floatval($orderSlip->amount) === (-1 * $amount)) {
                                 $alreadyExists = true;
                                 break;
                             }
@@ -483,7 +483,9 @@ class HipayNotification
                         // If an other slip exists with the same amount for that order
                         // It means it was created using the prestashop interface
                         // No need to create an other one
-                        if (!$alreadyExists) {
+                        if ($alreadyExists) {
+                            $this->log->logInfos("Existing OrderSlip found with the same amount for order n°{$this->order->id}. Not creating a new one");
+                        } else {
                             if (-1 * $amount !== floatval($this->order->total_paid)) {
                                 $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
                             } else {
