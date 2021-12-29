@@ -27,12 +27,17 @@ class HipayOrderMessage
 {
     /**
      * write notification order message
+     * @param type $module
      * @param type $orderId
-     * @param type $transaction
+     * @param type $customerId
+     * @param type $data
      */
     public static function orderMessage($module, $orderId, $customerId, $data)
     {
-        HipayOrderMessage::addMessage($orderId, $customerId, $data);
+        // Only send notification message if functionality is activated
+        if ($module->hipayConfigTool->getAccountGlobal()["order_message_on_notification"]) {
+            HipayOrderMessage::addMessage($orderId, $customerId, $data);
+        }
     }
 
     /**
