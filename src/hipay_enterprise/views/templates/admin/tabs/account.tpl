@@ -452,6 +452,30 @@
                     </div>
                 </div>
             </div>
+
+            <div class="panel" id="fieldset_0">
+                <div class="form-wrapper">
+                    <div class="panel-heading">{l s='Parameters' mod='hipay_enterprise'}</div>
+                    <!-- SWITCH MODE START -->
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">
+                            <span>{l s='Enable order message on notification' mod='hipay_enterprise'}</span>
+                        </label>
+                        <div class="col-lg-8">
+                            <span class="switch prestashop-switch fixed-width-lg">
+                                <input type="radio" name="sandbox_mode" id="account_switchmode_on" value="1"
+                                       {if $config_hipay.account.global.order_message_on_notification }checked="checked" {/if}>
+                                <label for="account_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                <input type="radio" name="sandbox_mode" id="account_switchmode_off" value="0"
+                                       {if $config_hipay.account.global.order_message_on_notification == false}checked="checked" {/if}>
+                                <label for="account_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                                <a class="slide-button btn production-switch"></a>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- SWITCH MODE END -->
+                </div>
+            </div>
         </div>
         <div class="panel-footer">
             <div class="col-md-12 col-xs-12">
