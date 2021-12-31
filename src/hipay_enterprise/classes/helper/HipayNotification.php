@@ -469,12 +469,15 @@ class HipayNotification
                     $orderPaymentResult = false;
 
                     if ($refund) {
+                        // Turn amount positive
+                        $amount *= -1;
+
                         // Get existing slip for this order
                         $orderSlips = $this->order->getOrderSlipsCollection();
 
                         $alreadyExists = false;
                         foreach ($orderSlips AS $orderSlip) {
-                            if (floatval($orderSlip->amount) === (-1 * $amount)) {
+                            if (floatval($orderSlip->amount) === $amount) {
                                 $alreadyExists = true;
                                 break;
                             }
@@ -486,8 +489,20 @@ class HipayNotification
                         if ($alreadyExists) {
                             $this->log->logInfos("Existing OrderSlip found with the same amount for order n°{$this->order->id}. Not creating a new one");
                         } else {
-                            if (-1 * $amount !== floatval($this->order->total_paid)) {
-                                $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
+                            if ($amount !== floatval($this->order->total_paid)) {
+                                // Force amount to the chosen one
+                                $productArray = $this->order->getProducts();
+
+                                $product = array_pop($productArray);
+
+                                $product['unit_price'] = $amount;
+                                $product['product_quantity_refunded'] = $product['product_quantity'];
+                                $product['quantity'] = 1;
+
+                                $orderPaymentResult = OrderSlip::create(
+                                    $this->order,
+                                    [ $product ]
+                                );
                             } else {
                                 $productArray = $this->order->getProducts();
 

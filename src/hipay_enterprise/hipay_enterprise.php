@@ -178,6 +178,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionAdminBulKDeleteBefore');
         $return &= $this->registerHook('dashboardZoneOne');
         $return &= $this->registerHook('actionOrderStatusUpdate');
+        $return &= $this->registerHook('actionOrderSlipAdd');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
             $this->registerHook('header') &&
@@ -257,6 +258,30 @@ class Hipay_enterprise extends PaymentModule
             }
         }
         return true;
+    }
+
+    /**
+     * Sending refund request
+     *
+     * @param array $params
+     */
+    public function hookActionOrderSlipAdd($params)
+    {
+        $this->getLogs()->logInfos("# Refund Capture without basket order ID {$params['id']}");
+        //refund with no basket
+
+        $isBasket = false;
+        if ($isBasket) {
+
+        } else {
+            $refund_amount = 0;
+            foreach ($params['productList'] as $product) {
+                $refund_amount += $product['amount'];
+            }
+        }
+//transaction reference
+        $params["operation"] = Operation::REFUND;
+        ApiCaller::requestMaintenance($this, $params);
     }
 
     /**
