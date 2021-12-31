@@ -393,7 +393,7 @@
                                 class="pull-right chevron icon icon-chevron-down"></i>
                         </a>
                     </div>
-                    <div class="collapse" id="account_form__collapseTechnical">
+                    <div class="collapse" id="account_form__collapseTechnical">oauis la
                         <div class="test">
                             <div class="row">
                                 <div class="col-lg-6 col-lg-offset-2">

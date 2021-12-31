@@ -167,6 +167,8 @@ class Hipay_enterprise extends PaymentModule
      */
     public function installHipay()
     {
+
+        $this->getLogs()->logInfos('TesterTheo');
         $return = $this->installAdminTab();
         $return &= HipayOrderStatus::updateHiPayOrderStates($this);
         $return &= $this->createHipayTable();
@@ -267,21 +269,34 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookActionOrderSlipAdd($params)
     {
-        $this->getLogs()->logInfos("# Refund Capture without basket order ID {$params['id']}");
-        //refund with no basket
+        $this->getLogs()->logInfos("# Refund Capture without basket order ID {$params['order']->id}");
+        $this->getLogs()->logInfos(print_r($params, true));
 
+        //refund with no basket
         $isBasket = false;
         if ($isBasket) {
 
+            $refund_amount = 0;
         } else {
             $refund_amount = 0;
             foreach ($params['productList'] as $product) {
                 $refund_amount += $product['amount'];
             }
         }
-//transaction reference
-        $params["operation"] = Operation::REFUND;
-        ApiCaller::requestMaintenance($this, $params);
+        $maintenanceParams = [];
+
+        $maintenaceDBHelper = new HipayDBMaintenance($this);
+        try {
+            $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($params['order']->id);
+        } catch (PrestaShopDatabaseException $e) {
+            $maintenanceParams["transaction_reference"] = '';
+        }
+
+        $maintenanceParams["amount"] = $refund_amount;
+        $maintenanceParams["order"] = $params['order']->id;
+        $maintenanceParams["operation"] = HiPay\Fullservice\Enum\Transaction\Operation::REFUND;
+
+        ApiCaller::requestMaintenance($this, $maintenanceParams);
     }
 
     /**
