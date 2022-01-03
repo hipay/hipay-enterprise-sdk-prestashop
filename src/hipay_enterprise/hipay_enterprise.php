@@ -270,31 +270,54 @@ class Hipay_enterprise extends PaymentModule
     public function hookActionOrderSlipAdd($params)
     {
         $this->getLogs()->logInfos("# Refund Capture without basket order ID {$params['order']->id}");
-        $this->getLogs()->logInfos(print_r($params, true));
+
+        $order = new Order($params['order']->id);
+
+        $maintenanceParams = array(
+            "order" => $order->id,
+            "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
+        );
+
+        $maintenaceDBHelper = new HipayDBMaintenance($this);
+        try {
+            $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
+        } catch (PrestaShopDatabaseException $e) {
+            $maintenanceParams["transaction_reference"] = '';
+        }
 
         //refund with no basket
-        $isBasket = false;
+        $isBasket = true;
         if ($isBasket) {
+            $refundItems = array();
+            $orderDetailList = $order->getOrderDetailList();
 
-            $refund_amount = 0;
+            foreach ($params['productList'] as $product) {
+
+                $productId = null;
+                foreach ($orderDetailList AS $orderDetail) {
+
+                    if($orderDetail['id_order_detail'] == $product['id_order_detail']) {
+                        $productId = $orderDetail['product_id'];
+                        break;
+                    }
+                }
+
+                $refundItems[$productId] = $product['quantity'];
+
+                $maintenanceParams["refundItems"] = $refundItems;
+                $maintenanceParams["capture_refund_fee"] = false;
+                $maintenanceParams["capture_refund_wrapping"] = true;
+                $maintenanceParams["capture_refund_discount"] = true;
+            }
+
         } else {
             $refund_amount = 0;
             foreach ($params['productList'] as $product) {
                 $refund_amount += $product['amount'];
             }
-        }
-        $maintenanceParams = [];
 
-        $maintenaceDBHelper = new HipayDBMaintenance($this);
-        try {
-            $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($params['order']->id);
-        } catch (PrestaShopDatabaseException $e) {
-            $maintenanceParams["transaction_reference"] = '';
+            $maintenanceParams["amount"] = $refund_amount;
         }
-
-        $maintenanceParams["amount"] = $refund_amount;
-        $maintenanceParams["order"] = $params['order']->id;
-        $maintenanceParams["operation"] = HiPay\Fullservice\Enum\Transaction\Operation::REFUND;
 
         ApiCaller::requestMaintenance($this, $maintenanceParams);
     }

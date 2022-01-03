@@ -182,6 +182,8 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping'),
                     "capture_refund_discount" => Tools::getValue('hipay_refund_discount')
                 );
+
+                $this->module->getLogs()->logInfos(print_r($this->params, true));
             } else {
                 $this->params["capture_refund_discount"] = true;
                 $this->params["capture_refund_fee"] = true;
