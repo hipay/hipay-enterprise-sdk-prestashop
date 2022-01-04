@@ -55,8 +55,6 @@ function initEventsHostedFields() {
 
 var hipayHF;
 
-document.addEventListener('DOMContentLoaded', initHostedFields, false);
-
 //Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
 //--------------------------------
 if (window.opc_dispatcher && window.opc_dispatcher.events) {
@@ -67,6 +65,8 @@ if (window.opc_dispatcher && window.opc_dispatcher.events) {
       initHostedFields();
     }
   );
+} else {
+  document.addEventListener('DOMContentLoaded', initHostedFields, false);
 }
 //--------------------------------
 

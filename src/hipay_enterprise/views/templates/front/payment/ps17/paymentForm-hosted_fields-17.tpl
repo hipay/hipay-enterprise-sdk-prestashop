@@ -58,14 +58,12 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
-
     //Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
     //--------------------------------
     if (window.opc_dispatcher && window.opc_dispatcher.events) {
-        window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', () => {
-            setSelectedPaymentMethod();
-        });
+        window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', setSelectedPaymentMethod);
+    } else {
+        document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
     }
     //--------------------------------
 
