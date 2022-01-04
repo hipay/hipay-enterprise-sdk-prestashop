@@ -270,6 +270,7 @@ class Hipay_enterprise extends PaymentModule
     public function hookActionOrderSlipAdd($params)
     {
         $this->getLogs()->logInfos("# Refund Capture without basket order ID {$params['order']->id}");
+        $this->getLogs()->logInfos(print_r($params, true));
 
         $order = new Order($params['order']->id);
 
@@ -305,11 +306,15 @@ class Hipay_enterprise extends PaymentModule
                 $refundItems[$productId] = $product['quantity'];
 
                 $maintenanceParams["refundItems"] = $refundItems;
-                $maintenanceParams["capture_refund_fee"] = false;
-                $maintenanceParams["capture_refund_wrapping"] = true;
-                $maintenanceParams["capture_refund_discount"] = true;
             }
 
+            $ordersSlip = OrderSlip::getOrdersSlip($order->id_customer, $order->id);
+
+            $orderSlip = $ordersSlip[0];
+
+            $maintenanceParams["capture_refund_fee"] = $orderSlip['total_shipping_tax_incl'];
+            $maintenanceParams["capture_refund_wrapping"] = true;
+            $maintenanceParams["capture_refund_discount"] = true;
         } else {
             $refund_amount = 0;
             foreach ($params['productList'] as $product) {
