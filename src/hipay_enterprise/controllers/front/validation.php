@@ -47,21 +47,6 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
             $this->module->getLogs()->logInfos("Cart $objCart->id loaded from orderId $cartId");
         }
 
-        $token = Tools::getValue('token');
-        $hipayToken = HipayHelper::getHipayToken($objCart->id);
-
-        //check request integrity
-        if ($token != $hipayToken) {
-            $this->module->getLogs()->logErrors("# Wrong token on payment validation.\r\nToken: $token\r\nHiPayToken: $hipayToken");
-            $redirectUrl = $context->link->getModuleLink(
-                $this->module->name,
-                'exception',
-                array('status_error' => 405),
-                true
-            );
-            Tools::redirect($redirectUrl);
-        }
-
         try {
             $paymentProduct = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('product'));
         } catch (PaymentProductNotFoundException $e) {
