@@ -108,8 +108,6 @@ if (window.opc_dispatcher && window.opc_dispatcher.events) {
     initDirectPost
   );
 } else {
-  jQuery(document).ready(function ($) {
-    initDirectPost();
-  });
+  jQuery(document).ready(initDirectPost);
 }
 //--------------------------------
