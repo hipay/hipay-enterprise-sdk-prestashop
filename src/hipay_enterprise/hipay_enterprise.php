@@ -167,8 +167,6 @@ class Hipay_enterprise extends PaymentModule
      */
     public function installHipay()
     {
-
-        $this->getLogs()->logInfos('TesterTheo');
         $return = $this->installAdminTab();
         $return &= HipayOrderStatus::updateHiPayOrderStates($this);
         $return &= $this->createHipayTable();
