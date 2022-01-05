@@ -71,7 +71,6 @@ class HipayHelper
                 } else {
                     $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName']['en'];
                 }
-
             } else {
                 $paymentProductName = $module->hipayConfigTool->getPaymentGlobal()['ccDisplayName'];
             }
@@ -448,8 +447,7 @@ class HipayHelper
         $orderTotal = 1,
         $address,
         $customer
-    )
-    {
+    ) {
         $activatedCreditCard = [];
         $creditCards = self::getActivatedPaymentByCountryAndCurrency(
             $module,
@@ -503,8 +501,7 @@ class HipayHelper
         $orderTotal = 1,
         $address = null,
         $customer = null
-    )
-    {
+    ) {
         $context = Context::getContext();
         $activatedPayment = [];
         foreach ($configHipay['payment'][$paymentMethodType] as $name => $settings) {
@@ -816,7 +813,10 @@ class HipayHelper
         $context = Context::getContext();
 
         $dbUtils = new HipayDBUtils($module);
-        if (!$context->cookie->id_cart) {
+        if ($context->cart) {
+            // load cart from context
+            $cart = $context->cart;
+        } elseif (!$context->cookie->id_cart) {
             // if not we retrieve the last cart
             $cart = $dbUtils->getLastCartFromUser($context->customer->id);
         } else {

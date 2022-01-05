@@ -37,7 +37,10 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
-        if (!$cartId) {
+        if ($context->cart) {
+            $objCart = $context->cart;
+            $this->module->getLogs()->logInfos("Cart $objCart->id loaded from context");
+        } elseif (!$cartId) {
             // if not we retrieve the last cart
             $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
             $this->module->getLogs()->logInfos("Last cart $objCart->id loaded from customer " . $context->customer->id);

@@ -52,7 +52,10 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
-        if (!$cartId) {
+        if ($context->cart) {
+            // load cart from context
+            $objCart = $context->cart;
+        } elseif (!$cartId) {
             // if not we retrieve the last cart
             $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
         } else {
