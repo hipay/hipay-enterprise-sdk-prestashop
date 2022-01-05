@@ -473,15 +473,36 @@ class HipayNotification
                         $amount *= -1;
 
                         // Get existing slip for this order
-                        $orderSlips = $this->order->getOrderSlipsCollection();
+                        $orderSlipsRequest = $this->order
+                            ->getOrderSlipsCollection()
+                            ->orderBy('date_add', 'desc');
+                        $orderSlips = $orderSlipsRequest->getResults();
+                        $this->log->logInfos("orderSlips");
+                        $this->log->logInfos(print_r($orderSlips, true));
 
-                        $alreadyExists = false;
+                        $lastOrderSlips = array_shift($orderSlips);
+
+                        $this->log->logInfos($amount);
                         foreach ($orderSlips AS $orderSlip) {
-                            if (floatval($orderSlip->amount) === $amount) {
-                                $alreadyExists = true;
-                                break;
-                            }
+                            $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
                         }
+
+                        $this->log->logInfos("amount {$amount}");
+                        $alreadyExists = false;
+                        if (
+                            $amount
+                            == (
+                                floatval($lastOrderSlips->total_products_tax_incl)
+                                + floatval($lastOrderSlips->total_shipping_tax_incl)
+                            )
+                        ) {
+                            $alreadyExists = true;
+                        } else {
+                            $amount -= floatval($lastOrderSlips->total_products_tax_incl)
+                                + floatval($lastOrderSlips->total_shipping_tax_incl);
+                        }
+                        $this->log->logInfos("amount {$amount}");
+                        $this->log->logInfos("alreadyExists {$alreadyExists}");
 
                         // If an other slip exists with the same amount for that order
                         // It means it was created using the prestashop interface
@@ -494,6 +515,11 @@ class HipayNotification
                                 $productArray = $this->order->getProducts();
 
                                 $product = array_pop($productArray);
+
+
+                                $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                                $tax_calculator = $order_detail->getTaxCalculator();
+                                $amount = $tax_calculator->removeTaxes($amount);
 
                                 $product['unit_price'] = $amount;
                                 $product['product_quantity_refunded'] = $product['product_quantity'];

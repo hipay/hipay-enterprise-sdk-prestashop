@@ -184,7 +184,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $unit_price = $originalGood["unit_price"];
 
         $discount = Tools::ps_round(($totalDiscount * $qty) / $quantity, 3);
-        $total_amount = Tools::ps_round(($total_amount * $qty) / $quantity, 3);
+        // Needed to fix decimal value differences between prestashop and HiPay
+        $total_amount = floor((($total_amount * $qty) / $quantity) * 100) / 100 ;
 
         $tax_rate = $product["tax_rate"];
         $discount_description = "";
