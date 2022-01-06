@@ -274,22 +274,29 @@ class Hipay_enterprise extends PaymentModule
             "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
         );
 
+        $isBasket = false;
+
         $maintenaceDBHelper = new HipayDBMaintenance($this);
         try {
             $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
+
+            // Check if transaction was created in basket mode or not
+            $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
+
+            if ($transaction['basket']) {
+                $isBasket = true;
+            }
         } catch (PrestaShopDatabaseException $e) {
             $maintenanceParams["transaction_reference"] = '';
         }
 
         // Get order slip to get fees
-        $ordersSlip = OrderSlip::getOrdersSlip($order->id_customer, $order->id);
+        $orderSlip = $order
+            ->getOrderSlipsCollection()
+            ->orderBy('date_add', 'desc')
+            ->getFirst();
 
-        $orderSlip = $ordersSlip[0];
-
-        // Check if basket is activated in module settings
-        $configHipay = $this->hipayConfigTool->getConfigHipay();
-
-        $isBasket = $configHipay["payment"]["global"]["activate_basket"];
+        // Check if basket is activated for this order
         if ($isBasket) {
             $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
 
@@ -312,7 +319,7 @@ class Hipay_enterprise extends PaymentModule
                 $maintenanceParams["refundItems"] = $refundItems;
             }
 
-            $maintenanceParams["capture_refund_fee"] = $orderSlip['total_shipping_tax_incl'];
+            $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
             $maintenanceParams["capture_refund_wrapping"] = true;
             $maintenanceParams["capture_refund_discount"] = true;
         } else {
@@ -323,7 +330,7 @@ class Hipay_enterprise extends PaymentModule
                 $refund_amount += $product['amount'];
             }
 
-            $maintenanceParams["amount"] = $refund_amount + $orderSlip['total_shipping_tax_incl'];
+            $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
         }
 
         ApiCaller::requestMaintenance($this, $maintenanceParams);
