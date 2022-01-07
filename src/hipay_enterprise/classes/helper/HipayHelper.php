@@ -826,4 +826,32 @@ class HipayHelper
 
         return $cart;
     }
+
+    /**
+     * Delete an orderSlip and its relations
+     * @param OrderSlip $orderSlip
+     * @return bool
+     */
+    public static function deleteOrderSlip($orderSlip)
+    {
+        $result = true;
+
+        $ordersSlipDetails = OrderSlip::getOrdersSlipDetail($orderSlip->id);
+
+        foreach ($ordersSlipDetails AS $ordersSlipDetail) {
+            // Delete all the details of the slip
+            $result &= Db::getInstance()->delete(
+                'order_slip_detail',
+                'id_order_slip = ' . $ordersSlipDetail['id_order_slip']
+            );
+        }
+
+        // Delete de slip
+        $result &= Db::getInstance()->delete(
+            'order_slip',
+            'id_order_slip = ' . $orderSlip->id
+        );
+
+        return $result;
+    }
 }
