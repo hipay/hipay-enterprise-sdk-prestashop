@@ -270,7 +270,7 @@ class Hipay_enterprise extends PaymentModule
         $order = new OrderCore($idOrder);
 
         // Handle cancellation only if order was fulfilled using HiPay Gateway
-        if ($order->module === $this->name) {
+        if (HipayHelper::isHipayOrder($this, $order)) {
             /**
              * @var OrderState $newOrderStatus
              */
