@@ -272,78 +272,82 @@ class Hipay_enterprise extends PaymentModule
     {
         $order = new Order($params['order']->id);
 
-        // Get order slip to get fees
-        $orderSlip = $order
-            ->getOrderSlipsCollection()
-            ->orderBy('date_add', 'desc')
-            ->getFirst();
+        // Check if order needs to be refunded by HiPay
+        if (HipayHelper::isHipayOrder($this, $order)) {
 
-        try {
-            $maintenanceParams = array(
-                "order" => $order->id,
-                "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
-            );
+            // Get order slip to get fees
+            $orderSlip = $order
+                ->getOrderSlipsCollection()
+                ->orderBy('date_add', 'desc')
+                ->getFirst();
 
-            $isBasket = false;
+            try {
+                $maintenanceParams = array(
+                    "order" => $order->id,
+                    "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
+                );
 
-            $maintenaceDBHelper = new HipayDBMaintenance($this);
-            $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
+                $isBasket = false;
 
-            // Check if transaction was created in basket mode or not
-            $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
+                $maintenaceDBHelper = new HipayDBMaintenance($this);
+                $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
 
-            if ($transaction['basket']) {
-                $isBasket = true;
-            }
+                // Check if transaction was created in basket mode or not
+                $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
 
-            // Check if basket is activated for this order
-            if ($isBasket) {
-                $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
+                if ($transaction['basket']) {
+                    $isBasket = true;
+                }
 
-                $refundItems = array();
-                $orderDetailList = $order->getOrderDetailList();
+                // Check if basket is activated for this order
+                if ($isBasket) {
+                    $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
 
-                foreach ($params['productList'] as $product) {
+                    $refundItems = array();
+                    $orderDetailList = $order->getOrderDetailList();
 
-                    $productId = null;
-                    foreach ($orderDetailList AS $orderDetail) {
+                    foreach ($params['productList'] as $product) {
 
-                        if($orderDetail['id_order_detail'] == $product['id_order_detail']) {
-                            $productId = $orderDetail['product_id'];
-                            break;
+                        $productId = null;
+                        foreach ($orderDetailList as $orderDetail) {
+
+                            if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
+                                $productId = $orderDetail['product_id'];
+                                break;
+                            }
                         }
+
+                        $refundItems[$productId] = $product['quantity'];
+
+                        $maintenanceParams["refundItems"] = $refundItems;
                     }
 
-                    $refundItems[$productId] = $product['quantity'];
+                    $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
+                    $maintenanceParams["capture_refund_wrapping"] = true;
+                    $maintenanceParams["capture_refund_discount"] = true;
+                } else {
+                    $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
 
-                    $maintenanceParams["refundItems"] = $refundItems;
+                    $refund_amount = 0;
+                    foreach ($params['productList'] as $product) {
+                        $refund_amount += $product['amount'];
+                    }
+
+                    $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
                 }
 
-                $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
-                $maintenanceParams["capture_refund_wrapping"] = true;
-                $maintenanceParams["capture_refund_discount"] = true;
-            } else {
-                $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
+                ApiCaller::requestMaintenance($this, $maintenanceParams);
 
-                $refund_amount = 0;
-                foreach ($params['productList'] as $product) {
-                    $refund_amount += $product['amount'];
+            } catch (Exception $e) {
+                // If an error occurred, cancel the prestashop part of the refund
+                if ($orderSlip) {
+                    HipayHelper::deleteOrderSlip($orderSlip);
                 }
 
-                $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
+                $this->getLogs()->logErrors("Refund exception: {$e->getMessage()}");
+
+                throw new Exception($this->l('HiPay error: An error occurred while handling the refund'));
             }
-
-            ApiCaller::requestMaintenance($this, $maintenanceParams);
-
-        } catch (Exception $e) {
-            // If an error occurred, cancel the prestashop part of the refund
-            if ($orderSlip) {
-                HipayHelper::deleteOrderSlip($orderSlip);
-            }
-
-            $this->getLogs()->logErrors("Refund exception: {$e->getMessage()}");
-
-            throw new Exception($this->l('HiPay error: An error occurred while handling the refund'));
         }
     }
 

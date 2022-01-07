@@ -854,4 +854,14 @@ class HipayHelper
 
         return $result;
     }
+
+    /**
+     * Checks if the order was fullfiled using the HiPay Gateway
+     * @param Hipay_enterprise $module
+     * @param Order $order
+     * @return bool
+     */
+    public static function isHipayOrder($module, $order) {
+        return ($order->module === $order->name);
+    }
 }
