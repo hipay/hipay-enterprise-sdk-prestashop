@@ -862,6 +862,6 @@ class HipayHelper
      * @return bool
      */
     public static function isHipayOrder($module, $order) {
-        return ($order->module === $order->name);
+        return ($order->module === $module->name);
     }
 }
