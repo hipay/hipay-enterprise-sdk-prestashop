@@ -33,21 +33,29 @@ class Hipay_enterpriseValidationModuleFrontController extends ModuleFrontControl
     public function postProcess()
     {
         $context = Context::getContext();
-        $cartId = Tools::getValue('orderid');
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
         if ($context->cart) {
             $objCart = $context->cart;
             $this->module->getLogs()->logInfos("Cart $objCart->id loaded from context");
-        } elseif (!$cartId) {
+        } else {
             // if not we retrieve the last cart
             $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
             $this->module->getLogs()->logInfos("Last cart $objCart->id loaded from customer " . $context->customer->id);
-        } else {
-            // load cart
-            $objCart = new Cart((int)$cartId);
-            $this->module->getLogs()->logInfos("Cart $objCart->id loaded from orderId $cartId");
+        }
+        
+        // if cart not retrieved, we return exception page
+        if (!$objCart) {
+            $orderId = Tools::getValue('orderid');
+            $this->module->getLogs()->logErrors("# Cannot retrieve cart object.\r\nOrder ID: $orderId");
+            $redirectUrl = $context->link->getModuleLink(
+                $this->module->name,
+                'exception',
+                array('status_error' => 405),
+                true
+            );
+            Tools::redirect($redirectUrl);
         }
 
         try {
