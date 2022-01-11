@@ -82,6 +82,7 @@ services:
     - /tools/auth-to-cd-cluster.sh
     - >
       helm install $RELEASE_NAME ./bin/docker/kubernetes/helm/
+      --namespace default
       --set prestashop_image="${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}"
       --set prestashop_tag="${CI_COMMIT_REF_SLUG}"
       --set prestashop_url="${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}"
