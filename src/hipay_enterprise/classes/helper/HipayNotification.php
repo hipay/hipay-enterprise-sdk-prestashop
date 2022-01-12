@@ -479,32 +479,37 @@ class HipayNotification
 
                         $orderSlips = $orderSlipsRequest->getResults();
 
-                        // Remove last slip from list
-                        // It could be the slip corresponding to this notification
-                        $lastOrderSlips = array_shift($orderSlips);
-
-                        // Fix amount by removing older refund amounts
-                        foreach ($orderSlips AS $orderSlip) {
-                            $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
-                        }
-
                         $alreadyExists = false;
-                        if (
-                            $amount
-                            == (
-                                floatval($lastOrderSlips->total_products_tax_incl)
-                                + floatval($lastOrderSlips->total_shipping_tax_incl)
-                            )
-                        ) {
-                            // If the fixed amount equals to the last slip, the refund was created by prestashop
-                            // No need to create a new one
-                            $alreadyExists = true;
-                        } else {
-                            // If the fixed amount doesn't equal to the last slip, it was created in a HiPay process
-                            // It doesn't correspond to the last registered slip so remove it's value from the amount
-                            // Save new slip
-                            $amount -= floatval($lastOrderSlips->total_products_tax_incl)
-                                + floatval($lastOrderSlips->total_shipping_tax_incl);
+
+                        // If that's the first order slip for that order
+                        // We don't need to fix the amount or check for doubles
+                        if ($orderSlips) {
+                            // Remove last slip from list
+                            // It could be the slip corresponding to this notification
+                            $lastOrderSlips = array_shift($orderSlips);
+
+                            // Fix amount by removing older refund amounts
+                            foreach ($orderSlips as $orderSlip) {
+                                $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
+                            }
+
+                            if (
+                                $amount
+                                == (
+                                    floatval($lastOrderSlips->total_products_tax_incl)
+                                    + floatval($lastOrderSlips->total_shipping_tax_incl)
+                                )
+                            ) {
+                                // If the fixed amount equals to the last slip, the refund was created by prestashop
+                                // No need to create a new one
+                                $alreadyExists = true;
+                            } else {
+                                // If the fixed amount doesn't equal to the last slip, it was created in a HiPay process
+                                // It doesn't correspond to the last registered slip so remove it's value from the amount
+                                // Save new slip
+                                $amount -= floatval($lastOrderSlips->total_products_tax_incl)
+                                    + floatval($lastOrderSlips->total_shipping_tax_incl);
+                            }
                         }
 
                         // If an other slip exists with the same amount for that order
