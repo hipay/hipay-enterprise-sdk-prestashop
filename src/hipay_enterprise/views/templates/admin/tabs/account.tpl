@@ -472,6 +472,30 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">
+                                </label>
+                                <div class="col-lg-6">
+                                    <h5>Refunds</h5>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">
+                                    <span>{l s='Use PrestaShop default refund form' mod='hipay_enterprise'}</span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <span class="switch prestashop-switch fixed-width-lg">
+                                        <input type="radio" name="use_prestashop_refund_form" id="use_prestashop_refund_formmode_on" value="1"
+                                               {if $config_hipay.account.global.use_prestashop_refund_form }checked="checked" {/if}>
+                                        <label for="use_prestashop_refund_formmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                        <input type="radio" name="use_prestashop_refund_form" id="use_prestashop_refund_formmode_off" value="0"
+                                               {if $config_hipay.account.global.use_prestashop_refund_form == false}checked="checked" {/if}>
+                                        <label for="use_prestashop_refund_formmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                                        <a class="slide-button btn production-switch"></a>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

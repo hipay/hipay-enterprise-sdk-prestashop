@@ -197,7 +197,7 @@ class HipayMaintenanceBlock
 
                 $this->context->smarty->assign(
                     array(
-                        'showRefund' => true,
+                        'showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()["use_prestashop_refund_form"],
                         'manualCapture' => $this->isManualCapture(),
                         'stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),

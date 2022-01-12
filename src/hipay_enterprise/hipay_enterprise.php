@@ -270,87 +270,90 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookActionOrderSlipAdd($params)
     {
-        $order = new Order($params['order']->id);
+        // Triggers only if merchant wants to use the native form to handle HiPay refunds
+        // Otherwise, use custom HiPay refund form
+        if ($this->hipayConfigTool->getAccountGlobal()["use_prestashop_refund_form"]) {
+            $order = new Order($params['order']->id);
 
-        // Check if order needs to be refunded by HiPay
-        if (HipayHelper::isHipayOrder($this, $order)) {
+            // Check if order needs to be refunded by HiPay
+            if (HipayHelper::isHipayOrder($this, $order)) {
 
-            // Get order slip to get fees
-            $orderSlip = $order
-                ->getOrderSlipsCollection()
-                ->orderBy('date_add', 'desc')
-                ->getFirst();
+                // Get order slip to get fees
+                $orderSlip = $order
+                    ->getOrderSlipsCollection()
+                    ->orderBy('date_add', 'desc')
+                    ->getFirst();
 
-            try {
-                $maintenanceParams = array(
-                    "order" => $order->id,
-                    "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
-                );
+                try {
+                    $maintenanceParams = array(
+                        "order" => $order->id,
+                        "operation" => HiPay\Fullservice\Enum\Transaction\Operation::REFUND
+                    );
 
-                $isBasket = false;
+                    $isBasket = false;
 
-                $maintenaceDBHelper = new HipayDBMaintenance($this);
-                $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
+                    $maintenaceDBHelper = new HipayDBMaintenance($this);
+                    $maintenanceParams["transaction_reference"] = $maintenaceDBHelper->getTransactionReference($order->id);
 
-                // Check if transaction was created in basket mode or not
-                $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
+                    // Check if transaction was created in basket mode or not
+                    $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
 
-                if ($transaction) {
-                    if ($transaction['basket']) {
-                        $isBasket = true;
-                    }
+                    if ($transaction) {
+                        if ($transaction['basket']) {
+                            $isBasket = true;
+                        }
 
-                    // Check if basket is activated for this order
-                    if ($isBasket) {
-                        $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
+                        // Check if basket is activated for this order
+                        if ($isBasket) {
+                            $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
 
-                        $refundItems = array();
-                        $orderDetailList = $order->getOrderDetailList();
+                            $refundItems = array();
+                            $orderDetailList = $order->getOrderDetailList();
 
-                        foreach ($params['productList'] as $product) {
+                            foreach ($params['productList'] as $product) {
 
-                            $productId = null;
-                            foreach ($orderDetailList as $orderDetail) {
+                                $productId = null;
+                                foreach ($orderDetailList as $orderDetail) {
 
-                                if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
-                                    $productId = $orderDetail['product_id'];
-                                    break;
+                                    if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
+                                        $productId = $orderDetail['product_id'];
+                                        break;
+                                    }
                                 }
+
+                                $refundItems[$productId] = $product['quantity'];
                             }
 
-                            $refundItems[$productId] = $product['quantity'];
-
                             $maintenanceParams["refundItems"] = $refundItems;
+                            $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
+                            $maintenanceParams["capture_refund_wrapping"] = true;
+                            $maintenanceParams["capture_refund_discount"] = true;
+                        } else {
+                            $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
+
+                            $refund_amount = 0;
+                            foreach ($params['productList'] as $product) {
+                                $refund_amount += $product['amount'];
+                            }
+
+                            $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
                         }
 
-                        $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
-                        $maintenanceParams["capture_refund_wrapping"] = true;
-                        $maintenanceParams["capture_refund_discount"] = true;
+                        ApiCaller::requestMaintenance($this, $maintenanceParams);
                     } else {
-                        $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
-
-                        $refund_amount = 0;
-                        foreach ($params['productList'] as $product) {
-                            $refund_amount += $product['amount'];
-                        }
-
-                        $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
+                        throw new Exception($this->l('Unable to retrieve refund transaction.'));
                     }
 
-                    ApiCaller::requestMaintenance($this, $maintenanceParams);
-                } else {
-                    throw new Exception($this->l('Unable to retrieve refund transaction.'));
+                } catch (Exception $e) {
+                    // If an error occurred, cancel the prestashop part of the refund
+                    if ($orderSlip) {
+                        HipayHelper::deleteOrderSlip($orderSlip);
+                    }
+
+                    $this->getLogs()->logErrors("Refund exception: {$e->getMessage()}");
+
+                    throw new Exception($this->l('HiPay error: An error occurred while handling the refund'));
                 }
-
-            } catch (Exception $e) {
-                // If an error occurred, cancel the prestashop part of the refund
-                if ($orderSlip) {
-                    HipayHelper::deleteOrderSlip($orderSlip);
-                }
-
-                $this->getLogs()->logErrors("Refund exception: {$e->getMessage()}");
-
-                throw new Exception($this->l('HiPay error: An error occurred while handling the refund'));
             }
         }
     }

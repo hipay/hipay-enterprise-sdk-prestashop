@@ -27,6 +27,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0a85c9464c3fae8874b886
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e9a645f9920b7db55c62f023b89d34c5'] = 'Le message d\'erreur est : ';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_4098bae6c4134130dabf2bb934c1c331'] = 'Annulation de la transaction demandée';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_e0b0a967a763ba5f7f1e92318a0558b8'] = 'Vous devez activer l\'extension SOAP sur votre serveur pour installer ce module.';
+$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_d48a5e94068135e127ea39f38c3d59e3'] = 'Impossible de récupérer les informations sur le remboursement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8335eb3cc6dade5a6d739585447d98dc'] = 'Erreur HiPay: Une erreur a eu lieu lors de l’exécution du remboursement';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_25065e3ef9274f9b0e3088340f6d79e6'] = 'Payer par carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6dbf2d5c067'] = 'Payer par';
@@ -176,10 +177,10 @@ $_MODULE['<{hipay_enterprise}prestashop>account_6c4596f305a4adf4152bcabd10bf6cea
 $_MODULE['<{hipay_enterprise}prestashop>account_c2ca16d048ec66e04bca283eab048ec2'] = 'Hôte';
 $_MODULE['<{hipay_enterprise}prestashop>account_60aaf44d4b562252c04db7f98497e9aa'] = 'Port';
 $_MODULE['<{hipay_enterprise}prestashop>account_8f9bfe9d1345237cb3b2b205864da075'] = 'Utilisateur';
-$_MODULE['<{hipay_enterprise}prestashop>account_3225a10b07f1580f10dee4abc3779e6c'] = 'Paramètres';
 $_MODULE['<{hipay_enterprise}prestashop>account_14f850605a17deea470c565cf433f921'] = 'Activer l\'envoi d\'un message à la réception d\'une notification';
 $_MODULE['<{hipay_enterprise}prestashop>account_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
 $_MODULE['<{hipay_enterprise}prestashop>account_bafd7322c6e97d25b6299b5d6fe8920b'] = 'Non';
+$_MODULE['<{hipay_enterprise}prestashop>account_1f2499d9ed925e47039a204bd7f3c64a'] = 'Utiliser le formulaire de remboursement de PrestaShop';
 $_MODULE['<{hipay_enterprise}prestashop>account_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>account_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
 $_MODULE['<{hipay_enterprise}prestashop>account_d8e89ebf3a6858465d367df3ca1ce25c'] = 'Êtes-vous sûr de vouloir synchroniser la configuration de hachage pour les notifications?';
