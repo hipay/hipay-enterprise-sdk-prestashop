@@ -295,48 +295,52 @@ class Hipay_enterprise extends PaymentModule
                 // Check if transaction was created in basket mode or not
                 $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams["transaction_reference"]);
 
-                if ($transaction['basket']) {
-                    $isBasket = true;
-                }
+                if ($transaction) {
+                    if ($transaction['basket']) {
+                        $isBasket = true;
+                    }
 
-                // Check if basket is activated for this order
-                if ($isBasket) {
-                    $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
+                    // Check if basket is activated for this order
+                    if ($isBasket) {
+                        $this->getLogs()->logInfos("# Refund using basket order ID {$params['order']->id}");
 
-                    $refundItems = array();
-                    $orderDetailList = $order->getOrderDetailList();
+                        $refundItems = array();
+                        $orderDetailList = $order->getOrderDetailList();
 
-                    foreach ($params['productList'] as $product) {
+                        foreach ($params['productList'] as $product) {
 
-                        $productId = null;
-                        foreach ($orderDetailList as $orderDetail) {
+                            $productId = null;
+                            foreach ($orderDetailList as $orderDetail) {
 
-                            if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
-                                $productId = $orderDetail['product_id'];
-                                break;
+                                if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
+                                    $productId = $orderDetail['product_id'];
+                                    break;
+                                }
                             }
+
+                            $refundItems[$productId] = $product['quantity'];
+
+                            $maintenanceParams["refundItems"] = $refundItems;
                         }
 
-                        $refundItems[$productId] = $product['quantity'];
+                        $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
+                        $maintenanceParams["capture_refund_wrapping"] = true;
+                        $maintenanceParams["capture_refund_discount"] = true;
+                    } else {
+                        $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
 
-                        $maintenanceParams["refundItems"] = $refundItems;
+                        $refund_amount = 0;
+                        foreach ($params['productList'] as $product) {
+                            $refund_amount += $product['amount'];
+                        }
+
+                        $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
                     }
 
-                    $maintenanceParams["capture_refund_fee"] = $orderSlip->total_shipping_tax_incl;
-                    $maintenanceParams["capture_refund_wrapping"] = true;
-                    $maintenanceParams["capture_refund_discount"] = true;
+                    ApiCaller::requestMaintenance($this, $maintenanceParams);
                 } else {
-                    $this->getLogs()->logInfos("# Refund without basket order ID {$params['order']->id}");
-
-                    $refund_amount = 0;
-                    foreach ($params['productList'] as $product) {
-                        $refund_amount += $product['amount'];
-                    }
-
-                    $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
+                    throw new Exception($this->l('Unable to retrieve refund transaction.'));
                 }
-
-                ApiCaller::requestMaintenance($this, $maintenanceParams);
 
             } catch (Exception $e) {
                 // If an error occurred, cancel the prestashop part of the refund

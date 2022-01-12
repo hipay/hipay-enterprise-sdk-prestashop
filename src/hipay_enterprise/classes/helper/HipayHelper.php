@@ -836,15 +836,11 @@ class HipayHelper
     {
         $result = true;
 
-        $ordersSlipDetails = OrderSlip::getOrdersSlipDetail($orderSlip->id);
-
-        foreach ($ordersSlipDetails AS $ordersSlipDetail) {
-            // Delete all the details of the slip
-            $result &= Db::getInstance()->delete(
-                'order_slip_detail',
-                'id_order_slip = ' . $ordersSlipDetail['id_order_slip']
-            );
-        }
+        // Delete all the details of the slip
+        $result &= Db::getInstance()->delete(
+            'order_slip_detail',
+            'id_order_slip = ' . $orderSlip->id
+        );
 
         // Delete de slip
         $result &= Db::getInstance()->delete(
