@@ -362,29 +362,33 @@ class Hipay_enterprise extends PaymentModule
      */
     public function hookActionOrderStatusUpdate($params)
     {
-        /**
-         * @var OrderState $newOrderStatus
-         */
-        $newOrderStatus = $params['newOrderStatus'];
         $idOrder = $params['id_order'];
         $order = new OrderCore($idOrder);
 
-        if ($newOrderStatus->id == Configuration::get('PS_OS_CANCELED')) {
-            $maintenaceDBHelper = new HipayDBMaintenance($this);
-            try {
-                $transactionId = $maintenaceDBHelper->getTransactionReference($idOrder);
-            } catch (PrestaShopDatabaseException $e) {
-                $transactionId = '';
-            }
+        // Handle cancellation only if order was fulfilled using HiPay Gateway
+        if (HipayHelper::isHipayOrder($this, $order)) {
+            /**
+             * @var OrderState $newOrderStatus
+             */
+            $newOrderStatus = $params['newOrderStatus'];
 
-            $apiHandler = new Apihandler($this, $this->context);
-            $cancelResult = $apiHandler->handleCancel(
-                [
-                    'order' => $idOrder,
-                    'transaction_reference' => $transactionId,
-                    'operation' => \HiPay\Fullservice\Enum\Transaction\Operation::CANCEL,
-                ]
-            );
+            if ($newOrderStatus->id == Configuration::get('PS_OS_CANCELED')) {
+                $maintenaceDBHelper = new HipayDBMaintenance($this);
+                try {
+                    $transactionId = $maintenaceDBHelper->getTransactionReference($idOrder);
+                } catch (PrestaShopDatabaseException $e) {
+                    $transactionId = '';
+                }
+
+                $apiHandler = new Apihandler($this, $this->context);
+                $cancelResult = $apiHandler->handleCancel(
+                    [
+                        'order' => $idOrder,
+                        'transaction_reference' => $transactionId,
+                        'operation' => \HiPay\Fullservice\Enum\Transaction\Operation::CANCEL,
+                    ]
+                );
+            }
         }
     }
 

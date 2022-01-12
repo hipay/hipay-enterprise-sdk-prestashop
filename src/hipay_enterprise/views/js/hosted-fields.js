@@ -1,4 +1,8 @@
 jQuery(document).ready(function ($) {
+  initEventsHostedFields();
+});
+
+function initEventsHostedFields() {
   $('#card-number').focus(function () {
     $('#radio-no-token').prop('checked', true);
   });
@@ -47,10 +51,24 @@ jQuery(document).ready(function ($) {
       );
     }
   });
-});
+}
+
 var hipayHF;
 
-document.addEventListener('DOMContentLoaded', initHostedFields, false);
+//Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
+//--------------------------------
+if (window.opc_dispatcher && window.opc_dispatcher.events) {
+  window.opc_dispatcher.events.addEventListener(
+    'payment-getPaymentList-complete',
+    () => {
+      initEventsHostedFields();
+      initHostedFields();
+    }
+  );
+} else {
+  document.addEventListener('DOMContentLoaded', initHostedFields, false);
+}
+//--------------------------------
 
 function allowMultiUse(saveTokenEl) {
   return oneClick && $(saveTokenEl).is(':checked');

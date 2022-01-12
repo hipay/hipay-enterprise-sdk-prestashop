@@ -48,16 +48,15 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
         $this->module->getLogs()->logInfos("# Exception payment");
 
         $context = Context::getContext();
-        $cartId = Tools::getValue('orderid');
         $dbUtils = new HipayDBUtils($this->module);
         // --------------------------------------------------------------------------
         // check if data are sent by payment page
-        if (!$cartId) {
+        if ($context->cart) {
+            // load cart from context
+            $objCart = $context->cart;
+        } else {
             // if not we retrieve the last cart
             $objCart = $dbUtils->getLastCartFromUser($context->customer->id);
-        } else {
-            // load cart
-            $objCart = new Cart((int)$cartId);
         }
 
         if (_PS_VERSION_ >= '1.7.1.0') {

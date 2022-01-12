@@ -13,29 +13,31 @@
     {if $savedCC && $confHipay.payment.global.card_token}
         {include file="$hipay_enterprise_tpl_dir/front/partial/ps17/oneclick.tpl"}
         <div class="option_payment">
-                    <span class="custom-radio">
-                        <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken"/>
-                        <span></span>
-                    </span>
+            <span class="custom-radio">
+                <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken" />
+                <span></span>
+            </span>
             <label for="radio-no-token"><strong>{l s='Pay with a new credit card' mod='hipay_enterprise'}</strong></label>
         </div>
     {/if}
     <div class="row" id="group-without-token"
-         style="{if $savedCC && $confHipay.payment.global.card_token}display:none;{/if}">
+        style="{if $savedCC && $confHipay.payment.global.card_token}display:none;{/if}">
         {if $confHipay.payment.global.display_hosted_page != 'iframe'}
-            <p class="col-md-12">{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
+            <p class="col-md-12">
+                {l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}
+            </p>
         {else}
             <p class="col-md-12">{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
-            <input type="hidden" id="iframe-generate" name="iframeCall" value="1"/>
+            <input type="hidden" id="iframe-generate" name="iframeCall" value="1" />
         {/if}
 
         {if $confHipay.payment.global.card_token && !$is_guest }
             <div class="col-md-12">
-                    <span class="custom-checkbox" id="save-credit-card">
-                        <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
-                        <span><i class="material-icons checkbox-checked"></i></span>
-                        <label for="saveTokenHipay">{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
-                    </span>
+                <span class="custom-checkbox" id="save-credit-card">
+                    <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
+                    <span><i class="material-icons checkbox-checked"></i></span>
+                    <label for="saveTokenHipay">{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
+                </span>
             </div>
         {/if}
     </div>
@@ -48,18 +50,18 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded',
-        function () {
+        function() {
             {if $confHipay.account.global.sandbox_mode}
-            var api_tokenjs_mode = "stage";
-            var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
-            var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
+                var api_tokenjs_mode = "stage";
+                var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
+                var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
             {else}
-            var api_tokenjs_mode = "production";
-            var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
-            var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
+                var api_tokenjs_mode = "production";
+                var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
+                var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
             {/if}
 
-            var lang = "{$language.iso_code}";
+            var lang = "{$languageIsoCode}";
 
             var hipay = HiPay({
                 username: api_tokenjs_username,
@@ -70,7 +72,7 @@
 
             document.getElementById("browserInfo").value = JSON.stringify(hipay.getBrowserInfo());
 
-            $("#hpaymentForm").submit(function (e) {
+            $("#hpaymentForm").submit(function(e) {
                 var form = this;
                 e.preventDefault();
                 e.stopPropagation();
@@ -85,7 +87,7 @@
                 return true;
             });
 
-            $('#radio-no-token').change(function () {
+            $('#radio-no-token').change(function() {
                 if ($('#radio-no-token').is(":checked")) {
                     $('#group-without-token').show();
                 } else {
@@ -97,4 +99,3 @@
         false
     );
 </script>
-

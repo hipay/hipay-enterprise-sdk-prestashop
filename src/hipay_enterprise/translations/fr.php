@@ -176,6 +176,10 @@ $_MODULE['<{hipay_enterprise}prestashop>account_6c4596f305a4adf4152bcabd10bf6cea
 $_MODULE['<{hipay_enterprise}prestashop>account_c2ca16d048ec66e04bca283eab048ec2'] = 'Hôte';
 $_MODULE['<{hipay_enterprise}prestashop>account_60aaf44d4b562252c04db7f98497e9aa'] = 'Port';
 $_MODULE['<{hipay_enterprise}prestashop>account_8f9bfe9d1345237cb3b2b205864da075'] = 'Utilisateur';
+$_MODULE['<{hipay_enterprise}prestashop>account_3225a10b07f1580f10dee4abc3779e6c'] = 'Paramètres';
+$_MODULE['<{hipay_enterprise}prestashop>account_14f850605a17deea470c565cf433f921'] = 'Activer l\'envoi d\'un message à la réception d\'une notification';
+$_MODULE['<{hipay_enterprise}prestashop>account_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
+$_MODULE['<{hipay_enterprise}prestashop>account_bafd7322c6e97d25b6299b5d6fe8920b'] = 'Non';
 $_MODULE['<{hipay_enterprise}prestashop>account_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>account_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
 $_MODULE['<{hipay_enterprise}prestashop>account_d8e89ebf3a6858465d367df3ca1ce25c'] = 'Êtes-vous sûr de vouloir synchroniser la configuration de hachage pour les notifications?';
