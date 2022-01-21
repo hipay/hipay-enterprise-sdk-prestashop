@@ -352,7 +352,8 @@ class HipayConfig
                     "port_proxy" => "",
                     "user_proxy" => "",
                     "password_proxy" => "",
-                    "order_message_on_notification" => 1
+                    "order_message_on_notification" => 1,
+                    "use_prestashop_refund_form" => 0
                 ),
                 "sandbox" => array(
                     "api_username_sandbox" => "",

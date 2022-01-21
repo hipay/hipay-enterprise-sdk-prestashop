@@ -469,18 +469,62 @@ class HipayNotification
                     $orderPaymentResult = false;
 
                     if ($refund) {
-                        if (-1 * $amount !== floatval($this->order->total_paid)) {
-                            $orderPaymentResult = OrderSlip::create($this->order, [], false, $amount);
-                        } else {
-                            $productArray = $this->order->getProducts();
+                        // Turn amount positive
+                        $amount *= -1;
 
-                            foreach ($productArray as &$product) {
-                                $product['unit_price'] = $product['unit_price_tax_excl'];
-                                $product['product_quantity_refunded'] = $product['product_quantity'];
-                                $product['quantity'] = $product['product_quantity'];
+                        $operation = $this->transaction->getOperation();
+
+                        // Get existing slips for this order
+                        $orderSlipsRequest = $this->order
+                            ->getOrderSlipsCollection()
+                            ->orderBy('date_add', 'desc');
+
+                        $orderSlips = $orderSlipsRequest->getResults();
+
+                        $alreadyExists = false;
+                        foreach ($orderSlips AS $orderSlip) {
+
+                            if (strval($orderSlip->id) === $operation->getId()) {
+                                // This notification already corresponds to an existing slip
+                                // No need to create a new one
+                                $alreadyExists = true;
                             }
 
-                            $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                            // Fix amount by removing older refund amounts
+                            $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
+                        }
+
+                        if (!$alreadyExists) {
+                            if ($amount !== floatval($this->order->total_paid)) {
+                                // Force amount to the chosen one
+                                $productArray = $this->order->getProducts();
+
+                                $product = array_pop($productArray);
+
+
+                                $order_detail = new OrderDetail((int)$product['id_order_detail']);
+                                $tax_calculator = $order_detail->getTaxCalculator();
+                                $amount = $tax_calculator->removeTaxes($amount);
+
+                                $product['unit_price'] = $amount;
+                                $product['product_quantity_refunded'] = $product['product_quantity'];
+                                $product['quantity'] = 1;
+
+                                $orderPaymentResult = OrderSlip::create(
+                                    $this->order,
+                                    [$product]
+                                );
+                            } else {
+                                $productArray = $this->order->getProducts();
+
+                                foreach ($productArray as &$product) {
+                                    $product['unit_price'] = $product['unit_price_tax_excl'];
+                                    $product['product_quantity_refunded'] = $product['product_quantity'];
+                                    $product['quantity'] = $product['product_quantity'];
+                                }
+
+                                $orderPaymentResult = OrderSlip::create($this->order, $productArray, null);
+                            }
                         }
                     } else {
                         $orderPaymentResult = $this->order->addOrderPayment(

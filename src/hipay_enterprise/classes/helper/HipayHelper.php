@@ -828,6 +828,30 @@ class HipayHelper
     }
 
     /**
+     * Delete an orderSlip and its relations
+     * @param OrderSlip $orderSlip
+     * @return bool
+     */
+    public static function deleteOrderSlip($orderSlip)
+    {
+        $result = true;
+
+        // Delete all the details of the slip
+        $result &= Db::getInstance()->delete(
+            'order_slip_detail',
+            'id_order_slip = ' . $orderSlip->id
+        );
+
+        // Delete de slip
+        $result &= Db::getInstance()->delete(
+            'order_slip',
+            'id_order_slip = ' . $orderSlip->id
+        );
+
+        return $result;
+    }
+
+    /**
      * Checks if the order was fullfiled using the HiPay Gateway
      * @param Hipay_enterprise $module
      * @param Order $order

@@ -336,10 +336,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $delivery = new Address($this->order->id_address_delivery);
         $product_reference = HipayHelper::getCarrierRef($carrier);
         $name = $carrier->name;
-        $unit_price = (float)$this->order->total_shipping;
+        $unit_price = is_bool($this->captureRefundFee) ? (float)$this->order->total_shipping : floatval(number_format($this->captureRefundFee, 2));
         $tax_rate = $carrier->getTaxesRate($delivery);
         $discount = 0.00;
-        $total_amount = (float)$this->order->total_shipping;
+        $total_amount = is_bool($this->captureRefundFee) ? (float)$this->order->total_shipping : floatval($this->captureRefundFee);
         $item = HiPay\Fullservice\Gateway\Model\Cart\Item::buildItemTypeFees(
             $product_reference,
             $name,
