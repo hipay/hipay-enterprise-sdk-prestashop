@@ -472,6 +472,8 @@ class HipayNotification
                         // Turn amount positive
                         $amount *= -1;
 
+                        $operation = $this->transaction->getOperation();
+
                         // Get existing slips for this order
                         $orderSlipsRequest = $this->order
                             ->getOrderSlipsCollection()
@@ -480,44 +482,19 @@ class HipayNotification
                         $orderSlips = $orderSlipsRequest->getResults();
 
                         $alreadyExists = false;
+                        foreach ($orderSlips AS $orderSlip) {
 
-                        // If that's the first order slip for that order
-                        // We don't need to fix the amount or check for doubles
-                        if ($orderSlips) {
-                            // Remove last slip from list
-                            // It could be the slip corresponding to this notification
-                            $lastOrderSlips = array_shift($orderSlips);
-
-                            // Fix amount by removing older refund amounts
-                            foreach ($orderSlips as $orderSlip) {
-                                $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
-                            }
-
-                            if (
-                                $amount
-                                == (
-                                    floatval($lastOrderSlips->total_products_tax_incl)
-                                    + floatval($lastOrderSlips->total_shipping_tax_incl)
-                                )
-                            ) {
-                                // If the fixed amount equals to the last slip, the refund was created by prestashop
+                            if (strval($orderSlip->id) === $operation->getId()) {
+                                // This notification already corresponds to an existing slip
                                 // No need to create a new one
                                 $alreadyExists = true;
-                            } else {
-                                // If the fixed amount doesn't equal to the last slip, it was created in a HiPay process
-                                // It doesn't correspond to the last registered slip so remove it's value from the amount
-                                // Save new slip
-                                $amount -= floatval($lastOrderSlips->total_products_tax_incl)
-                                    + floatval($lastOrderSlips->total_shipping_tax_incl);
                             }
+
+                            // Fix amount by removing older refund amounts
+                            $amount -= floatval($orderSlip->total_products_tax_incl) + floatval($orderSlip->total_shipping_tax_incl);
                         }
 
-                        // If an other slip exists with the same amount for that order
-                        // It means it was created using the prestashop interface
-                        // No need to create an other one
-                        if ($alreadyExists) {
-                            $this->log->logInfos("Existing OrderSlip found with the same amount for order n°{$this->order->id}. Not creating a new one");
-                        } else {
+                        if (!$alreadyExists) {
                             if ($amount !== floatval($this->order->total_paid)) {
                                 // Force amount to the chosen one
                                 $productArray = $this->order->getProducts();
@@ -525,7 +502,7 @@ class HipayNotification
                                 $product = array_pop($productArray);
 
 
-                                $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                                $order_detail = new OrderDetail((int)$product['id_order_detail']);
                                 $tax_calculator = $order_detail->getTaxCalculator();
                                 $amount = $tax_calculator->removeTaxes($amount);
 
@@ -535,7 +512,7 @@ class HipayNotification
 
                                 $orderPaymentResult = OrderSlip::create(
                                     $this->order,
-                                    [ $product ]
+                                    [$product]
                                 );
                             } else {
                                 $productArray = $this->order->getProducts();

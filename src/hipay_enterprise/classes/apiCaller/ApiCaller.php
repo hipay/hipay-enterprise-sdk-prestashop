@@ -172,6 +172,12 @@ class ApiCaller
             $maintenanceFormatter = new MaintenanceFormatter($moduleInstance, $params, $maintenanceData);
 
             $maintenanceRequest = $maintenanceFormatter->generate();
+
+            // Use custom operation id to identify notification
+            if (isset($params['orderSlipId'])) {
+                $maintenanceRequest->operation_id = $params['orderSlipId'];
+            }
+
             $moduleInstance->getLogs()->logRequest($maintenanceRequest);
 
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object

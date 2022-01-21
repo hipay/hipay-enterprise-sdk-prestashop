@@ -339,6 +339,8 @@ class Hipay_enterprise extends PaymentModule
                             $maintenanceParams["amount"] = $refund_amount + $orderSlip->total_shipping_tax_incl;
                         }
 
+                        $maintenanceParams['orderSlipId'] = $orderSlip->id;
+
                         ApiCaller::requestMaintenance($this, $maintenanceParams);
                     } else {
                         throw new Exception($this->l('Unable to retrieve refund transaction.'));
