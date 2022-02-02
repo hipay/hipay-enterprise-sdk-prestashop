@@ -79,25 +79,29 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
             $cartFormatter = new CartMaintenanceFormatter($this->module, $params);
             $amount = $cartFormatter->getTotalAmount();
 
-            ob_end_clean();
+            if (ob_get_length() > 0) {
+                ob_end_clean();
+            }
             header('Content-Type: application/json');
             die(
-            json_encode(
-                array(
+                json_encode(
+                    array(
                     "amount" => $amount
+                    )
                 )
-            )
             );
         } catch (Exception $e) {
-            ob_end_clean();
+            if (ob_get_length() > 0) {
+                ob_end_clean();
+            }
             header('Content-Type: application/json');
             die(
-            json_encode(
-                array(
+                json_encode(
+                    array(
                     "state" => "error",
                     "message" => $e->getTraceAsString()
+                    )
                 )
-            )
             );
         }
     }

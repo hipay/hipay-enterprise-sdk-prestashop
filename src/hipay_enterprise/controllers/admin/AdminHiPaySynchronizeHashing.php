@@ -76,7 +76,6 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
                         );
                         $messages[$platform]["value"] = $hashing->getHashingAlgorithm();
                     }
-
                 } catch (Exception $e) {
                     $messages[$platform][self::CODE_STATUS] = "error";
                     $messages[$platform][self::CODE_MESSAGE] = sprintf(
@@ -84,9 +83,7 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
                         $labelPlatform,
                         $e->getMessage()
                     );
-
                 }
-
             } else {
                 $messages[$platform][self::CODE_STATUS] = "error";
                 $messages[$platform][self::CODE_MESSAGE] = sprintf(
@@ -96,7 +93,9 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
             }
         }
 
-        ob_end_clean();
+        if (ob_get_length() > 0) {
+            ob_end_clean();
+        }
         header('Content-Type: application/json');
         die(Tools::jsonEncode($messages));
     }
