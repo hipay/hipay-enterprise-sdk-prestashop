@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.14.0
+
+- **Add** : Handle PrestaShop native refund form
+- **Add** : Add option to disable order messages
+- **Fix** : Fixed credit note generation
+- **Fix** : Fixed maintenances handled by other gateway
+
 ## Version 2.13.9
 
 - **Fix** : Update PHP SDK
