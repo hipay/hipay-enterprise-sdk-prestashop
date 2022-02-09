@@ -6,6 +6,7 @@
 - **Add** : Add option to disable order messages
 - **Fix** : Fixed credit note generation
 - **Fix** : Fixed maintenances handled by other gateway
+- **Fix** : Fixed HostedPage display if api_v2 parameter is enabled for MB Way and Multibanco
 
 ## Version 2.13.9
 
