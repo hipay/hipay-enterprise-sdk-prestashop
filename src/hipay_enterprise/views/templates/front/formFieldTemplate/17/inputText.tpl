@@ -9,7 +9,6 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-
 <div class="form-group row">
     <label class="col-md-3 form-control-label {if isset($field.required) && $field.required}required{/if}">
         {if isset($field["label"][$language])}
@@ -19,7 +18,7 @@
         {/if}
     </label>
     <div class="col-md-9">
-        <input id="{$localPaymentName}-{$name}" class="form-control input-hp" name="{$name}" type="text" value=""
+        <input id="{$localPaymentName}-{$name}" class="form-control input-hp" name="{$name}" type="text" value="{if isset($field.defaultValue)}{$field.defaultValue}{/if}"
                {if isset($field.required) && $field.required}required{/if}>
     </div>
 </div>

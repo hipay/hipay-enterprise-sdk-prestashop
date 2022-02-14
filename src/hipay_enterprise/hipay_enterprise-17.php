@@ -143,9 +143,25 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
             $this->context->smarty->assign(['methodFields' => [], 'iframe' => $iframe]);
         } else {
+            // Check if any additional fields dans be filed using values already filled by the client
+            $formFields = $this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'];
+            foreach ($formFields AS $fieldName => $field) {
+                switch ($fieldName) {
+                    case 'phone':
+                        $cart = $this->context->cart;
+                        $idAddress = $cart->id_address_invoice ? $cart->id_address_invoice : $cart->id_address_delivery;
+                        $address = new Address((int)$idAddress);
+
+                        $phone = $address->phone_mobile ? $address->phone_mobile : $address->phone;
+                        $formFields[$fieldName]['defaultValue'] = $phone;
+
+                        break;
+                }
+            }
+
             $this->context->smarty->assign(
                 [
-                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'],
+                    'methodFields' => $formFields,
                     'language' => $this->context->language->language_code,
                 ]
             );

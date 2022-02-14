@@ -93,6 +93,36 @@ class HipayFormControl
                     $errors[$name] = $module->l('This is not a correct CURP/CPN');
                 }
                 break;
+            case 'phone':
+                $context = Context::getContext();
+                $cart = $context->cart;
+
+                $idAddress = $cart->id_address_invoice ? $cart->id_address_invoice : $cart->id_address_delivery;
+                $address = new Address((int) $idAddress);
+
+                $countryCode = Country::getIsoById($address->id_country);
+
+                if (!HipayFormControl::isValidPhone($value, $countryCode)) {
+                    try {
+                        $errorMsg = 'The format of the phone number must match %s phone.';
+                        $countryCode = Country::getIsoById($address->id_country);
+                        switch ($countryCode) {
+                            case 'FR':
+                                $errorMsg = sprintf($errorMsg, 'a French');
+                                break;
+                            case 'PT':
+                                $errorMsg = sprintf($errorMsg, 'a Portuguese');
+                                break;
+                            default:
+                                $errorMsg = 'The format of the phone number is incorrect.';
+                        }
+
+                        $errors[$name] = $module->l($errorMsg);
+                    } catch(Exception $e) {
+                        $errors[$name] = $module->l('An error occurred during the validation of the phone number.');
+                    }
+                }
+                break;
         }
     }
 
@@ -197,5 +227,18 @@ class HipayFormControl
         } while (Tools::strlen($x));
 
         return (int)$mod == 1;
+    }
+
+    /**
+     * Checks if phone number is valid depending on the country
+     * @param type $phone
+     * @return boolean
+     */
+    public static function isValidPhone($phone, $countryCode) {
+
+        $phoneNumberUtil = libphonenumber\PhoneNumberUtil::getInstance();
+        $phoneNumber = $phoneNumberUtil->parse($phone, $countryCode);
+
+        return $phoneNumberUtil->isValidNumber($phoneNumber);
     }
 }
