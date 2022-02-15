@@ -32,7 +32,7 @@
         })();
 
     </script>
-{else}
+{elseif $forceHpayment}
     {if $iframe}
         <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
     {else}

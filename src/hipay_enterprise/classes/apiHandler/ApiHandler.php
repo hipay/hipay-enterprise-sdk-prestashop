@@ -429,7 +429,21 @@ class Apihandler
                     $redirectUrl = $pendingUrl;
                     break;
                 case TransactionState::FORWARDING:
-                    $redirectUrl = $forwardUrl;
+                    if ($response->getReferenceToPay()) {
+                        // If it's a local payment and there is a referenceToPay in the response
+                        // Handle it as a pending to display the reference
+                        $redirectParams = HipayHelper::validateOrder(
+                            $this->module,
+                            $this->context,
+                            $this->context->cart,
+                            $params["methodDisplayName"]
+                        );
+
+                        $redirectUrl = $pendingUrl . '&referenceToPay=1&' . http_build_query($response->getReferenceToPay());
+                        break;
+                    } else {
+                        $redirectUrl = $forwardUrl;
+                    }
                     break;
                 case TransactionState::DECLINED:
                     $reason = $response->getReason();

@@ -86,12 +86,18 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
         $mode = ApiMode::DIRECT_POST;
 
         if (
-            isset($this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]) &&
-            $this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]
+            (
+                isset($this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"])
+                && $this->module->hipayConfigTool->getLocalPayment()[$method]["forceHpayment"]
+            )
+            || (
+                isset($this->module->hipayConfigTool->getLocalPayment()[$method]["handleHpayment"])
+                && $this->module->hipayConfigTool->getLocalPayment()[$method]["handleHpayment"]
+                && $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'] === ApiMode::HOSTED_PAGE
+            )
         ) {
             $mode = ApiMode::HOSTED_PAGE;
         }
-
 
         switch ($mode) {
             case ApiMode::HOSTED_PAGE:
@@ -183,6 +189,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 return $path;
             }
         }
+
         $this->apiHandler->handleLocalPayment(ApiMode::DIRECT_POST, $params);
     }
 

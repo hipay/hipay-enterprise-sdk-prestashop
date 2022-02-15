@@ -501,6 +501,11 @@ $_MODULE['<{hipay_enterprise}prestashop>user-token-16_8cf04a9734132302f96da8e113
 $_MODULE['<{hipay_enterprise}prestashop>user-token-16_bb200a83661c2dfc29aea1435ddc05b0'] = 'Sei sicuro di voler cancellare questa carta?';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0ca2b5535330f021917c16883385ed15'] = 'Riepilogo pagamento';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_1a434befae3f49ae09347ded52032f6f'] = 'Entità';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_63d5049791d9d79d86e9a108b0a999ca'] = 'Riferimento';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_b2f40690858b404ed10e62bdf422c704'] = 'Importo';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_8c1279db4db86553e4b9682f78cf500e'] = 'Data di scadenza';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_666b15005ae276888ab89c0047199ade'] = 'Per pagare un riferimento Multibanco sulla tua banca online o presso uno sportello automatico, scegli \'Pagamenti\', quindi \'Servizi\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0e6fd9532c268028a19082bdadecc041'] = 'Il tuo ordine è in attesa di una conferma di pagamento.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_24deaba66b4e5ccfdbe61d763a755118'] = 'Una volta approvato, questo sarà disponibile nel tuo';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_6348d16e8e545de71d29ac6a1c20f517'] = 'storico ordini	';
@@ -584,6 +589,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC non corretto';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF non corretto';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN non corretto';
+$_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_eb5d2752704c4e53341c11eef3582d0d'] = 'Si è verificato un errore durante la convalida del numero di telefono.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_6d12f60dbfa06b3da45091a331957382'] = 'Impostazioni modulo salvate con successo.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_8458084c5456ab2d8eef1aa3a2adb68b'] = 'Impostazioni Metodi Pagamento Globali salvate con successo.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_edd17fcd44ef5daf55530049faf68592'] = 'Impostazioni Carta di Credito salvate con successo.';
@@ -592,6 +598,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_9f7226ea8774f24d9
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_2619ca57838110e4a58d37cdaeab443e'] = 'Impostazioni Frode salvate con successo.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_999560dd2effd4a7ca12a7e2e1a93731'] = 'Impostazioni Frode salvate con successo.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_5dc62ffa17f4b575b79d53749d74ad39'] = 'Impostazioni mappatura spedizioni salvate con successo.';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Inserisci il tuo numero di telefono per utilizzare questo metodo di pagamento.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Si prega di verificare le informazioni inserite.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_3df9bf54943f02ca59a3a32496f5f4b1'] = 'Ordine creato da HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Una transazione di pagamento sta attendendo la validazione per l\'ordine %s';
