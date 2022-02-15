@@ -124,6 +124,28 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 ) {
                     $path = $this->handlePaymentForm($params, $method);
                 } else {
+                    $formFields = [];
+                    // Check if any additional fields dans be filed using values already filled by the client
+                    if (isset($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"])
+                        and isset($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"])
+                    ) {
+
+                        $formFields = $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"];
+                        foreach ($formFields as $fieldName => $field) {
+                            switch ($fieldName) {
+                                case 'phone':
+                                    $cart = $this->context->cart;
+                                    $idAddress = $cart->id_address_invoice ? $cart->id_address_invoice : $cart->id_address_delivery;
+                                    $address = new Address((int)$idAddress);
+
+                                    $phone = $address->phone_mobile ? $address->phone_mobile : $address->phone;
+                                    $formFields[$fieldName]['defaultValue'] = $phone;
+
+                                    break;
+                            }
+                        }
+                    }
+
                     // display form
                     $context->smarty->assign(
                         array(
@@ -134,7 +156,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                             'methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
                             'localPaymentName' => $method,
                             'language' => $context->language->iso_code,
-                            'methodFields' => $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"]
+                            'methodFields' => $formFields,
+                            'forceHpayment' => false
                         )
                     );
                     $path = 'payment/ps16/paymentLocalForm-16.tpl';

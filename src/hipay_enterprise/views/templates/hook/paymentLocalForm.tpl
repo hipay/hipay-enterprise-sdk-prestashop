@@ -9,14 +9,15 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-{if !empty($methodFields)}
+
+{if !$forceHpayment && !empty($methodFields)}
 
     {foreach $methodFields as $name => $field}
 
         {if $field["type"] eq "text"}
             {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputText.tpl"}
 
-        {else if $field["type"] eq "gender"}
+        {elseif $field["type"] eq "gender"}
             {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputGender.tpl"}
         {/if}
         <br/>

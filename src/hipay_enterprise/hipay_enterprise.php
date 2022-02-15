@@ -497,6 +497,7 @@ class Hipay_enterprise extends PaymentModule
                     $customer
                 ),
                 'lang' => Tools::strtolower($this->context->language->iso_code),
+                'isOperatingModeHostedPage' => $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'] === ApiMode::HOSTED_PAGE
             ]
         );
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()['sandbox_mode']);

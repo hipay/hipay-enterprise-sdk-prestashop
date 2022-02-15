@@ -527,6 +527,11 @@ $_MODULE['<{hipay_enterprise}prestashop>exception-17_64430ad2835be8ad60c59e7d44e
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_4e37eee382169d81a8613302503e7bc2'] = 'Retourner au panier';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0ca2b5535330f021917c16883385ed15'] = 'Récapitulatif du paiement';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_1a434befae3f49ae09347ded52032f6f'] = 'Entité';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_63d5049791d9d79d86e9a108b0a999ca'] = 'Référence';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_b2f40690858b404ed10e62bdf422c704'] = 'Montant';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_8c1279db4db86553e4b9682f78cf500e'] = 'Date d\'expiration';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_666b15005ae276888ab89c0047199ade'] = 'Pour payer une référence Multibanco sur votre banque en ligne ou dans un distributeur automatique de billet, choisissez \'Paiements\', puis \'Services\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0e6fd9532c268028a19082bdadecc041'] = 'Votre commande est en attente de la confirmation de votre paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_24deaba66b4e5ccfdbe61d763a755118'] = 'Une fois approuvée, elle sera disponible dans votre';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_6348d16e8e545de71d29ac6a1c20f517'] = 'historique de commandes';

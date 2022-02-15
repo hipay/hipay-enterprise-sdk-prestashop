@@ -527,6 +527,11 @@ $_MODULE['<{hipay_enterprise}prestashop>exception-17_64430ad2835be8ad60c59e7d44e
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_4e37eee382169d81a8613302503e7bc2'] = 'Torna al carrello';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0ca2b5535330f021917c16883385ed15'] = 'Riepilogo pagamento';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_1a434befae3f49ae09347ded52032f6f'] = 'Entità';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_63d5049791d9d79d86e9a108b0a999ca'] = 'Riferimento';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_b2f40690858b404ed10e62bdf422c704'] = 'Importo';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_8c1279db4db86553e4b9682f78cf500e'] = 'Data di scadenza';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_666b15005ae276888ab89c0047199ade'] = 'Per pagare un riferimento Multibanco sulla tua banca online o presso uno sportello automatico, scegli \'Pagamenti\', quindi \'Servizi\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0e6fd9532c268028a19082bdadecc041'] = 'Il tuo ordine è in attesa di una conferma di pagamento.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_24deaba66b4e5ccfdbe61d763a755118'] = 'Una volta approvato, questo sarà disponibile nel tuo';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_6348d16e8e545de71d29ac6a1c20f517'] = 'storico ordini ';
