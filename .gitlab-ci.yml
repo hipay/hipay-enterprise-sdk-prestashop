@@ -58,7 +58,7 @@ variables:
 
   services:
     - name: $REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
-      alias: prestashop_web
+      alias: web
     - name: mysql:5.7
       alias: database
   artifacts:
@@ -181,15 +181,15 @@ build-test:
 test-casper-17-1:
   <<: *test_definition
   script:
-    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://prestashop_web
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http://prestashop_web/
+    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://web
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http://web/
   retry: 2
 
 test-casper-17-2:
   <<: *test_definition
   script:
-    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://prestashop_web
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http://prestashop_web/
+    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://web
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http://web/
   retry: 2
 
 test-cypress-17-1:
@@ -198,8 +198,8 @@ test-cypress-17-1:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
     - cd bin/tests/tests-cypress
     - yarn install
-    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://prestashop_web
-    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http://prestashop_web/ --env $CYPRESS_ENV
+    - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://web
+    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http://web/ --env $CYPRESS_ENV
   retry: 2
 
 package:
