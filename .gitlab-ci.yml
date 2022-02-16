@@ -57,7 +57,7 @@ variables:
     PI_DATA_URL: $PI_CI_DATA_URL
 
   services:
-    - name: ${REGISTRY_CI}/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+    - name: $REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
       alias: prestashop_web
     - name: mysql:5.7
       alias: database
@@ -171,7 +171,7 @@ build-test:
       --cache=true
       --context "dir://${CI_PROJECT_DIR}"
       --dockerfile "./bin/docker/images/prestashop/Dockerfile17"
-      --destination "${REGISTRY_CI}/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}"
+      --destination "$REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}"
   except:
     variables:
       - $ONLY_DEPLOY
