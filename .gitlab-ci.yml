@@ -181,6 +181,7 @@ build-test:
 test-casper-17-1:
   <<: *test_definition
   script:
+    - sleep 1000
     - curl --retry 10 --retry-delay 5 --retry-connrefused --output /dev/null http://web
     - sh bin/tests/casper_run_circle.sh 0 ps17 http://web/
   retry: 2
