@@ -23,7 +23,7 @@ variables:
   allow_failure: false
   variables:
     PS_VERSION: 1.7.2.0
-    PS_DOMAIN: localhost:8087
+    PS_DOMAIN: http://web
     DB_NAME: prestashop17
 
     ADMIN_MAIL: demo@hipay.com
