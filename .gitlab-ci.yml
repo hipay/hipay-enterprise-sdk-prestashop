@@ -198,7 +198,7 @@ test-cypress-17-1:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
     - cd bin/tests/tests-cypress
     - yarn install
-      - sleep 1000
+    - sleep 1000
     - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http:\/\/web\/ --env $CYPRESS_ENV
   retry: 2
 
