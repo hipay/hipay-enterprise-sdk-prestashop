@@ -8,13 +8,7 @@ stages:
   - deploy
 
 variables:
-  DOCKER_HOST: tcp://localhost:2375/
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ''
   GIT_DEPTH: 10
-
-services:
-  - docker:19.03.1-dind
 
 #########################
 ####  TEMPLATE      ####
@@ -23,25 +17,48 @@ services:
 .test_template: &test_definition
   stage: test
   tags:
-    - gcp-high-load-runner-prod
+    - medium
   allow_failure: false
-  before_script:
-    - sed -i -e "s/{HIPAY_API_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_API_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_TOKENJS_PUBLICKEY_TEST\}/$HIPAY_TOKENJS_PUBLICKEY_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_TOKENJS_USERNAME_TEST\}/$HIPAY_TOKENJS_USERNAME_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
-    - sed -i "s/$(echo {HIPAY_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_API_MOTO_USER_TEST\}/$HIPAY_API_USER_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_API_MOTO_PASSWORD_TEST\}/$HIPAY_API_PASSWORD_TEST/" ./bin/docker/conf/test/env
-    - sed -i -e "s/{HIPAY_MOTO_SECRET_PASSPHRASE_TEST\}/$HIPAY_SECRET_PASSPHRASE_TEST/" ./bin/docker/conf/test/env
-    - sed -i "s/$(echo {HIPAY_MOTO_SECRET_PASSPHRASE_TEST} | sed -e 's/\([[\/.*]\|\]\)/\\&/g')/$(echo '$HIPAY_SECRET_PASSPHRASE_TEST' | sed -e 's/[\/&]/\\&/g')/g" ./bin/docker/conf/test/env
-    - sed -i -e "s@{PI_CI_DATA_URL\}@$PI_CI_DATA_URL@" ./bin/docker/conf/test/env
-    - docker-compose -f docker-compose.test.yml pull -q
-    - docker-compose -f docker-compose.test.yml up -d
-    - until docker-compose -f docker-compose.test.yml logs | grep -m 1 "DOCKER PRESTASHOP TO HIPAY stage IS UP" ; do sleep 1 ; done
-    - docker-compose -f docker-compose.test.yml logs
-    - curl --retry 10 --retry-delay 20 -v localhost:8087
+  variables:
+    PS_VERSION: 1.7.2.0
+    PS_DOMAIN: web
+    DB_NAME: prestashop17
+
+    ADMIN_MAIL: demo@hipay.com
+    ADMIN_PASSWD: hipay123
+    PS_ERASE_DB: 1
+    PS_INSTALL_DB: 1
+    PS_LANGUAGE: fr
+    PS_COUNTRY: fr
+    PS_INSTALL_AUTO: 1
+    PS_DEV_MODE: 0
+    PS_FOLDER_ADMIN: admin-hipay
+    PS_FOLDER_INSTALL: installOLD
+    PS_HANDLE_DYNAMIC_DOMAIN: 0
+    DB_SERVER: database
+    DB_USER: root
+    DB_PASSWD: admin
+    MYSQL_HOST: database
+    MYSQL_ROOT_PASSWORD: admin
+    HIPAY_INSTALL_AUTO: 1
+    ENVIRONMENT: stage
+    XDEBUG_CONFIG: 172.16.44.35
+    remote_host: 172.16.44.35
+    HIPAY_API_USER_TEST: $HIPAY_API_USER_TEST
+    HIPAY_API_PASSWORD_TEST: $HIPAY_API_PASSWORD_TEST
+    HIPAY_TOKENJS_PUBLICKEY_TEST: $HIPAY_TOKENJS_PUBLICKEY_TEST
+    HIPAY_TOKENJS_USERNAME_TEST: $HIPAY_TOKENJS_USERNAME_TEST
+    HIPAY_SECRET_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
+    HIPAY_API_MOTO_USER_TEST: $HIPAY_API_USER_TEST
+    HIPAY_API_MOTO_PASSWORD_TEST: $HIPAY_API_PASSWORD_TEST
+    HIPAY_MOTO_SECRET_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
+    PI_DATA_URL: $PI_CI_DATA_URL
+
+  services:
+    - name: $REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
+      alias: web
+    - name: mysql:5.7
+      alias: database
   artifacts:
     paths:
       - bin/tests/errors
@@ -50,27 +67,49 @@ services:
     when: always
   except:
     variables:
-      - $ACCESS_TOKEN
+      - $ONLY_DEPLOY
+
+.login_to_registry: &login-to-registry
+  before_script:
+    - "mkdir /tmp"
+    - "touch /tmp/credentials.json"
+    - "echo ${SA_REGISTRY_CD} > /tmp/credentials.json"
+    - "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json"
+
+.login_to_cd: &login-to-cd
+  before_script:
+    # Connect GCP with deploy service account
+    - mkdir -p /tmp
+    - touch /tmp/credentials.json
+    - echo ${SA_DEPLOY_CD} > /tmp/credentials.json
+    - gcloud auth activate-service-account "${SA_DEPLOY_NAME}" --key-file="/tmp/credentials.json"
+    - gcloud config set project "${GCP_CD_PROJECT_ID}"
+    - gcloud config set compute/zone "${GCP_CD_CLUSTER_REGION}"
+    - gcloud container clusters get-credentials "${GCP_CD_CLUSTER_NAME}"
 
 .build-prestashop:
+  <<: *login-to-registry
   stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.6.0-debug
   rules:
-    - if: $ACCESS_TOKEN
+    - if: $ONLY_DEPLOY
       when: on_success
     - when: manual
-  image: $REGISTRY_CI/gitlab-ci-base:deployment
   script:
-    - docker build -f bin/docker/images/prestashop/Dockerfile${PS_VERSION} . -t ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
-    - /tools/auth-as-end-user.sh
-    - docker push ${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}
-    - /tools/logout-end-user.sh
+    - /kaniko/executor
+      --cache=true
+      --context "dir://${CI_PROJECT_DIR}"
+      --dockerfile "./bin/docker/images/prestashop/Dockerfile${PS_VERSION}"
+      --destination "${REGISTRY_CD}/${DOCKER_STACK}-${DOCKER_SERVICE}-web${PS_VERSION}:${CI_COMMIT_REF_SLUG}"
   tags:
-    - gcp-default-runner-prod
+    - small
 
 .deploy2recette-prestashop:
+  <<: *login-to-cd
   stage: deploy
   rules:
-    - if: $ACCESS_TOKEN
+    - if: $ONLY_DEPLOY
       when: on_success
     - when: manual
   image: $REGISTRY_CI/gitlab-ci-base:deployment
@@ -79,7 +118,6 @@ services:
     RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
   script:
     - echo $RELEASE_NAME
-    - /tools/auth-to-cd-cluster.sh
     - >
       helm install $RELEASE_NAME ./bin/docker/kubernetes/helm/
       --namespace default
@@ -98,27 +136,25 @@ services:
       --set hipay_api_moto_password_test=""
       --set hipay_moto_secret_passphrase_test=""
       --set pi_data_url="$PI_CI_DATA_URL"
-    - /tools/logout-end-user.sh
   allow_failure: true
   tags:
-    - gcp-default-runner-prod
+    - small
 
 .stop_review-prestashop:
+  <<: *login-to-cd
   stage: deploy
   image: $REGISTRY_CI/gitlab-ci-base:deployment
   variables:
     GIT_STRATEGY: none
     RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
   script:
-    - /tools/auth-to-cd-cluster.sh
-    - helm uninstall $RELEASE_NAME
-    - /tools/logout-end-user.sh
+    - helm uninstall $RELEASE_NAME --namespace=default
   when: manual
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     action: stop
   tags:
-    - gcp-default-runner-prod
+    - small
 
 #########################
 ####  JOBS          ####
@@ -126,25 +162,34 @@ services:
 
 build-test:
   stage: build-test
+  image:
+    name: gcr.io/kaniko-project/executor:v1.6.0-debug
   script:
-    - docker-compose -f docker-compose.test.yml build
-    - docker-compose -f docker-compose.test.yml push
+    - /kaniko/executor
+      --cache=true
+      --context "dir://${CI_PROJECT_DIR}"
+      --dockerfile "./bin/docker/images/prestashop/Dockerfile17"
+      --destination "$REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}"
   except:
     variables:
-      - $ACCESS_TOKEN
+      - $ONLY_DEPLOY
   tags:
-    - gcp-high-load-runner-prod
+    - small
 
 test-casper-17-1:
   <<: *test_definition
   script:
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/localhost:8087/
+    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
+    - export OPENSSL_CONF=/etc/ssl/
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http://web
   retry: 2
 
 test-casper-17-2:
   <<: *test_definition
   script:
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/localhost:8087/
+    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
+    - export OPENSSL_CONF=/etc/ssl/
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http://web
   retry: 2
 
 test-cypress-17-1:
@@ -153,7 +198,8 @@ test-cypress-17-1:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
     - cd bin/tests/tests-cypress
     - yarn install
-    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http:\/\/localhost:8087/ --env $CYPRESS_ENV
+    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
+    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http://web --env $CYPRESS_ENV
   retry: 2
 
 package:
@@ -172,10 +218,10 @@ package:
     paths:
       - ./package-ready-for-prestashop
   tags:
-    - gcp-default-runner-prod
+    - small
   except:
     variables:
-      - $ACCESS_TOKEN
+      - $ONLY_DEPLOY
 
 build-prestashop16:
   variables:
