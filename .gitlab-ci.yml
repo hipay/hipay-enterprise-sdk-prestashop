@@ -179,15 +179,17 @@ build-test:
 test-casper-17-1:
   <<: *test_definition
   script:
-    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
-    - sh bin/tests/casper_run_circle.sh 0 ps17 http://web/
+    - sleep 1000
+    - export OPENSSL_CONF=/etc/ssl/
+    - sh bin/tests/casper_run_circle.sh 0 ps17 http:\/\/web\/
   retry: 2
 
 test-casper-17-2:
   <<: *test_definition
   script:
-    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
-    - sh bin/tests/casper_run_circle.sh 1 ps17 http://web/
+    - sleep 1000
+    - export OPENSSL_CONF=/etc/ssl/
+    - sh bin/tests/casper_run_circle.sh 1 ps17 http:\/\/web\/
   retry: 2
 
 test-cypress-17-1:
@@ -196,8 +198,8 @@ test-cypress-17-1:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
     - cd bin/tests/tests-cypress
     - yarn install
-    - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
-    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http://web/ --env $CYPRESS_ENV
+      - sleep 1000
+    - bash /tools/run-cypress-test.sh -f $TESTS_FOLDERS_1 -e $EXCLUDED_TEST_FILES --config baseUrl=http:\/\/web\/ --env $CYPRESS_ENV
   retry: 2
 
 package:
