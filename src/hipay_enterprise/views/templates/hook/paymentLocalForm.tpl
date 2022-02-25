@@ -14,6 +14,19 @@
 
     {foreach $methodFields as $name => $field}
 
+        <script>
+          function onChangePaymentMethodField(event) {
+            let sibling = event.target.nextSibling
+            if (sibling && sibling.classList.contains('error-text-hp')) {
+              sibling.remove();
+            }
+
+            let globalSubmitButton = document.querySelector("#payment-confirmation button[type=submit]");
+
+            globalSubmitButton.removeAttribute('disabled');
+          }
+        </script>
+
         {if $field["type"] eq "text"}
             {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputText.tpl"}
 
@@ -26,11 +39,15 @@
     <script>
         (function () {
             {foreach $methodFields as $name => $field}
-            {if isset($field.controlType)}
-            hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}', {if isset($field.required)}{$field.required}{else}false{/if});
-            {/if}
+                {if isset($field.controlType)}
+                    hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}', {if isset($field.required)}{$field.required}{else}false{/if});
+                {/if}
             {/foreach}
         })();
+
+        document
+          .getElementById('{$localPaymentName}-{$name}')
+          .addEventListener('input', onChangePaymentMethodField);
 
     </script>
 {elseif $forceHpayment}

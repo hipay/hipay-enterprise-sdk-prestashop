@@ -13,7 +13,7 @@
     <label class="col-md-3 form-control-label {if isset($field.required) && $field.required}required{/if}">
         {if isset($field["label"][$language])}
             {$field["label"][$language]}
-        {else}    
+        {else}
             {$field["label"]["en"]}
         {/if}
     </label>

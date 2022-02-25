@@ -459,6 +459,7 @@ $_MODULE['<{hipay_enterprise}prestashop>js.strings_1ec9c387d8257bf02b3594d009c86
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_254403217719796723eb58fa41aea7ec'] = 'Numero carta di credito errato';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF errato';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_945e1955beccc1a37f03a296edd8a13c'] = 'CPN/CURP errato';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_3f9f31a5679e78aeea30eb538e035dc5'] = 'Numero di telefono errato';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_ab46006a075d4237288ca235f0f68cb3'] = 'Un errore è accaduto con la richiesta.	';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_931d3a3ad177dd96a28c9642fec11b01'] = 'Numero carta';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_f7c7b71c823f4afa44065aa411c40223'] = 'Nome sulla carta';
