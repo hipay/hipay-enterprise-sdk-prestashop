@@ -395,18 +395,18 @@
                     </div>
                     <div class="collapse" id="account_form__collapseTechnical">
                         <div class="test">
-                            <div class="row">
-                                <div class="col-lg-6 col-lg-offset-2">
-                                    <div class="alert alert-info">
-                                        {l s='If your server is behind a proxy, populate its information so that calls to the HiPay gateway can work.'  mod='hipay_enterprise'}
-                                    </div>
-                                </div>
-                            </div>
                             <div class="form-group">
                                 <label class="control-label col-lg-2">
                                 </label>
                                 <div class="col-lg-6">
                                     <h5>Proxy settings</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-lg-offset-2">
+                                    <div class="alert alert-info">
+                                        {l s='If your server is behind a proxy, populate its information so that calls to the HiPay gateway can work.'  mod='hipay_enterprise'}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -446,6 +446,54 @@
                                 <div class="col-lg-6">
                                     <input class="form-control" type="text" name="password_proxy"
                                         value="{$config_hipay.account.global.password_proxy}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">
+                                </label>
+                                <div class="col-lg-6">
+                                    <h5>Notifications</h5>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">
+                                    <span>{l s='Enable order message on notification' mod='hipay_enterprise'}</span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <span class="switch prestashop-switch fixed-width-lg">
+                                        <input type="radio" name="order_message_on_notification" id="order_message_on_notificationmode_on" value="1"
+                                               {if $config_hipay.account.global.order_message_on_notification }checked="checked" {/if}>
+                                        <label for="order_message_on_notificationmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                        <input type="radio" name="order_message_on_notification" id="order_message_on_notificationmode_off" value="0"
+                                               {if $config_hipay.account.global.order_message_on_notification == false}checked="checked" {/if}>
+                                        <label for="order_message_on_notificationmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                                        <a class="slide-button btn production-switch"></a>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">
+                                </label>
+                                <div class="col-lg-6">
+                                    <h5>Refunds</h5>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">
+                                    <span>{l s='Use PrestaShop default refund form' mod='hipay_enterprise'}</span>
+                                </label>
+                                <div class="col-lg-8">
+                                    <span class="switch prestashop-switch fixed-width-lg">
+                                        <input type="radio" name="use_prestashop_refund_form" id="use_prestashop_refund_formmode_on" value="1"
+                                               {if $config_hipay.account.global.use_prestashop_refund_form }checked="checked" {/if}>
+                                        <label for="use_prestashop_refund_formmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                        <input type="radio" name="use_prestashop_refund_form" id="use_prestashop_refund_formmode_off" value="0"
+                                               {if $config_hipay.account.global.use_prestashop_refund_form == false}checked="checked" {/if}>
+                                        <label for="use_prestashop_refund_formmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                                        <a class="slide-button btn production-switch"></a>
+                                    </span>
                                 </div>
                             </div>
                         </div>
