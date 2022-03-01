@@ -536,14 +536,7 @@ class HipayHelper
                             foreach ($checkoutFieldsMandatory as $field) {
                                 switch ($field) {
                                     case 'phone':
-                                        $phone = (isset($address->phone_mobile) && $address->phone_mobile != '') ?
-                                            $address->phone_mobile : $address->phone;
-
-                                        if (empty($phone)) {
-                                            $fieldMandatory[] = $module->l(
-                                                'Please enter your phone number to use this payment method.'
-                                            );
-                                        }
+                                        break;
                                     case 'gender':
                                         if (empty($customer->id_gender)) {
                                             $fieldMandatory[] = $module->l(
