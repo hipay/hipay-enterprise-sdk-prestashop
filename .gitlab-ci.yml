@@ -136,6 +136,7 @@ variables:
       --set hipay_api_moto_password_test=""
       --set hipay_moto_secret_passphrase_test=""
       --set pi_data_url="$PI_CI_DATA_URL"
+      --set ps_unable_ssl=1
   allow_failure: true
   tags:
     - small
