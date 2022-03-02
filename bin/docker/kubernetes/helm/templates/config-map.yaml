@@ -24,8 +24,7 @@ data:
   DB_USER: root
   DB_PASSWD: admin
   DB_NAME: "{{ .Values.db_name }}"
-  PS_UNABLE_SSL: "1"
-  PS_SSL_UNABLED_EVERYWHERE: "1"
+  PS_ENABLE_SSL: "1"
   # Mysql env vars
   MYSQL_HOST: prestashop-mysql-{{ .Release.Name }}
   MYSQL_ROOT_PASSWORD: admin
