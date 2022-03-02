@@ -16,24 +16,26 @@
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 
     {if {isset($smarty.get.referenceToPay) and $smarty.get.referenceToPay}}
-        <table>
-            <tr>
-                <td width="200px">{l s='Entity' mod='hipay_enterprise'}</td>
-                <td width="200px">{$smarty.get.entity}</td>
-            </tr>
-            <tr>
-                <td>{l s='Reference' mod='hipay_enterprise'}</td>
-                <td>{$smarty.get.reference}</td>
-            </tr>
-            <tr>
-                <td>{l s='Amount' mod='hipay_enterprise'}</td>
-                <td>{$smarty.get.amount} {$currency.sign}</td>
-            </tr>
-            <tr>
-                <td>{l s='Expiration date' mod='hipay_enterprise'}</td>
-                <td>{dateFormat date=$smarty.get.expirationDate full=0}</td>
-            </tr>
-        </table>
+        <div id="referenceToPay">
+            <table>
+                <tr>
+                    <td><b>{l s='Entity' mod='hipay_enterprise'}</b></td>
+                    <td>{$smarty.get.entity}</td>
+                </tr>
+                <tr>
+                    <td><b>{l s='Reference' mod='hipay_enterprise'}</b></td>
+                    <td>{$smarty.get.reference}</td>
+                </tr>
+                <tr>
+                    <td><b>{l s='Amount' mod='hipay_enterprise'}</b></td>
+                    <td>{$smarty.get.amount} {$currency.sign}</td>
+                </tr>
+                <tr>
+                    <td><b>{l s='Expiry date' mod='hipay_enterprise'}</b></td>
+                    <td>{dateFormat date=$smarty.get.expirationDate full=0}</td>
+                </tr>
+            </table>
+        </div>
         <br/>
         <p style="font-size: 15px">{l s='To pay a Multibanco reference online with you bank or with an automated cash machine, choose \'Payments\' and then \'Services\'.' mod='hipay_enterprise'}</p>
     {else}

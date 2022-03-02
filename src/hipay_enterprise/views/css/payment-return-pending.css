@@ -1,0 +1,9 @@
+#referenceToPay {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#referenceToPay table {
+    width: 50%;
+}

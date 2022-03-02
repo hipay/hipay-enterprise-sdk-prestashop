@@ -463,6 +463,11 @@ class Hipay_enterprise extends PaymentModule
         $this->context->controller->addJS($this->_path . '/views/js/form-input-control.js', 'all');
     }
 
+    public function hookHeader()
+    {
+        $this->context->controller->addCSS($this->_path . '/views/css/payment-return-pending.css', 'all');
+    }
+
     /**
      * Handling prestashop hook payment. Adding payment methods (PS16)
      *

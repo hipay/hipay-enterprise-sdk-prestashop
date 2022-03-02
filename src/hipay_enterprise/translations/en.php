@@ -483,7 +483,7 @@ $_MODULE['<{hipay_enterprise}prestashop>user-token-17_e79f545fd93ed1aab5c175a7af
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_096b0deeaf40ab7e3e3d2e1cb50a7850'] = 'Saved credit/debit card';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_a44217022190f5734b2f72ba1e4f8a79'] = 'Card number';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_5528ff0ed7af8f48fbc767b808aaaee1'] = 'Card owner';
-$_MODULE['<{hipay_enterprise}prestashop>user-token-17_8c1279db4db86553e4b9682f78cf500e'] = 'Expiration date';
+$_MODULE['<{hipay_enterprise}prestashop>user-token-17_8c1279db4db86553e4b9682f78cf500e'] = 'Expiry date';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_06df33001c1d7187fdd81ea1f5b277aa'] = 'Actions';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_f2a6c498fb90ee345d997f888fce3b18'] = 'Delete';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_bb200a83661c2dfc29aea1435ddc05b0'] = 'Are you sure you want to delete this card?';

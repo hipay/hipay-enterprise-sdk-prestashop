@@ -439,6 +439,10 @@ class Apihandler
                             $params["methodDisplayName"]
                         );
 
+                        if(!str_contains($pendingUrl, "?")) {
+                            $pendingUrl .= '?';
+                        }
+
                         $redirectUrl = $pendingUrl . '&referenceToPay=1&' . http_build_query($response->getReferenceToPay());
                         break;
                     } else {
