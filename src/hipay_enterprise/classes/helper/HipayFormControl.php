@@ -198,4 +198,17 @@ class HipayFormControl
 
         return (int)$mod == 1;
     }
+
+    /**
+     * Checks if phone number is valid depending on the country
+     * @param type $phone
+     * @return boolean
+     */
+    public static function isValidPhone($phone, $countryCode) {
+
+        $phoneNumberUtil = libphonenumber\PhoneNumberUtil::getInstance();
+        $phoneNumber = $phoneNumberUtil->parse($phone, $countryCode);
+
+        return $phoneNumberUtil->isValidNumber($phoneNumber);
+    }
 }

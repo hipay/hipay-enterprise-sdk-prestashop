@@ -18,6 +18,7 @@
     var i18nBadCC = "{l s='This is not a correct credit card number' mod='hipay_enterprise'}";
     var i18nBadCPF = "{l s='This is not a correct CPF' mod='hipay_enterprise'}";
     var i18nBadCPNCURP = "{l s='This is not a correct CPN/CURP' mod='hipay_enterprise'}";
+    var i18nBadPhone = "{l s='This is not a correct phone number' mod='hipay_enterprise'}";
     var i18nBadRequest = "{l s='An error occurred with the request.' mod='hipay_enterprise'}";
     var i18nCardNumber = "{l s='Card Number' mod='hipay_enterprise'}";
     var i18nNameOnCard = "{l s='name on card' mod='hipay_enterprise'}";

@@ -459,6 +459,7 @@ $_MODULE['<{hipay_enterprise}prestashop>js.strings_1ec9c387d8257bf02b3594d009c86
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_254403217719796723eb58fa41aea7ec'] = 'Numéro de carte de crédit incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_945e1955beccc1a37f03a296edd8a13c'] = 'CPN/CURP incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_3f9f31a5679e78aeea30eb538e035dc5'] = 'Numéro de téléphone incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_ab46006a075d4237288ca235f0f68cb3'] = 'Une erreur est survenue pendant la requête.';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_931d3a3ad177dd96a28c9642fec11b01'] = 'Numéro de carte';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_f7c7b71c823f4afa44065aa411c40223'] = 'Nom sur la carte';
@@ -501,6 +502,11 @@ $_MODULE['<{hipay_enterprise}prestashop>user-token-16_8cf04a9734132302f96da8e113
 $_MODULE['<{hipay_enterprise}prestashop>user-token-16_bb200a83661c2dfc29aea1435ddc05b0'] = 'Êtes-vous sûr de vouloir supprimer cette carte ?';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0ca2b5535330f021917c16883385ed15'] = 'Récapitulatif du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_1a434befae3f49ae09347ded52032f6f'] = 'Entité';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_63d5049791d9d79d86e9a108b0a999ca'] = 'Référence';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_b2f40690858b404ed10e62bdf422c704'] = 'Montant';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_8c1279db4db86553e4b9682f78cf500e'] = 'Date d\'expiration';
+$_MODULE['<{hipay_enterprise}prestashop>pending-17_666b15005ae276888ab89c0047199ade'] = 'Pour payer une référence Multibanco sur votre banque en ligne ou dans un distributeur automatique de billet, choisissez \'Paiements\', puis \'Services\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0e6fd9532c268028a19082bdadecc041'] = 'Votre commande est en attente de la confirmation de votre paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_24deaba66b4e5ccfdbe61d763a755118'] = 'Une fois validée, elle sera disponible dans votre';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_6348d16e8e545de71d29ac6a1c20f517'] = 'historique de commandes';
@@ -522,6 +528,11 @@ $_MODULE['<{hipay_enterprise}prestashop>exception-17_64430ad2835be8ad60c59e7d44e
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_4e37eee382169d81a8613302503e7bc2'] = 'Retourner au panier';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Paiement HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0ca2b5535330f021917c16883385ed15'] = 'Récapitulatif du paiement';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_1a434befae3f49ae09347ded52032f6f'] = 'Entité';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_63d5049791d9d79d86e9a108b0a999ca'] = 'Référence';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_b2f40690858b404ed10e62bdf422c704'] = 'Montant';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_8c1279db4db86553e4b9682f78cf500e'] = 'Date d\'expiration';
+$_MODULE['<{hipay_enterprise}prestashop>pending-16_666b15005ae276888ab89c0047199ade'] = 'Pour payer une référence Multibanco sur votre banque en ligne ou dans un distributeur automatique de billet, choisissez \'Paiements\', puis \'Services\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_0e6fd9532c268028a19082bdadecc041'] = 'Votre commande est en attente de la confirmation de votre paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_24deaba66b4e5ccfdbe61d763a755118'] = 'Une fois approuvée, elle sera disponible dans votre';
 $_MODULE['<{hipay_enterprise}prestashop>pending-16_6348d16e8e545de71d29ac6a1c20f517'] = 'historique de commandes';
@@ -584,6 +595,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_eb5d2752704c4e53341c11eef3582d0d'] = 'Une erreur est survenue pendant la validation du numéro de téléphone.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_6d12f60dbfa06b3da45091a331957382'] = 'Configuration du module sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_8458084c5456ab2d8eef1aa3a2adb68b'] = 'Configuration globale des méthodes de paiement sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_edd17fcd44ef5daf55530049faf68592'] = 'Configuration des cartes de crédit sauvegardée avec succès';
@@ -592,6 +604,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_9f7226ea8774f24d9
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_2619ca57838110e4a58d37cdaeab443e'] = 'Configuration des règles anti-fraude sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_999560dd2effd4a7ca12a7e2e1a93731'] = 'Mapping des catégories sauvegardé avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_5dc62ffa17f4b575b79d53749d74ad39'] = 'Mapping des transporteurs sauvegardé avec succès';
+$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez entrer votre numéro de téléphone de pour utiliser ce moyen de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_3df9bf54943f02ca59a3a32496f5f4b1'] = 'Commande créée par HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';

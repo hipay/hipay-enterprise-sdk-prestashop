@@ -112,8 +112,6 @@ class Hipay_enterprise extends PaymentModule
         $fake = $this->l('Please inform your civility to use this method of payment.');
         $fake = $this->l('Please check the information entered.');
         $fake = $this->l('Please check the phone number entered.');
-        $fake = $this->l('The format of the phone number must match a French phone.');
-        $fake = $this->l('The format of the phone number must match a Portuguese phone.');
         $fake = $this->l('The format of the phone number is incorrect.');
         $fake = $this->l('Refused payment for order %s');
         $fake = $this->l('Hash Algorithm for %s was already set with %s');
@@ -465,6 +463,11 @@ class Hipay_enterprise extends PaymentModule
         $this->context->controller->addJS($this->_path . '/views/js/form-input-control.js', 'all');
     }
 
+    public function hookHeader()
+    {
+        $this->context->controller->addCSS($this->_path . '/views/css/payment-return-pending.css', 'all');
+    }
+
     /**
      * Handling prestashop hook payment. Adding payment methods (PS16)
      *
@@ -497,6 +500,7 @@ class Hipay_enterprise extends PaymentModule
                     $customer
                 ),
                 'lang' => Tools::strtolower($this->context->language->iso_code),
+                'isOperatingModeHostedPage' => $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'] === ApiMode::HOSTED_PAGE
             ]
         );
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()['sandbox_mode']);

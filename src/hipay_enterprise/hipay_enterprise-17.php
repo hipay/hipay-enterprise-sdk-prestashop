@@ -130,8 +130,19 @@ class HipayEnterpriseNew extends Hipay_enterprise
             ]
         );
 
-        if (empty($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']) ||
-            isset($paymentProduct['forceHpayment']) && $paymentProduct['forceHpayment']
+        if (
+            // If this payment product force the use of hosted pages
+            // or if it handle hosted pages and the module is set to use them
+            // then use hosted page
+            (
+                isset($paymentProduct['forceHpayment'])
+                && $paymentProduct['forceHpayment']
+            )
+            || (
+                isset($paymentProduct['handleHpayment'])
+                && $paymentProduct['handleHpayment']
+                && $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'] === ApiMode::HOSTED_PAGE
+            )
         ) {
             $iframe = false;
 
@@ -141,15 +152,45 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $iframe = true;
             }
 
-            $this->context->smarty->assign(['methodFields' => [], 'iframe' => $iframe]);
+            $this->context->smarty->assign([
+                'methodFields' => [],
+                'language' => $this->context->language->language_code,
+                'forceHpayment' => true,
+                'iframe' => $iframe
+            ]);
         } else {
+            $formFields = [];
+            // Check if any additional fields dans be filed using values already filled by the client
+            if (isset($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields'])
+                and isset($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'])
+            ) {
+
+                $formFields = $this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'];
+                foreach ($formFields as $fieldName => $field) {
+                    switch ($fieldName) {
+                        case 'phone':
+                            $cart = $this->context->cart;
+                            $idAddress = $cart->id_address_invoice ? $cart->id_address_invoice : $cart->id_address_delivery;
+                            $address = new Address((int)$idAddress);
+
+                            $phone = $address->phone_mobile ? $address->phone_mobile : $address->phone;
+                            $formFields[$fieldName]['defaultValue'] = $phone;
+
+                            break;
+                    }
+                }
+            }
+
             $this->context->smarty->assign(
                 [
-                    'methodFields' => $this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'],
+                    'methodFields' => $formFields,
                     'language' => $this->context->language->language_code,
+                    'forceHpayment' => false,
+                    'iframe' => false
                 ]
             );
         }
+
         $paymentForm = $this->fetch(
             'module:' . $this->name . '/views/templates/front/payment/ps17/paymentLocalForm-17.tpl'
         );

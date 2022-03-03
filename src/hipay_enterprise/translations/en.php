@@ -459,6 +459,7 @@ $_MODULE['<{hipay_enterprise}prestashop>js.strings_1ec9c387d8257bf02b3594d009c86
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_254403217719796723eb58fa41aea7ec'] = 'Credit card number incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_945e1955beccc1a37f03a296edd8a13c'] = 'CPN/CURP incorrect';
+$_MODULE['<{hipay_enterprise}prestashop>js.strings_3f9f31a5679e78aeea30eb538e035dc5'] = 'Phone number incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_ab46006a075d4237288ca235f0f68cb3'] = 'An error occurred with the request.	';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_931d3a3ad177dd96a28c9642fec11b01'] = 'Card number';
 $_MODULE['<{hipay_enterprise}prestashop>js.strings_f7c7b71c823f4afa44065aa411c40223'] = 'Name on the card';
@@ -482,7 +483,7 @@ $_MODULE['<{hipay_enterprise}prestashop>user-token-17_e79f545fd93ed1aab5c175a7af
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_096b0deeaf40ab7e3e3d2e1cb50a7850'] = 'Saved credit/debit card';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_a44217022190f5734b2f72ba1e4f8a79'] = 'Card number';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_5528ff0ed7af8f48fbc767b808aaaee1'] = 'Card owner';
-$_MODULE['<{hipay_enterprise}prestashop>user-token-17_8c1279db4db86553e4b9682f78cf500e'] = 'Expiration date';
+$_MODULE['<{hipay_enterprise}prestashop>user-token-17_8c1279db4db86553e4b9682f78cf500e'] = 'Expiry date';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_06df33001c1d7187fdd81ea1f5b277aa'] = 'Actions';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_f2a6c498fb90ee345d997f888fce3b18'] = 'Delete';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_bb200a83661c2dfc29aea1435ddc05b0'] = 'Are you sure you want to delete this card?';

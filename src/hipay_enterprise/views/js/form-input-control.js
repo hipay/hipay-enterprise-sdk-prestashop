@@ -277,6 +277,16 @@ function isCPNCURPValid(value) {
   return value.match(/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/);
 }
 
+/**
+ * Checks if the phone number is valid
+ * At the moment it is only able and used to validate portuguese phone numbers
+ * @param value
+ * @return boolean
+ */
+function isPhoneValid(value) {
+  return value.match(/^1(1[2578]|2([09]80|3(45|)|5(3?0|5)|7[67])|414|6(200|(80|91)\d|99[015679])|8(28|91))|(2([1-8]\d|9[136])|30\d|7(0[789]|60)|80[08]|9([136]\d|[124-7]))(\d{6})$/);
+}
+
 function validBic(value) {
   return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
 }
@@ -415,6 +425,22 @@ function checkCPNCURP(element) {
 }
 
 /**
+ * Checks if the phone number is valid
+ * @param element
+ */
+function checkPhone(element) {
+  if (!checkNotEmptyField(element)) {
+    return false;
+  }
+
+  if (!isPhoneValid(element.value)) {
+    errorMessage(element, i18nBadPhone);
+    return false;
+  }
+  return true;
+}
+
+/**
  *
  * @param {type} input
  * @returns {Boolean}
@@ -436,6 +462,8 @@ function typeControlCheck(input) {
       return checkCPF(element);
     case "curp-cpn":
       return checkCPNCURP(element);
+    case "phone":
+      return checkPhone(element);
     default:
       return checkNotEmptyField(element);
   }

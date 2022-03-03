@@ -16,7 +16,7 @@
     ],
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
-    "forceHpayment": 1,
+    "handleHpayment": 1,
     "minAmount": {
       "EUR": 0
     },
