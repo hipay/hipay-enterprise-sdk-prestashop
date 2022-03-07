@@ -95,7 +95,7 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
   script:
     - /kaniko/executor
@@ -112,7 +112,8 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   image: $REGISTRY_CI/gitlab-ci-base:deployment
   variables:
     GPC_ACCOUNT: ''
