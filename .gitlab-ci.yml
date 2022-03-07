@@ -71,10 +71,10 @@ variables:
 
 .login_to_registry: &login-to-registry
   before_script:
-    - "mkdir /tmp"
-    - "touch /tmp/credentials.json"
-    - "echo ${SA_REGISTRY_CD} > /tmp/credentials.json"
-    - "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json"
+    - 'mkdir /tmp'
+    - 'touch /tmp/credentials.json'
+    - 'echo ${SA_REGISTRY_CD} > /tmp/credentials.json'
+    - 'export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json'
 
 .login_to_cd: &login-to-cd
   before_script:
@@ -92,10 +92,13 @@ variables:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:v1.6.0-debug
+  except:
+    - merge
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   script:
     - /kaniko/executor
       --cache=true
