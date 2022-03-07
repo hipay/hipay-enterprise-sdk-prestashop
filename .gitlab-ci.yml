@@ -92,12 +92,10 @@ variables:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:v1.6.0-debug
-  except:
-    - merge
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
   script:
     - /kaniko/executor
