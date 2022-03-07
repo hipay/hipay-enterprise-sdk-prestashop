@@ -95,7 +95,7 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - if: $CI_PIPELINE_SOURCE == "push"
+    - if: '$CI_PIPELINE_SOURCE == "push"'
       when: manual
   script:
     - /kaniko/executor
