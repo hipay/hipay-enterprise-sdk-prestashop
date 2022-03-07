@@ -30,9 +30,9 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
         $result = Db::getInstance()->executeS($sql);
 
         // If account has at least one order with item number matching current
-        if(count($result) > 0){
+        if (count($result) > 0) {
             // We now go through every matching order to check on the products themselves
-            foreach($result as $line){
+            foreach ($result as $line) {
                 $detailsSQL = 'SELECT product_id, product_quantity, id_shop, product_attribute_id FROM `' . _DB_PREFIX_ . 'order_detail` od '.
                 ' WHERE od.id_order = ' . $line["id_order"];
 
@@ -40,15 +40,15 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
 
                 $found = true;
                 // Going through ordered products
-                foreach ($orderDetails as $aDetail){
+                foreach ($orderDetails as $aDetail) {
                     // If an ordered product doesn't match current order, we skip to the next
-                    if(!in_array($aDetail, $products)){
+                    if (!in_array($aDetail, $products)) {
                         $found = false;
                         break;
                     }
                 }
 
-                if($found){
+                if ($found) {
                     return true;
                 }
             }
@@ -97,7 +97,7 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
     public function getLastTransactionReference($customerId)
     {
         $sql = 'SELECT transaction_id FROM `' . _DB_PREFIX_ . 'order_payment`' .
-            ' JOIN `' . _DB_PREFIX_ . 'orders` o ON order_reference = o.id_order' .
+            ' JOIN `' . _DB_PREFIX_ . 'orders` o ON order_reference = o.reference' .
             ' WHERE id_customer = ' . pSQL((int)$customerId) .
             ' AND transaction_id IS NOT NULL' .
             ' ORDER BY o.date_add DESC;';
@@ -105,7 +105,7 @@ class HipayDBThreeDSQuery extends HipayDBQueryAbstract
         $result = Db::getInstance()->getRow($sql);
 
         if (isset($result['transaction_id'])) {
-            if(strpos($result['transaction_id'], "BO_TPP") !== FALSE){
+            if (strpos($result['transaction_id'], "BO_TPP") !== false) {
                 $transactionId = substr($result['transaction_id'], 0, strpos($result['transaction_id'], '-'));
             } else {
                 $transactionId = $result['transaction_id'];
