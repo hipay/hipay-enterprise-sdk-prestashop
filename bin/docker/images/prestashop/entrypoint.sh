@@ -121,6 +121,9 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
 EOF
     fi
 
+    mysql -h $MYSQL_HOST -D prestashop17 -u root -p$MYSQL_ROOT_PASSWORD -e "UPDATE ps_country SET active=1 WHERE iso_code IN ('PT', 'IT', 'NL', 'BE');COMMIT;"
+    mysql -h $MYSQL_HOST -D prestashop17 -u root -p$MYSQL_ROOT_PASSWORD -e "INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl) VALUES (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0), (3, 'Italiano', 1, 'it', 'it', 'it', 'd/m/Y', 'd/m/Y H:i:s', 0);COMMIT;"
+
     ./prestashopConsole.phar c:flush
 
     #===================================#
