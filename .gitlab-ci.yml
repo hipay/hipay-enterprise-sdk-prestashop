@@ -20,7 +20,7 @@ variables:
     - medium
   allow_failure: false
   variables:
-    PS_VERSION: 1.7.2.0
+    PS_VERSION: 1.7.8.4
     PS_DOMAIN: web
     DB_NAME: prestashop17
 
@@ -238,7 +238,7 @@ build-prestashop17:
 deploy2recette-prestashop16:
   variables:
     PS_VERSION: 16
-    PS_FULL_VERSION: 1.6.1.16
+    PS_FULL_VERSION: 1.6.1.24
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
@@ -248,7 +248,7 @@ deploy2recette-prestashop16:
 deploy2recette-prestashop17:
   variables:
     PS_VERSION: 17
-    PS_FULL_VERSION: 1.7.2.0
+    PS_FULL_VERSION: 1.7.8.4
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
