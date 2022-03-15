@@ -20,7 +20,7 @@ variables:
     - medium
   allow_failure: false
   variables:
-    PS_VERSION: 1.7.2.0
+    PS_VERSION: 1.7.8.4
     PS_DOMAIN: web
     DB_NAME: prestashop17
 
@@ -71,10 +71,10 @@ variables:
 
 .login_to_registry: &login-to-registry
   before_script:
-    - "mkdir /tmp"
-    - "touch /tmp/credentials.json"
-    - "echo ${SA_REGISTRY_CD} > /tmp/credentials.json"
-    - "export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json"
+    - 'mkdir /tmp'
+    - 'touch /tmp/credentials.json'
+    - 'echo ${SA_REGISTRY_CD} > /tmp/credentials.json'
+    - 'export GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json'
 
 .login_to_cd: &login-to-cd
   before_script:
@@ -95,7 +95,8 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   script:
     - /kaniko/executor
       --cache=true
@@ -111,7 +112,8 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
-    - when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   image: $REGISTRY_CI/gitlab-ci-base:deployment
   variables:
     GPC_ACCOUNT: ''
@@ -236,7 +238,7 @@ build-prestashop17:
 deploy2recette-prestashop16:
   variables:
     PS_VERSION: 16
-    PS_FULL_VERSION: 1.6.1.16
+    PS_FULL_VERSION: 1.6.1.24
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
@@ -246,7 +248,7 @@ deploy2recette-prestashop16:
 deploy2recette-prestashop17:
   variables:
     PS_VERSION: 17
-    PS_FULL_VERSION: 1.7.2.0
+    PS_FULL_VERSION: 1.7.8.4
   extends: .deploy2recette-prestashop
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
