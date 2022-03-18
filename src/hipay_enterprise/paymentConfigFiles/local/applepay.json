@@ -1,0 +1,26 @@
+{
+  "name": "applepay",
+  "config": {
+    "displayNameBO": "Apple Pay",
+    "displayName":  {
+      "fr": "Apple Pay",
+      "en": "Apple Pay"
+    },
+    "frontPosition": 10,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
+    "countrySelectorReadOnly": 0,
+    "currencySelectorReadOnly": 0,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    }
+  }
+}

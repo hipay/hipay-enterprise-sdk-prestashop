@@ -147,6 +147,40 @@
                                     value="{$config_hipay.account.production.api_moto_secret_passphrase_production}">
                             </div>
                         </div>
+
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials' mod='hipay_enterprise'}
+                        </h5>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Username' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="text" name="api_apple_pay_username_production"
+                                       value="{$config_hipay.account.production.api_apple_pay_username_production}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Password' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="password"
+                                       name="api_apple_pay_password_production"
+                                       value="{$config_hipay.account.production.api_apple_pay_password_production}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Secret passphrase' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="password"
+                                       name="api_apple_pay_passphrase_production"
+                                       value="{$config_hipay.account.production.api_apple_pay_passphrase_production}">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,6 +290,40 @@
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_moto_secret_passphrase_sandbox"
                                     value="{$config_hipay.account.sandbox.api_moto_secret_passphrase_sandbox}">
+                            </div>
+                        </div>
+
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials' mod='hipay_enterprise'}
+                        </h5>
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Username' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="text" name="api_apple_pay_username_production"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_username_production}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Password' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="password"
+                                       name="api_apple_pay_password_production"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_password_production}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">
+                                {l s='Secret passphrase' mod='hipay_enterprise'}
+                            </label>
+                            <div class="col-lg-6">
+                                <input class="form-control" type="password"
+                                       name="api_apple_pay_passphrase_production"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_passphrase_production}">
                             </div>
                         </div>
                     </div>
