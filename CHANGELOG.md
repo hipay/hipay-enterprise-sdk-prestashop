@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.15.0
+
+- **Add** : New MultiBanco and MBWay payment methods
+
 ## Version 2.14.0
 
 - **Add** : Handle PrestaShop native refund form
