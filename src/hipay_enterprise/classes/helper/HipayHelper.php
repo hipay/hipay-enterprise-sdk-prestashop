@@ -536,39 +536,6 @@ class HipayHelper
                             foreach ($checkoutFieldsMandatory as $field) {
                                 switch ($field) {
                                     case 'phone':
-                                        $phone = (isset($address->phone_mobile) && $address->phone_mobile != '') ?
-                                            $address->phone_mobile : $address->phone;
-
-                                        if (empty($phone)) {
-                                            $fieldMandatory[] = $module->l(
-                                                'Please enter your phone number to use this payment method.'
-                                            );
-                                        } else {
-                                            try {
-                                                $errorMsg = 'The format of the phone number must match %s phone.';
-                                                $countryCode = Country::getIsoById($address->id_country);
-                                                switch ($countryCode) {
-                                                    case 'FR':
-                                                        $errorMsg = sprintf($errorMsg, 'a French');
-                                                        break;
-                                                    case 'PT':
-                                                        $errorMsg = sprintf($errorMsg, 'a Portuguese');
-                                                        break;
-                                                    default:
-                                                        $errorMsg = 'The format of the phone number is incorrect.';
-                                                }
-                                                $errorMsg = $module->l($errorMsg);
-
-                                                $phoneNumberUtil = libphonenumber\PhoneNumberUtil::getInstance();
-                                                $phoneNumber = $phoneNumberUtil->parse($phone, $countryCode);
-
-                                                if (!$phoneNumberUtil->isValidNumber($phoneNumber)) {
-                                                    $fieldMandatory[] = $errorMsg;
-                                                }
-                                            } catch (Exception $e) {
-                                                $fieldMandatory[] = $errorMsg;
-                                            }
-                                        }
                                         break;
                                     case 'gender':
                                         if (empty($customer->id_gender)) {

@@ -92,6 +92,13 @@ class HipayUpdateNotif
                     ]
                 ]
             ];
+
+            $HIPAY_GITHUB_ACCESS_TOKEN = getenv('HIPAY_GITHUB_ACCESS_TOKEN');
+
+            if ($HIPAY_GITHUB_ACCESS_TOKEN) {
+                $opts['http']['header'][] = 'Authorization: token ' . $HIPAY_GITHUB_ACCESS_TOKEN;
+            }
+
             $context = stream_context_create($opts);
             $gitHubInfo = json_decode(file_get_contents(self::HIPAY_GITHUB_PRESTASHOP_LATEST, false, $context));
             // If call is successful, reading from call

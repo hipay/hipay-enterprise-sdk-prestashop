@@ -78,6 +78,43 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+
+    if [[ "$PS_VERSION" == *"1.7"* ]]; then
+      TABLE_NAME='prestashop17'
+
+      mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
+          VALUES
+            (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
+            (3, 'Italiano', 1, 'it', 'it', 'it', 'd/m/Y', 'd/m/Y H:i:s', 0);
+
+        COMMIT;"
+    else
+      TABLE_NAME='prestashop16'
+
+      mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
+        VALUES
+          (2, 'English', 1, 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
+          (3, 'Italiano', 1, 'it', 'it', 'd/m/Y', 'd/m/Y H:i:s', 0);
+
+        COMMIT;"
+    fi
+
+    mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+      UPDATE ps_country SET active=1 WHERE iso_code IN ('PT', 'IT', 'NL', 'BE');
+
+      INSERT INTO ps_module_country (id_module, id_shop, id_country) values (69, 1,3), (69, 1, 10), (69, 1, 13), (69, 1, 15);
+
+
+      INSERT INTO ps_country_lang (id_country, id_lang, name)
+        SELECT id_country, 2 AS id_lang, name FROM ps_country_lang WHERE id_lang = 1;
+
+      INSERT INTO ps_country_lang (id_country, id_lang, name)
+        SELECT id_country, 3 AS id_lang, name FROM ps_country_lang WHERE id_lang = 1;
+
+      COMMIT;"
+
     if [[ "$PS_VERSION" == *"1.7"* ]]; then
         bin/console prestashop:module install hipay_enterprise
     else

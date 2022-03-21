@@ -9,14 +9,28 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-{if !empty($methodFields)}
+
+{if !$forceHpayment && !empty($methodFields)}
 
     {foreach $methodFields as $name => $field}
+
+        <script>
+          function onChangePaymentMethodField(event) {
+            let sibling = event.target.nextSibling
+            if (sibling && sibling.classList.contains('error-text-hp')) {
+              sibling.remove();
+            }
+
+            let globalSubmitButton = document.querySelector("#payment-confirmation button[type=submit]");
+
+            globalSubmitButton.removeAttribute('disabled');
+          }
+        </script>
 
         {if $field["type"] eq "text"}
             {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputText.tpl"}
 
-        {else if $field["type"] eq "gender"}
+        {elseif $field["type"] eq "gender"}
             {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputGender.tpl"}
         {/if}
         <br/>
@@ -25,14 +39,18 @@
     <script>
         (function () {
             {foreach $methodFields as $name => $field}
-            {if isset($field.controlType)}
-            hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}', {if isset($field.required)}{$field.required}{else}false{/if});
-            {/if}
+                {if isset($field.controlType)}
+                    hiPayInputControl.addInput('{$localPaymentName}', '{$localPaymentName}-{$name}', '{$field.controlType}', {if isset($field.required)}{$field.required}{else}false{/if});
+                {/if}
             {/foreach}
         })();
 
+        document
+          .getElementById('{$localPaymentName}-{$name}')
+          .addEventListener('input', onChangePaymentMethodField);
+
     </script>
-{else}
+{elseif $forceHpayment}
     {if $iframe}
         <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
     {else}
