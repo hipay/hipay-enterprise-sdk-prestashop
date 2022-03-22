@@ -226,5 +226,47 @@
                 </div>
             </div>
         {/if}
+
+        {if "applePaySettings"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Button type' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <select id="multiselect-{$key}" name="{$key}_buttonType[]"
+                                class="multiselect-buttonType">
+                                <option value="default" selected>{l s='Default' mod='hipay_enterprise'}</option>
+                                <option value="buy">{l s='Buy' mod='hipay_enterprise'}</option>
+                                <option value="setup">{l s='Set Up' mod='hipay_enterprise'}</option>
+                                <option value="donate">{l s='Donate' mod='hipay_enterprise'}</option>
+                                <option value="checkout">{l s='Checkout' mod='hipay_enterprise'}</option>
+                                <option value="processing">{l s='Processing' mod='hipay_enterprise'}</option>
+                                <option value="book">{l s='Book' mod='hipay_enterprise'}</option>
+                                <option value="subscribe">{l s='Subscribe' mod='hipay_enterprise'}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Button style' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <select id="multiselect-{$key}" name="{$key}_buttonStyle[]"
+                                class="multiselect-buttonStyle">
+                            <option value="black" selected>{l s='Black' mod='hipay_enterprise'}</option>
+                            <option value="white">{l s='White' mod='hipay_enterprise'}</option>
+                            <option value="whiteWithLines">{l s='White with lines' mod='hipay_enterprise'}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <input type="text" class="merchantId" name="{$key}_merchantId"/>
+                    </div>
+                </div>
+            </div>
+        {/if}
     </div>
 </div>

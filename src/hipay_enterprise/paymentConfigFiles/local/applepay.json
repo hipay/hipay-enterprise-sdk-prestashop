@@ -10,9 +10,7 @@
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
-      "minAmount",
-      "maxAmount",
-      "countries"
+      "applePaySettings"
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
