@@ -181,14 +181,75 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 }
             }
 
-            $this->context->smarty->assign(
-                [
-                    'methodFields' => $formFields,
-                    'language' => $this->context->language->language_code,
-                    'forceHpayment' => false,
-                    'iframe' => false
-                ]
-            );
+            if ($name === 'applepay') {
+                $formFields = array(
+                    "button_type" => $paymentProduct['button_type'],
+                    "button_style" => $paymentProduct['button_style'],
+                    "merchant_id" => $paymentProduct['merchant_id']
+                );
+
+                $configAccountGlobal = $this->hipayConfigTool->getAccountGlobal();
+                $this->getLogs()->logInfos($configAccountGlobal);
+                if ($configAccountGlobal['sandbox_mode']) {
+                    $config = $this->hipayConfigTool->getAccountSandbox();
+
+                    $credentials = array (
+                        'api_username' => $config['api_username_sandbox'],
+                        'api_password' => $config['api_password_sandbox'],
+                        'api_apple_pay_username' => $config['api_apple_pay_username_sandbox'],
+                        'api_apple_pay_password' => $config['api_apple_pay_password_sandbox'],
+                        'api_apple_pay_passphrase' => $config['api_apple_pay_passphrase_sandbox']
+                    );
+                } else {
+                    $config = $this->hipayConfigTool->getAccountProduction();
+
+                    $credentials = array (
+                        'api_username' => $config['api_username_production'],
+                        'api_password' => $config['api_password_production'],
+                        'api_apple_pay_username' => $config['api_apple_pay_username_production'],
+                        'api_apple_pay_password' => $config['api_apple_pay_password_production'],
+                        'api_apple_pay_passphrase' => $config['api_apple_pay_passphrase_production']
+                    );
+                }
+
+                $currency = $this->getCurrency($this->context->cart->id_currency);
+
+                $idAddress = $this->context->cart->id_address_invoice
+                    ? $this->context->cart->id_address_invoice
+                    : $this->context->cart->id_address_delivery;
+
+                $address = new Address((int) $idAddress);
+                $country = new Country((int) $address->id_country);
+
+                $templateCart = array(
+                    'totalAmount' => $this->context->cart->getCartTotalPrice(),
+                    'currencyCode' => $currency[0]['iso_code'],
+                    'countryCode' => $country->iso_code
+                );
+
+                $this->context->smarty->assign(
+                    [
+                        'cart' => $templateCart,
+                        'configAccountGlobal' => $configAccountGlobal,
+                        'language_iso_code' => $this->context->language->language_code,
+                        'environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
+                        'credentials' => $credentials,
+                        'appleFields' => $formFields,
+                        'language' => $this->context->language->language_code,
+                        'forceHpayment' => false,
+                        'iframe' => false
+                    ]
+                );
+            } else {
+                $this->context->smarty->assign(
+                    [
+                        'methodFields' => $formFields,
+                        'language' => $this->context->language->language_code,
+                        'forceHpayment' => false,
+                        'iframe' => false
+                    ]
+                );
+            }
         }
 
         $paymentForm = $this->fetch(

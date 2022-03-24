@@ -6,19 +6,30 @@
       "fr": "Apple Pay",
       "en": "Apple Pay"
     },
-    "frontPosition": 10,
+    "frontPosition": 100,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
-      "applePaySettings"
+      "currencies",
+      "countries",
+      "minAmount",
+      "maxAmount",
+      "button_type",
+      "button_style",
+      "merchant_id"
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
+    "currencies": [],
+    "countries": [],
     "minAmount": {
       "EUR": 0
     },
     "maxAmount": {
       "EUR": false
-    }
+    },
+    "button_type": "default",
+    "button_style": "white",
+    "merchant_id": ""
   }
 }

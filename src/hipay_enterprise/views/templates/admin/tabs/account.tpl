@@ -300,8 +300,8 @@
                                 {l s='Username' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-6">
-                                <input class="form-control" type="text" name="api_apple_pay_username_production"
-                                       value="{$config_hipay.account.sandbox.api_apple_pay_username_production}">
+                                <input class="form-control" type="text" name="api_apple_pay_username_sandbox"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_username_sandbox}">
                             </div>
                         </div>
 
@@ -311,8 +311,8 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
-                                       name="api_apple_pay_password_production"
-                                       value="{$config_hipay.account.sandbox.api_apple_pay_password_production}">
+                                       name="api_apple_pay_password_sandbox"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_password_sandbox}">
                             </div>
                         </div>
 
@@ -322,8 +322,8 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
-                                       name="api_apple_pay_passphrase_production"
-                                       value="{$config_hipay.account.sandbox.api_apple_pay_passphrase_production}">
+                                       name="api_apple_pay_passphrase_sandbox"
+                                       value="{$config_hipay.account.sandbox.api_apple_pay_passphrase_sandbox}">
                             </div>
                         </div>
                     </div>

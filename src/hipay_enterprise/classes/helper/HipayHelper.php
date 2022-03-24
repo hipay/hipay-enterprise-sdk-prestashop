@@ -523,9 +523,10 @@ class HipayHelper
                             ['method' => $name],
                             true
                         );
+
                         $activatedPayment[$name]['payment_button'] = $module->getPath() .
                             'views/img/' .
-                            $settings['logo'];
+                            (isset($settings['logo']) ? $settings['logo'] : 'logo.png');
 
                         $checkoutFieldsMandatory = isset(
                             $module->hipayConfigTool->getLocalPayment()[$name]['checkoutFieldsMandatory']

@@ -50,6 +50,8 @@
           .addEventListener('input', onChangePaymentMethodField);
 
     </script>
+{elseif $localPaymentName eq "applepay"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
 {elseif $forceHpayment}
     {if $iframe}
         <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
