@@ -516,7 +516,7 @@ class HipayHelper
                 (empty($settings['currencies']) || in_array($currency->iso_code, $settings['currencies'])) &&
                 $orderTotal >= $settings['minAmount']['EUR'] &&
                 ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR']) &&
-                (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] < _PS_VERSION_))
+                (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] <= _PS_VERSION_))
             ) {
                 if ($paymentMethodType == 'local_payment') {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE ||
