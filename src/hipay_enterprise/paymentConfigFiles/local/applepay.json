@@ -14,9 +14,9 @@
       "countries",
       "minAmount",
       "maxAmount",
-      "button_type",
-      "button_style",
-      "merchant_id"
+      "buttonType",
+      "buttonStyle",
+      "merchantId"
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
@@ -28,8 +28,11 @@
     "maxAmount": {
       "EUR": false
     },
-    "button_type": "default",
-    "button_style": "white",
-    "merchant_id": ""
+    "buttonType": "plain",
+    "buttonStyle": "white",
+    "merchantId": "",
+    "minPrestashopVersion": "1.7",
+    "canManualCapture": false,
+    "canManualCapturePartially": false
   }
 }

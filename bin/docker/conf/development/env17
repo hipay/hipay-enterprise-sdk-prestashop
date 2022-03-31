@@ -2,5 +2,5 @@
 # Specific configuration for Prestashop 1.7
 #=====================================================
 PS_VERSION=1.7.8.4
-PS_DOMAIN=localhost:8087
+PS_DOMAIN=b9a0-193-252-50-253.ngrok.io
 DB_NAME=prestashop17

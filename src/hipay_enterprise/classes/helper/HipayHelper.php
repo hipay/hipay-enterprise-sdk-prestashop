@@ -505,11 +505,18 @@ class HipayHelper
         $context = Context::getContext();
         $activatedPayment = [];
         foreach ($configHipay['payment'][$paymentMethodType] as $name => $settings) {
+            // Only show if the payment method is
+            // - activated
+            // - has no country or is available in the active country
+            // - has no specific currency or is active in the active currency
+            // - Has the right amount
+            // Accepts this version of prestashop
             if ($settings['activated'] &&
                 (empty($settings['countries']) || in_array($country->iso_code, $settings['countries'])) &&
                 (empty($settings['currencies']) || in_array($currency->iso_code, $settings['currencies'])) &&
                 $orderTotal >= $settings['minAmount']['EUR'] &&
-                ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR'])
+                ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR']) &&
+                (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] < _PS_VERSION_))
             ) {
                 if ($paymentMethodType == 'local_payment') {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE ||

@@ -14,8 +14,6 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2d2a9e31222bd2645ec042f
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_0e4d9df3d2bd3df7319ec9a6dac9e1bb'] = 'Veuillez renseigner votre civilité pour utiliser cette méthode de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1252ca7cb264a8e865f94348659ddcb'] = 'Veuillez vérifier le numéro de téléphone saisis.';
-$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_b1f6647801910cf3c2408f51395ce6cc'] = 'Le format du numéro de téléphone doit correspondre à un numéro Français.';
-$_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_33d6bb7c26f10680687a46cba1bdd719'] = 'Le format du numéro de téléphone doit correspondre à un téléphone Portugais.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_a9df256bcc47831e2243aa7be7fb5c18'] = 'Le format du numéro de téléphone est incorrect.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_058990c1e83284d157854bf34bb0309d'] = 'Le paiement pour la commande %s a été refusé.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_7f982d1fbaeb234e306099b815d460c7'] = 'L\'algorithme de hachage pour %s était déjà défini avec %s.';
@@ -164,6 +162,7 @@ $_MODULE['<{hipay_enterprise}prestashop>account_dc647eb65e6711e155375218212b3964
 $_MODULE['<{hipay_enterprise}prestashop>account_5f9e830e8d80c8c4e869029397fa1e0f'] = 'Phrase secrète';
 $_MODULE['<{hipay_enterprise}prestashop>account_6b39ee40fb800d538d92cc01223f76f2'] = 'Identifiants (Publics)';
 $_MODULE['<{hipay_enterprise}prestashop>account_10c01f844555d858dc045a6626c9c185'] = 'Identifiants privés MO/TO';
+$_MODULE['<{hipay_enterprise}prestashop>account_6f0ae81e5d91ef0a83d58dc681fe9ab5'] = 'Identifiants Apple Pay (Publics)';
 $_MODULE['<{hipay_enterprise}prestashop>account_0d541e74cb2e3fa72f7d2e1eece61ef7'] = 'Configuration de test';
 $_MODULE['<{hipay_enterprise}prestashop>account_d8c8dad4bc0ce3a1fa50096362b0b0b2'] = 'Configuration du Hash';
 $_MODULE['<{hipay_enterprise}prestashop>account_5745b40a739a4019ac6d6948c55a1a23'] = 'Si la configuration du hachage est différente de celle définie dans votre back-office Hipay, les notifications ne fonctionneront pas. Vérifiez que les deux valeurs correspondent.';
@@ -255,6 +254,19 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_4107daf5746a644e08b
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_9e0bb754171ca97e4fb8e0dd8ccdef64'] = 'Pays activés';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_d8ca6f07c1c9e3641e6ff6a3f4ec520c'] = 'Ce pays n\'est pas activé dans votre boutique PrestaShop.';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_790d59ef178acbc75d233bf4211763c6'] = 'Pays';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b72a67bbf57ab56155919507458b7a26'] = 'Type de bouton';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_7a1920d61156abc05a60135aefe8bc67'] = 'Par défaut';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_831a28f1e8df07c553fcd59546465d13'] = 'Acheter avec';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_1a6abd7b8f6c09329fda37ebf81a36f5'] = 'Configurer';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_0584e445d656b83b431227bb80ff0c30'] = 'Faire un don avec';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_6ff063fbc860a79759a7369ac32cee22'] = 'Commander avec';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_2b1f94ef23b79bf90eb891cae1df7a90'] = 'Réserver avec';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b26917587d98330d93f87808fc9d7267'] = 'S\'abonner avec';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_019a87095e0f8fb23958f05ec8ee3ec2'] = 'Style de bouton';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_e90dfb84e30edf611e326eeb04d680de'] = 'Noir';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_25a81701fbfa4a1efdf660a950c1d006'] = 'Blanc';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_aead180084156b92466bcf2a9f0861eb'] = 'Blanc entouré';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_229a7ec501323b94db7ff3157a7623c9'] = 'ID du marchand';
 $_MODULE['<{hipay_enterprise}prestashop>global_108490afa8365531d5eade07c3cc38f4'] = 'Paramètres globaux';
 $_MODULE['<{hipay_enterprise}prestashop>global_3aa43f82fc2f41e3036679584f63fe4f'] = 'Mode de fonctionnement';
 $_MODULE['<{hipay_enterprise}prestashop>global_3e8ba3c7ebacf9cef2d36d6585c8dc76'] = 'Direct Post';
@@ -477,6 +489,10 @@ $_MODULE['<{hipay_enterprise}prestashop>oneclick_d7a3b3bf767faf334c85f11c8ba678c
 $_MODULE['<{hipay_enterprise}prestashop>oneclick_5d5f8125c7c41d3d32de532877b2bf49'] = 'Date d\'exp.';
 $_MODULE['<{hipay_enterprise}prestashop>oneclick_b7d2f0f194257c6728603e53c60f8101'] = 'Votre requête a été rejetée suite à une erreur de validation. Veuillez vérifier les informations renseignées';
 $_MODULE['<{hipay_enterprise}prestashop>savetoken_001452862788e21bf55a8b4f16e028c2'] = 'Sauvegarder la carte de crédit (paiement One-click)';
+$_MODULE['<{hipay_enterprise}prestashop>inputapplepay_688000bea2f79c9ca3d2d1755456024f'] = 'Veuillez accepter les conditions d\'utilisation.';
+$_MODULE['<{hipay_enterprise}prestashop>inputapplepay_9ff3ff10ff73b9833a1503d0b5058c18'] = 'Ce navigateur ne supporte pas Apple Pay.';
+$_MODULE['<{hipay_enterprise}prestashop>inputapplepay_558ecf65da519058d0e9984943435eb4'] = 'Veuillez utiliser un autre moyen de paiement.';
+$_MODULE['<{hipay_enterprise}prestashop>inputapplepay_4fd795afe939870512d9fa4ca489e906'] = 'Veuillez sélectionner une carte pour payer avec Apple Pay.';
 $_MODULE['<{hipay_enterprise}prestashop>inputgender_2c9b5b15a6d3cc951ca57c65e4966fd3'] = 'M.';
 $_MODULE['<{hipay_enterprise}prestashop>inputgender_7f2a1b59ac1ab6d2d892dbbf4f132c40'] = 'Mme';
 $_MODULE['<{hipay_enterprise}prestashop>user-token-17_e79f545fd93ed1aab5c175a7af2e9c73'] = 'Gérer les cartes de crédit/débit sauvegardées';
@@ -505,7 +521,6 @@ $_MODULE['<{hipay_enterprise}prestashop>pending-17_c15aa73e3fc896d9e1365e5065bcd
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_1a434befae3f49ae09347ded52032f6f'] = 'Entité';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_63d5049791d9d79d86e9a108b0a999ca'] = 'Référence';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_b2f40690858b404ed10e62bdf422c704'] = 'Montant';
-$_MODULE['<{hipay_enterprise}prestashop>pending-17_8c1279db4db86553e4b9682f78cf500e'] = 'Date d\'expiration';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_666b15005ae276888ab89c0047199ade'] = 'Pour payer une référence Multibanco sur votre banque en ligne ou dans un distributeur automatique de billet, choisissez \'Paiements\', puis \'Services\'.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0e6fd9532c268028a19082bdadecc041'] = 'Votre commande est en attente de la confirmation de votre paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_24deaba66b4e5ccfdbe61d763a755118'] = 'Une fois validée, elle sera disponible dans votre';
@@ -595,7 +610,6 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_52dc8faa28d49a8a9c67114
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_1ec9c387d8257bf02b3594d009c8603b'] = 'BIC incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_0e4fc7d1593232a8c43233dbc7a3188e'] = 'CPF incorrect';
 $_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_620a51169e83f5ecf0f7844680f5505d'] = 'CURP/CPN incorrect';
-$_MODULE['<{hipay_enterprise}prestashop>hipayformcontrol_eb5d2752704c4e53341c11eef3582d0d'] = 'Une erreur est survenue pendant la validation du numéro de téléphone.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_6d12f60dbfa06b3da45091a331957382'] = 'Configuration du module sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_8458084c5456ab2d8eef1aa3a2adb68b'] = 'Configuration globale des méthodes de paiement sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_edd17fcd44ef5daf55530049faf68592'] = 'Configuration des cartes de crédit sauvegardée avec succès';
@@ -604,7 +618,6 @@ $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_9f7226ea8774f24d9
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_2619ca57838110e4a58d37cdaeab443e'] = 'Configuration des règles anti-fraude sauvegardée avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_999560dd2effd4a7ca12a7e2e1a93731'] = 'Mapping des catégories sauvegardé avec succès';
 $_MODULE['<{hipay_enterprise}prestashop>hipayconfigformhandler_5dc62ffa17f4b575b79d53749d74ad39'] = 'Mapping des transporteurs sauvegardé avec succès';
-$_MODULE['<{hipay_enterprise}prestashop>hipayhelper_2d2a9e31222bd2645ec042fbf051ffd9'] = 'Veuillez entrer votre numéro de téléphone de pour utiliser ce moyen de paiement.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_231a9e18ea5a2be09a73a60a4498695b'] = 'Veuillez vérifier les informations saisies.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayhelper_3df9bf54943f02ca59a3a32496f5f4b1'] = 'Commande créée par HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>hipaymail_7b6ba38a51257882e4152de4b64b7e43'] = 'Un paiement est en attente de validation pour la commande %s.';

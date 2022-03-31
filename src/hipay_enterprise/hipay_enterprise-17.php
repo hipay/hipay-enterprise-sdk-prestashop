@@ -117,18 +117,33 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-        $this->context->smarty->assign(
-            [
-                'action' => $this->context->link->getModuleLink(
-                    $this->name,
-                    'redirectlocal',
-                    ['method' => $name],
-                    true
-                ),
-                'localPaymentName' => $name,
-                'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
-            ]
-        );
+        if ($name === 'applepay') {
+            $this->context->smarty->assign(
+                [
+                    'action' => $this->context->link->getModuleLink(
+                        $this->name,
+                        'redirect',
+                        [],
+                        true
+                    ),
+                    'localPaymentName' => $name,
+                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                ]
+            );
+        } else {
+            $this->context->smarty->assign(
+                [
+                    'action' => $this->context->link->getModuleLink(
+                        $this->name,
+                        'redirectlocal',
+                        ['method' => $name],
+                        true
+                    ),
+                    'localPaymentName' => $name,
+                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                ]
+            );
+        }
 
         if (
             // If this payment product force the use of hosted pages
@@ -183,13 +198,13 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
             if ($name === 'applepay') {
                 $formFields = array(
-                    "button_type" => $paymentProduct['button_type'],
-                    "button_style" => $paymentProduct['button_style'],
-                    "merchant_id" => $paymentProduct['merchant_id']
+                    "buttonType" => $paymentProduct['buttonType'],
+                    "buttonStyle" => $paymentProduct['buttonStyle'],
+                    "merchantId" => $paymentProduct['merchantId']
                 );
 
                 $configAccountGlobal = $this->hipayConfigTool->getAccountGlobal();
-                $this->getLogs()->logInfos($configAccountGlobal);
+
                 if ($configAccountGlobal['sandbox_mode']) {
                     $config = $this->hipayConfigTool->getAccountSandbox();
 
@@ -229,6 +244,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                 $this->context->smarty->assign(
                     [
+                        'methodFields' => [],
                         'cart' => $templateCart,
                         'configAccountGlobal' => $configAccountGlobal,
                         'language_iso_code' => $this->context->language->language_code,
@@ -267,11 +283,18 @@ class HipayEnterpriseNew extends Hipay_enterprise
         }
 
         $newOption->setCallToActionText($this->l('Pay by') . ' ' . $displayName)
-            ->setAction(
-                $this->context->link->getModuleLink($this->name, 'redirectlocal', ['method' => $name], true)
-            )
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
+
+        if ($name === 'applepay') {
+            $newOption->setAction(
+                $this->context->link->getModuleLink($this->name, 'redirect', [], true)
+            );
+        } else {
+            $newOption->setAction(
+                $this->context->link->getModuleLink($this->name, 'redirectlocal', ['method' => $name], true)
+            );
+        }
 
         // if no credit card, we force ioBB input to be displayed
         if (count($paymentOptions) == 0) {

@@ -34,7 +34,7 @@
 
     function formListener{$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}() {
         $("#{$localPaymentName}-hipay").submit(function (e) {
-            // prevent form from being submitted 
+            // prevent form from being submitted
             e.preventDefault();
             e.stopPropagation();
 

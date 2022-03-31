@@ -148,7 +148,7 @@
                             </div>
                         </div>
 
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">
@@ -293,7 +293,7 @@
                             </div>
                         </div>
 
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Apple Pay credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">

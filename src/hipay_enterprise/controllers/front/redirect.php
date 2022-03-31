@@ -75,7 +75,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function postProcess()
     {
-        switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
+        $apiMode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"];
+
+        // If it's an apple pay payment, force the api mode to direct post
+        if (Tools::getValue('is-apple-pay') === 'true') {
+            $apiMode = ApiMode::DIRECT_POST;
+        }
+
+        switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $ccToken = Tools::getValue('ccTokenHipay', '');
