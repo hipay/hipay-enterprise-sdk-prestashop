@@ -406,6 +406,10 @@ class Apihandler
 
             $forwardUrl = $response->getForwardUrl();
 
+            if (isset($params['isApplePay']) && $params['isApplePay']) {
+                $params["methodDisplayName"] = 'Apple Pay ' . $params["methodDisplayName"];
+            }
+
             switch ($response->getState()) {
                 case TransactionState::COMPLETED:
                     $redirectParams = HipayHelper::validateOrder(

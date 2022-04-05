@@ -366,7 +366,9 @@ class HipayConfig
                     "api_moto_secret_passphrase_sandbox" => "",
                     "api_apple_pay_username_sandbox" => "",
                     "api_apple_pay_password_sandbox" => "",
-                    "api_apple_pay_passphrase_sandbox" => ""
+                    "api_apple_pay_passphrase_sandbox" => "",
+                    "api_tokenjs_apple_pay_username_sandbox" => "",
+                    "api_tokenjs_apple_pay_password_sandbox" => ""
                 ),
                 "production" => array(
                     "api_username_production" => "",
@@ -379,7 +381,9 @@ class HipayConfig
                     "api_moto_secret_passphrase_production" => "",
                     "api_apple_pay_username_production" => "",
                     "api_apple_pay_password_production" => "",
-                    "api_apple_pay_passphrase_production" => ""
+                    "api_apple_pay_passphrase_production" => "",
+                    "api_tokenjs_apple_pay_username_production" => "",
+                    "api_tokenjs_apple_pay_password_production" => ""
                 ),
                 "hash_algorithm" => array(
                     "production" => HashAlgorithm::SHA1,

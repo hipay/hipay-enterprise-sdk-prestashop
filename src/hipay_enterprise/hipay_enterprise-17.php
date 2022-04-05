@@ -209,21 +209,31 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     $config = $this->hipayConfigTool->getAccountSandbox();
 
                     $credentials = array (
-                        'api_username' => $config['api_username_sandbox'],
-                        'api_password' => $config['api_password_sandbox'],
-                        'api_apple_pay_username' => $config['api_apple_pay_username_sandbox'],
-                        'api_apple_pay_password' => $config['api_apple_pay_password_sandbox'],
-                        'api_apple_pay_passphrase' => $config['api_apple_pay_passphrase_sandbox']
+                        'api_apple_pay_username' => (
+                            isset($config['api_tokenjs_apple_pay_username_sandbox'])
+                                ? $config['api_tokenjs_apple_pay_username_sandbox']
+                                : $config['api_username_sandbox']
+                        ),
+                        'api_apple_pay_password' => (
+                            isset($config['api_tokenjs_apple_pay_password_sandbox'])
+                                ? $config['api_tokenjs_apple_pay_password_sandbox']
+                                :$config['api_password_sandbox']
+                        )
                     );
                 } else {
                     $config = $this->hipayConfigTool->getAccountProduction();
 
                     $credentials = array (
-                        'api_username' => $config['api_username_production'],
-                        'api_password' => $config['api_password_production'],
-                        'api_apple_pay_username' => $config['api_apple_pay_username_production'],
-                        'api_apple_pay_password' => $config['api_apple_pay_password_production'],
-                        'api_apple_pay_passphrase' => $config['api_apple_pay_passphrase_production']
+                        'api_apple_pay_username' => (
+                            isset($config['api_tokenjs_apple_pay_username_production'])
+                                ? $config['api_tokenjs_apple_pay_username_production']
+                                : $config['api_username_production']
+                        ),
+                        'api_apple_pay_password' => (
+                            isset($config['api_tokenjs_apple_pay_password_production'])
+                                ? $config['api_tokenjs_apple_pay_password_production']
+                                :$config['api_password_production']
+                        )
                     );
                 }
 
