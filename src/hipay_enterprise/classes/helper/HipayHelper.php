@@ -161,7 +161,7 @@ class HipayHelper
             $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
                 self::TEST_MOTO : self::TEST;
             $environment = $isApplePay && HipayHelper::existCredentialForPlateform($module, self::TEST_APPLE_PAY) ?
-                self::TEST_MOTO : $environment;
+                self::TEST_APPLE_PAY : $environment;
 
             $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
                 $config['account']['sandbox']['api_moto_secret_passphrase_sandbox']
