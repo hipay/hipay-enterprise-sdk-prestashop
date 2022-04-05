@@ -389,7 +389,9 @@ class HipayConfig
                     "production" => HashAlgorithm::SHA1,
                     "test" => HashAlgorithm::SHA1,
                     "production_moto" => HashAlgorithm::SHA1,
-                    "test_moto" => HashAlgorithm::SHA1
+                    "test_moto" => HashAlgorithm::SHA1,
+                    "production_apple_pay" => HashAlgorithm::SHA1,
+                    "test_apple_pay" => HashAlgorithm::SHA1
                 )
             ),
             "payment" => array(

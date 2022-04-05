@@ -495,6 +495,59 @@
                                 </div>
                             </div>
                         </div>
+
+                        {if
+                        empty($config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
+                        || $config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $prestashopVersion
+                        }
+                            <div class="form-group">
+                                <label class="required control-label col-lg-2">
+                                    {l s='Apple Pay Production' mod='hipay_enterprise'}
+                                </label>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="">
+                                            <select name="hash_algorithm_production_apple_pay" class="col-lg-2"
+                                                    id="hash_algorithm_production_apple_pay" disabled="disabled">
+                                                <option value="SHA1"
+                                                        {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA1"}selected="selected"
+                                                        {/if}>SHA-1</option>
+                                                <option value="SHA256"
+                                                        {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA256"}selected="selected"
+                                                        {/if}>SHA-256</option>
+                                                <option value="SHA512"
+                                                        {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA512"}selected="selected"
+                                                        {/if}>SHA-512</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="required control-label col-lg-2">
+                                    {l s='Apple Pay Test' mod='hipay_enterprise'}
+                                </label>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <div class="">
+                                            <select name="hash_algorithm_test_apple_pay" class="col-lg-2"
+                                                    id="hash_algorithm_test_apple_pay" disabled="disabled">
+                                                <option value="SHA1"
+                                                        {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA1"}selected="selected"
+                                                        {/if}>SHA-1</option>
+                                                <option value="SHA256"
+                                                        {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA256"}selected="selected"
+                                                        {/if}>SHA-256</option>
+                                                <option value="SHA512"
+                                                        {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA512"}selected="selected"
+                                                        {/if}>SHA-512</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
                         <div class="form-group">
                             <span class="col-lg-2"></span>
                             <div class="col-lg-6">
