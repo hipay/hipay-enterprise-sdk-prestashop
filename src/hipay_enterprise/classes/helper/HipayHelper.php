@@ -223,6 +223,12 @@ class HipayHelper
             case self::TEST_MOTO:
                 $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_moto_username_sandbox']);
                 break;
+            case self::TEST_APPLE_PAY:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_sandbox']);
+                break;
+            case self::PRODUCTION_APPLE_PAY:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_production']);
+                break;
             default:
                 $exist = false;
                 break;
@@ -250,6 +256,12 @@ class HipayHelper
                 break;
             case self::TEST_MOTO:
                 $label = 'Test MO/TO';
+                break;
+            case self::TEST_APPLE_PAY:
+                $label = 'Test Apple Pay';
+                break;
+            case self::PRODUCTION_APPLE_PAY:
+                $label = 'Production Apple Pay';
                 break;
             default:
                 $label = '';
