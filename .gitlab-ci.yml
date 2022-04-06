@@ -303,3 +303,16 @@ create_tag:
       when: manual
     - if: '$CI_COMMIT_BRANCH'
       when: never
+
+create_release:
+  stage: release
+  script:
+    - ls
+    - ls ./package-ready-for-prestashop
+  tags:
+    - small
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "test_develop"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH'
+      when: never
