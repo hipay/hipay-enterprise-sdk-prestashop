@@ -276,11 +276,11 @@ create_tag:
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - git checkout test_master && git pull
     - >
-      if [ $(git tag -l "$VERSION") ]; then
-        echo "Version $VERSION already exists"
+      if [ $(git tag -l "$RELEASE_VERSION") ]; then
+        echo "Version $RELEASE_VERSION already exists"
       else
         git merge test_develop
-        echo "Creating new version $VERSION"
+        echo "Creating new version $RELEASE_VERSION"
         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
         git push && git push --tags
       fi
