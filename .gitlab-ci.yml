@@ -272,34 +272,33 @@ create_tag:
     - apt-get update -y && apt-get install -yqqf openssh-client git unzip sshpass rsync --fix-missing
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
-    - echo "SSH_GITLAB_KEY $SSH_GITLAB_KEY"
     - echo "${SSH_GITLAB_KEY}" | ssh-add - > /dev/null
 
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
     - ssh-keyscan $CI_SERVER_URL >> ~/.ssh/known_hosts
-    - echo "CI_SERVER_URL $CI_SERVER_URL"
     - chmod 644 ~/.ssh/known_hosts
 
     - git config --global user.email "our@email.com"
     - git config --global user.name "Gitlab Runner"
   script:
-    - git config --global user.email "your_email"
-    - git config --global user.name "username"
     - git checkout test_develop && git pull
     - ls
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - git checkout test_master && git pull
-    - >
-      if [ $(git tag -l "$RELEASE_VERSION") ]; then
-        echo "Version $RELEASE_VERSION already exists"
-      else
-        git merge test_develop
-        echo "Creating new version $RELEASE_VERSION"
-        git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-        git push && git push --tags
-      fi
+    - git remote show origin
+    - git remote set-url --push origin git@gitlab:$CI_PROJECT_PATH
+    - git remote show origin
+#    - >
+      #      if [ $(git tag -l "$RELEASE_VERSION") ]; then
+      # echo "Version $RELEASE_VERSION already exists"
+      #else
+      #  git merge test_develop
+      # echo "Creating new version $RELEASE_VERSION"
+      # git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+      # git push && git push --tags
+    #fi
   tags:
     - small
   rules:
