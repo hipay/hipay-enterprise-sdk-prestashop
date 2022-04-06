@@ -272,7 +272,7 @@ create_tag:
     - apt-get update -y && apt-get install -yqqf openssh-client git unzip sshpass rsync --fix-missing
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
-      - echo "SSH_GITLAB_KEY $SSH_GITLAB_KEY"
+    - echo "SSH_GITLAB_KEY $SSH_GITLAB_KEY"
     - echo "$SSH_GITLAB_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
     - mkdir -p ~/.ssh
