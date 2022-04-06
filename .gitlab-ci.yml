@@ -279,6 +279,7 @@ create_tag:
         echo "Version $VERSION already exists"
       else
         git merge test_develop
+        echo "Creating new version $VERSION"
         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
         git push && git push --tags
       fi
