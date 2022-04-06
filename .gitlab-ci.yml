@@ -6,7 +6,7 @@ stages:
   - package
   - build
   - deploy
-  - tag
+  - release
 
 variables:
   GIT_DEPTH: 10
@@ -272,6 +272,7 @@ create_tag:
     - git config --global user.email "your_email"
     - git config --global user.name "username"
     - git checkout test_develop && git pull
+    - ls
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - git checkout test_master && git pull
     - >
