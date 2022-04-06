@@ -283,13 +283,13 @@ create_tag:
     - git config --global user.email "our@email.com"
     - git config --global user.name "Gitlab Runner"
   script:
+    - git remote show origin
+    - git remote set-url --push origin git@gitlab:$CI_PROJECT_PATH
+    - git remote show origin
     - git checkout test_develop && git pull
     - ls
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - git checkout test_master && git pull
-    - git remote show origin
-    - git remote set-url --push origin git@gitlab:$CI_PROJECT_PATH
-    - git remote show origin
 #    - >
       #      if [ $(git tag -l "$RELEASE_VERSION") ]; then
       # echo "Version $RELEASE_VERSION already exists"
