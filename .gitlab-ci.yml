@@ -267,7 +267,7 @@ stop_review-prestashop17:
   extends: .stop_review-prestashop
 
 create_tag:
-  stage: tag
+  stage: release
   script:
     - git config --global user.email "your_email"
     - git config --global user.name "username"
