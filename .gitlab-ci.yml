@@ -6,6 +6,7 @@ stages:
   - package
   - build
   - deploy
+  - tag
 
 variables:
   GIT_DEPTH: 10
@@ -264,3 +265,27 @@ stop_review-prestashop17:
   variables:
     PS_VERSION: 17
   extends: .stop_review-prestashop
+
+create_tag:
+  stage: tag
+  script:
+    - git config --global user.email "your_email"
+    - git config --global user.name "username"
+    - git checkout test_develop && git pull
+    - $RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
+    - git checkout test_master && git pull
+    - >
+      if [ $(git tag -l "$VERSION") ]; then
+        echo "Version $VERSION already exists"
+      else
+        git merge test_develop
+        git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
+        git push && git push --tags
+      fi
+  tags:
+    - small
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "test_develop"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH'
+      when: never
