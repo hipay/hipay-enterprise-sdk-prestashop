@@ -321,11 +321,7 @@ create_release:
     - ls -la package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
     - stat package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
 
-    - gh release create $CI_COMMIT_REF_SLUG \
-      package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip \
-      --title "Version $CI_COMMIT_REF_SLUG" \
-      --notes "$CHANGELOG" \
-      --repo git@github.com:pi-ecommerce/test_release.git
+    - gh release create $CI_COMMIT_REF_SLUG package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip --title "Version $CI_COMMIT_REF_SLUG" --notes "$CHANGELOG" --repo git@github.com:pi-ecommerce/test_release.git
   tags:
     - small
   rules:
