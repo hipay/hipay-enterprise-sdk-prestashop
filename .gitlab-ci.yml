@@ -317,10 +317,10 @@ create_release:
     - echo $GITHUB_TOKEN_RELEASE | gh auth login --git-protocol ssh --with-token
 
     - gh release create $CI_COMMIT_REF_SLUG \
+      ./package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip \
       --title "Version $CI_COMMIT_REF_SLUG" \
       --notes "$CHANGELOG" \
-      --repo git@github.com:pi-ecommerce/test_release.git \
-      ./package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
+      --repo git@github.com:pi-ecommerce/test_release.git
   tags:
     - small
   rules:
