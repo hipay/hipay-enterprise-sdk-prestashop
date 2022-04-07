@@ -54,7 +54,7 @@ variables:
     HIPAY_MOTO_SECRET_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
     HIPAY_API_APPLE_PAY_USER_TEST: $HIPAY_API_USER_TEST
     HIPAY_API_APPLE_PAY_PASSWORD_TEST: $HIPAY_API_PASSWORD_TEST
-    HIPAY_APPLE_PAY_SECRET_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
+    HIPAY_APPLE_PAY_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
     HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST: $HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST
     HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST: $HIPAY_TOKENJS_USERNAME_TEST
     PI_DATA_URL: $PI_CI_DATA_URL
@@ -144,7 +144,7 @@ variables:
       --set hipay_moto_secret_passphrase_test=""
       --set hipay_api_apple_pay_user_test=""
       --set hipay_api_apple_pay_password_test=""
-      --set hipay_apple_pay_secret_passphrase_test=""
+      --set hipay_apple_pay_passphrase_test=""
       --set hipay_tokenjs_apple_pay_username_test=""
       --set hipay_tokenjs_apple_pay_password_test=""
       --set pi_data_url="$PI_CI_DATA_URL"
