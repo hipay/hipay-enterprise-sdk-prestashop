@@ -294,7 +294,7 @@ create_tag:
         git merge origin/test_develop
         echo "Creating new version $RELEASE_VERSION"
         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-        #git push && git push --tags
+        git push
       fi
   tags:
     - small
@@ -306,19 +306,15 @@ create_tag:
 
 create_release:
   stage: release
-  script:
+  before_script:
     - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
     - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
     - apt update --allow-releaseinfo-change
     - apt install gh
-
+  script:
     - export GITHUB_TOKEN=
-
     - echo $GITHUB_TOKEN_RELEASE | gh auth login --git-protocol ssh --with-token
 
-    - ls -la ./
-    - ls -la ./package-ready-for-prestashop
-    - ls -la package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
     - stat package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
 
     - gh release create $CI_COMMIT_REF_SLUG package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip --title "Version $CI_COMMIT_REF_SLUG" --notes "$CHANGELOG" --repo git@github.com:pi-ecommerce/test_release.git
