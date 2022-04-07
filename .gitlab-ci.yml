@@ -283,7 +283,7 @@ create_tag:
     - git config --global user.email "our@email.com"
     - git config --global user.name "Gitlab Runner"
   script:
-    - git remote set-url --push origin git@gitlab:$CI_PROJECT_PATH
+    - git remote set-url origin git@gitlab:$CI_PROJECT_PATH
     - git checkout test_develop && git pull
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - >
