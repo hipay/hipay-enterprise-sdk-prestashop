@@ -312,11 +312,7 @@ create_release:
     - apt update --allow-releaseinfo-change
     - apt install gh
 
-    - echo $GITHUB_PERSONAL_ACCESS_TOKEN > token.txt
-
-    - gh auth login \
-      --git-protocol ssh \
-      --with-token < token.txt
+    - echo $GITHUB_PERSONAL_ACCESS_TOKEN | gh auth login --git-protocol ssh --with-token
 
     - gh release create $CI_COMMIT_REF_SLUG \
       --title "Version $CI_COMMIT_REF_SLUG" \
