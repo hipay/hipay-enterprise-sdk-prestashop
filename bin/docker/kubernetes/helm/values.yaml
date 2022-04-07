@@ -19,7 +19,7 @@ hipay_api_apple_pay_user_test: ""
 hipay_api_apple_pay_password_test: ""
 hipay_apple_pay_secret_passphrase_test: ""
 hipay_tokenjs_apple_pay_username_test: ""
-hipay_tokenjs_apple_pay_publickey_test: ""
+hipay_tokenjs_apple_pay_password_test: ""
 
 pi_data_url: ""
 
