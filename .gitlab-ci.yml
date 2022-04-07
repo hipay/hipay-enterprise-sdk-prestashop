@@ -69,7 +69,7 @@ variables:
   except:
     variables:
       - $ONLY_DEPLOY
-      - $ONLY_TAG
+      - $RELEASE_VERSION
 
 .login_to_registry: &login-to-registry
   before_script:
@@ -177,7 +177,7 @@ build-test:
   except:
     variables:
       - $ONLY_DEPLOY
-      - $ONLY_TAG
+      - $RELEASE_VERSION
   tags:
     - small
 
@@ -227,7 +227,7 @@ package:
   except:
     variables:
       - $ONLY_DEPLOY
-      - $ONLY_TAG
+      - $RELEASE_VERSION
 
 
 build-prestashop16:
@@ -312,7 +312,7 @@ create_tag:
         git push origin test_master
       fi
   rules:
-    - if: $ONLY_TAG
+    - if: $RELEASE_VERSION
       when: on_success
   tags:
     - small
