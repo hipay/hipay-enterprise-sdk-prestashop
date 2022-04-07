@@ -302,7 +302,7 @@ create_tag:
         git add src/hipay_enterprise/composer.json
         git add src/hipay_enterprise/hipay_enterprise.php
         git commit -m "Init release $RELEASE_VERSION"
-       git push origin HEAD:test_develop
+        git push origin HEAD:test_develop
 
         git checkout test_master
         git reset --hard origin/test_master
