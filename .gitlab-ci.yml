@@ -284,18 +284,18 @@ create_tag:
     - git config --global user.name "Gitlab Runner"
   script:
     - git remote set-url --push origin git@gitlab:$CI_PROJECT_PATH
-    - git pull
     - git checkout test_develop && git pull
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
-    - git checkout test_master && git pull
     - >
       if [ $(git tag -l "$RELEASE_VERSION") ]; then
         echo "Version $RELEASE_VERSION already exists"
       else
+        git checkout test_master
+        git reset --hard origin/test_master
         git merge origin/test_develop
         echo "Creating new version $RELEASE_VERSION"
         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
-        git push
+        git push origin test_master
       fi
   tags:
     - small
