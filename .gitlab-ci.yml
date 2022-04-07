@@ -145,8 +145,8 @@ variables:
       --set hipay_api_apple_pay_user_test=""
       --set hipay_api_apple_pay_password_test=""
       --set hipay_apple_pay_secret_passphrase_test=""
-     --set hipay_tokenjs_apple_pay_username_test=""
-     --set hipay_tokenjs_apple_pay_publickey_test=""
+      --set hipay_tokenjs_apple_pay_username_test=""
+      --set hipay_tokenjs_apple_pay_publickey_test=""
       --set pi_data_url="$PI_CI_DATA_URL"
   allow_failure: true
   tags:
