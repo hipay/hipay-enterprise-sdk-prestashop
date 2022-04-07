@@ -307,8 +307,22 @@ create_tag:
 create_release:
   stage: release
   script:
-    - ls
-    - ls ./package-ready-for-prestashop
+    - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    - sudo apt update
+    - sudo apt install gh
+
+    - echo $GITHUB_PERSONAL_ACCESS_TOKEN > token.txt
+
+    - gh auth login \
+      --git-protocol ssh \
+      --with-token < token.txt
+
+    - gh release create $CI_COMMIT_REF_SLUG \
+      --title "Version $CI_COMMIT_REF_SLUG" \
+      --notes "$CHANGELOG" \
+      --repo git@github.com:pi-ecommerce/test_release.git \
+      ./package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
   tags:
     - small
   rules:
