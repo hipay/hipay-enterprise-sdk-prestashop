@@ -277,8 +277,6 @@ create_tag:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
-    - ssh-keyscan $CI_SERVER_URL >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
 
     - git config --global user.email "our@email.com"
     - git config --global user.name "Gitlab Runner"
