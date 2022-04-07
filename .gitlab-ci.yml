@@ -69,6 +69,7 @@ variables:
   except:
     variables:
       - $ONLY_DEPLOY
+      - $ONLY_TAG
 
 .login_to_registry: &login-to-registry
   before_script:
@@ -176,6 +177,7 @@ build-test:
   except:
     variables:
       - $ONLY_DEPLOY
+      - $ONLY_TAG
   tags:
     - small
 
@@ -225,6 +227,8 @@ package:
   except:
     variables:
       - $ONLY_DEPLOY
+      - $ONLY_TAG
+
 
 build-prestashop16:
   variables:
@@ -288,7 +292,6 @@ create_tag:
     - git remote set-url origin git@gitlab.hipay.org:pi-ecommerce/cms/hipay-enterprise-sdk-prestashop.git
     - git fetch origin test_master
     - git fetch origin test_develop
-    - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - echo "Version à créer $RELEASE_VERSION"
     - >
       if [ $(git tag -l "$RELEASE_VERSION") ]; then
@@ -301,13 +304,11 @@ create_tag:
         git tag -a $RELEASE_VERSION -m "$RELEASE_VERSION"
         git push origin test_master
       fi
+  rules:
+    - if: $ONLY_TAG
+      when: on_success
   tags:
     - small
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "test_develop"'
-      when: manual
-    - if: '$CI_COMMIT_BRANCH'
-      when: never
 
 create_release:
   stage: release
