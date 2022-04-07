@@ -318,6 +318,7 @@ create_release:
 
     - ls ./
     - ls ./package-ready-for-prestashop
+    - stat package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
 
     - gh release create $CI_COMMIT_REF_SLUG \
       package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip \
