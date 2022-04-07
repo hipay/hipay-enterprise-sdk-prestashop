@@ -316,6 +316,9 @@ create_release:
 
     - echo $GITHUB_TOKEN_RELEASE | gh auth login --git-protocol ssh --with-token
 
+    - ls ./
+    - ls ./package-ready-for-prestashop
+
     - gh release create $CI_COMMIT_REF_SLUG \
       ./package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip \
       --title "Version $CI_COMMIT_REF_SLUG" \
