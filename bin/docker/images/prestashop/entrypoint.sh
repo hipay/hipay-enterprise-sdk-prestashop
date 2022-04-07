@@ -139,7 +139,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
 
     CONFIG=${CONFIG/'"api_apple_pay_username_sandbox":""'/'"api_apple_pay_username_sandbox":"'$HIPAY_API_APPLE_PAY_USER_TEST'"'}
     CONFIG=${CONFIG/'"api_apple_pay_password_sandbox":""'/'"api_apple_pay_password_sandbox":"'$HIPAY_API_APPLE_PAY_PASSWORD_TEST'"'}
-    CONFIG=${CONFIG/'"api_apple_pay_secret_passphrase_sandbox":""'/'"api_apple_pay_secret_passphrase_sandbox":"'$HIPAY_APPLE_PAY_SECRET_PASSPHRASE_TEST'"'}
+    CONFIG=${CONFIG/'"api_apple_pay_passphrase_sandbox":""'/'"api_apple_pay_passphrase_sandbox":"'$HIPAY_APPLE_PAY_SECRET_PASSPHRASE_TEST'"'}
     CONFIG=${CONFIG/'"api_tokenjs_apple_pay_username_sandbox":""'/'"api_tokenjs_apple_pay_username_sandbox":"'$HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST'"'}
     CONFIG=${CONFIG/'"api_tokenjs_apple_pay_password_sandbox":""'/'"api_tokenjs_apple_pay_password_sandbox":"'$HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST'"'}
 
