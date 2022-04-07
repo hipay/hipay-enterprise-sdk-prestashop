@@ -272,11 +272,13 @@ create_tag:
     - apt-get update -y && apt-get install -yqqf openssh-client git unzip sshpass rsync --fix-missing
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
-    - echo "${SSH_GITLAB_KEY}" | ssh-add - > /dev/null
 
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
+    - ssh-keyscan gitlab.hipay.org > ~/.ssh/known_hosts
+
+    - echo "${SSH_GITLAB_KEY}" | ssh-add - > /dev/null
 
     - git config --global user.email "our@email.com"
     - git config --global user.name "Gitlab Runner"
