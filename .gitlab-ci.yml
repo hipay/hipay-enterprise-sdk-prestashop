@@ -287,6 +287,7 @@ create_tag:
     - git fetch origin test_master
     - git fetch origin test_develop
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
+    - echo "Version à créer $RELEASE_VERSION"
     - >
       if [ $(git tag -l "$RELEASE_VERSION") ]; then
         echo "Version $RELEASE_VERSION already exists"
