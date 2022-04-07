@@ -286,7 +286,6 @@ create_tag:
     - git remote set-url origin git@gitlab.hipay.org:pi-ecommerce/cms/hipay-enterprise-sdk-prestashop.git
     - git fetch origin test_master
     - git fetch origin test_develop
-    - git checkout test_develop && git pull
     - RELEASE_VERSION="$(php -r "echo json_decode(file_get_contents('./src/hipay_enterprise/composer.json'), true)['version'];")"
     - >
       if [ $(git tag -l "$RELEASE_VERSION") ]; then
