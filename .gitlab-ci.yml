@@ -268,6 +268,8 @@ stop_review-prestashop17:
 
 create_tag:
   stage: release
+  variables:
+    GIT_DEPTH: 0
   before_script:
     - apt-get update -y && apt-get install -yqqf openssh-client git unzip sshpass rsync --fix-missing
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
