@@ -297,6 +297,13 @@ create_tag:
       if [ $(git tag -l "$RELEASE_VERSION") ]; then
         echo "Version $RELEASE_VERSION already exists"
       else
+        python3 tag_tool.py $RELEASE_VERSION
+
+        git add src/hipay_enterprise/composer.json
+        git add src/hipay_enterprise/hipay_enterprise.php
+        git commit -m "Init release $RELEASE_VERSION"
+        git push
+
         git checkout test_master
         git reset --hard origin/test_master
         git merge origin/test_develop
@@ -321,13 +328,12 @@ create_release:
     - export GITHUB_TOKEN=
     - echo $GITHUB_TOKEN_RELEASE | gh auth login --git-protocol ssh --with-token
 
-    - stat package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip
+    - RELEASE_CHANGELOG=$(cat CHANGELOG.md | sed -n '/^## '"${CI_COMMIT_TAG}"'$/,/^## .*$/p' | sed '1d;$d' | sed '$!s/$/\\n/' | tr -d '\n')
 
-    - gh release create $CI_COMMIT_REF_SLUG package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip --title "Version $CI_COMMIT_REF_SLUG" --notes "$CHANGELOG" --repo git@github.com:pi-ecommerce/test_release.git
+    - gh release create $CI_COMMIT_REF_SLUG package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip --title "Version $CI_COMMIT_REF_SLUG" --notes "$RELEASE_CHANGELOG" --repo git@github.com:pi-ecommerce/test_release.git
   tags:
     - small
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "test_develop"'
-      when: manual
-    - if: '$CI_COMMIT_BRANCH'
-      when: never
+  only:
+    - tags
+  except:
+    - branches
