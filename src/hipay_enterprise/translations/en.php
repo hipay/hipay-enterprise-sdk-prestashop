@@ -162,7 +162,8 @@ $_MODULE['<{hipay_enterprise}prestashop>account_dc647eb65e6711e155375218212b3964
 $_MODULE['<{hipay_enterprise}prestashop>account_5f9e830e8d80c8c4e869029397fa1e0f'] = 'Secret passphrase';
 $_MODULE['<{hipay_enterprise}prestashop>account_6b39ee40fb800d538d92cc01223f76f2'] = 'Credentials (Public)';
 $_MODULE['<{hipay_enterprise}prestashop>account_10c01f844555d858dc045a6626c9c185'] = 'MO/TO private credentials';
-$_MODULE['<{hipay_enterprise}prestashop>account_6f0ae81e5d91ef0a83d58dc681fe9ab5'] = 'Identifiants Apple Pay (Publics)';
+$_MODULE['<{hipay_enterprise}prestashop>account_2ffd6e265867a50390a6ef5b5493066c'] = 'Apple Pay credentials (Private)';
+$_MODULE['<{hipay_enterprise}prestashop>account_6f0ae81e5d91ef0a83d58dc681fe9ab5'] = 'Apple Pay credentials (Public)';
 $_MODULE['<{hipay_enterprise}prestashop>account_0d541e74cb2e3fa72f7d2e1eece61ef7'] = 'Test configuration';
 $_MODULE['<{hipay_enterprise}prestashop>account_d8c8dad4bc0ce3a1fa50096362b0b0b2'] = 'Hash Algorithm configuration';
 $_MODULE['<{hipay_enterprise}prestashop>account_5745b40a739a4019ac6d6948c55a1a23'] = 'If the hash configuration is different than the one set in your Hipay back office, then the notifications will not work. Check that both values match.';
@@ -170,6 +171,8 @@ $_MODULE['<{hipay_enterprise}prestashop>account_c72f8a9b63ef41f2773b97c4abdaadcd
 $_MODULE['<{hipay_enterprise}prestashop>account_756d97bb256b8580d4d71ee0c547804e'] = 'Production ';
 $_MODULE['<{hipay_enterprise}prestashop>account_7a597b7dedd883eaf9ee43d8965eb774'] = 'MO/TO Production';
 $_MODULE['<{hipay_enterprise}prestashop>account_37a9a24f6bc095e7b7b8ba6a8174525e'] = 'MO/TO Test';
+$_MODULE['<{hipay_enterprise}prestashop>account_fbc264c6113aaaffc4dccbc2dc9a978b'] = 'Apple Pay Production';
+$_MODULE['<{hipay_enterprise}prestashop>account_7508174f1865ee4a93a1add7e481c864'] = 'Apple Pay Test';
 $_MODULE['<{hipay_enterprise}prestashop>account_229395498ff67d76e793fb1522071daf'] = 'Synchronize Hash Algorithm';
 $_MODULE['<{hipay_enterprise}prestashop>account_c7a8a9825f7e58afce28e61957b4c9b0'] = 'Technical configuration';
 $_MODULE['<{hipay_enterprise}prestashop>account_6c4596f305a4adf4152bcabd10bf6cea'] = 'If your server is behind a proxy, populate its information so that calls to the HiPay Gateway can work.';
@@ -330,6 +333,10 @@ $_MODULE['<{hipay_enterprise}prestashop>technicals_212ea586c003e48370f63110b6086
 $_MODULE['<{hipay_enterprise}prestashop>technicals_1493c34b452a9681e0832d8531841a2a'] = 'The API gateway is configured in PRODUCTION mode but your production credentials are not specified.';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_bd881d66367e0dae92ebdf428003c15f'] = 'The API gateway is configured in TEST mode but your public test IDs are not filled in. Oneclick won\'t work until you fill in your public test IDs.';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_efa493705b2503b73d7bf3f4b7701548'] = 'The API gateway is configured in PRODUCTION mode but your public IDs are not filled in. Oneclick won\'t work until you fill in your public IDs.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_27c1c1337710792a2f055dd48c175d7d'] = 'The API gateway is configured in TEST mode and Apple Pay is activated but your test IDs are not filled in.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_aa0a0b3298d3f68086809004a1253d78'] = 'The API gateway is configured in PRODUCTION mode and Apple Pay is activated but your test IDs are not filled in.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_bb491cf02401ee30b13ac0a73af71427'] = 'The API gateway is configured in TEST mode and you activated Apple Pay but your public test IDs are not filled in. Apple Pay won\'t work until you fill in your public test IDs.';
+$_MODULE['<{hipay_enterprise}prestashop>technicals_5508a3d17d0f166b843356e3a9c9680f'] = 'The API gateway is configured in PRODUCTION mode and you activated Apple Pay but your public IDs are not filled in. Apple Pay won\'t work until you fill in your public IDs.';
 $_MODULE['<{hipay_enterprise}prestashop>technicals_a3aec75b615b642506fb9d97be5c32a3'] = 'You have to map your product categories and delivery methods to HiPay’s categories.';
 $_MODULE['<{hipay_enterprise}prestashop>panel-challenge_fa521e30c7b8e19ba0c9c29a0b9c3fcb'] = 'Manage challenged transactions';
 $_MODULE['<{hipay_enterprise}prestashop>panel-challenge_d7eaccb58d9bea16f13059a71293220e'] = 'Accept payment';
