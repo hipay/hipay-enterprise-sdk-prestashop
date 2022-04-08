@@ -328,7 +328,7 @@ create_release:
     - export GITHUB_TOKEN=
     - echo $GITHUB_TOKEN_RELEASE | gh auth login --git-protocol ssh --with-token
 
-    - RELEASE_CHANGELOG=$(cat CHANGELOG.md | sed -n '/^## '"${CI_COMMIT_TAG}"'$/,/^## .*$/p' | sed '1d;$d' | sed '$!s/$/\\n/' | tr -d '\n')
+    - RELEASE_CHANGELOG=$(cat CHANGELOG.md | sed -n '/^## '"Version ${CI_COMMIT_TAG}"'$/,/^## .*$/p' | sed '1d;$d' | sed '$!s/$/\\n/' | tr -d '\n')
 
     - gh release create $CI_COMMIT_REF_SLUG package-ready-for-prestashop/hipay-enterprise-sdk-prestashop-$CI_COMMIT_REF_SLUG.zip --title "Version $CI_COMMIT_REF_SLUG" --notes "$RELEASE_CHANGELOG" --repo git@github.com:pi-ecommerce/test_release.git
   tags:
