@@ -161,7 +161,11 @@ variables:
     RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
   script:
     - helm uninstall $RELEASE_NAME --namespace=default
-  when: manual
+  rules:
+    - if: $ONLY_DEPLOY
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     action: stop
