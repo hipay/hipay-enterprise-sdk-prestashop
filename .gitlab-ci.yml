@@ -250,6 +250,8 @@ deploy2recette-prestashop16:
     PS_VERSION: 16
     PS_FULL_VERSION: 1.6.1.24
   extends: .deploy2recette-prestashop
+  needs:
+    - build-prestashop16
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
@@ -260,6 +262,8 @@ deploy2recette-prestashop17:
     PS_VERSION: 17
     PS_FULL_VERSION: 1.7.8.4
   extends: .deploy2recette-prestashop
+  needs:
+    - build-prestashop17
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
@@ -268,9 +272,13 @@ deploy2recette-prestashop17:
 stop_review-prestashop16:
   variables:
     PS_VERSION: 16
+  needs:
+    - deploy2recette-prestashop16
   extends: .stop_review-prestashop
 
 stop_review-prestashop17:
   variables:
     PS_VERSION: 17
+  needs:
+    - deploy2recette-prestashop17
   extends: .stop_review-prestashop
