@@ -59,11 +59,14 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
         $notificationHandler = new HipayNotification($this->module, $params);
 
         $moto = false;
+        $isApplePay = false;
         if ($notificationHandler->getEci() == ECI::MOTO) {
             $moto = true;
+        } else if($notificationHandler->isApplePayOrder()) {
+            $isApplePay = true;
         }
 
-        if (!HipayHelper::checkSignature($signature, $this->module, true, $moto)) {
+        if (!HipayHelper::checkSignature($signature, $this->module, true, $moto, $isApplePay)) {
             $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
             header('HTTP/1.1 403 Forbidden');
             die('Bad Callback initiated - signature');

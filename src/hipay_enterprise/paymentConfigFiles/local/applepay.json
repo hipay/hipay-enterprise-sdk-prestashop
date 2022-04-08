@@ -1,0 +1,38 @@
+{
+  "name": "applepay",
+  "config": {
+    "displayNameBO": "Apple Pay",
+    "displayName":  {
+      "fr": "Apple Pay",
+      "en": "Apple Pay"
+    },
+    "frontPosition": 100,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "currencies",
+      "countries",
+      "minAmount",
+      "maxAmount",
+      "buttonType",
+      "buttonStyle",
+      "merchantId"
+    ],
+    "countrySelectorReadOnly": 0,
+    "currencySelectorReadOnly": 0,
+    "currencies": [],
+    "countries": [],
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "buttonType": "plain",
+    "buttonStyle": "white",
+    "merchantId": "",
+    "minPrestashopVersion": "1.7",
+    "canManualCapture": false,
+    "canManualCapturePartially": false
+  }
+}

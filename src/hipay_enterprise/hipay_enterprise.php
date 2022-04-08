@@ -694,6 +694,7 @@ class Hipay_enterprise extends PaymentModule
                 'syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
                 'syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
                 'updateNotif' => $this->hipayUpdateNotif,
+                'prestashopVersion' => _PS_VERSION_,
             ]
         );
 

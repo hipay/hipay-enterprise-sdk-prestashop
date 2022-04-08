@@ -75,7 +75,15 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function postProcess()
     {
-        switch ($this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"]) {
+        $apiMode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["APIMode"];
+        $isApplePay = false;
+        // If it's an apple pay payment, force the api mode to direct post
+        if (Tools::getValue('is-apple-pay') === 'true') {
+            $apiMode = ApiMode::DIRECT_POST;
+            $isApplePay = true;
+        }
+
+        switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] == "redirect") {
                     $ccToken = Tools::getValue('ccTokenHipay', '');
@@ -96,7 +104,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             ApiMode::HOSTED_PAGE,
                             array(
                                 "method" => CardPaymentProduct::HOSTED,
-                                "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
+                                "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart),
+                                "isApplePay" => $isApplePay
                             )
                         );
                     }
@@ -104,7 +113,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 break;
             case ApiMode::DIRECT_POST:
                 if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
-                    $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC);
+                    $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
@@ -272,9 +281,10 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      * @param $context
      * @param $customer
      * @param $savedCC
+     * @param $isApplePay
      * @return string
      */
-    private function apiNewCC($cart, $context, $customer, $savedCC)
+    private function apiNewCC($cart, $context, $customer, $savedCC, $isApplePay)
     {
         $selectedCC = Tools::getValue('card-brand');
 
@@ -292,7 +302,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         Tools::getValue('card-expiry-year'),
                     "method" => $selectedCC,
                     "authentication_indicator" => $this->setAuthenticationIndicator($cart),
-                    "browser_info" => json_decode(Tools::getValue('browserInfo'))
+                    "browser_info" => json_decode(Tools::getValue('browserInfo')),
+                    "isApplePay" => $isApplePay
                 );
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {

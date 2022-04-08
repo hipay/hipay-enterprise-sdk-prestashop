@@ -35,12 +35,22 @@ class HipayHelper
     /**
      * @var string
      */
+    const PRODUCTION_APPLE_PAY = 'production_apple_pay';
+
+    /**
+     * @var string
+     */
     const TEST = 'test';
 
     /**
      * @var string
      */
     const TEST_MOTO = 'test_moto';
+
+    /**
+     * @var string
+     */
+    const TEST_APPLE_PAY = 'test_apple_pay';
 
     /**
      * @var array
@@ -50,6 +60,8 @@ class HipayHelper
         self::TEST,
         self::PRODUCTION_MOTO,
         self::TEST_MOTO,
+        self::PRODUCTION_APPLE_PAY,
+        self::TEST_APPLE_PAY,
     ];
 
     /**
@@ -125,7 +137,7 @@ class HipayHelper
      * @param type $fromNotification
      * @return boolean
      */
-    public static function checkSignature($signature, $module, $fromNotification = false, $isMoto = false)
+    public static function checkSignature($signature, $module, $fromNotification = false, $isMoto = false, $isApplePay = false)
     {
         $config = $module->hipayConfigTool->getConfigHipay();
 
@@ -134,16 +146,29 @@ class HipayHelper
             $config['account']['production']['api_moto_secret_passphrase_production']
             : $config['account']['production']['api_secret_passphrase_production'];
 
+        $passphrase = $isApplePay && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_APPLE_PAY) ?
+            $config['account']['production']['api_apple_pay_passphrase_production']
+            : $passphrase;
+
         $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_MOTO) ?
             self::PRODUCTION_MOTO : self::PRODUCTION;
+
+        $environment = $isApplePay && HipayHelper::existCredentialForPlateform($module, self::PRODUCTION_APPLE_PAY) ?
+            self::PRODUCTION_APPLE_PAY : $environment;
 
         // Get Environment and passphrase for sandbox
         if ($config['account']['global']['sandbox_mode']) {
             $environment = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
                 self::TEST_MOTO : self::TEST;
+            $environment = $isApplePay && HipayHelper::existCredentialForPlateform($module, self::TEST_APPLE_PAY) ?
+                self::TEST_APPLE_PAY : $environment;
+
             $passphrase = $isMoto && HipayHelper::existCredentialForPlateform($module, self::TEST_MOTO) ?
                 $config['account']['sandbox']['api_moto_secret_passphrase_sandbox']
                 : $config['account']['sandbox']['api_secret_passphrase_sandbox'];
+            $passphrase = $isApplePay && HipayHelper::existCredentialForPlateform($module, self::TEST_APPLE_PAY) ?
+                $config['account']['sandbox']['api_apple_pay_passphrase_sandbox']
+                : $passphrase;
         }
 
         // Validate Signature with Hash
@@ -198,6 +223,12 @@ class HipayHelper
             case self::TEST_MOTO:
                 $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_moto_username_sandbox']);
                 break;
+            case self::TEST_APPLE_PAY:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_sandbox']);
+                break;
+            case self::PRODUCTION_APPLE_PAY:
+                $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_production']);
+                break;
             default:
                 $exist = false;
                 break;
@@ -225,6 +256,12 @@ class HipayHelper
                 break;
             case self::TEST_MOTO:
                 $label = 'Test MO/TO';
+                break;
+            case self::TEST_APPLE_PAY:
+                $label = 'Test Apple Pay';
+                break;
+            case self::PRODUCTION_APPLE_PAY:
+                $label = 'Production Apple Pay';
                 break;
             default:
                 $label = '';
@@ -505,11 +542,18 @@ class HipayHelper
         $context = Context::getContext();
         $activatedPayment = [];
         foreach ($configHipay['payment'][$paymentMethodType] as $name => $settings) {
+            // Only show if the payment method is
+            // - activated
+            // - has no country or is available in the active country
+            // - has no specific currency or is active in the active currency
+            // - Has the right amount
+            // Accepts this version of prestashop
             if ($settings['activated'] &&
                 (empty($settings['countries']) || in_array($country->iso_code, $settings['countries'])) &&
                 (empty($settings['currencies']) || in_array($currency->iso_code, $settings['currencies'])) &&
                 $orderTotal >= $settings['minAmount']['EUR'] &&
-                ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR'])
+                ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR']) &&
+                (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] <= _PS_VERSION_))
             ) {
                 if ($paymentMethodType == 'local_payment') {
                     if (Configuration::get('PS_ROUND_TYPE') == Order::ROUND_LINE ||
@@ -523,9 +567,10 @@ class HipayHelper
                             ['method' => $name],
                             true
                         );
+
                         $activatedPayment[$name]['payment_button'] = $module->getPath() .
                             'views/img/' .
-                            $settings['logo'];
+                            (isset($settings['logo']) ? $settings['logo'] : 'logo.png');
 
                         $checkoutFieldsMandatory = isset(
                             $module->hipayConfigTool->getLocalPayment()[$name]['checkoutFieldsMandatory']

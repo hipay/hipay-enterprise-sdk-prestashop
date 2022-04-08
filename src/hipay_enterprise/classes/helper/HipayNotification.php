@@ -871,4 +871,15 @@ class HipayNotification
 
         return false;
     }
+
+    public function isApplePayOrder() {
+        $idOrder = $this->dbUtils->getOrderByCartId($this->cart->id);
+        if ($idOrder) {
+            $this->order = new Order((int)$idOrder);
+
+            return (str_contains($this->order->payment, 'Apple Pay') !== false);
+        } else {
+            return false;
+        }
+    }
 }

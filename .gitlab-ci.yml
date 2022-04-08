@@ -52,6 +52,11 @@ variables:
     HIPAY_API_MOTO_USER_TEST: $HIPAY_API_USER_TEST
     HIPAY_API_MOTO_PASSWORD_TEST: $HIPAY_API_PASSWORD_TEST
     HIPAY_MOTO_SECRET_PASSPHRASE_TEST: $HIPAY_SECRET_PASSPHRASE_TEST
+    HIPAY_API_APPLE_PAY_USER_TEST: $HIPAY_APPLEPAY_USERNAME_TEST
+    HIPAY_API_APPLE_PAY_PASSWORD_TEST: $HIPAY_APPLEPAY_PASSWORD_TEST
+    HIPAY_APPLE_PAY_PASSPHRASE_TEST: $HIPAY_APPLEPAY_SECRET_PASSPHRASE_TEST
+    HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST: $HIPAY_TOKENJS_PUBLICKEY_TEST
+    HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST: $HIPAY_TOKENJS_USERNAME_TEST
     PI_DATA_URL: $PI_CI_DATA_URL
 
   services:
@@ -137,6 +142,11 @@ variables:
       --set hipay_api_moto_user_test=""
       --set hipay_api_moto_password_test=""
       --set hipay_moto_secret_passphrase_test=""
+      --set hipay_api_apple_pay_user_test="$HIPAY_APPLEPAY_USERNAME_RE7"
+      --set hipay_api_apple_pay_password_test="$HIPAY_APPLEPAY_PASSWORD_RE7"
+      --set hipay_apple_pay_passphrase_test="$HIPAY_APPLEPAY_SECRET_PASSPHRASE_RE7"
+      --set hipay_tokenjs_apple_pay_username_test="$HIPAY_APPLEPAY_TOKENJS_USERNAME_RE7"
+      --set hipay_tokenjs_apple_pay_password_test="$HIPAY_APPLEPAY_TOKENJS_PUBLICKEY_RE7"
       --set pi_data_url="$PI_CI_DATA_URL"
   allow_failure: true
   tags:
@@ -151,7 +161,11 @@ variables:
     RELEASE_NAME: ${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}
   script:
     - helm uninstall $RELEASE_NAME --namespace=default
-  when: manual
+  rules:
+    - if: $ONLY_DEPLOY
+      when: manual
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     action: stop
@@ -178,7 +192,7 @@ build-test:
   tags:
     - small
 
-test-casper-17-1:
+.test-casper-17-1:
   <<: *test_definition
   script:
     - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
@@ -186,7 +200,7 @@ test-casper-17-1:
     - sh bin/tests/casper_run_circle.sh 0 ps17 http://web
   retry: 2
 
-test-casper-17-2:
+.test-casper-17-2:
   <<: *test_definition
   script:
     - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
@@ -194,7 +208,7 @@ test-casper-17-2:
     - sh bin/tests/casper_run_circle.sh 1 ps17 http://web
   retry: 2
 
-test-cypress-17-1:
+.test-cypress-17-1:
   <<: *test_definition
   script:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
@@ -240,6 +254,8 @@ deploy2recette-prestashop16:
     PS_VERSION: 16
     PS_FULL_VERSION: 1.6.1.24
   extends: .deploy2recette-prestashop
+  needs:
+    - build-prestashop16
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
@@ -250,6 +266,8 @@ deploy2recette-prestashop17:
     PS_VERSION: 17
     PS_FULL_VERSION: 1.7.8.4
   extends: .deploy2recette-prestashop
+  needs:
+    - build-prestashop17
   environment:
     name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
     url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
@@ -258,9 +276,13 @@ deploy2recette-prestashop17:
 stop_review-prestashop16:
   variables:
     PS_VERSION: 16
+  needs:
+    - deploy2recette-prestashop16
   extends: .stop_review-prestashop
 
 stop_review-prestashop17:
   variables:
     PS_VERSION: 17
+  needs:
+    - deploy2recette-prestashop17
   extends: .stop_review-prestashop
