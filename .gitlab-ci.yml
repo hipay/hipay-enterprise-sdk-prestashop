@@ -192,7 +192,7 @@ build-test:
   tags:
     - small
 
-test-casper-17-1:
+.test-casper-17-1:
   <<: *test_definition
   script:
     - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
@@ -200,7 +200,7 @@ test-casper-17-1:
     - sh bin/tests/casper_run_circle.sh 0 ps17 http://web
   retry: 2
 
-test-casper-17-2:
+.test-casper-17-2:
   <<: *test_definition
   script:
     - curl --retry 20 --retry-delay 10 --retry-connrefused --output /dev/null http://web
@@ -208,7 +208,7 @@ test-casper-17-2:
     - sh bin/tests/casper_run_circle.sh 1 ps17 http://web
   retry: 2
 
-test-cypress-17-1:
+.test-cypress-17-1:
   <<: *test_definition
   script:
     - cp ./bin/tests/tests-cypress/.npmrc.sample ./bin/tests/tests-cypress/.npmrc
