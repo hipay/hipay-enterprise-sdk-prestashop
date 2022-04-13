@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.16.0
+
+- **Add** : Added new ApplePay payment method
+- **Fix** : Fixed Italian translations
+
 ## Version 2.15.0
 
 - **Add** : New MultiBanco and MBWay payment methods
