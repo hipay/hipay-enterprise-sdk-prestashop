@@ -40,7 +40,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.15.0';
+        $this->version = '2.16.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -275,7 +275,6 @@ class Hipay_enterprise extends PaymentModule
 
             // Check if order needs to be refunded by HiPay
             if (HipayHelper::isHipayOrder($this, $order)) {
-
                 // Get order slip to get fees
                 $orderSlip = $order
                     ->getOrderSlipsCollection()
@@ -309,10 +308,8 @@ class Hipay_enterprise extends PaymentModule
                             $orderDetailList = $order->getOrderDetailList();
 
                             foreach ($params['productList'] as $product) {
-
                                 $productId = null;
                                 foreach ($orderDetailList as $orderDetail) {
-
                                     if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
                                         $productId = $orderDetail['product_id'];
                                         break;
@@ -343,7 +340,6 @@ class Hipay_enterprise extends PaymentModule
                     } else {
                         throw new Exception($this->l('Unable to retrieve refund transaction.'));
                     }
-
                 } catch (Exception $e) {
                     // If an error occurred, cancel the prestashop part of the refund
                     if ($orderSlip) {
