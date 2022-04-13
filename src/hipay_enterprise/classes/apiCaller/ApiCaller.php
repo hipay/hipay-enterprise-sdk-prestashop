@@ -41,13 +41,22 @@ class ApiCaller
     public static function getSecuritySettings($moduleInstance, $plateform)
     {
         $isMoto = false;
+        $isApplePay = false;
         try {
-            if ($plateform == HipayHelper::TEST_MOTO ||
-                $plateform == HipayHelper::PRODUCTION_MOTO) {
+            if (
+                $plateform == HipayHelper::TEST_MOTO
+                || $plateform == HipayHelper::PRODUCTION_MOTO
+            ) {
                 $isMoto = true;
+            } else if (
+                $plateform == HipayHelper::TEST_APPLE_PAY
+                || $plateform == HipayHelper::PRODUCTION_APPLE_PAY
+            ) {
+                $isApplePay = true;
             }
+
             // HiPay Gateway
-            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, $isMoto, $plateform);
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, $isMoto, $plateform, $isApplePay);
 
             $response = $gatewayClient->requestSecuritySettings();
 
@@ -121,7 +130,7 @@ class ApiCaller
     {
         try {
             // Gateway
-            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance);
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, false, false, $params['isApplePay']);
 
             //Set data to send to the API
             $directPostFormatter = new DirectPostFormatter($moduleInstance, $params);
@@ -211,9 +220,10 @@ class ApiCaller
      * @param type $moduleInstance
      * @param boolean $moto
      * @param boolean|string $forceConfig
+     * @param boolean $isApplePay
      * @return \HiPay\Fullservice\Gateway\Client\GatewayClient
      */
-    private static function createGatewayClient($moduleInstance, $moto = false, $forceConfig = false)
+    private static function createGatewayClient($moduleInstance, $moto = false, $forceConfig = false, $isApplePay = false)
     {
         $sandbox = false;
         $proxy = array();
@@ -222,8 +232,12 @@ class ApiCaller
             $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
         } else {
             // Some calls do not take into account the general configuration (Security Settings)
-            if (is_string($forceConfig) && $forceConfig == HipayHelper::TEST ||
-                $forceConfig == HipayHelper::TEST_MOTO) {
+            if (
+                is_string($forceConfig)
+                && $forceConfig == HipayHelper::TEST
+                || $forceConfig == HipayHelper::TEST_MOTO
+                || $forceConfig == HipayHelper::TEST_APPLE_PAY
+            ) {
                 $sandbox = true;
             }
         }
@@ -245,6 +259,25 @@ class ApiCaller
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"];
             $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"]
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"];
+        } else if (
+            $isApplePay
+            && (
+                (
+                    $sandbox
+                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_username_sandbox"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_password_sandbox"])
+                )
+                || (
+                    !$sandbox
+                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_username_production"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_password_production"])
+                )
+            )
+        ) {
+            $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_username_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_apple_pay_username_production"];
+            $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_password_sandbox"]
+                : $moduleInstance->hipayConfigTool->getAccountProduction()["api_apple_pay_password_production"];
         } else {
             $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_username_sandbox"]
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_username_production"];

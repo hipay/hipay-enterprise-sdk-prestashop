@@ -117,18 +117,33 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-        $this->context->smarty->assign(
-            [
-                'action' => $this->context->link->getModuleLink(
-                    $this->name,
-                    'redirectlocal',
-                    ['method' => $name],
-                    true
-                ),
-                'localPaymentName' => $name,
-                'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
-            ]
-        );
+        if ($name === 'applepay') {
+            $this->context->smarty->assign(
+                [
+                    'action' => $this->context->link->getModuleLink(
+                        $this->name,
+                        'redirect',
+                        [],
+                        true
+                    ),
+                    'localPaymentName' => $name,
+                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                ]
+            );
+        } else {
+            $this->context->smarty->assign(
+                [
+                    'action' => $this->context->link->getModuleLink(
+                        $this->name,
+                        'redirectlocal',
+                        ['method' => $name],
+                        true
+                    ),
+                    'localPaymentName' => $name,
+                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                ]
+            );
+        }
 
         if (
             // If this payment product force the use of hosted pages
@@ -181,14 +196,86 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 }
             }
 
-            $this->context->smarty->assign(
-                [
-                    'methodFields' => $formFields,
-                    'language' => $this->context->language->language_code,
-                    'forceHpayment' => false,
-                    'iframe' => false
-                ]
-            );
+            if ($name === 'applepay') {
+                $formFields = array(
+                    "buttonType" => $paymentProduct['buttonType'],
+                    "buttonStyle" => $paymentProduct['buttonStyle'],
+                    "merchantId" => $paymentProduct['merchantId']
+                );
+
+                $configAccountGlobal = $this->hipayConfigTool->getAccountGlobal();
+
+                if ($configAccountGlobal['sandbox_mode']) {
+                    $config = $this->hipayConfigTool->getAccountSandbox();
+
+                    $credentials = array (
+                        'api_apple_pay_username' => (
+                            isset($config['api_tokenjs_apple_pay_username_sandbox'])
+                                ? $config['api_tokenjs_apple_pay_username_sandbox']
+                                : $config['api_username_sandbox']
+                        ),
+                        'api_apple_pay_password' => (
+                            isset($config['api_tokenjs_apple_pay_password_sandbox'])
+                                ? $config['api_tokenjs_apple_pay_password_sandbox']
+                                :$config['api_password_sandbox']
+                        )
+                    );
+                } else {
+                    $config = $this->hipayConfigTool->getAccountProduction();
+
+                    $credentials = array (
+                        'api_apple_pay_username' => (
+                            isset($config['api_tokenjs_apple_pay_username_production'])
+                                ? $config['api_tokenjs_apple_pay_username_production']
+                                : $config['api_username_production']
+                        ),
+                        'api_apple_pay_password' => (
+                            isset($config['api_tokenjs_apple_pay_password_production'])
+                                ? $config['api_tokenjs_apple_pay_password_production']
+                                :$config['api_password_production']
+                        )
+                    );
+                }
+
+                $currency = $this->getCurrency($this->context->cart->id_currency);
+
+                $idAddress = $this->context->cart->id_address_invoice
+                    ? $this->context->cart->id_address_invoice
+                    : $this->context->cart->id_address_delivery;
+
+                $address = new Address((int) $idAddress);
+                $country = new Country((int) $address->id_country);
+
+                $templateCart = array(
+                    'totalAmount' => $this->context->cart->getCartTotalPrice(),
+                    'currencyCode' => $currency[0]['iso_code'],
+                    'countryCode' => $country->iso_code
+                );
+
+                $this->context->smarty->assign(
+                    [
+                        'methodFields' => [],
+                        'cart' => $templateCart,
+                        'configAccountGlobal' => $configAccountGlobal,
+                        'language_iso_code' => $this->context->language->language_code,
+                        'environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
+                        'credentials' => $credentials,
+                        'appleFields' => $formFields,
+                        'language' => $this->context->language->language_code,
+                        'forceHpayment' => false,
+                        'iframe' => false
+                    ]
+                );
+            } else {
+                $this->context->smarty->assign(
+                    [
+                        'methodFields' => $formFields,
+                        'language' => $this->context->language->language_code,
+                        'forceHpayment' => false,
+                        'iframe' => false
+                    ]
+                );
+            }
         }
 
         $paymentForm = $this->fetch(
@@ -206,11 +293,18 @@ class HipayEnterpriseNew extends Hipay_enterprise
         }
 
         $newOption->setCallToActionText($this->l('Pay by') . ' ' . $displayName)
-            ->setAction(
-                $this->context->link->getModuleLink($this->name, 'redirectlocal', ['method' => $name], true)
-            )
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
+
+        if ($name === 'applepay') {
+            $newOption->setAction(
+                $this->context->link->getModuleLink($this->name, 'redirect', [], true)
+            );
+        } else {
+            $newOption->setAction(
+                $this->context->link->getModuleLink($this->name, 'redirectlocal', ['method' => $name], true)
+            );
+        }
 
         // if no credit card, we force ioBB input to be displayed
         if (count($paymentOptions) == 0) {

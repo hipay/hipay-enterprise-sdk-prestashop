@@ -226,5 +226,50 @@
                 </div>
             </div>
         {/if}
+
+        {if "buttonType"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Button type' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <select id="select-{$key}" name="{$key}_buttonType[]"
+                                class="elect-buttonType">
+                            <option value="plain" {if $method.buttonType[0] == "plain"}selected{/if}>{l s='Default' mod='hipay_enterprise'}</option>
+                            <option value="buy" {if $method.buttonType[0] == "buy"}selected{/if}>{l s='Buy' mod='hipay_enterprise'}</option>
+                            <option value="set-up" {if $method.buttonType[0] == "set-up"}selected{/if}>{l s='Set Up' mod='hipay_enterprise'}</option>
+                            <option value="donate" {if $method.buttonType[0] == "donate"}selected{/if}>{l s='Donate' mod='hipay_enterprise'}</option>
+                            <option value="check-out" {if $method.buttonType[0] == "check-out"}selected{/if}>{l s='Checkout' mod='hipay_enterprise'}</option>
+                            <option value="book" {if $method.buttonType[0] == "book"}selected{/if}>{l s='Book' mod='hipay_enterprise'}</option>
+                            <option value="subscribe" {if $method.buttonType[0] == "subscribe"}selected{/if}>{l s='Subscribe' mod='hipay_enterprise'}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {/if}
+        {if "buttonStyle"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Button style' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <select id="select-{$key}" name="{$key}_buttonStyle[]"
+                                class="select-buttonStyle">
+                            <option value="black" {if $method.buttonStyle[0] == "black"}selected{/if}>{l s='Black' mod='hipay_enterprise'}</option>
+                            <option value="white" {if $method.buttonStyle[0] == "white"}selected{/if}>{l s='White' mod='hipay_enterprise'}</option>
+                            <option value="white-with-line" {if $method.buttonStyle[0] == "white-with-line"}selected{/if}>{l s='White with lines' mod='hipay_enterprise'}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {/if}
+        {if "merchantId"|in_array:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <input type="text" class="merchantId" name="{$key}_merchantId" value="{$method.merchantId}"/>
+                    </div>
+                </div>
+            </div>
+        {/if}
     </div>
 </div>

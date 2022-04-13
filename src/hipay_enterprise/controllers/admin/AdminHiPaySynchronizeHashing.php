@@ -52,6 +52,7 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
         $configHash = $this->module->hipayConfigTool->getHashAlgorithm();
         foreach (HipayHelper::$platforms as $platform) {
             $labelPlatform = HipayHelper::getLabelForPlatform($platform);
+
             if (HipayHelper::existCredentialForPlateform($this->module, $platform)) {
                 $messages = array();
 
