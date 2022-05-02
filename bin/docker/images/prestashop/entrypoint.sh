@@ -80,23 +80,23 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
     if [[ "$PS_VERSION" == *"1.7"* ]]; then
-      TABLE_NAME='prestashop17'
+        TABLE_NAME='prestashop17'
 
-      mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
           VALUES
             (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
-            (3, 'Italiano', 1, 'it', 'it', 'it', 'd/m/Y', 'd/m/Y H:i:s', 0);
+            (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
 
         COMMIT;"
     else
-      TABLE_NAME='prestashop16'
+        TABLE_NAME='prestashop16'
 
-      mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
         VALUES
           (2, 'English', 1, 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
-          (3, 'Italiano', 1, 'it', 'it', 'd/m/Y', 'd/m/Y H:i:s', 0);
+          (3, 'Italiano', 1, 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
 
         COMMIT;"
     fi

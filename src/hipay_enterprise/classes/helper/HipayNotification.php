@@ -482,8 +482,7 @@ class HipayNotification
                         $orderSlips = $orderSlipsRequest->getResults();
 
                         $alreadyExists = false;
-                        foreach ($orderSlips AS $orderSlip) {
-
+                        foreach ($orderSlips as $orderSlip) {
                             if (strval($orderSlip->id) === $operation->getId()) {
                                 // This notification already corresponds to an existing slip
                                 // No need to create a new one
@@ -872,14 +871,12 @@ class HipayNotification
         return false;
     }
 
-    public function isApplePayOrder() {
-        $idOrder = $this->dbUtils->getOrderByCartId($this->cart->id);
-        if ($idOrder) {
-            $this->order = new Order((int)$idOrder);
-
-            return (str_contains($this->order->payment, 'Apple Pay') !== false);
-        } else {
-            return false;
+    public function isApplePayOrder()
+    {
+        $customData = $this->transaction->getCustomData();
+        if (isset($customData["isApplePay"]) && $customData["isApplePay"]) {
+            return true;
         }
+        return false;
     }
 }

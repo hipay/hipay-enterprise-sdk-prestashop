@@ -227,7 +227,7 @@ class HipayHelper
                 $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_sandbox']);
                 break;
             case self::PRODUCTION_APPLE_PAY:
-                $exist = !empty($module->hipayConfigTool->getAccountSandbox()['api_apple_pay_username_production']);
+                $exist = !empty($module->hipayConfigTool->getAccountProduction()['api_apple_pay_username_production']);
                 break;
             default:
                 $exist = false;
@@ -869,7 +869,8 @@ class HipayHelper
      * @param Order $order
      * @return bool
      */
-    public static function isHipayOrder($module, $order) {
+    public static function isHipayOrder($module, $order)
+    {
         return ($order->module === $module->name);
     }
 }
