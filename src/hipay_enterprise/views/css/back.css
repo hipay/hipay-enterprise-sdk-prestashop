@@ -96,6 +96,16 @@
   font-size: 2em;
 }
 
+#panel-credit-card .alert-warning.notice,
+#panel-local-payment .alert-warning.notice {
+  display: inline-block;
+  font-size: 1.25em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 1em;
+}
+
 /***********************************/
 /**        FAQ  VIEW              **/
 /***********************************/

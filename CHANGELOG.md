@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.16.1
+
+- **Fix** : Fixed ApplePay payment method
+
 ## Version 2.16.0
 
 - **Add** : Added new ApplePay payment method

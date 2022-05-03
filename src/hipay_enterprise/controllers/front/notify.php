@@ -41,38 +41,38 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             die;
         }
 
-        $params = $_POST;
-        $transactionReference = (isset($params["transaction_reference"])) ? $params["transaction_reference"] : '';
-        // Process log from notification
-        $this->module->getLogs()->logCallback($params);
-
-        // Check if status is present in Post Data
-        if (!isset($params['state']) && !isset($params['status'])) {
-            $this->module->getLogs()->logErrors('Notify : Status not exist in Post DATA');
-            header("HTTP/1.0 500 Internal server error");
-            die();
-        }
-
-        // Check Notification signature
-        $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"] : "";
-
-        $notificationHandler = new HipayNotification($this->module, $params);
-
-        $moto = false;
-        $isApplePay = false;
-        if ($notificationHandler->getEci() == ECI::MOTO) {
-            $moto = true;
-        } else if($notificationHandler->isApplePayOrder()) {
-            $isApplePay = true;
-        }
-
-        if (!HipayHelper::checkSignature($signature, $this->module, true, $moto, $isApplePay)) {
-            $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
-            header('HTTP/1.1 403 Forbidden');
-            die('Bad Callback initiated - signature');
-        }
-
         try {
+            $params = $_POST;
+            $transactionReference = (isset($params["transaction_reference"])) ? $params["transaction_reference"] : '';
+            // Process log from notification
+            $this->module->getLogs()->logCallback($params);
+
+            // Check if status is present in Post Data
+            if (!isset($params['state']) && !isset($params['status'])) {
+                $this->module->getLogs()->logErrors('Notify : Status not exist in Post DATA');
+                header("HTTP/1.0 500 Internal server error");
+                die();
+            }
+
+            // Check Notification signature
+            $signature = (isset($_SERVER["HTTP_X_ALLOPASS_SIGNATURE"])) ? $_SERVER["HTTP_X_ALLOPASS_SIGNATURE"] : "";
+
+            $notificationHandler = new HipayNotification($this->module, $params);
+
+            $moto = false;
+            $isApplePay = false;
+            if ($notificationHandler->getEci() == ECI::MOTO) {
+                $moto = true;
+            } elseif ($notificationHandler->isApplePayOrder()) {
+                $isApplePay = true;
+            }
+
+            if (!HipayHelper::checkSignature($signature, $this->module, true, $moto, $isApplePay)) {
+                $this->module->getLogs()->logErrors("Notify : Signature is wrong for Transaction $transactionReference.");
+                header('HTTP/1.1 403 Forbidden');
+                die('Bad Callback initiated - signature');
+            }
+
             $notificationHandler->processTransaction();
         } catch (NotificationException $e) {
             header($e->getReturnCode());

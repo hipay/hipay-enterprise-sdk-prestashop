@@ -87,6 +87,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
             "payment_code" => $paymentCode,
             "display_iframe" => $iframe,
             "captureType" => $captureType,
+            "isApplePay" => $this->params["isApplePay"] ? 1 : 0
         );
 
         // Handling one-click data

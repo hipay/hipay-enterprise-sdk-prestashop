@@ -246,8 +246,12 @@ class Apihandler
                                         $status = $result->getStatus();
                                         $transactionRef = $result->getTransactionReference();
                                     } else {
-                                        HipayOrderMessage::orderMessage($this->module, $order->id, $order->id_customer,
-                                            HipayOrderMessage::formatOrderData($this->module, $result));
+                                        HipayOrderMessage::orderMessage(
+                                            $this->module,
+                                            $order->id,
+                                            $order->id_customer,
+                                            HipayOrderMessage::formatOrderData($this->module, $result)
+                                        );
                                     }
                                 } catch (GatewayException $e) {
                                     $errorMsg = array();
@@ -278,8 +282,12 @@ class Apihandler
                     }
 
                     if (!empty($displayMsg)) {
-                        HipayOrderMessage::orderMessage($this->module, $order->id, $order->id_customer,
-                            HipayOrderMessage::formatErrorOrderData($this->module, $displayMsg, $transactionRef, $status));
+                        HipayOrderMessage::orderMessage(
+                            $this->module,
+                            $order->id,
+                            $order->id_customer,
+                            HipayOrderMessage::formatErrorOrderData($this->module, $displayMsg, $transactionRef, $status)
+                        );
                     }
 
                     break;
@@ -406,10 +414,6 @@ class Apihandler
 
             $forwardUrl = $response->getForwardUrl();
 
-            if (isset($params['isApplePay']) && $params['isApplePay']) {
-                $params["methodDisplayName"] = 'Apple Pay ' . $params["methodDisplayName"];
-            }
-
             switch ($response->getState()) {
                 case TransactionState::COMPLETED:
                     $redirectParams = HipayHelper::validateOrder(
@@ -443,7 +447,7 @@ class Apihandler
                             $params["methodDisplayName"]
                         );
 
-                        if(!str_contains($pendingUrl, "?")) {
+                        if (!str_contains($pendingUrl, "?")) {
                             $pendingUrl .= '?';
                         }
 
@@ -474,7 +478,7 @@ class Apihandler
             Tools::redirect($redirectUrl);
         } catch (GatewayException $e) {
             $e->handleException();
-        } catch(Exception $e){
+        } catch (Exception $e) {
             HipayHelper::redirectToExceptionPage($this->context, $this->module);
             die();
         }

@@ -1,47 +1,52 @@
-database:
-  image: mysql:5.7
-  ports:
-    - "3318:3306"
-  env_file:
-    - ./bin/docker/conf/development/env
-  mem_limit: 500M
+version: '3'
 
-#smtp:
-#  image: schickling/mailcatcher
-#  ports:
-#    - "1018:1080"
-#  mem_limit: 256M
+services:
+  database:
+    image: mysql:5.7
+    ports:
+      - "3318:3306"
+    env_file:
+      - ./bin/docker/conf/development/env
+    mem_limit: 500M
 
-prestashop17:
- container_name: hipay-enterprise-shop-ps17
- dockerfile: ./bin/docker/images/prestashop/Dockerfile17
- build: .
- ports:
-   - "8087:80"
- links:
-#   - smtp
-   - database
- env_file:
-   - ./bin/docker/conf/development/env
-   - ./bin/docker/conf/development/env17
- volumes:
-   - ./web17:/var/www/html:delegated
-   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
- mem_limit: 500M
+  prestashop17:
+    container_name: hipay-enterprise-shop-ps17
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile17
+    ports:
+      - "8087:80"
+    links:
+      - database
+      # - smtp
+    env_file:
+      - ./bin/docker/conf/development/env
+      - ./bin/docker/conf/development/env17
+    volumes:
+      - ./web17:/var/www/html:delegated
+      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
+    mem_limit: 500M
 
-prestashop16:
- container_name: hipay-enterprise-shop-ps16
- dockerfile: ./bin/docker/images/prestashop/Dockerfile16
- build: .
- ports:
-   - "8086:80"
- links:
-#   - smtp
-   - database
- env_file:
-   - ./bin/docker/conf/development/env
-   - ./bin/docker/conf/development/env16
- volumes:
-   - ./web16:/var/www/html:delegated
-   - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
- mem_limit: 500M
+  prestashop16:
+    container_name: hipay-enterprise-shop-ps16
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile16
+    ports:
+      - "8086:80"
+    links:
+      - database
+      # - smtp
+    env_file:
+      - ./bin/docker/conf/development/env
+      - ./bin/docker/conf/development/env16
+    volumes:
+      - ./web16:/var/www/html:delegated
+      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
+    mem_limit: 500M
+
+  # smtp:
+  #   image: schickling/mailcatcher
+  #   ports:
+  #     - "1018:1080"
+  #   mem_limit: 256M
