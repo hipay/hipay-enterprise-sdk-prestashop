@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.16.2
+
+- **Fix** : Fixed PHP compatibility error
+
 ## Version 2.16.1
 
 - **Fix** : Fixed ApplePay payment method
