@@ -447,7 +447,7 @@ class Apihandler
                             $params["methodDisplayName"]
                         );
 
-                        if (!str_contains($pendingUrl, "?")) {
+                        if (!preg_match("/\?/", $pendingUrl)) {
                             $pendingUrl .= '?';
                         }
 
