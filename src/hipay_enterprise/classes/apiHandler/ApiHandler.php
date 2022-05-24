@@ -437,7 +437,7 @@ class Apihandler
                     $redirectUrl = $pendingUrl;
                     break;
                 case TransactionState::FORWARDING:
-                    if ($response->getReferenceToPay()) {
+                    if ($params["method"] === 'multibanco' && $response->getReferenceToPay()) {
                         // If it's a local payment and there is a referenceToPay in the response
                         // Handle it as a pending to display the reference
                         $redirectParams = HipayHelper::validateOrder(
