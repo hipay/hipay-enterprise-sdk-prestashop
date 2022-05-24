@@ -43,13 +43,11 @@ class ApiCaller
         $isMoto = false;
         $isApplePay = false;
         try {
-            if (
-                $plateform == HipayHelper::TEST_MOTO
+            if ($plateform == HipayHelper::TEST_MOTO
                 || $plateform == HipayHelper::PRODUCTION_MOTO
             ) {
                 $isMoto = true;
-            } else if (
-                $plateform == HipayHelper::TEST_APPLE_PAY
+            } elseif ($plateform == HipayHelper::TEST_APPLE_PAY
                 || $plateform == HipayHelper::PRODUCTION_APPLE_PAY
             ) {
                 $isApplePay = true;
@@ -129,6 +127,7 @@ class ApiCaller
     public static function requestDirectPost($moduleInstance, $params)
     {
         try {
+            $params['isApplePay'] = isset($params['isApplePay']) ?: null;
             // Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, false, false, $params['isApplePay']);
 
@@ -232,8 +231,7 @@ class ApiCaller
             $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
         } else {
             // Some calls do not take into account the general configuration (Security Settings)
-            if (
-                is_string($forceConfig)
+            if (is_string($forceConfig)
                 && $forceConfig == HipayHelper::TEST
                 || $forceConfig == HipayHelper::TEST_MOTO
                 || $forceConfig == HipayHelper::TEST_APPLE_PAY
@@ -259,8 +257,7 @@ class ApiCaller
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"];
             $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"]
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"];
-        } else if (
-            $isApplePay
+        } elseif ($isApplePay
             && (
                 (
                     $sandbox
