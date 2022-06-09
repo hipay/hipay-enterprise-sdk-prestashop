@@ -105,7 +105,7 @@ class ApiCaller
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
-                'An error occured during request requestDirectPost. Please Retry later. Reason [' .
+                'An error occured during request getHostedPaymentPage. Please Retry later. Reason [' .
                 $e->getMessage() .
                 ']',
                 $e->getCode(),
