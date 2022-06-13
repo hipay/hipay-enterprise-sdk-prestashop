@@ -2,7 +2,7 @@
 
 ## Version Unreleased
 
-- **Add** : Removed Direct Post option on payment configuration
+- **Add** : Removed Direct Post option on payment configuration. Use instead Hosted Fields or Hosted Page option on payment configuration
 
 ## Version 2.16.3
 
