@@ -78,6 +78,9 @@
     var myPaymentMethodSelected = false;
 
     function setSelectedPaymentMethod() {
+        myPaymentMethodSelected = $(".payment-options").find(
+            "input[data-module-name='credit_card']").is(
+            ":checked");
         $(".payment-options").change(function() {
             myPaymentMethodSelected = $(".payment-options").find("input[data-module-name='credit_card']").is(
                 ":checked");

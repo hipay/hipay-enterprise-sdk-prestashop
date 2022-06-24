@@ -1,0 +1,27 @@
+{
+  "name": "bancontact",
+  "config": {
+    "displayNameBO": "Bancontact",
+    "displayName": {
+      "fr": "Bancontact",
+      "en": "Bancontact"
+    },
+    "frontPosition": 15,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "bcmc_small.png"
+  }
+}
