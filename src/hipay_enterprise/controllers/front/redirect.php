@@ -158,42 +158,33 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'modules/' .
                     $this->module->name .
                     '/',
-                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates'
+                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates',
+                'url' => $this->apiHandler->handleCreditCard(ApiMode::HOSTED_PAGE_IFRAME, [
+                     "method" => CardPaymentProduct::HOSTED,
+                     "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
+                 ])
             )
         );
 
         $uxMode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["UXMode"];
+        $ps17TemplatePath = 'module:' . $this->module->name . '/views/templates/front/payment/ps17/paymentFormIframe-17.tpl'
 
         //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
             case UXMode::HOSTED_PAGE:
                 if ($this->module->hipayConfigTool->getPaymentGlobal()["display_hosted_page"] !== "redirect"
                     && Tools::getValue('iframeCall')) {
-                    $this->context->smarty->assign(
-                        array(
-                            'url' => $this->apiHandler->handleCreditCard(
-                                ApiMode::HOSTED_PAGE_IFRAME,
-                                array(
-                                    "method" => CardPaymentProduct::HOSTED,
-                                    "authentication_indicator" => $this->setAuthenticationIndicator($this->currentCart)
-                                )
-                            )
-                        )
-                    );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
-                            $this->module->name .
-                            '/views/templates/front/payment/ps17/paymentFormIframe-17'
-                            : 'payment/ps16/paymentFormIframe-16') . '.tpl';
+                    $path = _PS_VERSION_ >= '1.7' ? $ps17TemplatePath : 'payment/ps16/paymentFormIframe-16.tpl';
                 } else if ($this->module->hipayConfigTool->getPaymentGlobal()["card_token"] && _PS_VERSION_ < '1.7') {
                     $this->assignTemplate();
-                    $path = 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
+                    $path = _PS_VERSION_ >= '1.7' ? $ps17TemplatePath : 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
                 }
                 break;
             case UXMode::DIRECT_POST:
             case UXMode::HOSTED_FIELDS:
                 $this->assignTemplate();
 
-                $path = 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
+                $path = _PS_VERSION_ >= '1.7' ? $ps17TemplatePath : 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
                 break;
             default:
                 break;
