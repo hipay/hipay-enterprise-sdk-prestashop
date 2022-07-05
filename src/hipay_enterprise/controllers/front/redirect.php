@@ -167,7 +167,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         );
 
         $uxMode = $this->module->hipayConfigTool->getPaymentGlobal()["operating_mode"]["UXMode"];
-        $ps17TemplatePath = 'module:' . $this->module->name . '/views/templates/front/payment/ps17/paymentFormIframe-17.tpl'
+        $ps17TemplatePath = 'module:' . $this->module->name . '/views/templates/front/payment/ps17/paymentFormIframe-17.tpl';
 
         //Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
