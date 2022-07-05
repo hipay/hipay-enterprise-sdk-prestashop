@@ -131,6 +131,14 @@ function upgrade_module_2_17_0($module)
                 'buttonStyle' => '',
                 'merchantId' => ''
             ],
+            'bancontact' => [
+                'currencies' => '',
+                'minAmount' => '',
+                'maxAmount' => '',
+                'countries' => '',
+                'frontPosition' => '',
+                'activated' => '',
+            ],
             'aura' => [
                 'displayName' => '',
                 'frontPosition' => '',
