@@ -1,10 +1,10 @@
 {
   "name": "bancontact",
   "config": {
-    "displayNameBO": "Bancontact CD / QR code",
+    "displayNameBO": "Bancontact Credit Card / QR code",
     "displayName": {
-      "fr": "Bancontact CD / QR code",
-      "en": "Bancontact CD / QR code"
+      "fr": "Bancontact Credit Card / QR code",
+      "en": "Bancontact Credit Card / QR code"
     },
     "frontPosition": 15,
     "activated": 0,
