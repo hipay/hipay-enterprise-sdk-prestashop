@@ -25,9 +25,6 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <select name="operating_mode" class="col-lg-2" id="operating_mode">
-                            <option value="direct_post"
-                                {if $config_hipay.payment.global.operating_mode.UXMode == "direct_post"}selected="selected"
-                                {/if}>{l s='Direct Post' mod='hipay_enterprise'}</option>
                             <option value="hosted_page"
                                 {if $config_hipay.payment.global.operating_mode.UXMode == "hosted_page"}selected="selected"
                                 {/if}>{l s='Hosted page' mod='hipay_enterprise'}</option>
@@ -38,10 +35,6 @@
                     </div>
                     <p class="help-block">
                     <ul class="hipay-notice-list">
-                        <li><b>{l s='Direct Post' mod='hipay_enterprise'}</b>
-                            :
-                            {l s='The customer will fill his bank information directly on merchants website' mod='hipay_enterprise'}
-                        </li>
                         <li><b>{l s='Hosted page' mod='hipay_enterprise'}</b>
                             :
                             {l s='The customer is redirected to a secured payment page hosted by HiPay.' mod='hipay_enterprise'}

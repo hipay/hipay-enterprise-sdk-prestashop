@@ -396,7 +396,7 @@ class HipayConfig
             ),
             "payment" => array(
                 "global" => array(
-                    "operating_mode" => OperatingMode::getOperatingMode(UXMode::DIRECT_POST),
+                    "operating_mode" => OperatingMode::getOperatingMode(UXMode::HOSTED_FIELDS),
                     "enable_api_v2" => 1,
                     "iframe_hosted_page_template" => "basic-js",
                     "display_card_selector" => 0,

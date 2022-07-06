@@ -83,6 +83,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         TABLE_NAME='prestashop17'
 
         mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
           VALUES
             (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
@@ -93,6 +94,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         TABLE_NAME='prestashop16'
 
         mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        DELETE FROM ps_lang WHERE language_code IN ('en-GB', 'it-IT');
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
         VALUES
           (2, 'English', 1, 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
@@ -104,12 +106,19 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
       UPDATE ps_country SET active=1 WHERE iso_code IN ('PT', 'IT', 'NL', 'BE');
 
-      INSERT INTO ps_module_country (id_module, id_shop, id_country) values (69, 1,3), (69, 1, 10), (69, 1, 13), (69, 1, 15);
+      DELETE FROM ps_module_country WHERE id_country IN (SELECT id_country FROM ps_country WHERE iso_code IN ('PT', 'IT', 'NL', 'BE'));
+      INSERT INTO ps_module_country (id_module, id_shop, id_country)
+        SELECT m.id_module, s.id_shop, c.id_country
+        FROM ps_module m, ps_shop s, ps_country c
+        WHERE m.name = 'hipay_enterprise'
+        AND s.name = 'PrestaShop'
+        AND c.iso_code IN ('PT', 'IT', 'NL', 'BE');
 
-
+      DELETE FROM ps_country_lang WHERE id_lang = 2;
       INSERT INTO ps_country_lang (id_country, id_lang, name)
         SELECT id_country, 2 AS id_lang, name FROM ps_country_lang WHERE id_lang = 1;
 
+      DELETE FROM ps_country_lang WHERE id_lang = 3;
       INSERT INTO ps_country_lang (id_country, id_lang, name)
         SELECT id_country, 3 AS id_lang, name FROM ps_country_lang WHERE id_lang = 1;
 

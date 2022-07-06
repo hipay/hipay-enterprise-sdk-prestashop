@@ -1,5 +1,9 @@
 # Changelog
 
+## Version Unreleased
+
+- **Add** : Removed Direct Post option on payment configuration. Use instead Hosted Fields or Hosted Page option on payment configuration
+
 ## Version 2.16.3
 
 - **Fix** : Fixed response page when using Mooney payment method
