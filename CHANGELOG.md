@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.17.0
+
+- **Add** : Removed Direct Post option on payment configuration. Use instead Hosted Fields or Hosted Page option on payment configuration
+- **Add**: Added **Bancontact Credit Card / QR code** payment method
+
 ## Version 2.16.3
 
 - **Fix** : Fixed response page when using Mooney payment method
