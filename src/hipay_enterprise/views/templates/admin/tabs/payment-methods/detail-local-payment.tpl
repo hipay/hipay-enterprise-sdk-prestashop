@@ -55,8 +55,9 @@
                                 {if isset($method.displayName[$language.iso_code])}
                                     value="{$method.displayName[$language.iso_code]}"
                                 {elseif isset($method.displayName) && !is_array($method.displayName)}
-                                value="{$method.displayName}" {else} value="
-                                    {reset($method.displayName)}" 
+                                value="{$method.displayName}"
+                                {else}
+                                    value="{reset($method.displayName)}"
                                 {/if} />
                         </div>
                         {if $languages|count > 1}

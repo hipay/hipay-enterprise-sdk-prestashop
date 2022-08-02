@@ -207,7 +207,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
             _DB_PREFIX_ .
             'order_payment` WHERE ' . $where);
 
-        foreach($originalData as $paymentRow){
+        foreach ($originalData as $paymentRow) {
             $order->total_paid_real -= $paymentRow['amount'];
         }
         $order->save();
@@ -221,7 +221,8 @@ class HipayDBUtils extends HipayDBQueryAbstract
      * @return mixed
      * @throws PrestaShopDatabaseException
      */
-    public function getModuleVersion($moduleName){
+    public function getModuleVersion($moduleName)
+    {
         $sql = 'SELECT version FROM `' .
             _DB_PREFIX_ .
             'module` WHERE name = \'' .
@@ -232,18 +233,56 @@ class HipayDBUtils extends HipayDBQueryAbstract
 
         $result = Db::getInstance()->executeS($sql);
 
-        if(isset($result[0]) && is_array($result[0])) {
+        if (isset($result[0]) && is_array($result[0])) {
             return $result[0]['version'];
         } else {
             return null;
         }
     }
 
-    public function getNotificationsForOrder($orderId){
+    public function getNotificationsForOrder($orderId)
+    {
         $sql = 'SELECT status FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
             '` WHERE order_id=' . pSQL((int)$orderId) . ' ;';
 
-        return array_map(function($value) { return $value['status']; }, Db::getInstance()->executeS($sql));
+        return array_map(function ($value) {
+            return $value['status'];
+        }, Db::getInstance()->executeS($sql));
     }
 
+    public function getPaymentConfig($id_shop = null, $id_shop_group = null)
+    {
+        if($id_shop == null){
+            $id_shop = -1;
+        }
+
+        if($id_shop_group == null) {
+            $id_shop_group = -1;
+        }
+
+        $sql = 'SELECT method_id, method_group, config FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE .
+            '` WHERE id_shop=' . pSQL((int)$id_shop) . ' AND id_shop_group=' . pSQL((int)$id_shop_group) . ';';
+
+        return array_map(function ($value) {
+            return array('method_id' => $value['method_id'], 'method_group' => $value['method_group'], 'config' => json_decode($value['config'], true));
+        }, Db::getInstance()->executeS($sql));
+    }
+
+    public function savePaymentConfig($paymentConfig, $id_shop = null, $id_shop_group = null)
+    {
+        if($id_shop == null){
+            $id_shop = -1;
+        }
+
+        if($id_shop_group == null) {
+            $id_shop_group = -1;
+        }
+
+        foreach ($paymentConfig as $methodGroup => $methods) {
+            foreach ($methods as $methodId => $methodConfig) {
+                $values = array('method_id' => pSQL($methodId), 'method_group' => pSQL($methodGroup), 'config' => pSQL(json_encode($methodConfig)), 'id_shop' => pSQL((int)$id_shop), 'id_shop_group' => pSQL((int)$id_shop_group));
+                Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE, $values, true, true, Db::REPLACE);
+            }
+        }
+    }
 }

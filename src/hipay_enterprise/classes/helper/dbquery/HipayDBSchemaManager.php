@@ -166,6 +166,26 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         return Db::getInstance()->execute($sql);
     }
 
+    /**
+     * Create Hipay Payment Means Config table
+     *
+     * @return bool
+     */
+    public function createHipayPaymentConfigTable()
+    {
+        $this->logs->logInfos('Create Hipay Payment Means Config table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE . '`(
+                `method_id` VARCHAR(45) NOT NULL,
+                `method_group` VARCHAR(45) NOT NULL,
+                `id_shop` INT(11),
+                `id_shop_group` INT(11),
+                `config` TEXT,
+                PRIMARY KEY (`method_id`, `id_shop`, `id_shop_group`)
+                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
 
     /**
      * Delete Hipay mapping table
@@ -214,6 +234,14 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         $this->logs->logInfos('Delete Hipay Notification table');
 
         $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`';
+        return Db::getInstance()->execute($sql);
+    }
+
+    public function deleteHipayPaymentConfigTable()
+    {
+        $this->logs->logInfos('Delete Hipay Payment Means Config table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE . '`';
         return Db::getInstance()->execute($sql);
     }
 
