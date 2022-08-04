@@ -175,6 +175,10 @@ class Hipay_enterprise extends PaymentModule
         $return = $this->installAdminTab();
         $return &= HipayOrderStatus::updateHiPayOrderStates($this);
         $return &= $this->createHipayTable();
+
+        $this->hipayConfigTool->getConfigHipay();
+        $this->hipayConfigTool->updateFromJSONFile();
+
         $return &= $this->registerHook('backOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
