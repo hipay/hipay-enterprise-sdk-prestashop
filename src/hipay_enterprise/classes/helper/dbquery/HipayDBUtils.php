@@ -278,11 +278,14 @@ class HipayDBUtils extends HipayDBQueryAbstract
             $id_shop_group = -1;
         }
 
+        $toReplace = [];
+
         foreach ($paymentConfig as $methodGroup => $methods) {
             foreach ($methods as $methodId => $methodConfig) {
-                $values = array('method_id' => pSQL($methodId), 'method_group' => pSQL($methodGroup), 'config' => pSQL(json_encode($methodConfig)), 'id_shop' => pSQL((int)$id_shop), 'id_shop_group' => pSQL((int)$id_shop_group));
-                Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE, $values, true, true, Db::REPLACE);
+                $toReplace[] = array('method_id' => pSQL($methodId), 'method_group' => pSQL($methodGroup), 'config' => pSQL(json_encode($methodConfig)), 'id_shop' => pSQL((int)$id_shop), 'id_shop_group' => pSQL((int)$id_shop_group));
             }
         }
+
+        Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_PAYMENT_CONFIG_TABLE, $toReplace, true, true, Db::REPLACE);
     }
 }
