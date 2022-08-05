@@ -27,7 +27,6 @@ abstract class HipayDBQueryAbstract
     const HIPAY_TRANSACTION_TABLE = 'hipay_transaction';
     const HIPAY_ORDER_CAPTURE_TYPE_TABLE = 'hipay_order_capture_type';
     const HIPAY_NOTIFICATION_TABLE = 'hipay_notifications';
-    const HIPAY_PAYMENT_CONFIG_TABLE = 'hipay_payment_config';
     const HIPAY_PAYMENT_ORDER_PREFIX = 'HiPay Enterprise';
 
     public function __construct($moduleInstance)

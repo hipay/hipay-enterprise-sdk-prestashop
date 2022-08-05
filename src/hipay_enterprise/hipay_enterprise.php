@@ -788,7 +788,6 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->createHipayTransactionTable();
         $this->dbSchemaManager->createHipayOrderCaptureType();
         $this->dbSchemaManager->createHipayNotificationTable();
-        $this->dbSchemaManager->createHipayPaymentConfigTable();
         return true;
     }
 
