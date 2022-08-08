@@ -172,7 +172,7 @@ class HipayConfig
         $id_shop_group = (int)Shop::getContextShopGroupID();
 
         // the config is stacked in JSON
-        $confHipay = $this->getFullConfiguration($id_shop_group, $id_shop);
+        $confHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
 
         if (isset($child)) {
             $confHipay[$key][$child] = $value;
@@ -191,7 +191,7 @@ class HipayConfig
         // init multistore
         $id_shop = (int)Shop::getContextShopID();
         $id_shop_group = (int)Shop::getContextShopGroupID();
-        $this->configHipay = $this->getFullConfiguration($id_shop_group, $id_shop);
+        $this->configHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
 
         // if config exist but empty, init new object for configHipay
         if (!$this->configHipay || empty($this->configHipay)) {
@@ -216,7 +216,7 @@ class HipayConfig
                 "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
             );
 
-            $configHipay = $this->getFullConfiguration($shop['id_shop_group'], $id);
+            $configHipay = $this->getConfigurationFromDB($shop['id_shop_group'], $id);
 
             $this->module->getLogs()->logInfos($configHipay['account']);
 
@@ -519,7 +519,7 @@ class HipayConfig
             $id_shop
         )
         ) {
-            $this->configHipay = $this->getFullConfiguration($id_shop_group, $id_shop);
+            $this->configHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
             $this->module->getLogs()->logInfos($this->configHipay);
 
             return true;
@@ -609,7 +609,7 @@ class HipayConfig
         return $activeCountriesIso;
     }
 
-    private function getFullConfiguration($id_shop_group = null, $id_shop = null)
+    private function getConfigurationFromDB($id_shop_group = null, $id_shop = null)
     {
         // init multistore
         $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : (int)$id_shop;
