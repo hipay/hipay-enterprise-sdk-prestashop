@@ -172,7 +172,7 @@ class HipayConfig
         $id_shop_group = (int)Shop::getContextShopGroupID();
 
         // the config is stacked in JSON
-        $confHipay = Tools::jsonDecode(Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop), true);
+        $confHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
 
         if (isset($child)) {
             $confHipay[$key][$child] = $value;
@@ -180,22 +180,7 @@ class HipayConfig
             $confHipay[$key] = $value;
         }
 
-        if (Configuration::updateValue(
-            'HIPAY_CONFIG',
-            Tools::jsonEncode($confHipay),
-            false,
-            $id_shop_group,
-            $id_shop
-        )
-        ) {
-            $this->configHipay = Tools::jsonDecode(
-                Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
-                true
-            );
-            return true;
-        } else {
-            throw new Exception($this->l('Update failed, try again.'));
-        }
+        return $this->setAllConfigHiPay($confHipay, $id_shop_group, $id_shop);
     }
 
     /**
@@ -206,46 +191,11 @@ class HipayConfig
         // init multistore
         $id_shop = (int)Shop::getContextShopID();
         $id_shop_group = (int)Shop::getContextShopGroupID();
-        $this->configHipay = Tools::jsonDecode(
-            Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
-            true
-        );
+        $this->configHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
 
         // if config exist but empty, init new object for configHipay
         if (!$this->configHipay || empty($this->configHipay)) {
             $this->insertConfigHiPay();
-        }
-    }
-
-    /**
-     * update config if there's a new json uploaded
-     */
-    public function updateConfig()
-    {
-        $configFields = array();
-
-        $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
-        $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
-
-        // we update only new payment method
-        $localkeys = array_diff(
-            array_keys($configFields["payment"]["local_payment"]),
-            array_keys($this->configHipay["payment"]["local_payment"])
-        );
-        $cckeys = array_diff(
-            array_keys($configFields["payment"]["credit_card"]),
-            array_keys($this->configHipay["payment"]["credit_card"])
-        );
-
-        $this->module->getLogs()->logInfos("# Update Config");
-        $this->module->getLogs()->logInfos(print_r($localkeys, true) . print_r($cckeys, true));
-
-        foreach ($cckeys as $key) {
-            $this->configHipay["payment"]["credit_card"][$key] = $configFields["payment"]["credit_card"][$key];
-        }
-
-        foreach ($localkeys as $key) {
-            $this->configHipay["payment"]["local_payment"][$key] = $configFields["payment"]["local_payment"][$key];
         }
     }
 
@@ -266,10 +216,7 @@ class HipayConfig
                 "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
             );
 
-            $configHipay = Tools::jsonDecode(
-                Configuration::get('HIPAY_CONFIG', null, $shop['id_shop_group'], $id),
-                true
-            );
+            $configHipay = $this->getConfigurationFromDB($shop['id_shop_group'], $id);
 
             $this->module->getLogs()->logInfos($configHipay['account']);
 
@@ -505,6 +452,7 @@ class HipayConfig
     private function insertConfigHiPay()
     {
         $configFields = $this->getDefaultConfig();
+
         $configFields["payment"]["credit_card"] = $this->insertPaymentsConfig("creditCard/");
         $configFields["payment"]["local_payment"] = $this->insertPaymentsConfig("local/");
 
@@ -532,6 +480,37 @@ class HipayConfig
         // init multistore
         $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : (int)$id_shop;
         $id_shop_group = (is_null($id_shop_group)) ? (int)Shop::getContextShopGroupID() : $id_shop_group;
+
+        $paymentConfig = array('credit_card' => $for_json_hipay['payment']['credit_card'], 'local_payment' => $for_json_hipay['payment']['local_payment']);
+
+        unset($for_json_hipay['payment']['credit_card']);
+        unset($for_json_hipay['payment']['local_payment']);
+
+        $paymentMeans = array('credit_card' => array(), 'local_payment' => array());
+
+        foreach ($paymentConfig as $methodGroup => $methods) {
+            foreach ($methods as $methodId => $methodConfig) {
+                $paymentMeans[$methodGroup][] = $methodId;
+
+                Configuration::updateValue(
+                    'HIPAY_PAYMENT_' . strtoupper($methodId),
+                    Tools::jsonEncode($methodConfig),
+                    false,
+                    $id_shop_group,
+                    $id_shop
+                );
+            }
+        }
+
+        Configuration::updateValue(
+            'HIPAY_PAYMENT_MEANS',
+            Tools::jsonEncode($paymentMeans),
+            false,
+            $id_shop_group,
+            $id_shop
+        );
+
+
         if (Configuration::updateValue(
             'HIPAY_CONFIG',
             Tools::jsonEncode($for_json_hipay),
@@ -540,11 +519,7 @@ class HipayConfig
             $id_shop
         )
         ) {
-            $this->configHipay = Tools::jsonDecode(
-                Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
-                true
-            );
-
+            $this->configHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
             $this->module->getLogs()->logInfos($this->configHipay);
 
             return true;
@@ -632,5 +607,42 @@ class HipayConfig
         }
 
         return $activeCountriesIso;
+    }
+
+    private function getConfigurationFromDB($id_shop_group = null, $id_shop = null)
+    {
+        // init multistore
+        $id_shop = (is_null($id_shop)) ? (int)Shop::getContextShopID() : (int)$id_shop;
+        $id_shop_group = (is_null($id_shop_group)) ? (int)Shop::getContextShopGroupID() : $id_shop_group;
+
+        $configHipay = Tools::jsonDecode(
+            Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
+            true
+        );
+
+        if (!empty($configHipay)) {
+
+            $paymentMeansList = Tools::jsonDecode(
+                Configuration::get('HIPAY_PAYMENT_MEANS', null, $id_shop_group, $id_shop),
+                true
+            );
+
+            if($paymentMeansList) {
+                foreach ($paymentMeansList as $methodGroup => $methods) {
+                    foreach ($methods as $key => $methodId) {
+                        $methodConfig = Tools::jsonDecode(Configuration::get(
+                            'HIPAY_PAYMENT_' . strtoupper($methodId),
+                            false,
+                            $id_shop_group,
+                            $id_shop
+                        ), true);
+
+                        $configHipay['payment'][$methodGroup][$methodId] = $methodConfig;
+                    }
+                }
+            }
+        }
+
+        return $configHipay;
     }
 }

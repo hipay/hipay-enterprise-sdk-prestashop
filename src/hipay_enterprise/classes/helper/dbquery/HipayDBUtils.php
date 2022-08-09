@@ -207,7 +207,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
             _DB_PREFIX_ .
             'order_payment` WHERE ' . $where);
 
-        foreach($originalData as $paymentRow){
+        foreach ($originalData as $paymentRow) {
             $order->total_paid_real -= $paymentRow['amount'];
         }
         $order->save();
@@ -221,7 +221,8 @@ class HipayDBUtils extends HipayDBQueryAbstract
      * @return mixed
      * @throws PrestaShopDatabaseException
      */
-    public function getModuleVersion($moduleName){
+    public function getModuleVersion($moduleName)
+    {
         $sql = 'SELECT version FROM `' .
             _DB_PREFIX_ .
             'module` WHERE name = \'' .
@@ -232,18 +233,20 @@ class HipayDBUtils extends HipayDBQueryAbstract
 
         $result = Db::getInstance()->executeS($sql);
 
-        if(isset($result[0]) && is_array($result[0])) {
+        if (isset($result[0]) && is_array($result[0])) {
             return $result[0]['version'];
         } else {
             return null;
         }
     }
 
-    public function getNotificationsForOrder($orderId){
+    public function getNotificationsForOrder($orderId)
+    {
         $sql = 'SELECT status FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
             '` WHERE order_id=' . pSQL((int)$orderId) . ' ;';
 
-        return array_map(function($value) { return $value['status']; }, Db::getInstance()->executeS($sql));
+        return array_map(function ($value) {
+            return $value['status'];
+        }, Db::getInstance()->executeS($sql));
     }
-
 }
