@@ -166,7 +166,6 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         return Db::getInstance()->execute($sql);
     }
 
-
     /**
      * Delete Hipay mapping table
      *
@@ -216,5 +215,4 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`';
         return Db::getInstance()->execute($sql);
     }
-
 }

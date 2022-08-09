@@ -40,6 +40,8 @@ class HipayLogs
         'api_tokenjs_apple_pay_username_sandbox', 'api_tokenjs_apple_pay_password_sandbox'
     );
 
+    private $installProcess = true;
+
     /**
      * HipayLogs constructor.
      *
@@ -64,6 +66,16 @@ class HipayLogs
 
         $this->enable = (isset($enableConf) ? $enableConf : true);
     }
+
+    /**
+     * @param bool $installProcess
+     */
+    public function setInstallProcess(bool $installProcess)
+    {
+        $this->installProcess = $installProcess;
+    }
+
+
 
     /**
      *  Log exception
@@ -93,7 +105,7 @@ class HipayLogs
      */
     public function logInfos($msg)
     {
-        if ($this->module->hipayConfigTool->getPaymentGlobal()["log_infos"]) {
+        if ($this->installProcess || $this->module->hipayConfigTool->getPaymentGlobal()["log_infos"]) {
             if (is_array($msg)) {
                 $this->writeLogs(self::LOG_HIPAY_INFOS, print_r($this->filterDebugData($msg), true));
             } else {

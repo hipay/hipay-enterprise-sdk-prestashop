@@ -40,7 +40,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.17.0';
+        $this->version = '2.17.1';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -148,7 +148,12 @@ class Hipay_enterprise extends PaymentModule
             $this->_errors[] = $this->l('You have to enable the SOAP extension on your server to install this module');
             return false;
         }
-        return parent::install() && $this->installHipay();
+
+        $returnVal = parent::install() && $this->installHipay();
+
+        $this->logs->setInstallProcess(false);
+
+        return $returnVal;
     }
 
     public function uninstall()
@@ -170,6 +175,10 @@ class Hipay_enterprise extends PaymentModule
         $return = $this->installAdminTab();
         $return &= HipayOrderStatus::updateHiPayOrderStates($this);
         $return &= $this->createHipayTable();
+
+        $this->hipayConfigTool->getConfigHipay();
+        $this->hipayConfigTool->updateFromJSONFile();
+
         $return &= $this->registerHook('backOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
@@ -790,6 +799,7 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper->deleteTable();
         $this->dbSchemaManager->deleteCCTokenTable();
         $this->dbSchemaManager->deleteHipayNotificationTable();
+        $this->dbSchemaManager->deleteHipayPaymentConfigTable();
         return true;
     }
 }
