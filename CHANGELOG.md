@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.17.1
+
+- **Fix**: Fixed issue with configuration getting too long when many languages were enabled
+
 ## Version 2.17.0
 
 - **Add** : Removed Direct Post option on payment configuration. Use instead Hosted Fields or Hosted Page option on payment configuration
