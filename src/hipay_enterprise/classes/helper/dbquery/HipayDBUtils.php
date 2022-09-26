@@ -50,7 +50,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $sql = 'SELECT `id_cart`
                 FROM `' . _DB_PREFIX_ . 'cart`
-                WHERE `id_customer` = ' . pSQL($userId) . '
+                WHERE `id_customer` = ' . (int)$userId . '
                 ORDER BY date_upd DESC';
 
         $result = Db::getInstance()->getRow($sql);
@@ -123,7 +123,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $sql = 'SELECT COUNT(id_order_history) as count
 		FROM `' . _DB_PREFIX_ . 'order_history`
-		WHERE `id_order` = ' . pSQL((int)$idOrder) . ' AND `id_order_state` = ' . pSQL((int)$status);
+		WHERE `id_order` = ' . pSQL((int)$idOrder) . ' AND `id_order_state` = ' . (int)$status;
 
         $this->logs->logInfos('# Check order status exist : ' . $sql);
 
