@@ -123,7 +123,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $sql = 'SELECT COUNT(id_order_history) as count
 		FROM `' . _DB_PREFIX_ . 'order_history`
-		WHERE `id_order` = ' . pSQL((int)$idOrder) . ' AND `id_order_state` = ' . (int)$status;
+		WHERE `id_order` = ' . (int)$idOrder . ' AND `id_order_state` = ' . (int)$status;
 
         $this->logs->logInfos('# Check order status exist : ' . $sql);
 
@@ -243,7 +243,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     public function getNotificationsForOrder($orderId)
     {
         $sql = 'SELECT status FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
-            '` WHERE order_id=' . pSQL((int)$orderId) . ' ;';
+            '` WHERE order_id=' . (int)$orderId . ' ;';
 
         return array_map(function ($value) {
             return $value['status'];
