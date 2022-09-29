@@ -29,6 +29,9 @@ Clone the HiPay Enterprise PrestaShop project in your environment with Git:
 $ git clone https://github.com/hipay/hipay-enterprise-sdk-prestashop.git
 ```
 
+Copy the content from the file `bin/docker/conf/development/env.sample` and paste it in `bin/docker/conf/development/env` file.
+Then, fill it with your personal vars.
+
 Go in the project root folder and enter this command:
 
 ```
