@@ -20,7 +20,7 @@ manageComposerForData() {
      echo "if [ $? -eq 0 ]" >>.git/hooks/pre-commit
      echo "then" >>.git/hooks/pre-commit
      echo "    cp \$COMPOSER_JSON_FILE \$COMPOSER_JSON_FILE.bak" >>.git/hooks/pre-commit
-     echo "    cat \$COMPOSER_JSON_FILE.bak | python -c \"import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = None; del composerObj['scripts']; print( json.dumps(composerObj, sort_keys=True, indent=4));\" > \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
+     echo "    cat \$COMPOSER_JSON_FILE.bak | python3 -c \"import sys, json; composerObj=json.load(sys.stdin); composerObj['scripts'] = None; del composerObj['scripts']; print( json.dumps(composerObj, sort_keys=True, indent=4));\" > \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
      echo "    git add \$COMPOSER_JSON_FILE" >>.git/hooks/pre-commit
      echo "fi" >>.git/hooks/pre-commit
      echo "exit 0" >>.git/hooks/pre-commit
@@ -70,27 +70,27 @@ if [ "$1" = 'init' ]; then
           fi
      fi
      rm -Rf data/ web$psVersion/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
-     docker-compose -f docker-compose.dev.yml rm -sfv prestashop$psVersion database
-     docker-compose -f docker-compose.dev.yml build prestashop$psVersion database
+     docker compose -f docker-compose.dev.yml rm -sfv prestashop$psVersion database
+     docker compose -f docker-compose.dev.yml build prestashop$psVersion database
 
      if [ "$follow" = "-f" ]; then
-          docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up prestashop$psVersion database
      else
-          docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up -d prestashop$psVersion database
      fi
 fi
 
 if [ "$1" = 'restart' ]; then
-     docker-compose -f docker-compose.dev.yml stop prestashop$psVersion database
+     docker compose -f docker-compose.dev.yml stop prestashop$psVersion database
      if [ "$follow" = "-f" ]; then
-          docker-compose -f docker-compose.dev.yml up prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up prestashop$psVersion database
      else
-          docker-compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up -d prestashop$psVersion database
      fi
 fi
 
 if [ "$1" = 'kill' ]; then
-     docker-compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 database
+     docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 database
      rm -Rf data/ web16/ web17/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
 fi
 
