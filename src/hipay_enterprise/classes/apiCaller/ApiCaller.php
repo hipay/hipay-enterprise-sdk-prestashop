@@ -258,8 +258,8 @@ class ApiCaller
                 )
                 || (
                     !$sandbox
-                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_production"])
-                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_production"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"])
                 )
             )) {
             $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]
