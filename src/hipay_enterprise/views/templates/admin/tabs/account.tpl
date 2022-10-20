@@ -133,7 +133,7 @@
                                 {l s='Password' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-6">
-                                <input class="form-control" type="text" name="api_moto_password_production"
+                                <input class="form-control" type="password" name="api_moto_password_production"
                                     value="{$config_hipay.account.production.api_moto_password_production}">
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                                 {l s='Secret passphrase' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-6">
-                                <input class="form-control" type="text" name="api_moto_secret_passphrase_production"
+                                <input class="form-control" type="password" name="api_moto_secret_passphrase_production"
                                     value="{$config_hipay.account.production.api_moto_secret_passphrase_production}">
                             </div>
                         </div>
@@ -306,7 +306,7 @@
                                 {l s='Password' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-6">
-                                <input class="form-control" type="text" name="api_moto_password_sandbox"
+                                <input class="form-control" type="password" name="api_moto_password_sandbox"
                                     value="{$config_hipay.account.sandbox.api_moto_password_sandbox}">
                             </div>
                         </div>
@@ -316,7 +316,7 @@
                                 {l s='Secret passphrase' mod='hipay_enterprise'}
                             </label>
                             <div class="col-lg-6">
-                                <input class="form-control" type="text" name="api_moto_secret_passphrase_sandbox"
+                                <input class="form-control" type="password" name="api_moto_secret_passphrase_sandbox"
                                     value="{$config_hipay.account.sandbox.api_moto_secret_passphrase_sandbox}">
                             </div>
                         </div>

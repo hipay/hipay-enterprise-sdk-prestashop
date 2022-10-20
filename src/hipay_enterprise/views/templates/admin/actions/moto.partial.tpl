@@ -17,7 +17,7 @@
             {l s='Your Sandbox MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>
             {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.' mod='hipay_enterprise'}
         </p>
-    {else if (  !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_moto_username_production) || empty($config_hipay.account.sandbox.api_moto_password_production)) )}
+    {else if (  !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.production.api_moto_username_production) || empty($config_hipay.account.production.api_moto_password_production)) )}
         <p class="alert alert-warning">
             {l s='Your Production MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>
         </p>
