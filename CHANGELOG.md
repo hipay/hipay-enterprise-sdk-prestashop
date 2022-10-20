@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.17.2
+
+- **Fix**: Fixed issue with MOTO payments
+- 
 ## Version 2.17.1
 
 - **Fix**: Fixed issue with configuration getting too long when many languages were enabled
