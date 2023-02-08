@@ -728,14 +728,14 @@ class HipayHelper
     /**
      * Check if order has already been placed ( Without prestashop cache)
      *
-     * @param $cart_id
+     * @param int $cart_id
      * @return bool
      */
     public static function orderExists($cart_id)
     {
         if ($cart_id) {
             $result = (bool)Db::getInstance()->getValue(
-                'SELECT count(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
+                'SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int)$cart_id
             );
 
             return $result;
