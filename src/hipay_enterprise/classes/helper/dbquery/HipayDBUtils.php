@@ -107,17 +107,17 @@ class HipayDBUtils extends HipayDBQueryAbstract
     /**
      * @param int $cartId
      *
-     * @return bool
+     * @return int[]
      */
-    public function getOrderByCartId($cartId)
+    public function getOrderIdsByCartId($cartId)
     {
         $sql = 'SELECT `id_order`'
             .' FROM `'._DB_PREFIX_.'orders`'
             .' WHERE `id_cart` = '.(int) $cartId;
 
-        $result = Db::getInstance()->getRow($sql);
+        $result = Db::getInstance()->executeS($sql);
 
-        return isset($result['id_order']) ? $result['id_order'] : false;
+        return $result ? array_column($result, 'id_order') : [];
     }
 
     /**
