@@ -160,7 +160,8 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `notification_code` INT(4) UNSIGNED NOT NULL,
                 `attempt_number` INT(3) UNSIGNED NOT NULL,
                 `status` VARCHAR(255) NOT NULL,
-                PRIMARY KEY (`hp_id`)
+                PRIMARY KEY (`hp_id`),
+                INDEX `hipay_notification.update_keys` (`cart_id`, `transaction_ref`, `notification_code`, `status`)
                 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
