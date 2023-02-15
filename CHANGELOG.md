@@ -1,9 +1,15 @@
 # Changelog
 
+## Version 2.17.3
+
+- **Fix**: Add index on Notification table
+- **Fix**: Handle multiple order from one cart
+- **Fix**: Security improvement
+
 ## Version 2.17.2
 
 - **Fix**: Fixed issue with MOTO payments
-- 
+
 ## Version 2.17.1
 
 - **Fix**: Fixed issue with configuration getting too long when many languages were enabled
