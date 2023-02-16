@@ -194,7 +194,7 @@ class HipayMaintenanceBlock
             ) {
 
                 $discount = $this->getDiscount();
-
+                $getShippping = $this->order->getShipping();
                 $this->context->smarty->assign(
                     array(
                         'showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()["use_prestashop_refund_form"],
@@ -218,8 +218,7 @@ class HipayMaintenanceBlock
                         ),
                         'totallyRefunded' => $this->isTotallyRefunded(),
                         'products' => $this->order->getProducts(),
-                        'amountFees' => $this->order->getShipping() ? $this->order->getShipping(
-                        )[0]['shipping_cost_tax_incl'] : 0,
+                        'amountFees' => $getShippping && isset($getShippping[0]['shipping_cost_tax_incl']) && !is_null($getShippping[0]['shipping_cost_tax_incl'])  ? $getShippping[0]['shipping_cost_tax_incl'] : 0,
                         'shippingCost' => $this->order->total_shipping,
                         'discount' => $discount,
                         'capturedDiscounts' => $capturedDiscounts,
@@ -270,6 +269,7 @@ class HipayMaintenanceBlock
                 $capturedFees = $this->dbMaintenance->feesAreCaptured($this->order->id);
                 $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
                 $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
+                $getShippping = $this->order->getShipping();
 
                 $this->context->smarty->assign(
                     array(
@@ -291,8 +291,7 @@ class HipayMaintenanceBlock
                         'capturedDiscounts' => $capturedDiscounts,
                         'basket' => $this->basket,
                         'products' => $this->order->getProducts(),
-                        'amountFees' => $this->order->getShipping() ? $this->order->getShipping(
-                        )[0]['shipping_cost_tax_incl'] : 0,
+                        'amountFees' => $getShippping && isset($getShippping[0]['shipping_cost_tax_incl']) && !is_null($getShippping[0]['shipping_cost_tax_incl'])  ? $getShippping[0]['shipping_cost_tax_incl'] : 0,
                         'shippingCost' => $this->order->total_shipping,
                         'discount' => $this->getDiscount(),
                         'orderId' => $this->order->id,
@@ -381,7 +380,8 @@ class HipayMaintenanceBlock
         $totallyCaptured,
         $refundedDiscounts,
         $refundedWrapping
-    ) {
+    )
+    {
         if ($this->order->getCurrentState() == Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1) ||
             !empty($refundedItems) ||
             $refundedFees ||
