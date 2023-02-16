@@ -143,7 +143,7 @@
    */
   function canMakeApplePayPayment() {    
     try {
-      return window.ApplePaySession.canMakePayments();
+      return window.ApplePaySession !== undefined && window.ApplePaySession.canMakePayments();
     } catch (e) {
       console.error('Error on ApplePaySession.canMakePayments', e);
       return false;
@@ -186,7 +186,7 @@
       applePayStyle: applePayStyle,
       selector: 'apple-pay-button'
     };
-    
+
     return appleHipay.create(
       'paymentRequestButton',
       options
