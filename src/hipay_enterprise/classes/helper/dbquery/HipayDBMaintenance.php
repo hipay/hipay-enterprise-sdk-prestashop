@@ -435,7 +435,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     /**
      * @param array<string,mixed>
      *
-     * @return int|false
+     * @return int
      *
      * @throws PrestaShopException
      * @throws PrestaShopDatabaseException
@@ -450,7 +450,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
         .' AND `status` NOT IN ("'.NotificationStatus::SUCCESS.'", "'.NotificationStatus::NOT_HANDLED.'")';
 
         if (empty($result = Db::getInstance()->executeS($sql))) {
-            return false;
+            return 0;
         }
 
         return (int) $result[0]['attempt_number'];
@@ -471,7 +471,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
             $safeData[$key] = pSQL($value);
         }
 
-        if (1 === $data['attempt_number']) {
+        if (isset($data['attempt_number']) && 1 === $data['attempt_number']) {
             return Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData);
         } else {
             $where = '`cart_id` = '.(int) $data['cart_id']
@@ -481,5 +481,83 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
 
             return Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData, $where);
         }
+    }
+
+    /**
+     * Get all transactions waiting to be dispatched.
+     *
+     * @param int $maxAttempt
+     *
+     * @return array|false|mysqli_result|PDOStatement|resource|null
+     */
+    public function getWaitingNotificationsAndUpdateStatus($status, $maxAttempt)
+    {
+        // Order of treatment
+        $notificationOrderGroups = [
+            [
+                // In progress
+                TransactionStatus::AUTHORIZED_AND_PENDING,
+                TransactionStatus::AUTHORIZATION_REQUESTED,
+                144, // Reference rendered
+                169, // Credit requested
+                172, // In progress
+                174, // Awaiting Terminal
+                177, // Challenge requested
+                200, // Pending Payment
+            ],
+            [
+                // Failed Status
+                TransactionStatus::AUTHENTICATION_FAILED,
+                TransactionStatus::BLOCKED,
+                TransactionStatus::DENIED,
+                TransactionStatus::REFUSED,
+                TransactionStatus::EXPIRED,
+                134, // Dispute lost
+                178, // Soft decline
+            ],
+            [TransactionStatus::CHARGED_BACK],
+            [TransactionStatus::AUTHORIZED],
+            [
+                // Capture requested
+                TransactionStatus::CAPTURE_REQUESTED,
+                TransactionStatus::CAPTURE_REFUSED,
+            ],
+            [TransactionStatus::PARTIALLY_CAPTURED],
+            [
+                // Paid
+                TransactionStatus::CAPTURED,
+                166, // Debited (cardholder credit)
+                168, // Debited (cardholder credit)
+            ],
+            [   // Refund requested
+                TransactionStatus::REFUND_REQUESTED,
+                TransactionStatus::REFUND_REFUSED,
+            ],
+            [TransactionStatus::PARTIALLY_REFUNDED],
+            [TransactionStatus::REFUNDED],
+            [
+                TransactionStatus::CANCELLED,
+                143, // Authorization cancelled
+                TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED,
+            ],
+        ];
+
+        $where = ' status = "'.NotificationStatus::WAIT.'"'
+        .' OR (status =  "'.NotificationStatus::ERROR.'" AND attempt_number <= '.(int) $maxAttempt.')';
+
+        $sql = 'SELECT *'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
+        .' WHERE '.$where
+        .' ORDER BY CASE';
+        foreach ($notificationOrderGroups as $position => $group) {
+            $sql .= ' WHEN notification_code IN ('.implode(', ', $group).') THEN '.($position + 1);
+        }
+        $sql .= ' ELSE '.(count($notificationOrderGroups) + 1).' END';
+
+        $selected = Db::getInstance()->executeS($sql);
+
+        Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, ['status' => $status], $where);
+
+        return $selected;
     }
 }

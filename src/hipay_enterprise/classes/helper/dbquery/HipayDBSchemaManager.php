@@ -1,6 +1,6 @@
 <?php
 /**
- * HiPay Enterprise SDK Prestashop
+ * HiPay Enterprise SDK Prestashop.
  *
  * 2017 HiPay
  *
@@ -10,20 +10,19 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
+require_once dirname(__FILE__).'/HipayDBQueryAbstract.php';
 
 /**
- *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ *
+ * @see    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayDBSchemaManager extends HipayDBQueryAbstract
 {
     /**
-     * Create categories mapping table
+     * Create categories mapping table.
      *
      * @return bool
      */
@@ -31,18 +30,18 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Create Hipay categories mapping table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CAT_MAPPING_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CAT_MAPPING_TABLE.'`(
                 `hp_ps_cat_id` INT(10) UNSIGNED NOT NULL,
                 `hp_cat_id` INT(10) UNSIGNED NOT NULL,
                 `shop_id` INT(10) UNSIGNED NOT NULL,
                 PRIMARY KEY (`hp_ps_cat_id`, `shop_id`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
 
     /**
-     * Create categories mapping table
+     * Create categories mapping table.
      *
      * @return bool
      */
@@ -50,7 +49,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('# Create Hipay carrier mapping table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CARRIER_MAPPING_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CARRIER_MAPPING_TABLE.'`(
                 `hp_ps_carrier_id` INT(10) UNSIGNED NOT NULL,
                 `hp_carrier_mode` VARCHAR(255)  NOT NULL,
                 `hp_carrier_shipping` VARCHAR(255) NOT NULL,
@@ -58,7 +57,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `delivery_eta` FLOAT(10) UNSIGNED NOT NULL,
                 `shop_id` INT(10) UNSIGNED NOT NULL,
                 PRIMARY KEY (`hp_ps_carrier_id`, `shop_id` )
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
@@ -67,7 +66,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Create Hipay order refund capture table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `hp_ps_order_id` INT(10) UNSIGNED NOT NULL,
                 `hp_ps_product_id` INT(10) UNSIGNED NOT NULL,
@@ -77,7 +76,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `quantity` INT(10) UNSIGNED NOT NULL,
                 `amount` DECIMAL(5,2) UNSIGNED NOT NULL,
                 PRIMARY KEY (`hp_id`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
@@ -86,7 +85,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Create Hipay credit card token table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `customer_id` INT(10) UNSIGNED NOT NULL,
                 `token` VARCHAR(255) NOT NULL,
@@ -99,18 +98,16 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `country` VARCHAR(15) NOT NULL,
                 `created_at` DATE,
                 PRIMARY KEY (`hp_id`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
-
-
 
     public function createHipayTransactionTable()
     {
         $this->logs->logInfos('Create Hipay transaction table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `order_id` INT(10) UNSIGNED NOT NULL,
                 `transaction_ref` VARCHAR(45) NOT NULL,
@@ -130,7 +127,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `auth_info_method` VARCHAR(2),
                 `eci` VARCHAR(3),
                 PRIMARY KEY (`hp_id`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
@@ -139,12 +136,12 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Create Hipay order capture type table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `order_id` INT(10) UNSIGNED NOT NULL,
                 `type` VARCHAR(255) NOT NULL,
                 PRIMARY KEY (`hp_id`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
@@ -153,22 +150,23 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Create Hipay Notification table');
 
-        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`(
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`(
                 `hp_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                 `cart_id` INT(10) UNSIGNED NOT NULL,
                 `transaction_ref` VARCHAR(45) NOT NULL,
                 `notification_code` INT(4) UNSIGNED NOT NULL,
                 `attempt_number` INT(3) UNSIGNED NOT NULL,
                 `status` VARCHAR(255) NOT NULL,
+                `data` TEXT NOT NULL,
                 PRIMARY KEY (`hp_id`),
                 INDEX `hipay_notification.update_keys` (`cart_id`, `transaction_ref`, `notification_code`, `status`)
-                ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+                ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
         return Db::getInstance()->execute($sql);
     }
 
     /**
-     * Delete Hipay mapping table
+     * Delete Hipay mapping table.
      *
      * @return bool
      */
@@ -176,12 +174,13 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Delete Hipay mapping table');
 
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CAT_MAPPING_TABLE . '`';
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CAT_MAPPING_TABLE.'`';
+
         return Db::getInstance()->execute($sql);
     }
 
     /**
-     * Delete Hipay mapping table
+     * Delete Hipay mapping table.
      *
      * @return bool
      */
@@ -189,7 +188,8 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Delete Hipay carrier mapping table');
 
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CARRIER_MAPPING_TABLE . '`';
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CARRIER_MAPPING_TABLE.'`';
+
         return Db::getInstance()->execute($sql);
     }
 
@@ -197,7 +197,8 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Delete Hipay order refund capture table');
 
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`';
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`';
+
         return Db::getInstance()->execute($sql);
     }
 
@@ -205,7 +206,8 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Delete credit card table');
 
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`';
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`';
+
         return Db::getInstance()->execute($sql);
     }
 
@@ -213,7 +215,8 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('Delete Hipay Notification table');
 
-        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`';
+        $sql = 'DROP TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`';
+
         return Db::getInstance()->execute($sql);
     }
 }

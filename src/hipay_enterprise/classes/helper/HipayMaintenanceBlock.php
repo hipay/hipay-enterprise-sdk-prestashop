@@ -1,6 +1,6 @@
 <?php
 /**
- * HiPay Enterprise SDK Prestashop
+ * HiPay Enterprise SDK Prestashop.
  *
  * 2017 HiPay
  *
@@ -10,21 +10,20 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/HipayHelper.php');
-require_once(dirname(__FILE__) . '/dbquery/HipayDBMaintenance.php');
+require_once dirname(__FILE__).'/HipayHelper.php';
+require_once dirname(__FILE__).'/dbquery/HipayDBMaintenance.php';
 
 /**
- * handle credit card token (OneClik payment)
+ * handle credit card token (OneClik payment).
  *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ *
+ * @see    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayMaintenanceBlock
 {
-
     private $module;
     private $context;
     private $order;
@@ -40,8 +39,7 @@ class HipayMaintenanceBlock
 
     /**
      * HipayMaintenanceBlock constructor.
-     * @param $module
-     * @param $orderID
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -56,41 +54,42 @@ class HipayMaintenanceBlock
         $this->captureOrRefundFromBo = $this->dbMaintenance->captureOrRefundFromBO($this->order->id);
         $this->basket = $this->dbMaintenance->getOrderBasket($this->order->id);
 
-        $this->statusAvailableForCapture = array(
+        $this->statusAvailableForCapture = [
             Configuration::get('HIPAY_OS_AUTHORIZED', null, null, 1),
             Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)
-        );
-        $this->statusNotAvailableForCapture = array(
+            Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1),
+        ];
+        $this->statusNotAvailableForCapture = [
             _PS_OS_PAYMENT_,
             _PS_OS_ERROR_,
             _PS_OS_CANCELED_,
             Configuration::get('HIPAY_OS_EXPIRED', null, null, 1),
             Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUNDED', null, null, 1)
-        );
-        $this->statusAvailableForRefund = array(
+            Configuration::get('HIPAY_OS_REFUNDED', null, null, 1),
+        ];
+        $this->statusAvailableForRefund = [
             _PS_OS_PAYMENT_,
             Configuration::get('HIPAY_OS_PARTIALLY_CAPTURED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1)
-        );
-        $this->statusNotAvailableForRefund = array(
+            Configuration::get('HIPAY_OS_REFUNDED_PARTIALLY', null, null, 1),
+        ];
+        $this->statusNotAvailableForRefund = [
             _PS_OS_ERROR_,
             _PS_OS_CANCELED_,
             Configuration::get('HIPAY_OS_EXPIRED', null, null, 1),
             Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUNDED', null, null, 1)
-        );
+            Configuration::get('HIPAY_OS_REFUNDED', null, null, 1),
+        ];
     }
 
     /**
      * @return mixed
+     *
      * @throws PrestaShopException
      */
     public function displayBlock()
     {
         $this->context->smarty->assign(
-            array(
+            [
                 'errorHipay' => $this->context->cookie->__get('hipay_errors'),
                 'messagesHipay' => $this->context->cookie->__get('hipay_success'),
                 'showMoto' => false,
@@ -99,8 +98,8 @@ class HipayMaintenanceBlock
                 'refundStartedFromBo' => false,
                 'id_currency' => $this->order->id_currency,
                 'orderId' => $this->order->id,
-                'employeeId' => $this->context->employee->id
-            )
+                'employeeId' => $this->context->employee->id,
+            ]
         );
 
         $moto = $this->checkMoto();
@@ -123,9 +122,10 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Check if Order is awaiting for MOTO payment
+     * Check if Order is awaiting for MOTO payment.
      *
      * @return bool
+     *
      * @throws PrestaShopException
      */
     private function checkMoto()
@@ -134,45 +134,52 @@ class HipayMaintenanceBlock
             !$this->dbMaintenance->getTransactionReference($this->order->id)
         ) {
             $this->context->smarty->assign(
-                array(
+                [
                     'config_hipay' => $this->module->hipayConfigTool->getConfigHipay(),
                     'showMoto' => true,
                     'showCapture' => false,
                     'showRefund' => false,
                     'cartId' => $this->cart->id,
-                    'motoLink' => $this->context->link->getAdminLink('AdminHiPayMoto')
-                )
+                    'motoLink' => $this->context->link->getAdminLink('AdminHiPayMoto'),
+                ]
             );
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * Check if Order is awaiting for Challenge
+     * Check if Order is awaiting for Challenge.
      *
      * @return bool
+     *
      * @throws PrestaShopException
      */
     private function checkChallenged()
     {
         if ($this->order->current_state == $this->getStatusId('HIPAY_OS_CHALLENGED')) {
             $this->context->smarty->assign(
-                array(
+                [
                     'showCapture' => false,
                     'showRefund' => false,
                     'showChallenge' => true,
-                    'challengeLink' => $this->context->link->getAdminLink('AdminHiPayChallenge')
-                )
+                    'challengeLink' => $this->context->link->getAdminLink('AdminHiPayChallenge'),
+                ]
             );
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * Check if we must display refundForm
+     * Check if we must display refundForm.
+     *
      * @return bool
+     *
      * @throws PrestaShopException
      */
     private function checkRefund()
@@ -187,17 +194,20 @@ class HipayMaintenanceBlock
             $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
 
             if (
-                $this->paymentMethodCanRefundOrCapture("refund")
-                && !$this->statusNotAvailableForOperation("refund")
+                $this->paymentMethodCanRefundOrCapture('refund')
+                && !$this->statusNotAvailableForOperation('refund')
                 && !$this->hasRefundStartedFromBO()
-                && $this->statusAvailableForOperation("capture")
+                && $this->statusAvailableForOperation('capture')
             ) {
-
                 $discount = $this->getDiscount();
 
-                $this->context->smarty->assign(
-                    array(
-                        'showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()["use_prestashop_refund_form"],
+                $shippingFees = 0;
+                if ($shipping = $this->order->getShipping() && !empty($shipping[0]['shipping_cost_tax_incl'])) {
+                    $shippingFees = $shipping[0]['shipping_cost_tax_incl'];
+                }
+
+                $this->context->smarty->assign([
+                        'showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()['use_prestashop_refund_form'],
                         'manualCapture' => $this->isManualCapture(),
                         'stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
@@ -218,8 +228,7 @@ class HipayMaintenanceBlock
                         ),
                         'totallyRefunded' => $this->isTotallyRefunded(),
                         'products' => $this->order->getProducts(),
-                        'amountFees' => $this->order->getShipping() ? $this->order->getShipping(
-                        )[0]['shipping_cost_tax_incl'] : 0,
+                        'amountFees' => $shippingFees,
                         'shippingCost' => $this->order->total_shipping,
                         'discount' => $discount,
                         'capturedDiscounts' => $capturedDiscounts,
@@ -228,19 +237,18 @@ class HipayMaintenanceBlock
                         'orderId' => $this->order->id,
                         'cartId' => $this->cart->id,
                         'ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
-                        'wrappingGift' => (bool)$this->order->gift && $this->order->total_wrapping > 0
-                    )
-                );
+                        'wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                ]);
 
-                if ((bool)$this->order->gift && $this->order->total_wrapping > 0) {
+                if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
                     $this->context->smarty->assign(
-                        array(
-                            "wrapping" => array(
-                                "value" => $this->order->total_wrapping,
-                                "refunded" => $refundedWrapping,
-                                "captured" => $capturedWrapping
-                            )
-                        )
+                        [
+                            'wrapping' => [
+                                'value' => $this->order->total_wrapping,
+                                'refunded' => $refundedWrapping,
+                                'captured' => $capturedWrapping,
+                            ],
+                        ]
                     );
                 }
 
@@ -248,31 +256,36 @@ class HipayMaintenanceBlock
             }
         }
 
-        $this->context->smarty->assign(array('showRefund' => false));
+        $this->context->smarty->assign(['showRefund' => false]);
+
         return false;
     }
 
     /**
-     * Check if we should display capture form
+     * Check if we should display capture form.
      */
     private function checkCapture()
     {
         if ($this->paymentProduct) {
             if (
-                $this->paymentMethodCanRefundOrCapture("capture")
-                && !$this->statusNotAvailableForOperation("capture")
-                && !($this->captureOrRefundFromBo && ($this->basket !== null))
-                && $this->statusAvailableForOperation("capture")
+                $this->paymentMethodCanRefundOrCapture('capture')
+                && !$this->statusNotAvailableForOperation('capture')
+                && !($this->captureOrRefundFromBo && (null !== $this->basket))
+                && $this->statusAvailableForOperation('capture')
                 && !$this->isTotallyCaptured()
             ) {
-
                 $capturedItems = $this->dbMaintenance->getCapturedItems($this->order->id);
                 $capturedFees = $this->dbMaintenance->feesAreCaptured($this->order->id);
                 $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
                 $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
 
+                $shippingFees = 0;
+                if ($shipping = $this->order->getShipping() && !empty($shipping[0]['shipping_cost_tax_incl'])) {
+                    $shippingFees = $shipping[0]['shipping_cost_tax_incl'];
+                }
+
                 $this->context->smarty->assign(
-                    array(
+                    [
                         'showCapture' => true,
                         'stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
@@ -291,25 +304,24 @@ class HipayMaintenanceBlock
                         'capturedDiscounts' => $capturedDiscounts,
                         'basket' => $this->basket,
                         'products' => $this->order->getProducts(),
-                        'amountFees' => $this->order->getShipping() ? $this->order->getShipping(
-                        )[0]['shipping_cost_tax_incl'] : 0,
+                        'amountFees' => $shippingFees,
                         'shippingCost' => $this->order->total_shipping,
                         'discount' => $this->getDiscount(),
                         'orderId' => $this->order->id,
                         'cartId' => $this->cart->id,
                         'ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
-                        'wrappingGift' => (bool)$this->order->gift && $this->order->total_wrapping > 0
-                    )
+                        'wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                    ]
                 );
 
-                if ((bool)$this->order->gift && $this->order->total_wrapping > 0) {
+                if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
                     $this->context->smarty->assign(
-                        array(
-                            "wrapping" => array(
-                                "value" => $this->order->total_wrapping,
-                                "captured" => $capturedWrapping
-                            )
-                        )
+                        [
+                            'wrapping' => [
+                                'value' => $this->order->total_wrapping,
+                                'captured' => $capturedWrapping,
+                            ],
+                        ]
                     );
                 }
 
@@ -317,12 +329,13 @@ class HipayMaintenanceBlock
             }
         }
 
-        $this->context->smarty->assign(array('showCapture' => false));
+        $this->context->smarty->assign(['showCapture' => false]);
+
         return false;
     }
 
     /**
-     * Check if order is totally captured
+     * Check if order is totally captured.
      *
      * @return bool
      */
@@ -342,7 +355,7 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Check if order is totally refunded
+     * Check if order is totally refunded.
      *
      * @return bool
      */
@@ -354,8 +367,8 @@ class HipayMaintenanceBlock
         $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
         foreach ($this->order->getProducts() as $product) {
-            $totallyRefunded &= (isset($refundedItems[$product["product_id"]]) &&
-                $refundedItems[$product["product_id"]]["quantity"] >= $product["product_quantity"]);
+            $totallyRefunded &= (isset($refundedItems[$product['product_id']]) &&
+                $refundedItems[$product['product_id']]['quantity'] >= $product['product_quantity']);
         }
 
         if (!$refundedFees || !$refundedDiscounts) {
@@ -366,13 +379,8 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Check if order is partially refunded
+     * Check if order is partially refunded.
      *
-     * @param $refundedItems
-     * @param $refundedFees
-     * @param $totallyCaptured
-     * @param $refundedDiscounts
-     * @param $refundedWrapping
      * @return bool
      */
     private function isPartiallyRefunded(
@@ -396,12 +404,8 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Check if Order is partially captured
+     * Check if Order is partially captured.
      *
-     * @param $capturedItems
-     * @param $capturedFees
-     * @param $capturedDiscounts
-     * @param $capturedWrapping
      * @return bool
      */
     private function isPartiallyCaptured($capturedItems, $capturedFees, $capturedDiscounts, $capturedWrapping)
@@ -414,11 +418,12 @@ class HipayMaintenanceBlock
         ) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Check if Order was manually captured
+     * Check if Order was manually captured.
      *
      * @return bool
      */
@@ -432,7 +437,7 @@ class HipayMaintenanceBlock
 
         if (
             $this->dbMaintenance->isManualCapture($this->order->id)
-            || (boolean)$isChallenged
+            || (bool) $isChallenged
         ) {
             return true;
         }
@@ -441,56 +446,52 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Check in Order history if Operation is available for this Order
+     * Check in Order history if Operation is available for this Order.
      *
-     * @param $operation
      * @return bool
      */
     private function statusAvailableForOperation($operation)
     {
         $available = false;
-        $status = ($operation === "capture") ? $this->statusAvailableForCapture : $this->statusAvailableForRefund;
+        $status = ('capture' === $operation) ? $this->statusAvailableForCapture : $this->statusAvailableForRefund;
 
         foreach ($status as $statusItem) {
             $available = $available || $this->order->getHistory(
-                    $this->context->language->id,
-                    $statusItem
-                );
+                $this->context->language->id,
+                $statusItem
+            );
         }
 
         return $available;
     }
 
     /**
-     * Check if current Order status allow us to perform the operation (capture or refund)
+     * Check if current Order status allow us to perform the operation (capture or refund).
      *
-     * @param $operation
      * @return bool
      */
     private function statusNotAvailableForOperation($operation)
     {
-        $status = ($operation === "capture") ? $this->statusNotAvailableForCapture : $this->statusNotAvailableForRefund;
+        $status = ('capture' === $operation) ? $this->statusNotAvailableForCapture : $this->statusNotAvailableForRefund;
 
         return in_array($this->order->getCurrentState(), $status);
     }
 
     /**
-     * Check if payment method can refund or capture (HipayConfig)
+     * Check if payment method can refund or capture (HipayConfig).
      *
-     * @param $operation
      * @return bool
      */
     private function paymentMethodCanRefundOrCapture($operation)
     {
-
-        $label = ($operation === "capture") ? "canManualCapture" : "canRefund";
+        $label = ('capture' === $operation) ? 'canManualCapture' : 'canRefund';
 
         if (
             (isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
-                && !(bool)$this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
+                && !(bool) $this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
             ||
             (isset($this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct])
-                && !(bool)$this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct][$label])
+                && !(bool) $this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct][$label])
         ) {
             return false;
         }
@@ -499,9 +500,8 @@ class HipayMaintenanceBlock
     }
 
     /**
-     * Return status id from Prestashop configuration
+     * Return status id from Prestashop configuration.
      *
-     * @param $statusName
      * @return string
      */
     private function getStatusId($statusName)
@@ -511,7 +511,7 @@ class HipayMaintenanceBlock
 
     /**
      * Return discount from Order
-     * All Order discounts are agglomerate in one discount for capture and refund
+     * All Order discounts are agglomerate in one discount for capture and refund.
      *
      * @return array
      */
@@ -519,22 +519,22 @@ class HipayMaintenanceBlock
     {
         $discounts = $this->order->getCartRules();
 
-        $discount = array();
+        $discount = [];
 
         if (!empty($discounts)) {
             foreach ($discounts as $disc) {
-                $discount["name"][] = $disc["name"];
-                $discount["value"] = (!isset($discount["value"])) ? $disc["value"] : $discount["value"] +
-                    $disc["value"];
+                $discount['name'][] = $disc['name'];
+                $discount['value'] = (!isset($discount['value'])) ? $disc['value'] : $discount['value'] +
+                    $disc['value'];
             }
-            $discount["name"] = join("/", $discount["name"]);
+            $discount['name'] = join('/', $discount['name']);
         }
 
         return $discount;
     }
 
     /**
-     * Check if current order state is HIPAY_OS_REFUND_REQUESTED
+     * Check if current order state is HIPAY_OS_REFUND_REQUESTED.
      *
      * @return bool
      */
@@ -545,17 +545,18 @@ class HipayMaintenanceBlock
 
     /**
      * Check if refund has started from HiPay BO
-     * if true it is not possible to pursue from prestashop BO
+     * if true it is not possible to pursue from prestashop BO.
+     *
      * @return bool
      */
     private function hasRefundStartedFromBO()
     {
-        if (!($this->captureOrRefundFromBo && ($this->basket !== null)) || !$this->isManualCapture()) {
+        if (!($this->captureOrRefundFromBo && (null !== $this->basket)) || !$this->isManualCapture()) {
             return false;
         }
 
         // if started from BO, displays an message to the BO User
-        $this->context->smarty->assign(array('refundStartedFromBo' => true));
+        $this->context->smarty->assign(['refundStartedFromBo' => true]);
 
         return true;
     }

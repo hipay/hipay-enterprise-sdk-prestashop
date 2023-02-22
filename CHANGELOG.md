@@ -2,6 +2,7 @@
 
 ## Version 2.17.3
 
+- **Add**: Implement cron notifications
 - **Fix**: Add index on Notification table
 - **Fix**: Handle multiple order from one cart
 - **Fix**: Security improvement
