@@ -4,6 +4,10 @@ Contributions to the HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x should
 requests][pull-requests] and discussed using
 GitHub [issues][issues].
 
+All contributions - even if we take them as the original author in the end - will be closed.
+
+GitHub is not our main system and we simply allow you to read the code and work for us, without any counterparties; not even the joy of the open-source contribution.
+
 ### Before you start
 
 If you would like to make a significant change, please open
