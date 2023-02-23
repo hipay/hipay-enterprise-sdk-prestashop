@@ -3,9 +3,10 @@
 ## Version 2.17.3
 
 - **Add**: Implement cron notifications
+- **Fix**: shipping cost dispay in backoffice, thanks to [Lionel-dev](Lionel-dev) on [#80](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/80)
 - **Fix**: Add index on Notification table
 - **Fix**: Handle multiple order from one cart
-- **Fix**: Security improvement
+- **Fix**: Security improvement, thanks to [okom3pom](https://github.com/okom3pom) on [#78](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/78)
 
 ## Version 2.17.2
 
