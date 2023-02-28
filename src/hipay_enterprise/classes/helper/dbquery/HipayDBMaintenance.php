@@ -323,7 +323,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
      *
      * @param string $transaction_reference
      */
-    public function getTransactionById($transaction_reference)
+    public function getTransactionByRef($transaction_reference)
     {
         $sql = 'SELECT *'
             .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'

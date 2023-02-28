@@ -261,7 +261,7 @@ class Apihandler
                                     }
                                 } catch (GatewayException $e) {
                                     $errorMsg = [];
-                                    $transaction = $hipayDbMaintenance->getTransactionById($order->id);
+                                    $transaction = $hipayDbMaintenance->getTransactionByRef($params['transaction_reference']);
 
                                     preg_match('/\\[(.*)\\]/s', $e->getMessage(), $errorMsg);
                                     $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");

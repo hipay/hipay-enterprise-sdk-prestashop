@@ -7,6 +7,7 @@
 - **Fix**: Add index on Notification table
 - **Fix**: Handle multiple order from one cart
 - **Fix**: Security improvement, thanks to [okom3pom](https://github.com/okom3pom) on [#78](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/78)
+- **Fix**: Error message on order cancellation, thanks to thanks to [axometeam](https://github.com/axometeam)
 
 ## Version 2.17.2
 
