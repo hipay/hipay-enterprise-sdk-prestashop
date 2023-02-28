@@ -835,8 +835,8 @@
         });
 
         var showUrl = function() {
-            var token = $('#notification_cron_token').val();
-            $('#notification-url').text(document.location.origin + '/module/hipay_enterprise/dispatch?token=' + token);
+           var token = $('#notification_cron_token').val();
+            $('#notification-url').text(document.location.origin + '/index.php?fc=module&module=hipay_enterprise&controller=dispatch?token=' + token);
         }
 
         showUrl();
