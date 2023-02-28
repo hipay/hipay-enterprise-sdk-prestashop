@@ -877,11 +877,6 @@ class HipayNotification
             'cart_id' => $cart->id,
             'transaction_ref' => $transaction->getTransactionReference(),
             'notification_code' => $transaction->getStatus(),
-        ];
-        $data = [
-            'cart_id' => $transaction->getOrder()->getId(),
-            'transaction_ref' => $transaction->getTransactionReference(),
-            'notification_code' => $transaction->getStatus(),
             'status' => $status,
         ];
 
