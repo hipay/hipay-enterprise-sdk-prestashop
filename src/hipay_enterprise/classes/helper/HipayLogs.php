@@ -178,6 +178,7 @@ class HipayLogs
         $callback_files = [];
         $request_files = [];
         $refund_files = [];
+        $notification_cron_files = [];
 
         // List files
         foreach ($files as $file) {
@@ -190,9 +191,11 @@ class HipayLogs
             if (preg_match('/infos/i', $file) && count($info_files) < 10) {
                 $info_files[] = $file;
             }
-            if (preg_match('/request/i', $file) && count($request_files) < 10
-            ) {
+            if (preg_match('/request/i', $file) && count($request_files) < 10) {
                 $request_files[] = $file;
+            }
+            if (preg_match('/notification-cron/i', $file) && count($request_files) < 10) {
+                $notification_cron_files[] = $file;
             }
         }
 
@@ -202,6 +205,7 @@ class HipayLogs
             'callback' => $callback_files,
             'request' => $request_files,
             'refund' => $refund_files,
+            'notification-cron' => $notification_cron_files,
         ];
     }
 
