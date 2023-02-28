@@ -194,7 +194,7 @@ class HipayNotification
             } else {
                 if (in_array($transaction->getStatus(), [TransactionStatus::AUTHORIZED, TransactionStatus::AUTHORIZED_AND_PENDING])
                     && $currentAttempt >= Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')
-                    || $this->getPaymentProductConfig('orderOnPending')
+                    || $this->getPaymentProductConfig($transaction, 'orderOnPending')
                     && TransactionStatus::AUTHORIZATION_REQUESTED === $transaction->getStatus()
                 ) {
                     $this->log->logInfos('Received '.$currentAttempt.' '.$transaction->getStatus().' Notifications for cart : '.$cart->id.', creating order now');
