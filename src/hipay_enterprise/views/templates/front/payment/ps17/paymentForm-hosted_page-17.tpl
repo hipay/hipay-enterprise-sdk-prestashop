@@ -63,7 +63,7 @@
 
             var lang = "{$languageIsoCode}";
 
-            var hipay = HiPay({
+            var hipay = new HiPay({
                 username: api_tokenjs_username,
                 password: api_tokenjs_password_publickey,
                 environment: api_tokenjs_mode,
