@@ -15,6 +15,7 @@ require_once dirname(__FILE__).'/../../classes/helper/HipayNotification.php';
 require_once dirname(__FILE__).'/../../classes/helper/HipayHelper.php';
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
+use HiPay\Fullservice\Gateway\Mapper\TransactionMapper;
 
 /**
  * Class Hipay_enterpriseNotifyModuleFrontController.
@@ -55,13 +56,19 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             }
 
             // Check Notification signature
-            $notificationHandler = new HipayNotification($this->module, $params);
+            $notificationHandler = new HipayNotification($this->module);
+
+            /** @var Transaction $transaction */
+            $transaction = (new TransactionMapper($params))->getModelObjectMapped();
+
+            /** @var array<string,mixed> */
+            $customData = $transaction->getCustomData();
 
             $moto = false;
             $isApplePay = false;
-            if (ECI::MOTO == $notificationHandler->getEci()) {
+            if (ECI::MOTO == $transaction->getEci()) {
                 $moto = true;
-            } elseif ($notificationHandler->isApplePayOrder()) {
+            } elseif (isset($customData['isApplePay']) && $customData['isApplePay']) {
                 $isApplePay = true;
             }
 
@@ -71,7 +78,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
                 exit('Bad Callback initiated - signature');
             }
 
-            $notificationHandler->processTransaction();
+            $notificationHandler->handleNotification($transaction);
         } catch (NotificationException $e) {
             header($e->getReturnCode());
             exit($e->getMessage());
@@ -79,7 +86,6 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             header('HTTP/1.0 500 Internal server error');
             exit($e->getMessage());
         }
-
         exit;
     }
 }

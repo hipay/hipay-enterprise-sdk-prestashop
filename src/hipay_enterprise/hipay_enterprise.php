@@ -307,7 +307,7 @@ class Hipay_enterprise extends PaymentModule
                     $maintenanceParams['transaction_reference'] = $maintenaceDBHelper->getTransactionReference($order->id);
 
                     // Check if transaction was created in basket mode or not
-                    $transaction = $maintenaceDBHelper->getTransactionById($maintenanceParams['transaction_reference']);
+                    $transaction = $maintenaceDBHelper->getTransactionByRef($maintenanceParams['transaction_reference']);
 
                     if ($transaction) {
                         if ($transaction['basket']) {
@@ -472,6 +472,7 @@ class Hipay_enterprise extends PaymentModule
         $this->context->controller->addCSS($this->_path.'views/css/back.css', 'all');
 
         $this->context->controller->addJS($this->_path.'/views/js/form-input-control.js', 'all');
+        $this->context->controller->addJS($this->_path.'/views/js/md5.js', 'all');
     }
 
     public function hookHeader()
@@ -674,11 +675,7 @@ class Hipay_enterprise extends PaymentModule
                 'module_dir' => $this->_path,
                 'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
                 'logs' => $this->getLogs()->getLogFiles(),
-                'module_url' => AdminController::$currentIndex.
-                '&configure='.
-                $this->name.
-                '&token='.
-                Tools::getAdminTokenLite('AdminModules'),
+                'module_url' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules'),
                 'fraud_form' => $formGenerator->getFraudForm(),
                 'form_errors' => $this->_errors,
                 'form_successes' => $this->_successes,

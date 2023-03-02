@@ -68,7 +68,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      *
      * @param int $customerId
      *
-     * @return bool
+     * @return bool|array<string,mixed>
      */
     public function getSavedCC($customerId)
     {
