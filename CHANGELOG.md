@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 2.17.3
+## Version 2.18.0
 
 - **Add**: Implement cron notifications
 - **Fix**: shipping cost dispay in backoffice, thanks to [Lionel-dev](https://github.com/Lionel-dev) on [#80](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/80)

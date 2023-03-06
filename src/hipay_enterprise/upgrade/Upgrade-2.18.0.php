@@ -12,7 +12,7 @@
  */
 require_once dirname(__FILE__).'/../classes/helper/dbquery/HipayDBSchemaManager.php';
 
-function upgrade_module_2_17_3($module)
+function upgrade_module_2_18_0($module)
 {
     $log = $module->getLogs();
 
@@ -24,7 +24,7 @@ function upgrade_module_2_17_3($module)
         throw new Exception('Error during SQL request');
     }
 
-    $log->logInfos('Upgrade to 2.17.3');
+    $log->logInfos('Upgrade to 2.18.0');
 
     try {
         $keepParameters = [
