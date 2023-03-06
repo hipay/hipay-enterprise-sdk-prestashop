@@ -1,6 +1,7 @@
 <?php
+
 /**
- * HiPay Enterprise SDK Prestashop
+ * HiPay Enterprise SDK Prestashop.
  *
  * 2017 HiPay
  *
@@ -10,54 +11,55 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/HipayDBQueryAbstract.php');
+require_once dirname(__FILE__).'/HipayDBQueryAbstract.php';
 
 /**
- *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ *
+ * @see    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayDBUtils extends HipayDBQueryAbstract
 {
     /**
-     * set activated currency for the module
+     * set activated currency for the module.
      *
-     * @param $moduleId
-     * @param $shopId
-     * @param $iso
+     * @param int    $moduleId
+     * @param int    $shopId
+     * @param string $iso
+     *
      * @return bool
      */
     public function setCurrencies($moduleId, $shopId, $iso)
     {
+        $sql = 'INSERT IGNORE INTO `'._DB_PREFIX_.'module_currency` (`id_module`, `id_shop`, `id_currency`)'
+            .' SELECT '.(int) $moduleId.', "'.(int) $shopId.'", `id_currency`'
+            .' FROM `'._DB_PREFIX_.'currency`'
+            .' WHERE `deleted` = 0 AND `iso_code` = "'.pSQL($iso).'"';
 
-        $sql = 'INSERT IGNORE INTO `' . _DB_PREFIX_ . 'module_currency` (`id_module`, `id_shop`, `id_currency`)
-                    SELECT ' . (int)$moduleId . ', "' . (int)$shopId . '", `id_currency`
-                    FROM `' . _DB_PREFIX_ . 'currency`
-                    WHERE `deleted` = \'0\' AND `iso_code` = \'' . $iso . '\'';
-        return (bool)Db::getInstance()->execute($sql);
+        return (bool) Db::getInstance()->execute($sql);
     }
 
     /**
-     * get last cart from user ID
+     * get last cart from user ID.
      *
      * @param int $userId
-     * @return boolean / Cart
+     *
+     * @return bool|Cart
      */
     public function getLastCartFromUser($userId)
     {
-        $sql = 'SELECT `id_cart`
-                FROM `' . _DB_PREFIX_ . 'cart`
-                WHERE `id_customer` = ' . pSQL($userId) . '
-                ORDER BY date_upd DESC';
+        $sql = 'SELECT `id_cart`'
+            .' FROM `'._DB_PREFIX_.'cart`'
+            .' WHERE `id_customer` = '.(int) $userId
+            .' ORDER BY date_upd DESC';
 
         $result = Db::getInstance()->getRow($sql);
         $cart_id = isset($result['id_cart']) ? $result['id_cart'] : false;
 
         if ($cart_id) {
-            $objCart = new Cart((int)$cart_id);
+            $objCart = new Cart((int) $cart_id);
         } else {
             $objCart = false;
         }
@@ -66,146 +68,153 @@ class HipayDBUtils extends HipayDBQueryAbstract
     }
 
     /**
-     * start sql transaction
+     * start sql transaction.
      *
-     * @param int $orderId
+     * @param int    $orderId
+     * @param string $origin
      */
     public function setSQLLockForCart($orderId, $origin)
     {
-        $this->logs->logInfos('# Start LockSQL  for id_order = ' . $orderId . 'in :' . $origin);
+        $this->logs->logInfos('# Start LockSQL for id_order = '.$orderId.'in :'.$origin);
 
-        $sql = 'START TRANSACTION;';
-        $sql .= 'SELECT hp_id, order_id FROM ' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . ' WHERE order_id = ' . pSQL((int)$orderId) . ' FOR UPDATE;';
+        $sql = 'START TRANSACTION;'
+            .'SELECT hp_id, order_id'
+            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE order_id = '.(int) $orderId.' FOR UPDATE';
 
         if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_order = ' . $orderId);
-            die('Lock not initiated');
+            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_order = '.$orderId);
+            exit('Lock not initiated');
         }
-        $this->logs->logInfos('# LockSQL for id_order = ' . $orderId . 'in :' . $origin . ' is now free');
+        $this->logs->logInfos('# LockSQL for id_order = '.$orderId.'in :'.$origin.' is now free');
     }
 
     /**
-     * commit transaction and release sql lock
+     * commit transaction and release sql lock.
      *
-     * @param $origin
+     * @param string $origin
      */
     public function releaseSQLLock($origin)
     {
-        $this->logs->logInfos('# Commit LockSQL for ' . $origin);
+        $this->logs->logInfos('# Commit LockSQL for '.$origin);
 
-        $sql = 'commit;';
+        $sql = 'COMMIT';
         if (!Db::getInstance()->execute($sql)) {
             $this->logs->logInfos('Bad LockSQL initiated ');
         }
     }
 
     /**
-     * @param $cartId
-     * @return bool
+     * @param int $cartId
+     *
+     * @return int[]
      */
-    public function getOrderByCartId($cartId)
+    public function getOrderIdsByCartId($cartId)
     {
-        $sql = 'SELECT `id_order`
-                    FROM `' . _DB_PREFIX_ . 'orders`
-                    WHERE `id_cart` = ' . (int)$cartId;
-        $result = Db::getInstance()->getRow($sql);
-        return isset($result['id_order']) ? $result['id_order'] : false;
+        $sql = 'SELECT `id_order`'
+            .' FROM `'._DB_PREFIX_.'orders`'
+            .' WHERE `id_cart` = '.(int) $cartId;
+
+        $result = Db::getInstance()->executeS($sql);
+
+        return $result ? array_column($result, 'id_order') : [];
     }
 
     /**
-     * check if specific order status exist in $idOrder order history
+     * check if specific order status exist in $idOrder order history.
      *
-     * @param $status
-     * @param $idOrder
+     * @param int $status
+     * @param int $idOrder
+     *
      * @return bool
      */
     public function checkOrderStatusExist($status, $idOrder)
     {
-        $sql = 'SELECT COUNT(id_order_history) as count
-		FROM `' . _DB_PREFIX_ . 'order_history`
-		WHERE `id_order` = ' . pSQL((int)$idOrder) . ' AND `id_order_state` = ' . pSQL((int)$status);
+        $sql = 'SELECT COUNT(id_order_history) as count'
+            .' FROM `'._DB_PREFIX_.'order_history`'
+            .' WHERE `id_order` = '.(int) $idOrder
+            .' AND `id_order_state` = '.(int) $status;
 
-        $this->logs->logInfos('# Check order status exist : ' . $sql);
+        $this->logs->logInfos('# Check order status exist : '.$sql);
 
         $result = Db::getInstance()->getRow($sql);
 
-        $this->logs->logInfos('# Check order status exist : ' . print_r($result, true));
+        $this->logs->logInfos('# Check order status exist : '.print_r($result, true));
 
-        if (isset($result['count']) && $result['count'] > 0) {
-            return true;
-        }
-        return false;
+        return isset($result['count']) && $result['count'] > 0;
     }
 
     /**
-     * @param $order_ref
-     * @param $trans_id
+     * @param string $order_ref
+     * @param int    $trans_id
+     *
      * @return bool|OrderPayment
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function findOrderPayment($order_ref, $trans_id)
     {
         $payment_id = Db::getInstance()->getValue(
-            'SELECT `id_order_payment` FROM `' . _DB_PREFIX_ . 'order_payment`
-            WHERE `order_reference` = \'' . pSQL($order_ref) . '\' AND transaction_id = \'' . pSQL($trans_id) . '\''
+            'SELECT `id_order_payment`'
+                .' FROM `'._DB_PREFIX_.'order_payment`'
+                .' WHERE `order_reference` = "'.pSQL($order_ref).'"'
+                .' AND transaction_id = '.(int) $trans_id
         );
 
         if (!$payment_id) {
             return false;
         }
 
-        return new OrderPayment((int)$payment_id);
+        return new OrderPayment((int) $payment_id);
     }
 
     /**
-     * count order payment line
+     * count order payment line.
      *
-     * @param $orderReference
-     * @param null $transactionId
+     * @param string   $orderReference
+     * @param int|null $transactionId
+     *
      * @return int
      */
     public function countOrderPayment($orderReference, $transactionId = null)
     {
-        $transactWhere = "";
+        $sql = 'SELECT COUNT(id_order_payment) as count'
+            .' FROM `'._DB_PREFIX_.'order_payment`'
+            .' WHERE `order_reference` = "'.pSQL($orderReference).'"';
 
-        if ($transactionId != null) {
-            $transactWhere = " transaction_id='" . pSQL($transactionId) . "' AND ";
+        if (null != $transactionId) {
+            $sql .= ' AND transaction_id = '.(int) $transactionId;
         }
-
-        $sql = "SELECT COUNT(id_order_payment) as count "
-            . "FROM `" . _DB_PREFIX_ . "order_payment` "
-            . "WHERE " . $transactWhere . " `order_reference` = '" . pSQL($orderReference) . "' ;";
-
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['count'])) {
             return $result['count'];
         }
+
         return 0;
     }
 
     /**
      * Check if there is a duplicated OrderPayment and remove duplicate from same order ref but with incomplete payment method name
      * When order is set to Payed order status Prestashop create order payment with remaining amount to pay
-     * we need to erase this line
+     * we need to erase this line.
      *
-     * @param $order
+     * @param Order $order
+     *
      * @throws PrestaShopDatabaseException
      */
     public function deleteOrderPaymentDuplicate($order)
     {
         // delete
-        $where = "payment_method='" .
-            HipayDBQueryAbstract::HIPAY_PAYMENT_ORDER_PREFIX .
-            "' AND transaction_id='' AND order_reference='" .
-            pSQL($order->reference) .
-            "'";
+        $where = 'payment_method = "'.HipayDBQueryAbstract::HIPAY_PAYMENT_ORDER_PREFIX.'"'
+            .' AND transaction_id = ""'
+            .' AND order_reference = "'.pSQL($order->reference).'"';
 
         // Querying for to-be-deleted order payments to substract total_paid_real on order
-        $originalData = Db::getInstance()->executeS('SELECT * FROM `' .
-            _DB_PREFIX_ .
-            'order_payment` WHERE ' . $where);
+        $originalData = Db::getInstance()->executeS(
+            'SELECT * FROM `'._DB_PREFIX_.'order_payment` WHERE '.$where
+        );
 
         foreach ($originalData as $paymentRow) {
             $order->total_paid_real -= $paymentRow['amount'];
@@ -216,20 +225,20 @@ class HipayDBUtils extends HipayDBQueryAbstract
     }
 
     /**
-     * Returns a module's version from database
-     * @param $moduleName The module's name
+     * Returns a module's version from database.
+     *
+     * @param string $moduleName The module's name
+     *
      * @return mixed
+     *
      * @throws PrestaShopDatabaseException
      */
     public function getModuleVersion($moduleName)
     {
-        $sql = 'SELECT version FROM `' .
-            _DB_PREFIX_ .
-            'module` WHERE name = \'' .
-            pSQL(
-                $moduleName
-            ) .
-            '\' LIMIT 1;';
+        $sql = 'SELECT version'
+            .' FROM `'._DB_PREFIX_.'module`'
+            .' WHERE name = "'.pSQL($moduleName).'"'
+            .' LIMIT 1';
 
         $result = Db::getInstance()->executeS($sql);
 
@@ -240,10 +249,13 @@ class HipayDBUtils extends HipayDBQueryAbstract
         }
     }
 
+    /**
+     * @param int $orderId
+     */
     public function getNotificationsForOrder($orderId)
     {
-        $sql = 'SELECT status FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE .
-            '` WHERE order_id=' . pSQL((int)$orderId) . ' ;';
+        $sql = 'SELECT status FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE order_id = '.(int) $orderId;
 
         return array_map(function ($value) {
             return $value['status'];

@@ -1,6 +1,6 @@
 <?php
 /**
- * HiPay Enterprise SDK Prestashop
+ * HiPay Enterprise SDK Prestashop.
  *
  * 2017 HiPay
  *
@@ -10,48 +10,62 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-
-require_once(dirname(__FILE__) . '/dbquery/HipayDBTokenQuery.php');
+require_once dirname(__FILE__).'/dbquery/HipayDBTokenQuery.php';
 
 /**
- * handle credit card token (OneClik payment)
+ * handle credit card token (OneClik payment).
  *
  * @author      HiPay <support.tpp@hipay.com>
  * @copyright   Copyright (c) 2017 - HiPay
  * @license     https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
- * @link    https://github.com/hipay/hipay-enterprise-sdk-prestashop
+ *
+ * @see    https://github.com/hipay/hipay-enterprise-sdk-prestashop
  */
 class HipayCCToken
 {
+    /** @var Hipay_enterprise */
+    private $module;
+    /** @var HipayLogs */
+    private $logs;
+    /** @var HipayDBTokenQuery */
+    private $dbTokenQuery;
 
+    /**
+     * @param Hipay_entreprise $moduleInstance
+     *
+     * @return void
+     */
     public function __construct($moduleInstance)
     {
         $this->module = $moduleInstance;
         $this->logs = $this->module->getLogs();
-        $this->context = Context::getContext();
         $this->dbTokenQuery = new HipayDBTokenQuery($this->module);
     }
 
     /**
-     * save credit card token and other informations
-     * @param int $customerId
+     * save credit card token and other informations.
+     *
+     * @param int   $customerId
      * @param array $card
+     *
+     * @return void
      */
     public function saveCCToken($customerId, $card)
     {
-
-        if (!$this->tokenExist($customerId, $card["token"])) {
-            $this->module->getLogs()->logInfos("# SaveCCToken for customer ID $customerId");
-            $card = array_merge(array("customer_id" => $customerId, "created_at" => (new DateTime())->format('Y-m-d')), $card);
+        if (!$this->tokenExist($customerId, $card['token'])) {
+            $this->logs->logInfos("# SaveCCToken for customer ID $customerId");
+            $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
 
             $this->dbTokenQuery->setCCToken($card);
         }
     }
 
     /**
-     * get all saved credit card from customer
-     * @param type $customerId
-     * @return type
+     * get all saved credit card from customer.
+     *
+     * @param int $customerId
+     *
+     * @return bool|array
      */
     public function getSavedCC($customerId)
     {
@@ -59,10 +73,12 @@ class HipayCCToken
     }
 
     /**
-     * check if customer credit card token exit
-     * @param type $customerId
-     * @param type $token
-     * @return type
+     * check if customer credit card token exit.
+     *
+     * @param int    $customerId
+     * @param string $token
+     *
+     * @return bool
      */
     public function tokenExist($customerId, $token)
     {
@@ -70,10 +86,12 @@ class HipayCCToken
     }
 
     /**
-     * get token informations
-     * @param type $customerId
-     * @param type $token
-     * @return type
+     * get token informations.
+     *
+     * @param int    $customerId
+     * @param string $token
+     *
+     * @return array<string,mixed>|false
      */
     public function getTokenDetails($customerId, $token)
     {
@@ -81,10 +99,12 @@ class HipayCCToken
     }
 
     /**
-     * delete customer credit card token
-     * @param type $customerId
-     * @param type $tokenId
-     * @return type
+     * delete customer credit card token.
+     *
+     * @param int    $customerId
+     * @param string $tokenId
+     *
+     * @return bool
      */
     public function deleteToken($customerId, $tokenId)
     {
@@ -92,9 +112,9 @@ class HipayCCToken
     }
 
     /**
+     * @param int $customerId
      *
-     * @param type $customerId
-     * @return type
+     * @return true
      */
     public function deleteAllToken($customerId)
     {

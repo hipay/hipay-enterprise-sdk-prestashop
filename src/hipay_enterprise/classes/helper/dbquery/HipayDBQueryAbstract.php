@@ -19,6 +19,11 @@
  */
 abstract class HipayDBQueryAbstract
 {
+    /** @var HipayLogs */
+    protected $logs;
+
+    /** @var Hipay_enterprise $module */
+    protected $module;
 
     const HIPAY_CAT_MAPPING_TABLE = 'hipay_cat_mapping';
     const HIPAY_CARRIER_MAPPING_TABLE = 'hipay_carrier_mapping';
@@ -29,6 +34,9 @@ abstract class HipayDBQueryAbstract
     const HIPAY_NOTIFICATION_TABLE = 'hipay_notifications';
     const HIPAY_PAYMENT_ORDER_PREFIX = 'HiPay Enterprise';
 
+    /**
+     * @param Hipay_enterprise $moduleInstance 
+     */
     public function __construct($moduleInstance)
     {
         $this->module = $moduleInstance;

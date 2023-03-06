@@ -42,7 +42,7 @@
       buttonStyle: '{$appleFields.buttonStyle[0]}',
       totalAmount: '{$cart.totalAmount}',
       shopName: '{Configuration::get('PS_SHOP_NAME')}'
-    }
+    };
 
     initApplePay(parameters);
   }, false);
@@ -52,6 +52,8 @@
    */
   function initApplePay(parameters) {
     handleSubmitButton();
+
+
     if (canMakeApplePayPayment()) {
       handleTermsOfService();
 
@@ -60,7 +62,7 @@
 
       $('#apple-pay-error-message').css('display', 'inline');
       $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
-      var intanceApplePayButton = createApplePayInstance(parameters);
+      const intanceApplePayButton = createApplePayInstance(parameters);
 
       handleApplePayEvents(intanceApplePayButton);
     } else {
@@ -139,29 +141,12 @@
    * Check if card is available for this merchantID or if browser handles Apple Pay
    * @returns boolean
    */
-  function canMakeApplePayPayment() {
-    if ('{$appleFields.merchantId}' !== '') {
-      hipay.canMakePaymentsWithActiveCard('{$appleFields.merchantId}')
-        .then(function (canMakePayments) {
-          if (canMakePayments) {
-            return true;
-          } else {
-            return false;
-          }
-        })
-        .catch(function () {
-          return false;
-        });
-    } else {
-      var canMakePayments = false;
-      try {
-        canMakePayments = window.ApplePaySession.canMakePayments();
-        if (canMakePayments) {
-          return true;
-        }
-      } catch (e) {
-        return false;
-      }
+  function canMakeApplePayPayment() {    
+    try {
+      return window.ApplePaySession !== undefined && window.ApplePaySession.canMakePayments();
+    } catch (e) {
+      console.error('Error on ApplePaySession.canMakePayments', e);
+      return false;
     }
   }
 
@@ -170,7 +155,8 @@
    * @returns paymentRequestButton
    */
   function createApplePayInstance(parameters) {
-    hipay = HiPay({
+
+    const appleHipay = new HiPay({
       username: parameters.api_apple_pay_username,
       password: parameters.api_apple_pay_password,
       environment: parameters.environment,
@@ -201,7 +187,7 @@
       selector: 'apple-pay-button'
     };
 
-    return hipay.create(
+    return appleHipay.create(
       'paymentRequestButton',
       options
     );
@@ -228,8 +214,6 @@
       // The payment is not authorized (Token creation has failed, domain validation has failed...)
       intanceApplePayButton.completePaymentWithFailure();
     });
-
-
   }
 
   /**

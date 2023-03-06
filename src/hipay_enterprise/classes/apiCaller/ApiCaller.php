@@ -168,7 +168,7 @@ class ApiCaller
     {
         try {
             $hipayDBMaintenance = new HipayDBMaintenance($moduleInstance);
-            $transaction = $hipayDBMaintenance->getTransactionById($params["transaction_reference"]);
+            $transaction = $hipayDBMaintenance->getTransactionByRef($params["transaction_reference"]);
 
             //Create your gateway client
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, (\HiPay\Fullservice\Enum\Transaction\ECI::MOTO == $transaction['eci']));
