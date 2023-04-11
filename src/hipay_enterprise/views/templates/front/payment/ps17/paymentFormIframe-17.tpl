@@ -13,7 +13,7 @@
 
 {block name="content"}
     <section>
-        <iframe sandbox="allow-top-navigation allow-same-origin allow-scripts allow-forms"
+        <iframe sandbox="allow-modals allow-top-navigation allow-same-origin allow-scripts allow-forms"
             src="{$url|escape:'htmlall':'UTF-8'}" width="100%" height="650"></iframe>
     </section>
 {/block}

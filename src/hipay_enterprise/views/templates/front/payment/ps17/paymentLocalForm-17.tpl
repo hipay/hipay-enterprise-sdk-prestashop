@@ -11,8 +11,7 @@
  *}
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 <form id="{$localPaymentName}-hipay" action="{$action}" enctype="application/x-www-form-urlencoded"
-      class="form-horizontal hipay-form-17" method="post" name="local"
-      autocomplete="off">
+    class="form-horizontal hipay-form-17" method="post" name="local" autocomplete="off">
     {assign "psVersion" "17"}
 
     {if !empty($errorMsg)}
@@ -26,22 +25,8 @@
     {/if}
 
     {include file="$hipay_enterprise_tpl_dir/hook/paymentLocalForm.tpl"}
-    <input class="ioBB" type="hidden" name="ioBB">
 </form>
-
-<script>
-    document.addEventListener('DOMContentLoaded', formListener{$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}, false);
-
-    function formListener{$localPaymentName|regex_replace:'/[^a-zA-Z0-9]/':""}() {
-        $("#{$localPaymentName}-hipay").submit(function (e) {
-            // prevent form from being submitted
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (hiPayInputControl.checkControl('{$localPaymentName}')) {
-                this.submit();
-            }
-
-        });
-    }
-</script>
+<div id="{$localPaymentName}-payment-loader-hp" style='text-align: center; display:none;'>
+    <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
+    <img src="{$this_path_ssl}/views/img/loading.gif" alt="loading payment">
+</div>
