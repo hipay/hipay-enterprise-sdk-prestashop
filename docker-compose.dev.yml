@@ -9,6 +9,24 @@ services:
       - ./bin/docker/conf/development/env
     mem_limit: 500M
 
+  prestashop8:
+    container_name: hipay-enterprise-shop-ps8
+    build:
+      context: .
+      dockerfile: ./bin/docker/images/prestashop/Dockerfile8
+    ports:
+      - "8088:80"
+    links:
+      - database
+      # - smtp
+    env_file:
+      - ./bin/docker/conf/development/env
+      - ./bin/docker/conf/development/env8
+    volumes:
+      - ./web8:/var/www/html
+      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+    mem_limit: 500M
+
   prestashop17:
     container_name: hipay-enterprise-shop-ps17
     build:
@@ -23,8 +41,8 @@ services:
       - ./bin/docker/conf/development/env
       - ./bin/docker/conf/development/env17
     volumes:
-      - ./web17:/var/www/html:delegated
-      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
+      - ./web17:/var/www/html
+      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
     mem_limit: 500M
 
   prestashop16:
@@ -41,8 +59,8 @@ services:
       - ./bin/docker/conf/development/env
       - ./bin/docker/conf/development/env16
     volumes:
-      - ./web16:/var/www/html:delegated
-      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise:delegated
+      - ./web16:/var/www/html
+      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
     mem_limit: 500M
 
   # smtp:

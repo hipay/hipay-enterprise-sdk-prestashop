@@ -1,0 +1,26 @@
+FROM prestashop/prestashop:8.0.3
+
+LABEL maintainer="PI-Ecommerce"
+LABEL maintainer_email="integration@hipay.com"
+
+RUN apt-get update \
+    && apt-get install -y curl gnupg \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y msmtp vim git cron \
+    && apt-get install -y nodejs \
+    && npm install -g bower \
+    && echo '{ "allow_root": true }' > /root/.bowerrc \
+    && curl -sS https://getcomposer.org/installer | php -- --filename=composer -- --install-dir=/usr/local/bin \
+    && echo "sendmail_path = /usr/sbin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini \
+    && echo "mailhub=common-smtp:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/msmtprc \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY bin/docker /tmp
+
+COPY src /var/www/html/modules
+
+RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
+    && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh \
+    && chmod 777 -R /tmp
+
+ENTRYPOINT ["/tmp/images/prestashop/entrypoint.sh"]
