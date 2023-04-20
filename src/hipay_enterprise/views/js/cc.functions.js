@@ -1,16 +1,16 @@
 jQuery(document).ready(function ($) {
-  $(".ioBB").val($("#ioBB").val());
-  if ($("#credit-card-group").length) {
+  $('.ioBB').val($('#ioBB').val());
+  if ($('#credit-card-group').length) {
     $(
       '<a href="#" class="tooltips">' +
         i18nCVCLabelLocal +
-        "<span>" +
+        '<span>' +
         i18nCVCTooltipLocal +
-        "</span></a>"
-    ).insertAfter("#cvc");
-    $(".card-js #card-number").attr("placeholder", i18nCardNumberLocal);
-    $(".card-js #the-card-name-id").attr("placeholder", i18nNameOnCardLocal);
-    $(".card-js .expiry").attr("placeholder", i18nDateLocal);
+        '</span></a>'
+    ).insertAfter('#cvc');
+    $('.card-js #card-number').attr('placeholder', i18nCardNumberLocal);
+    $('.card-js #the-card-name-id').attr('placeholder', i18nNameOnCardLocal);
+    $('.card-js .expiry').attr('placeholder', i18nDateLocal);
   }
 });
 
@@ -25,31 +25,31 @@ function afterTokenization(result) {
   var country = result.country;
 
   // set tokenization response
-  $("#card-token").val(token);
-  $("#card-brand").val(brand);
-  $("#card-pan").val(pan);
-  $("#card-holder").val(card_holder);
-  $("#card-expiry-month").val(card_expiry_month);
-  $("#card-expiry-year").val(card_expiry_year);
-  $("#card-issuer").val(issuer);
-  $("#card-country").val(country);
+  $('#card-token').val(token);
+  $('#card-brand').val(brand);
+  $('#card-pan').val(pan);
+  $('#card-holder').val(card_holder);
+  $('#card-expiry-month').val(card_expiry_month);
+  $('#card-expiry-year').val(card_expiry_year);
+  $('#card-issuer').val(issuer);
+  $('#card-country').val(country);
 
   return true;
 }
 
 function displayLoadingDiv() {
-  $("#tokenizerForm").hide();
-  $("#payment-loader-hp").show();
-  $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
+  $('#tokenizerForm').hide();
+  $('#payment-loader-hp').show();
+  $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
 }
 
 function clearCCForm() {
   // we empty the form so we don't send credit card informations to the server
-  $("#card-number").val("");
-  $("#cvc").val("");
-  $("input[name=expiry-month]").val("");
-  $("input[name=expiry-year]").val("");
-  $("#the-card-name-id").val("");
+  $('#card-number').val('');
+  $('#cvc').val('');
+  $('input[name=expiry-month]').val('');
+  $('input[name=expiry-year]').val('');
+  $('#the-card-name-id').val('');
 }
 
 function isCardTypeOk(result) {
@@ -58,29 +58,29 @@ function isCardTypeOk(result) {
 
 function displaySecureVaultErrors(errors) {
   // An error occurred
-  $("#error-js").show();
-  if (typeof errors.message != "undefined") {
+  $('#error-js').show();
+  if (typeof errors.message != 'undefined') {
     var message = i18nBadRequest;
     switch (errors.code) {
       case 416:
         message = i18nTokenisationError416;
         break;
     }
-    $(".error").text(message);
+    $('.error').text(message);
   } else {
-    $(".error").text(i18nBadRequest);
+    $('.error').text(i18nBadRequest);
   }
 }
 
 function isOneClickSelected() {
-  return $(".radio-with-token:checked").length;
+  return $('.radio-with-token:checked').length;
 }
 
 function oneClickSelected(form) {
   // at least one of the radio buttons was checked
-  $("#tokenizerForm").hide();
-  $("#payment-loader-hp").show();
-  $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
+  $('#tokenizerForm').hide();
+  $('#payment-loader-hp').show();
+  $('#payment-confirmation > .ps-shown-by-js > button').prop('disabled', true);
 
   form.submit();
 }

@@ -20,6 +20,7 @@
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
     <section>
-        <iframe src="{$url|escape:'html':'UTF-8'}" width="100%" height="650"></iframe>
+        <iframe sandbox="allow-modals allow-top-navigation allow-same-origin allow-scripts allow-forms"
+            src="{$url|escape:'htmlall':'UTF-8'}" width="100%" height="650"></iframe>
     </section>
 {/if}

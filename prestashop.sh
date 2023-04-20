@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+set -e
+
 BASE_URL="http://localhost:8087/"
 URL_MAILCATCHER="http://localhost:1095/"
 header="bin/tests/"
@@ -69,7 +71,7 @@ if [ "$1" = 'init' ]; then
                docker exec hipay-enterprise-shop-ps$psVersion bash -c 'chmod -R 777 /var/www/html'
           fi
      fi
-     rm -Rf data/ web$psVersion/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
+     sudo rm -Rf data/ web$psVersion/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
      docker compose -f docker-compose.dev.yml rm -sfv prestashop$psVersion database
      docker compose -f docker-compose.dev.yml build prestashop$psVersion database
 
@@ -91,7 +93,7 @@ fi
 
 if [ "$1" = 'kill' ]; then
      docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 database
-     rm -Rf data/ web16/ web17/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
+     sudo rm -Rf data/ web16/ web17/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
 fi
 
 if [ "$1" = 'exec' ]; then
