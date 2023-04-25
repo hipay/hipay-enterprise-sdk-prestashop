@@ -25,7 +25,7 @@ function upgrade_module_2_17_0($module)
         $shopIdGroup = $shop['id_shop_group'];
         $log->logInfos("Get HIPAY_CONFIG for shop $id and id shop group $shopIdGroup");
 
-        $configHipay = Tools::jsonDecode(
+        $configHipay = json_decode(
             Configuration::get('HIPAY_CONFIG', null, $shopIdGroup, $id),
             true
         );

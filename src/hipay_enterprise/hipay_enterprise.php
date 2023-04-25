@@ -179,7 +179,7 @@ class Hipay_enterprise extends PaymentModule
         $this->hipayConfigTool->getConfigHipay();
         $this->hipayConfigTool->updateFromJSONFile();
 
-        $return &= $this->registerHook('backOfficeHeader');
+        $return &= $this->registerHook('displayBackOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
         $return &= $this->registerHook('updateCarrier');
@@ -465,7 +465,7 @@ class Hipay_enterprise extends PaymentModule
         return $hipay17->hipayActionFrontControllerSetMedia($params);
     }
 
-    public function hookBackOfficeHeader()
+    public function hookDisplayBackOfficeHeader()
     {
         $this->context->controller->addCSS($this->_path.'views/css/bootstrap-duallistbox.min.css', 'all');
         $this->context->controller->addCSS($this->_path.'views/css/bootstrap-multiselect.css', 'all');

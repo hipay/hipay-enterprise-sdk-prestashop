@@ -85,9 +85,9 @@ fi
 if [ "$1" = 'restart' ]; then
      docker compose -f docker-compose.dev.yml stop prestashop$psVersion database
      if [ "$follow" = "-f" ]; then
-          docker compose -f docker-compose.dev.yml up prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up --build prestashop$psVersion database
      else
-          docker compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up -d --build prestashop$psVersion database
      fi
 fi
 

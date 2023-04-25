@@ -25,6 +25,15 @@ while ! mysql --protocol TCP -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD 
     fi
 done
 
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+cd /var/www/html/modules/hipay_enterprise/
+
+composer install --no-dev
+
+cd /var/www/html
+
 /tmp/docker_run.sh
 
 #===================================#
@@ -35,20 +44,10 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
 
     if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ]; then
-        if [[ "$PS_VERSION" == *"1.7"* ]]; then
-            XDEBUG_VERSION=3.0.4
-        else
-            XDEBUG_VERSION=2.6.1
-        fi
-
-        # INSTALL X DEBUG
-        if ! pecl list | grep xdebug >/dev/null 2>&1; then
-            printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-            printf "\n${COLOR_SUCCESS}            INSTALLATION XDEBUG          ${NC}\n"
-            printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-
-            echo '' | pecl install xdebug-${XDEBUG_VERSION}
-        fi
+        # CONFIGURE XDEBUG
+        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+        printf "\n${COLOR_SUCCESS}            CONFIGURATION XDEBUG          ${NC}\n"
+        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
         xdebugFile=/usr/local/etc/php/conf.d/xdebug.ini
         echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" >$xdebugFile
@@ -60,40 +59,22 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         echo "xdebug.remote_autostart=off" >>$xdebugFile
     fi
 
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    cd /var/www/html/modules/hipay_enterprise/
-
-    composer install --no-dev
-
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
-    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    cd /var/www/html/ &&
-        wget https://github.com/nenes25/prestashop_console/raw/master/bin/prestashopConsole.phar &&
-        chmod +x prestashopConsole.phar
+    if [[ "$PS_VERSION" != *"8"* ]]; then
+        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+        printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
+        printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+        cd /var/www/html/ &&
+            wget https://github.com/nenes25/prestashop_console/raw/master/bin/prestashopConsole.phar &&
+            chmod +x prestashopConsole.phar
+    fi
 
     # Installation  HiPay's module
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
-    if [[ "$PS_VERSION" == *"1.7"* ]]; then
-        TABLE_NAME='prestashop17'
-
-        mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
-        DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
-        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
-          VALUES
-            (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
-            (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
-
-        COMMIT;"
-    else
-        TABLE_NAME='prestashop16'
-
-        mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+    if [[ "$PS_VERSION" == *"1.6"* ]]; then
+        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
         DELETE FROM ps_lang WHERE language_code IN ('en-GB', 'it-IT');
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
         VALUES
@@ -101,9 +82,18 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
           (3, 'Italiano', 1, 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
 
         COMMIT;"
+    else
+        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
+        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
+          VALUES
+            (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
+            (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
+
+        COMMIT;"
     fi
 
-    mysql -h $MYSQL_HOST -D $TABLE_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+    mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
       UPDATE ps_country SET active=1 WHERE iso_code IN ('PT', 'IT', 'NL', 'BE');
 
       DELETE FROM ps_module_country WHERE id_country IN (SELECT id_country FROM ps_country WHERE iso_code IN ('PT', 'IT', 'NL', 'BE'));
@@ -124,19 +114,24 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
 
       COMMIT;"
 
-    if [[ "$PS_VERSION" == *"1.7"* ]]; then
-        bin/console prestashop:module install hipay_enterprise
-    else
+    if [[ "$PS_VERSION" == *"1.6"* ]]; then
         ./prestashopConsole.phar module:install hipay_enterprise
+    else
+        bin/console prestashop:module install hipay_enterprise
     fi
 
     # Configure module credentials
-    # Installation  HiPay's module
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
     printf "\n${COLOR_SUCCESS}     Configuration HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
-    CONFIG=$(./prestashopConsole.phar configuration:get HIPAY_CONFIG)
+    if [[ "$PS_VERSION" == *"8"* ]]; then
+        CONFIG=$(bin/console prestashop:config get HIPAY_CONFIG)
+        CONFIG=$(echo "$CONFIG" | sed -r "s/.*HIPAY_CONFIG=//")
+        CONFIG=$(echo "${CONFIG//[$'\t\r\n']/}" | sed "s/  //g")
+    else
+        CONFIG=$(./prestashopConsole.phar configuration:get HIPAY_CONFIG)
+    fi
     CONFIG=${CONFIG/'"api_username_sandbox":""'/'"api_username_sandbox":"'$HIPAY_API_USER_TEST'"'}
     CONFIG=${CONFIG/'"api_password_sandbox":""'/'"api_password_sandbox":"'$HIPAY_API_PASSWORD_TEST'"'}
     CONFIG=${CONFIG/'"api_tokenjs_username_sandbox":""'/'"api_tokenjs_username_sandbox":"'$HIPAY_TOKENJS_USERNAME_TEST'"'}
@@ -160,20 +155,32 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         CONFIG=${CONFIG/'"test":"SHA1"'/'"test":"SHA512"'}
     fi
 
-    ./prestashopConsole.phar configuration:set HIPAY_CONFIG "$CONFIG"
+    if [[ "$PS_VERSION" == *"8"* ]]; then
+        bin/console prestashop:config set HIPAY_CONFIG --value "$CONFIG" -q
+    else
+        ./prestashopConsole.phar configuration:set HIPAY_CONFIG "$CONFIG"
+    fi
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ]; then
-        ./prestashopConsole.phar configuration:set PS_SSL_ENABLED 1
+        if [[ "$PS_VERSION" == *"8"* ]]; then
+            bin/console prestashop:config set PS_SSL_ENABLED --value 1
+        else
+            ./prestashopConsole.phar configuration:set PS_SSL_ENABLED 1
+        fi
     fi
 
     if [ "$ENVIRONMENT" = "$ENV_STAGE" ]; then
-        mysql -h $MYSQL_HOST -D prestashop17 -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD <<EOF
             UPDATE ps_module SET version='0.0.0' WHERE name='hipay_enterprise';
             COMMIT;
 EOF
     fi
 
-    ./prestashopConsole.phar c:flush
+    if [[ "$PS_VERSION" == *"8"* ]]; then
+        bin/console cache:clear
+    else
+        ./prestashopConsole.phar c:flush
+    fi
 
     #===================================#
     #            ADD CRON

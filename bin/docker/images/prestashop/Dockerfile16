@@ -15,12 +15,13 @@ RUN apt-get update \
     && echo "mailhub=common-smtp:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/msmtprc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY bin/docker /tmp
+RUN pecl install xdebug-2.6.1
+
+COPY --chmod=777 bin/docker /tmp
 
 COPY src /var/www/html/modules
 
 RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
-    && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh \
-        && chmod 777 -R /tmp
+    && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh
 
 ENTRYPOINT ["/tmp/images/prestashop/entrypoint.sh"]
