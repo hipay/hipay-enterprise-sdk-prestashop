@@ -2,9 +2,9 @@ version: '3'
 
 services:
   database:
-    image: mysql:5.7
+    image: mysql:8.0
     ports:
-      - "3318:3306"
+      - '3318:3306'
     env_file:
       - ./bin/docker/conf/development/env
     mem_limit: 500M
@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: ./bin/docker/images/prestashop/Dockerfile8
     ports:
-      - "8088:80"
+      - '8088:80'
     links:
       - database
       # - smtp
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: ./bin/docker/images/prestashop/Dockerfile17
     ports:
-      - "8087:80"
+      - '8087:80'
     links:
       - database
       # - smtp
@@ -51,7 +51,7 @@ services:
       context: .
       dockerfile: ./bin/docker/images/prestashop/Dockerfile16
     ports:
-      - "8086:80"
+      - '8086:80'
     links:
       - database
       # - smtp

@@ -59,7 +59,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         echo "xdebug.remote_autostart=off" >>$xdebugFile
     fi
 
-    if [[ "$PS_VERSION" != *"8"* ]]; then
+    if [[ "$PS_VERSION" != "8"* ]]; then
         printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
         printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
         printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
@@ -73,7 +73,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
-    if [[ "$PS_VERSION" == *"1.6"* ]]; then
+    if [[ "$PS_VERSION" == "1.6"* ]]; then
         mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
         DELETE FROM ps_lang WHERE language_code IN ('en-GB', 'it-IT');
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
@@ -114,7 +114,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
 
       COMMIT;"
 
-    if [[ "$PS_VERSION" == *"1.6"* ]]; then
+    if [[ "$PS_VERSION" == "1.6"* ]]; then
         ./prestashopConsole.phar module:install hipay_enterprise
     else
         bin/console prestashop:module install hipay_enterprise
@@ -125,7 +125,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     printf "\n${COLOR_SUCCESS}     Configuration HiPay's Module         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
-    if [[ "$PS_VERSION" == *"8"* ]]; then
+    if [[ "$PS_VERSION" == "8"* ]]; then
         CONFIG=$(bin/console prestashop:config get HIPAY_CONFIG)
         CONFIG=$(echo "$CONFIG" | sed -r "s/.*HIPAY_CONFIG=//")
         CONFIG=$(echo "${CONFIG//[$'\t\r\n']/}" | sed "s/  //g")
@@ -155,14 +155,14 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         CONFIG=${CONFIG/'"test":"SHA1"'/'"test":"SHA512"'}
     fi
 
-    if [[ "$PS_VERSION" == *"8"* ]]; then
+    if [[ "$PS_VERSION" == "8"* ]]; then
         bin/console prestashop:config set HIPAY_CONFIG --value "$CONFIG" -q
     else
         ./prestashopConsole.phar configuration:set HIPAY_CONFIG "$CONFIG"
     fi
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ]; then
-        if [[ "$PS_VERSION" == *"8"* ]]; then
+        if [[ "$PS_VERSION" == "8"* ]]; then
             bin/console prestashop:config set PS_SSL_ENABLED --value 1
         else
             ./prestashopConsole.phar configuration:set PS_SSL_ENABLED 1
@@ -176,7 +176,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
 EOF
     fi
 
-    if [[ "$PS_VERSION" == *"8"* ]]; then
+    if [[ "$PS_VERSION" == "8"* ]]; then
         bin/console cache:clear
     else
         ./prestashopConsole.phar c:flush
