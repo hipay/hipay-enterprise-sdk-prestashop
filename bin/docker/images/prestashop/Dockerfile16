@@ -17,11 +17,14 @@ RUN apt-get update \
 
 RUN pecl install xdebug-2.6.1
 
-COPY --chmod=777 bin/docker /tmp
-
-COPY src /var/www/html/modules
-
 RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
     && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh
+
+COPY bin/docker/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
+
+COPY bin/docker/images/prestashop/entrypoint.sh /tmp
+RUN chmod +x /tmp/entrypoint.sh
+
+COPY src /var/www/html/modules
 
 ENTRYPOINT ["/tmp/images/prestashop/entrypoint.sh"]

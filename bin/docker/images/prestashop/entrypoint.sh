@@ -41,8 +41,6 @@ cd /var/www/html
 #===================================#
 if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" ]; then
 
-    cp -f /tmp/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
-
     if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ]; then
         # CONFIGURE XDEBUG
         printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
