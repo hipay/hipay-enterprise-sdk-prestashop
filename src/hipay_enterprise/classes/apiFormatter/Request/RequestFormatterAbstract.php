@@ -231,8 +231,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
             $max_length = $this->params["paymentProduct"]['maxLengthDescription'];
         }
         if (Tools::strlen($description) > $max_length) {
-            $offset = ($max_length - 3) - Tools::strlen($description);
-            $description = Tools::substr($description, 0, strrpos($description, ' ', $offset)) . '...';
+            $description = mb_strimwidth($description, 0, $max_length, '...');
         }
 
         return $description;
