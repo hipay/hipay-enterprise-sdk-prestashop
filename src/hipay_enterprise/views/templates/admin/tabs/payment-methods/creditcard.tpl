@@ -155,7 +155,7 @@
                                                     class="multiselect-currency">
                                                     {foreach $limitedCurrencies as $currency }
                                                         <option value="{$currency@key}"
-                                                            {if !empty($creditCard.currencies) && $currency@key|in_array:$creditCard.currencies }
+                                                            {if !empty($creditCard.currencies) && $currency@key|inArray:$creditCard.currencies }
                                                             selected {/if}>{$currency@key}
                                                             - {$currency} </option>
                                                     {/foreach}
@@ -173,7 +173,7 @@
                                                     name="{$creditCard@key}_countries[]">
                                                     {foreach $limitedCountries as $country}
                                                         <option value="{$country@key}"
-                                                            {if !empty($creditCard.countries) && $country@key|in_array:$creditCard.countries }
+                                                            {if !empty($creditCard.countries) && $country@key|inArray:$creditCard.countries }
                                                             selected {/if}>{$country}</option>
                                                     {/foreach}
                                                 </select>

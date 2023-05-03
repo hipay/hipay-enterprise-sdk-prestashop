@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        {if "displayName"|in_array:$method.displayConfigurationFields}
+        {if "displayName"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
@@ -55,9 +55,8 @@
                                 {if isset($method.displayName[$language.iso_code])}
                                     value="{$method.displayName[$language.iso_code]}"
                                 {elseif isset($method.displayName) && !is_array($method.displayName)}
-                                value="{$method.displayName}"
-                                {else}
-                                    value="{reset($method.displayName)}"
+                                value="{$method.displayName}" {else} value="
+                                    {reset($method.displayName)}" 
                                 {/if} />
                         </div>
                         {if $languages|count > 1}
@@ -90,7 +89,7 @@
             </div>
         </div>
         <br />
-        {if "iframe"|in_array:$method.displayConfigurationFields}
+        {if "iframe"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">
@@ -110,7 +109,7 @@
                 </div>
             </div>
         {/if}
-        {if "minAmount"|in_array:$method.displayConfigurationFields}
+        {if "minAmount"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
@@ -122,7 +121,7 @@
                 </div>
             </div>
         {/if}
-        {if "maxAmount"|in_array:$method.displayConfigurationFields}
+        {if "maxAmount"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
@@ -134,7 +133,7 @@
                 </div>
             </div>
         {/if}
-        {if "orderExpirationTime"|in_array:$method.displayConfigurationFields}
+        {if "orderExpirationTime"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Order expiration date' mod='hipay_enterprise'}</label>
@@ -154,7 +153,7 @@
                 </div>
             </div>
         {/if}
-        {if "merchantPromotion"|in_array:$method.displayConfigurationFields}
+        {if "merchantPromotion"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Merchant Promotion' mod='hipay_enterprise'}</label>
@@ -191,8 +190,8 @@
                             class="multiselect-currency">
                             {foreach $limitedCurrencies as $currency }
                                 <option value="{$currency@key}"
-                                    {if !empty($method.currencies) && $currency@key|in_array:$method.currencies } selected
-                                    {/if}>{$currency@key}
+                                    {if !empty($method.currencies) && $currency@key|inArray:$method.currencies } selected {/if}>
+                                    {$currency@key}
                                     - {$currency} </option>
                             {/foreach}
                         </select>
@@ -228,7 +227,7 @@
                         <select id="countries_{$key}" multiple="multiple" size="10" name="{$key}_countries[]">
                             {foreach $limitedCountries as $country}
                                 <option value="{$country@key}"
-                                    {if !empty($method.countries) && $country@key|in_array:$method.countries } selected {/if}>
+                                    {if !empty($method.countries) && $country@key|inArray:$method.countries } selected {/if}>
                                     {$country}</option>
                             {/foreach}
                         </select>
@@ -237,7 +236,7 @@
             </div>
         {/if}
 
-        {if "buttonType"|in_array:$method.displayConfigurationFields}
+        {if "buttonType"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Button type' mod='hipay_enterprise'}</label>
@@ -262,7 +261,7 @@
                 </div>
             </div>
         {/if}
-        {if "buttonStyle"|in_array:$method.displayConfigurationFields}
+        {if "buttonStyle"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Button style' mod='hipay_enterprise'}</label>
@@ -279,7 +278,7 @@
                 </div>
             </div>
         {/if}
-        {if "merchantId"|in_array:$method.displayConfigurationFields}
+        {if "merchantId"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>

@@ -188,6 +188,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('dashboardZoneOne');
         $return &= $this->registerHook('actionOrderStatusUpdate');
         $return &= $this->registerHook('actionOrderSlipAdd');
+        $return &= $this->registerHook('actionDispatcher');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
             $this->registerHook('header') &&
@@ -642,6 +643,16 @@ class Hipay_enterprise extends PaymentModule
         $hipayMaintenanceBlock = new HipayMaintenanceBlock($this, (int) Tools::getValue('id_order'));
 
         return $hipayMaintenanceBlock->displayBlock();
+    }
+
+    /**
+     * We register the plugin everytime a controller is instantiated
+     */
+    public function hookActionDispatcher()
+    {
+        $this->context->smarty->registerPlugin('modifier', 'htmlEntityDecode', 'html_entity_decode');
+        $this->context->smarty->registerPlugin('modifier', 'inArray', 'in_array');
+        $this->context->smarty->registerPlugin('modifier', 'arrayKeyExists', 'array_key_exists');
     }
 
     /**
