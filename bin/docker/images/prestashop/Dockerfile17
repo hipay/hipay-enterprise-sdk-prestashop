@@ -27,4 +27,4 @@ RUN chmod +x /tmp/entrypoint.sh
 
 COPY src /var/www/html/modules
 
-ENTRYPOINT ["/tmp/images/prestashop/entrypoint.sh"]
+ENTRYPOINT ["/tmp/entrypoint.sh"]
