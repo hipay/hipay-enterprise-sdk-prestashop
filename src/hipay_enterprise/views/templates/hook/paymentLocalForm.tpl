@@ -10,8 +10,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 
-{if !$forceHpayment}
-
+{if $localPaymentName eq "applepay"}
+    {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
+{elseif !$forceHpayment}
     <div id="hipay-container-hosted-fields-{$localPaymentName}"></div>
 
     <script>
@@ -89,9 +90,7 @@
     <input type="hidden" name="localSubmit" />
     <input class="ioBB" type="hidden" name="ioBB" />
     <input id="{$localPaymentName}-browserInfo" type="hidden" name="HF-browserInfo" />
-{elseif $localPaymentName eq "applepay"}
-    {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
-{elseif $forceHpayment}
+{else}
     {if $iframe}
         <p>{l s="Confirm your order to go to the payment page" mod="hipay_enterprise"}</p>
     {else}
