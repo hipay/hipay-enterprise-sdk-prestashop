@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix**: Fixed order description trimming, thanks to [PetruOPower](https://github.com/PetruOPower) on [#82](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/82)
+
 ## Version 2.18.0
 
 - **Add**: Implement cron notifications
