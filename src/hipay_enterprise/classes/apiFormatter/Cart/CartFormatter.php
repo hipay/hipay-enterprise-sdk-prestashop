@@ -243,14 +243,14 @@ class CartFormatter extends ApiFormatterAbstract
                 $name = 'Multiple carriers';
             }
 
-            $tax_rate = ($totalAmount / $cartSummary['total_shipping_tax_exc'] - 1);
+            $taxRate = round(($totalAmount / $cartSummary['total_shipping_tax_exc'] - 1), 2);
             $discount = 0.00;
 
             $item = Item::buildItemTypeFees(
                 $productReference,
                 $name,
                 $totalAmount,
-                $tax_rate,
+                $taxRate,
                 $discount,
                 $totalAmount
             );

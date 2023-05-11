@@ -1,28 +1,28 @@
-mysql_image: "mysql"
-mysql_tag: "5.7"
+mysql_image: 'mysql'
+mysql_tag: '8.0'
 
-prestashop_image: ""
-prestashop_tag: ""
+prestashop_image: ''
+prestashop_tag: ''
 
-prestashop_url: ""
+prestashop_url: ''
 
-hipay_api_user_test: ""
-hipay_api_password_test: ""
-hipay_tokenjs_username_test: ""
-hipay_tokenjs_publickey_test: ""
-hipay_secret_passphrase_test: ""
-hipay_api_moto_user_test: ""
-hipay_api_moto_password_test: ""
-hipay_moto_secret_passphrase_test: ""
+hipay_api_user_test: ''
+hipay_api_password_test: ''
+hipay_tokenjs_username_test: ''
+hipay_tokenjs_publickey_test: ''
+hipay_secret_passphrase_test: ''
+hipay_api_moto_user_test: ''
+hipay_api_moto_password_test: ''
+hipay_moto_secret_passphrase_test: ''
 
-hipay_api_apple_pay_user_test: ""
-hipay_api_apple_pay_password_test: ""
-hipay_apple_pay_passphrase_test: ""
-hipay_tokenjs_apple_pay_username_test: ""
-hipay_tokenjs_apple_pay_password_test: ""
+hipay_api_apple_pay_user_test: ''
+hipay_api_apple_pay_password_test: ''
+hipay_apple_pay_passphrase_test: ''
+hipay_tokenjs_apple_pay_username_test: ''
+hipay_tokenjs_apple_pay_password_test: ''
 
-pi_data_url: ""
+pi_data_url: ''
 
-ps_version: ""
-ps_domain: ""
-db_name: ""
+ps_version: ''
+ps_domain: ''
+db_name: ''

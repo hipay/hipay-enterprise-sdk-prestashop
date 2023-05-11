@@ -48,7 +48,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         );
 
         $this->module->getLogs()->logInfos('# Process Custom Request source');
-        $request->source = Tools::jsonEncode($source);
+        $request->source = json_encode($source);
     }
 
     /**
@@ -111,7 +111,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
                 }
             }
         }
-        $request->custom_data = Tools::jsonEncode($customDataHipay);
+        $request->custom_data = json_encode($customDataHipay);
     }
 
     /**

@@ -31,19 +31,19 @@ function upgrade_module_2_8_0($module)
                 "get HIPAY_CONFIG for shop " . $id . " and id shop group " . $shop['id_shop_group']
             );
 
-            $configHipay = Tools::jsonDecode(
+            $configHipay = json_decode(
                 Configuration::get('HIPAY_CONFIG', null, $shop['id_shop_group'], $id),
                 true
             );
 
-            if ($configHipay['account']['global']['sandbox_mode']){
-                if(empty($configHipay['account']["sandbox"]["api_tokenjs_username_sandbox"]) ||
-                    empty($configHipay['account']["sandbox"]["api_tokenjs_password_publickey_sandbox"])){
+            if ($configHipay['account']['global']['sandbox_mode']) {
+                if (empty($configHipay['account']["sandbox"]["api_tokenjs_username_sandbox"]) ||
+                    empty($configHipay['account']["sandbox"]["api_tokenjs_password_publickey_sandbox"])) {
                     $configHipay['payment']["global"]["card_token"] = 0;
                 }
             } else {
-                if(empty($configHipay['account']["production"]["api_tokenjs_username_production"]) ||
-                    empty($configHipay['account']["production"]["api_tokenjs_password_publickey_production"])){
+                if (empty($configHipay['account']["production"]["api_tokenjs_username_production"]) ||
+                    empty($configHipay['account']["production"]["api_tokenjs_password_publickey_production"])) {
                     $configHipay['payment']["global"]["card_token"] = 0;
                 }
             }
@@ -56,6 +56,4 @@ function upgrade_module_2_8_0($module)
         $log->logException($e);
         return false;
     }
-
-
 }

@@ -86,7 +86,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'module_dir' => $this->_path,
                         'confHipay' => $this->hipayConfigTool->getConfigHipay(),
                         'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates',
-                        'methodFields' => [],
                     ]
                 );
                 foreach ($sortedPaymentProducts as $key => $paymentProduct) {
@@ -173,7 +172,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
             }
 
             $this->context->smarty->assign([
-                'methodFields' => [],
                 'language' => $this->context->language->language_code,
                 'forceHpayment' => true,
                 'iframe' => $iframe,
@@ -182,7 +180,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $formFields = [];
             // Check if any additional fields dans be filed using values already filled by the client
             if (isset($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields'])
-                and isset($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'])
+                && isset($this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'])
             ) {
                 $formFields = $this->hipayConfigTool->getLocalPayment()[$name]['additionalFields']['formFields'];
                 foreach ($formFields as $fieldName => $field) {
@@ -258,8 +256,12 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                 $this->context->smarty->assign(
                     [
-                        'methodFields' => [],
                         'cart' => $templateCart,
+                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        __PS_BASE_URI__.
+                        'modules/'.
+                        $this->name.
+                        '/',
                         'configAccountGlobal' => $configAccountGlobal,
                         'language_iso_code' => $this->context->language->language_code,
                         'environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
@@ -273,10 +275,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
             } else {
                 $this->context->smarty->assign(
                     [
-                        'methodFields' => $formFields,
                         'language' => $this->context->language->language_code,
                         'forceHpayment' => false,
                         'iframe' => false,
+                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        __PS_BASE_URI__.
+                        'modules/'.
+                        $this->name.
+                        '/',
+                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'languageIsoCode' => $this->context->language->iso_code,
                     ]
                 );
             }

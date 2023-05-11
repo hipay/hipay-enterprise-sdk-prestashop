@@ -159,7 +159,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             [
                 'nbProducts' => $this->currentCart->nbProducts(),
                 'cust_currency' => $this->currentCart->id_currency,
-                'activatedCreditCard' => Tools::jsonEncode(array_keys($this->creditCard)),
+                'activatedCreditCard' => json_encode(array_keys($this->creditCard)),
                 'currencies' => $this->module->getCurrency((int) $this->currentCart->id_currency),
                 'total' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
                 'this_path' => $this->module->getPathUri(),

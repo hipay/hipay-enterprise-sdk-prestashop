@@ -37,7 +37,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.18.0';
+        $this->version = '2.19.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -179,7 +179,7 @@ class Hipay_enterprise extends PaymentModule
         $this->hipayConfigTool->getConfigHipay();
         $this->hipayConfigTool->updateFromJSONFile();
 
-        $return &= $this->registerHook('backOfficeHeader');
+        $return &= $this->registerHook('displayBackOfficeHeader');
         $return &= $this->registerHook('displayAdminOrder');
         $return &= $this->registerHook('customerAccount');
         $return &= $this->registerHook('updateCarrier');
@@ -188,6 +188,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('dashboardZoneOne');
         $return &= $this->registerHook('actionOrderStatusUpdate');
         $return &= $this->registerHook('actionOrderSlipAdd');
+        $return &= $this->registerHook('actionDispatcher');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
             $this->registerHook('header') &&
@@ -465,7 +466,7 @@ class Hipay_enterprise extends PaymentModule
         return $hipay17->hipayActionFrontControllerSetMedia($params);
     }
 
-    public function hookBackOfficeHeader()
+    public function hookDisplayBackOfficeHeader()
     {
         $this->context->controller->addCSS($this->_path.'views/css/bootstrap-duallistbox.min.css', 'all');
         $this->context->controller->addCSS($this->_path.'views/css/bootstrap-multiselect.css', 'all');
@@ -642,6 +643,16 @@ class Hipay_enterprise extends PaymentModule
         $hipayMaintenanceBlock = new HipayMaintenanceBlock($this, (int) Tools::getValue('id_order'));
 
         return $hipayMaintenanceBlock->displayBlock();
+    }
+
+    /**
+     * We register the plugin everytime a controller is instantiated
+     */
+    public function hookActionDispatcher()
+    {
+        $this->context->smarty->registerPlugin('modifier', 'htmlEntityDecode', 'html_entity_decode');
+        $this->context->smarty->registerPlugin('modifier', 'inArray', 'in_array');
+        $this->context->smarty->registerPlugin('modifier', 'arrayKeyExists', 'array_key_exists');
     }
 
     /**

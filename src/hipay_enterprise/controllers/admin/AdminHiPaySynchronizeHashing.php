@@ -98,6 +98,6 @@ class AdminHiPaySynchronizeHashingController extends ModuleAdminController
             ob_end_clean();
         }
         header('Content-Type: application/json');
-        die(Tools::jsonEncode($messages));
+        die(json_encode($messages));
     }
 }
