@@ -488,7 +488,7 @@ class HipayConfig
 
                 Configuration::updateValue(
                     'HIPAY_PAYMENT_'.strtoupper($methodId),
-                    Tools::jsonEncode($methodConfig),
+                    json_encode($methodConfig),
                     false,
                     $id_shop_group,
                     $id_shop
@@ -498,7 +498,7 @@ class HipayConfig
 
         Configuration::updateValue(
             'HIPAY_PAYMENT_MEANS',
-            Tools::jsonEncode($paymentMeans),
+            json_encode($paymentMeans),
             false,
             $id_shop_group,
             $id_shop
@@ -506,7 +506,7 @@ class HipayConfig
 
         if (Configuration::updateValue(
             'HIPAY_CONFIG',
-            Tools::jsonEncode($for_json_hipay),
+            json_encode($for_json_hipay),
             false,
             $id_shop_group,
             $id_shop
@@ -549,7 +549,7 @@ class HipayConfig
         $paymentMethod = [];
 
         if (1 == preg_match('/(.*)\.json/', $file)) {
-            $json = Tools::jsonDecode(Tools::file_get_contents($this->jsonFilesPath.$folderName.$file), true);
+            $json = json_decode(Tools::file_get_contents($this->jsonFilesPath.$folderName.$file), true);
             if (!in_array($json['name'], static::$_deprecatedMethods)) {
                 $paymentMethod[$json['name']] = $json['config'];
 
@@ -606,13 +606,13 @@ class HipayConfig
         $id_shop = (is_null($id_shop)) ? (int) Shop::getContextShopID() : (int) $id_shop;
         $id_shop_group = (is_null($id_shop_group)) ? (int) Shop::getContextShopGroupID() : $id_shop_group;
 
-        $configHipay = Tools::jsonDecode(
+        $configHipay = json_decode(
             Configuration::get('HIPAY_CONFIG', null, $id_shop_group, $id_shop),
             true
         );
 
         if (!empty($configHipay)) {
-            $paymentMeansList = Tools::jsonDecode(
+            $paymentMeansList = json_decode(
                 Configuration::get('HIPAY_PAYMENT_MEANS', null, $id_shop_group, $id_shop),
                 true
             );
@@ -620,12 +620,15 @@ class HipayConfig
             if ($paymentMeansList) {
                 foreach ($paymentMeansList as $methodGroup => $methods) {
                     foreach ($methods as $key => $methodId) {
-                        $methodConfig = Tools::jsonDecode(Configuration::get(
-                            'HIPAY_PAYMENT_'.strtoupper($methodId),
-                            false,
-                            $id_shop_group,
-                            $id_shop
-                        ), true);
+                        $methodConfig = json_decode(
+                            Configuration::get(
+                                'HIPAY_PAYMENT_'.strtoupper($methodId),
+                                false,
+                                $id_shop_group,
+                                $id_shop
+                            ),
+                            true
+                        );
 
                         $configHipay['payment'][$methodGroup][$methodId] = $methodConfig;
                     }

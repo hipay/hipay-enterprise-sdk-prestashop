@@ -249,6 +249,11 @@ build-prestashop17:
     PS_VERSION: 17
   extends: .build-prestashop
 
+build-prestashop8:
+  variables:
+    PS_VERSION: 8
+  extends: .build-prestashop
+
 deploy2recette-prestashop16:
   variables:
     PS_VERSION: 16
@@ -273,6 +278,18 @@ deploy2recette-prestashop17:
     url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
     on_stop: stop_review-prestashop17
 
+deploy2recette-prestashop8:
+  variables:
+    PS_VERSION: 8
+    PS_FULL_VERSION: 8.0.3
+  extends: .deploy2recette-prestashop
+  needs:
+    - build-prestashop8
+  environment:
+    name: review-${PS_VERSION}/${CI_COMMIT_REF_SLUG}
+    url: https://${DOCKER_STACK}-${DOCKER_SERVICE}-${CI_COMMIT_REF_SLUG}-${PS_VERSION}.${URL_CD}
+    on_stop: stop_review-prestashop8
+
 stop_review-prestashop16:
   variables:
     PS_VERSION: 16
@@ -285,4 +302,11 @@ stop_review-prestashop17:
     PS_VERSION: 17
   needs:
     - deploy2recette-prestashop17
+  extends: .stop_review-prestashop
+
+stop_review-prestashop8:
+  variables:
+    PS_VERSION: 8
+  needs:
+    - deploy2recette-prestashop8
   extends: .stop_review-prestashop

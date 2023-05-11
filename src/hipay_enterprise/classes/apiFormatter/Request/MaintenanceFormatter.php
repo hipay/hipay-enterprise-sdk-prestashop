@@ -94,13 +94,13 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                 "transactionAttempt" => $transactionAttempt
             );
             foreach ($this->order->getProducts() as $item) {
-                if (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
+                if ($this->refundItems === "full") {
+                    $params["products"][] = array("item" => $item, "quantity" => $item["product_quantity"]);
+                } elseif (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
                     $params["products"][] = array(
                         "item" => $item,
                         "quantity" => $this->refundItems[$item["id_product"]]
                     );
-                } elseif ($this->refundItems == "full") {
-                    $params["products"][] = array("item" => $item, "quantity" => $item["product_quantity"]);
                 }
             }
 
@@ -109,7 +109,7 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
 
             $maintenance->amount = $cartFormatter->getTotalAmount();
             $maintenance->basket = $cart->toJson();
-        }else{
+        } else {
             // save transaction in db even if it is a no basket transaction
             $captureData = array(
                 "hp_ps_order_id" => $this->order->id,

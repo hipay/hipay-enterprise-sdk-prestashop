@@ -257,6 +257,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $this->context->smarty->assign(
                     [
                         'cart' => $templateCart,
+                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        __PS_BASE_URI__.
+                        'modules/'.
+                        $this->name.
+                        '/',
                         'configAccountGlobal' => $configAccountGlobal,
                         'language_iso_code' => $this->context->language->language_code,
                         'environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
@@ -273,6 +278,13 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'language' => $this->context->language->language_code,
                         'forceHpayment' => false,
                         'iframe' => false,
+                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        __PS_BASE_URI__.
+                        'modules/'.
+                        $this->name.
+                        '/',
+                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'languageIsoCode' => $this->context->language->iso_code,
                     ]
                 );
             }

@@ -85,15 +85,15 @@ fi
 if [ "$1" = 'restart' ]; then
      docker compose -f docker-compose.dev.yml stop prestashop$psVersion database
      if [ "$follow" = "-f" ]; then
-          docker compose -f docker-compose.dev.yml up prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up --build prestashop$psVersion database
      else
-          docker compose -f docker-compose.dev.yml up -d prestashop$psVersion database
+          docker compose -f docker-compose.dev.yml up -d --build prestashop$psVersion database
      fi
 fi
 
 if [ "$1" = 'kill' ]; then
-     docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 database
-     sudo rm -Rf data/ web16/ web17/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
+     docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 prestashop8 database
+     sudo rm -Rf data/ web16/ web17/ web8/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
 fi
 
 if [ "$1" = 'exec' ]; then

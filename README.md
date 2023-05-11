@@ -1,10 +1,10 @@
-# HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x
+# HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x - 8.x
 
 <!-- [![Build Status](https://hook.hipay.org/badge-ci/build/pi-ecommerce/hipay-enterprise-sdk-prestashop/develop?service=github)]() -->
 
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/hipay/hipay-enterprise-sdk-prestashop/master/LICENSE.md)
 
-The **HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x** is a PHP module which allows you to accept payments in your PrestaShop online store, offering innovative features to reduce shopping cart abandonment rates, optimize success rates and enhance the purchasing process on merchants’ sites to significantly increase business volumes without additional investments in the solution CMS e-commerce PrestaShop.
+The **HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x - 8.x** is a PHP module which allows you to accept payments in your PrestaShop online store, offering innovative features to reduce shopping cart abandonment rates, optimize success rates and enhance the purchasing process on merchants’ sites to significantly increase business volumes without additional investments in the solution CMS e-commerce PrestaShop.
 
 ## Getting started
 
@@ -65,7 +65,7 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 
 ## License
 
-The **HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x** is available under the **Apache 2.0 License**. Check out the [license file][project-license] for more information.
+The **HiPay Enterprise module for PrestaShop 1.6.x - 1.7.x - 8.x** is available under the **Apache 2.0 License**. Check out the [license file][project-license] for more information.
 
 [doc-home]: https://developer.hipay.com/doc/hipay-enterprise-sdk-prestashop/
 [hipay-help]: http://help.hipay.com
