@@ -92,8 +92,8 @@ if [ "$1" = 'restart' ]; then
 fi
 
 if [ "$1" = 'kill' ]; then
-     docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 database
-     sudo rm -Rf data/ web16/ web17/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
+     docker compose -f docker-compose.dev.yml rm -sfv prestashop16 prestashop17 prestashop8 database
+     sudo rm -Rf data/ web16/ web17/ web8/ src/hipay_enterprise/lib/vendor/ src/hipay_enterprise/composer.lock
 fi
 
 if [ "$1" = 'exec' ]; then
