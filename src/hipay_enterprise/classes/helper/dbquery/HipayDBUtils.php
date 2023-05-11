@@ -183,7 +183,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
             .' WHERE `order_reference` = "'.pSQL($orderReference).'"';
 
         if (null != $transactionId) {
-            $sql .= ' AND transaction_id = '.(int) $transactionId;
+            $sql .= ' AND transaction_id = "'.pSQL($transactionId).'"';
         }
 
         $result = Db::getInstance()->getRow($sql);

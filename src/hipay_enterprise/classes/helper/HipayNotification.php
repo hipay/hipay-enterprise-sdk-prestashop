@@ -553,7 +553,7 @@ class HipayNotification
 
                         $alreadyExists = false;
                         foreach ($orderSlips as $orderSlip) {
-                            if (strval($orderSlip->id) === $operation->getId()) {
+                            if (isset($operation) && strval($orderSlip->id) === $operation->getId()) {
                                 // This notification already corresponds to an existing slip
                                 // No need to create a new one
                                 $alreadyExists = true;
@@ -782,7 +782,7 @@ class HipayNotification
 
             // if transaction doesn't exist we create an order payment (if multiple refund, 1 line by amount refunded)
             if (0 == $this->dbUtils->countOrderPayment($order->reference, $this->setTransactionRefForPrestashop($transaction, $order))) {
-                $this->createOrderPayment($order, true);
+                $this->createOrderPayment($transaction, $order, true);
 
                 // force refund order status
                 if ($transaction->getRefundedAmount() == $transaction->getAuthorizedAmount()) {
