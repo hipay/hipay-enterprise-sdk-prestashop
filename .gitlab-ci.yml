@@ -97,6 +97,7 @@ variables:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:v1.6.0-debug
+  needs: []
   rules:
     - if: $ONLY_DEPLOY
       when: on_success
