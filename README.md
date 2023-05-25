@@ -53,15 +53,12 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 - Klarna
 - SEPA Direct Debit
 - Ideal
-- Belfius Direct Net
 - GiroPay
 - PostFinance card
 - PostFinance e-finance
 - Przelewy24
 - Mooney
 - Sofort Überweisung
-- Yandex Money
-- AstroPay: Aura, Banamex, Banco Do Brazil, BBVA Bancomer, Boleto Bancario, Bradesco, Caïxa, Itau, Oxxo, Santander Cash, Santander HomeBanking
 
 ## License
 

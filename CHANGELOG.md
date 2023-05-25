@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- **Add**: Removed support for some unused payment means:
+  - Astropay payment methods
+  - Belfius Direct Net
+  - ING Home'Pay
+  - Yandex Money
+
 ## 2.19.0
 
 - **Add**: Added support for Prestashop 8
