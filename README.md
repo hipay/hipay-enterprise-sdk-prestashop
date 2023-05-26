@@ -43,20 +43,28 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 - MasterCard
 - CB
 - Maestro
-- BCMC
 - AMEX
+- BCMC
 
 ### Local payments
 
 - ONEY FacilyPay
-- PayPal
-- Klarna
-- SEPA Direct Debit
-- Ideal
+- ONEY Credit Long
+- ONEY Gift Card
+- ApplePay
+- Bancontact Credit Card / QR code
+- BNP Personal Finance
 - GiroPay
+- Ideal
+- Illicado
+- MBWay
+- Multibanco
+- MyBank
+- PayPal
 - PostFinance card
 - PostFinance e-finance
 - Przelewy24
+- SEPA Direct Debit
 - Mooney
 - Sofort Überweisung
 

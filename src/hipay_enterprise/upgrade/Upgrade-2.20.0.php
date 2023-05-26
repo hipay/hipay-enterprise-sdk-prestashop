@@ -156,15 +156,6 @@ function upgrade_module_2_20_0($module)
                 'maxAmount' => '',
                 'activated' => '',
             ],
-            'klarnainvoice' => [
-                'displayName' => '',
-                'frontPosition' => '',
-                'minAmount' => '',
-                'maxAmount' => '',
-                'activated' => '',
-                'currencies' => '',
-                'countries' => '',
-            ],
             'paypal' => [
                 'displayName' => '',
                 'frontPosition' => '',
