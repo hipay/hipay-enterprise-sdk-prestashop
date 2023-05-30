@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Add**: Added support for new payment means:
+  - Alma 3x
+  - Alma 4x
 - **Add**: Removed support for some unused payment means:
   - Astropay payment methods
   - Belfius Direct Net

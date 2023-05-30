@@ -108,6 +108,20 @@ function upgrade_module_2_20_0($module)
                 'activated' => '',
                 'merchantPromotion' => '',
             ],
+            'alma-3x' => [
+                'displayName' => '',
+                'frontPosition' => '',
+                'minAmount' => '',
+                'maxAmount' => '',
+                'activated' => ''
+            ],
+            'alma-4x' => [
+                'displayName' => '',
+                'frontPosition' => '',
+                'minAmount' => '',
+                'maxAmount' => '',
+                'activated' => ''
+            ],
             'applepay' => [
                 'currencies' => '',
                 'countries' => '',
