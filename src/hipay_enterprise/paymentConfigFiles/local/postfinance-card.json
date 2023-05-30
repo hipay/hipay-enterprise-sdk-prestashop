@@ -6,7 +6,7 @@
       "label": "PostFinance"
     },
     "displayNameBO": "PostFinance Card",
-    "displayName":  {
+    "displayName": {
       "fr": "PostFinance Card",
       "en": "PostFinance Card"
     },
@@ -26,6 +26,6 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "postfinance-card.png"
+    "logo": "postfinance-card.svg"
   }
 }

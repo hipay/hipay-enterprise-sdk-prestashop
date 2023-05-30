@@ -6,7 +6,7 @@
       "label": "PostFinance"
     },
     "displayNameBO": "PostFinance E-Finance",
-    "displayName":  {
+    "displayName": {
       "fr": "PostFinance E-Finance",
       "en": "PostFinance E-Finance"
     },
@@ -26,6 +26,6 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "postfinance-efinance.png"
+    "logo": "postfinance-efinance.svg"
   }
 }
