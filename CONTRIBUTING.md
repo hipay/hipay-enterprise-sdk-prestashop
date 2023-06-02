@@ -4,8 +4,6 @@
 
 Contributions to the HiPay Enterprise module for PrestaShop - 1.7.x - 8.x should be made via GitHub [pull requests][pull-requests] and discussed using GitHub [issues][issues].
 
-This repository is a mirror of a private repository for this plugin, so we are not able to merge your PRs directly in GitHub. Any open PRs will be added to the main repository and closed in GitHub. Any contributor will be credited in the plugin's changelog.
-
 ## Before you start
 
 If you would like to make a significant change, please open
