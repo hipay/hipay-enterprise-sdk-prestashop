@@ -21,9 +21,11 @@
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "minAmount": {
+      "fixed": true,
       "EUR": 50
     },
     "maxAmount": {
+      "fixed": true,
       "EUR": 2000
     },
     "logo": "alma-3x.svg"
