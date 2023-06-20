@@ -227,12 +227,12 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                     $credentials = [
                         'api_apple_pay_username' => (
-                            empty($config['api_tokenjs_apple_pay_username_production'])
+                            !empty($config['api_tokenjs_apple_pay_username_production'])
                                 ? $config['api_tokenjs_apple_pay_username_production']
                                 : $config['api_username_production']
                         ),
                         'api_apple_pay_password' => (
-                            empty($config['api_tokenjs_apple_pay_password_production'])
+                            !empty($config['api_tokenjs_apple_pay_password_production'])
                                 ? $config['api_tokenjs_apple_pay_password_production']
                                 : $config['api_password_production']
                         ),
