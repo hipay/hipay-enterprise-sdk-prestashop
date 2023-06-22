@@ -11,6 +11,7 @@
   - ING Home'Pay
   - Yandex Money
 - **Fix**: Fixed ApplePay credentials on production environment, thanks to [Aerue](https://github.com/Aerue) on [PR #83](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/83)
+- **Fix**: Fixed issue causing all card orders to be sent to ApplePay account
 
 ## 2.19.0
 
