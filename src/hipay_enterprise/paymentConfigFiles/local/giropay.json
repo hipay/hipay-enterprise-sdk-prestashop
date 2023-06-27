@@ -22,7 +22,7 @@
     "maxAmount": {
       "EUR": false
     },
-    "logo": "giropay.png",
+    "logo": "giropay.svg",
     "orderOnPending": true
   }
 }
