@@ -25,6 +25,7 @@ services:
     volumes:
       - ./web8:/var/www/html
       - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
     mem_limit: 500M
 
   prestashop17:
@@ -43,6 +44,7 @@ services:
     volumes:
       - ./web17:/var/www/html
       - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
     mem_limit: 500M
 
   prestashop16:
@@ -61,6 +63,7 @@ services:
     volumes:
       - ./web16:/var/www/html
       - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
     mem_limit: 500M
 
   # smtp:

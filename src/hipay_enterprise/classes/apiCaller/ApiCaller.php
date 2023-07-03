@@ -127,7 +127,7 @@ class ApiCaller
     public static function requestDirectPost($moduleInstance, $params)
     {
         try {
-            $params['isApplePay'] = isset($params['isApplePay']) ?: null;
+            $params['isApplePay'] = isset($params['isApplePay']) && $params['isApplePay'] == true;
             // Gateway
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, false, false, $params['isApplePay']);
 

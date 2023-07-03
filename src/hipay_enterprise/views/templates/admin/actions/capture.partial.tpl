@@ -37,12 +37,16 @@
         <input type="hidden" name="token" value="{$tokenCapture}"/>
         <div class="form-group">
             <label class="col-lg-4" for="hipay_capture_type">{l s='Capture type' mod='hipay_enterprise'}</label>
+            {if $canPartiallyCapture}
             <select id="hipay_capture_type" name="hipay_capture_type" class="col-lg-3">
                 {if !$partiallyCaptured }
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
                 <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
             </select>
+            {else}
+                <b>{l s='Complete' mod='hipay_enterprise'}</b><input type="hidden" id="hipay_capture_type" name="hipay_capture_type" value="complete" />
+            {/if}
         </div>
 
         <div id="block-capture-amount" {if !$partiallyCaptured }style="display:none;" {/if}
@@ -282,7 +286,7 @@
 
         function checkCaptureAmount() {
 
-            if ($("#hipay_capture_type option:selected").val() == "complete") {
+            if ($("#hipay_capture_type").val() == "complete") {
                 return true;
             }
 

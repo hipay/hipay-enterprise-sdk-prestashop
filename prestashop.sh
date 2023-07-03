@@ -8,7 +8,7 @@ header="bin/tests/"
 pathPreFile=${header}000*/*.js
 pathLibHipay=${header}000*/*/*/*.js
 pathDir=${header}0*
-psVersion=${2:-"17"}
+psVersion=${2:-"8"}
 follow=${3:-""}
 
 manageComposerForData() {
@@ -131,7 +131,10 @@ if [ "$1" = 'test' ]; then
      #   npm install
      cd ../../../
 
-     if [ "$psVersion" = '17' ]; then
+     if [ "$psVersion" = '8' ]; then
+          BASE_URL="http://localhost:8088/"
+          PRESTASHOP_VERSION=8
+     elif [ "$psVersion" = '17' ]; then
           BASE_URL="http://localhost:8087/"
           PRESTASHOP_VERSION=1.7
      else

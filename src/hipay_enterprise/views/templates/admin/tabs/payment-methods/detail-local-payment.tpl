@@ -114,8 +114,11 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
-                        <input type="text" class="money-type" name="{$key}_minAmount[EUR]"
-                            value="{$method.minAmount.EUR}" />
+                        <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"
+                            {if $method.minAmount.fixed|default:false eq true } readonly {/if} />
+                        {if isset($method.minAmount.fixed)}
+                            <input type="hidden" name="{$key}_minAmount[fixed]" value="{$method.minAmount.fixed}" />
+                        {/if}
                         <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                     </div>
                 </div>
@@ -126,8 +129,11 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
-                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]"
-                            value="{$method.maxAmount.EUR}" />
+                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"
+                            {if $method.maxAmount.fixed|default:false eq true } readonly {/if} />
+                        {if isset($method.maxAmount.fixed)}
+                            <input type="hidden" name="{$key}_maxAmount[fixed]" value="{$method.maxAmount.fixed}" />
+                        {/if}
                         <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                     </div>
                 </div>

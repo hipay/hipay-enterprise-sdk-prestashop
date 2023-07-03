@@ -1,12 +1,16 @@
 {
-  "name": "yandex",
+  "name": "alma-4x",
   "config": {
-    "displayNameBO": "Yandex Money",
-    "displayName": {
-      "fr": "Yandex Money",
-      "en": "Yandex Money"
+    "group": {
+      "code": "alma",
+      "label": "Alma"
     },
-    "frontPosition": 30,
+    "displayNameBO": "Alma 4x",
+    "displayName": {
+      "fr": "Alma 4x",
+      "en": "Alma 4x"
+    },
+    "frontPosition": 7,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
@@ -17,11 +21,13 @@
     "countrySelectorReadOnly": 1,
     "currencySelectorReadOnly": 1,
     "minAmount": {
-      "EUR": 0
+      "fixed": true,
+      "EUR": 50
     },
     "maxAmount": {
-      "EUR": false
+      "fixed": true,
+      "EUR": 2000
     },
-    "logo": "yandex.png"
+    "logo": "alma-4x.svg"
   }
 }

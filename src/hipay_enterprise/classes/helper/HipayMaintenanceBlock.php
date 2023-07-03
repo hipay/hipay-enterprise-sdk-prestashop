@@ -311,6 +311,7 @@ class HipayMaintenanceBlock
                         'cartId' => $this->cart->id,
                         'ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
                         'wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                        'canPartiallyCapture' => $this->paymentMethodCanRefundOrCapture('capturePartial')
                     ]
                 );
 
@@ -484,7 +485,17 @@ class HipayMaintenanceBlock
      */
     private function paymentMethodCanRefundOrCapture($operation)
     {
-        $label = ('capture' === $operation) ? 'canManualCapture' : 'canRefund';
+        switch($operation) {
+            case 'capture':
+                $label  = 'canManualCapture';
+                break;
+            case 'capturePartial':
+                $label  = 'canManualCapturePartially';
+                break;
+            default:
+                $label  = 'canRefund';
+                break;
+        }
 
         if (
             (isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])

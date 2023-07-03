@@ -32,6 +32,16 @@ cd /var/www/html/modules/hipay_enterprise/
 
 composer install --no-dev
 
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+printf "\n${COLOR_SUCCESS}         LINK WITH HIPAY'S SDK PHP        ${NC}\n"
+printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+if [ -f ./sdk/hipay-fullservice-sdk-php/composer.json ]; then
+    cd ./lib/vendor/hipay/
+    rm -Rf hipay-fullservice-sdk-php
+    ln -sf /var/www/html/modules/hipay_enterprise/sdk/hipay-fullservice-sdk-php hipay-fullservice-sdk-php
+    printf "${COLOR_SUCCESS} HiPay's SDK php is now linked ${NC}\n"
+fi
+
 cd /var/www/html
 
 /tmp/docker_run.sh

@@ -1,18 +1,32 @@
 # Changelog
 
+## 2.20.0
+
+- **Add**: Added support for new payment means:
+  - Alma 3x
+  - Alma 4x
+- **Add**: Removed support for some unused payment means:
+  - Astropay payment methods
+  - Belfius Direct Net
+  - ING Home'Pay
+  - Yandex Money
+- **Add**: Updated GiroPay Logo
+- **Fix**: Fixed ApplePay credentials on production environment, thanks to [Aerue](https://github.com/Aerue) on [PR #83](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/83)
+- **Fix**: Fixed issue causing all card orders to be sent to ApplePay account
+
 ## 2.19.0
 
 - **Add**: Added support for Prestashop 8
 - **Add**: Added Hosted Fields usage instead of custom fields for local payment means
-- **Fix**: Fixed order description trimming, thanks to [PetruOPower](https://github.com/PetruOPower) on [#82](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/82)
+- **Fix**: Fixed order description trimming, thanks to [PetruOPower](https://github.com/PetruOPower) on [PR #82](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/82)
 
 ## Version 2.18.0
 
 - **Add**: Implement cron notifications
-- **Fix**: shipping cost dispay in backoffice, thanks to [Lionel-dev](https://github.com/Lionel-dev) on [#80](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/80)
+- **Fix**: shipping cost dispay in backoffice, thanks to [Lionel-dev](https://github.com/Lionel-dev) on [PR #80](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/80)
 - **Fix**: Add index on Notification table
 - **Fix**: Handle multiple order from one cart
-- **Fix**: Security improvement, thanks to [okom3pom](https://github.com/okom3pom) on [#78](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/78)
+- **Fix**: Security improvement, thanks to [okom3pom](https://github.com/okom3pom) on [PR #78](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/78)
 - **Fix**: Error message on order cancellation, thanks to [axometeam](https://github.com/axometeam)
 - **Fix**: Fixed CONTRIBUTING.md,  thanks to [PrestaEdit](https://github.com/PrestaEdit), [okom3pom](https://github.com/okom3pom), [Lionel-dev](https://github.com/Lionel-dev), [touchweb-vincent](https://github.com/touchweb-vincent)
 

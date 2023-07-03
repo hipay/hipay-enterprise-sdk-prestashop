@@ -93,7 +93,7 @@ spec:
           - containerPort: 80
             name: prestashop
       nodeSelector:
-        node_type: default
+        node_pool: default
       tolerations:
         - key: cd_service
           operator: Equal
