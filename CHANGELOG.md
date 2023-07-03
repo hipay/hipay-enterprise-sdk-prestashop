@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.20.0
 
 - **Add**: Added support for new payment means:
   - Alma 3x
@@ -10,6 +10,7 @@
   - Belfius Direct Net
   - ING Home'Pay
   - Yandex Money
+- **Add**: Updated GiroPay Logo
 - **Fix**: Fixed ApplePay credentials on production environment, thanks to [Aerue](https://github.com/Aerue) on [PR #83](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/83)
 - **Fix**: Fixed issue causing all card orders to be sent to ApplePay account
 
