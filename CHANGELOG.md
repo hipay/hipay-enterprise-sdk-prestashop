@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.21.0 (unreleased)
+
+- **Add**: Added reference to pay on customer order details for `Mooney` / `Multibanco` payment means
+- **Fix**: Fixed partial capture for `Alma` methods
+
 ## 2.20.0
 
 - **Add**: Added support for new payment means:

@@ -16,33 +16,54 @@
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 
     {if {isset($smarty.get.referenceToPay) and $smarty.get.referenceToPay}}
-        <div id="referenceToPay">
-            <table>
-                <tr>
-                    <td><b>{l s='Entity' mod='hipay_enterprise'}</b></td>
-                    <td>{$smarty.get.entity}</td>
-                </tr>
-                <tr>
-                    <td><b>{l s='Reference' mod='hipay_enterprise'}</b></td>
-                    <td>{$smarty.get.reference}</td>
-                </tr>
-                <tr>
-                    <td><b>{l s='Amount' mod='hipay_enterprise'}</b></td>
-                    <td>{$smarty.get.amount} {$currency.sign}</td>
-                </tr>
-                <tr>
-                    <td><b>{l s='Expiry date' mod='hipay_enterprise'}</b></td>
-                    <td>{dateFormat date=$smarty.get.expirationDate full=0}</td>
-                </tr>
-            </table>
+        <style>
+            @media print {
+                body * {
+                    visibility: hidden;
+                }
+
+                #referenceToPay,
+                #referenceToPay * {
+                    visibility: visible;
+                }
+            }
+        </style>
+        <div class="referenceContainer">
+            <div id="referenceToPay"></div>
+            <button class="btn btn-primary print" onclick="window.print()">{l s='PRINT' mod='hipay_enterprise'}</button>
         </div>
-        <br/>
-        <p style="font-size: 15px">{l s='To pay a Multibanco reference online with you bank or with an automated cash machine, choose \'Payments\' and then \'Services\'.' mod='hipay_enterprise'}</p>
+        <script type="text/javascript">
+            window.onload = function() {
+                var lang = '{$language.locale}';
+                var hipaySdk = new HiPay({
+                    username: 'hosted',
+                    password: 'hosted',
+                    environment: 'production',
+                    lang: lang.length > 2 ? lang.substr(0, 2) : 'en'
+                });
+                {if $smarty.get.method === 'multibanco' }
+                    hipaySdk.createReference('multibanco', {
+                        selector: 'referenceToPay',
+                        reference: '{$smarty.get.reference}',
+                        entity: '{$smarty.get.entity}',
+                        amount: '{$smarty.get.amount}',
+                        expirationDate: '{$smarty.get.expirationDate}',
+                    });
+                {else}
+                    hipaySdk.createReference('sisal', {
+                        selector: 'referenceToPay',
+                        reference: '{$smarty.get.reference}',
+                        barCode: '{$smarty.get.barCode}'
+                    });
+                {/if}
+            }
+        </script>
     {else}
         <p>{l s='Your order is awaiting confirmation from the bank.' mod='hipay_enterprise'}
-            <br/><br/>{l s='Once it is approved it will be available in your' mod='hipay_enterprise'} <strong><a
-                        href="{$link->getPageLink('history', true)}">{l s='order history' mod='hipay_enterprise'}</a></strong>
+            <br /><br />{l s='Once it is approved it will be available in your' mod='hipay_enterprise'} <strong><a
+                    href="{$link->getPageLink('history', true)}">{l s='order history' mod='hipay_enterprise'}</a></strong>
         </p>
     {/if}
+
     <p><a href="index.php">{l s='Back to home' mod='hipay_enterprise'}</a></p>
 {/block}

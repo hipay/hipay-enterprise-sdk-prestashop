@@ -238,6 +238,23 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * @param int $orderId
+     *
+     * @return bool
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function isTransactionExist($orderId)
+    {
+        $sql = 'SELECT * '
+            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE order_id = '.(int) $orderId
+            .' LIMIT 1';
+
+        return !empty(Db::getInstance()->executeS($sql));
+    }
+
+    /**
      * return if order already captured from hipay transaction.
      *
      * @param int $orderId

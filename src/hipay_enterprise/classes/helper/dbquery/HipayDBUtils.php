@@ -260,4 +260,21 @@ class HipayDBUtils extends HipayDBQueryAbstract
             return $value['status'];
         }, Db::getInstance()->executeS($sql));
     }
+
+    /**
+     * @param int $orderId
+     */
+    public function getTransactionByOrderId($orderId)
+    {
+        $sql = 'SELECT * '
+            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE order_id = '.(int) $orderId
+            .' LIMIT 1';
+
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0];
+        }
+
+        return false;
+    }
 }
