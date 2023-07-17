@@ -370,6 +370,7 @@ class HipayConfig
                     'card_token' => 0,
                     'activate_basket' => 1,
                     'log_infos' => 1,
+                    'log_debug' => 0,
                     'regenerate_cart_on_decline' => 1,
                     'ccDisplayName' => [
                         'fr' => 'Carte de crédit',

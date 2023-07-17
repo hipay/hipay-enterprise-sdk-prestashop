@@ -186,6 +186,28 @@
                         </span>
                     </div>
                 </div>
+                <div id="logs-detail" style="display: {if $config_hipay.payment.global.log_infos}block{else}none{/if}">
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">
+                            <span class="label-tooltip" data-toggle="tooltip" data-html="true" title=""
+                                data-original-title="{l s='Preserve GDPR data in logs' mod='hipay_enterprise'}">
+                                {l s='Preserve GDPR data in logs' mod='hipay_enterprise'}
+                            </span>
+                        </label>
+                        <div class="col-lg-9">
+                            <span class="switch prestashop-switch fixed-width-lg">
+                                <input type="radio" name="log_debug" id="log_debug_on" value="1"
+                                    {if $config_hipay.payment.global.log_debug }checked="checked" {/if}>
+                                <label for="log_debug_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                <input type="radio" name="log_debug" id="log_debug_off" value="0"
+                                    {if $config_hipay.payment.global.log_debug == false}checked="checked" {/if}>
+                                <label for="log_debug_off">{l s='No' mod='hipay_enterprise'}</label>
+                                <a class="slide-button btn"></a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div id="sdk_js_url" class="form-group">
                     <label class="control-label col-lg-3">
@@ -281,6 +303,14 @@
                 } else {
                     $("#3ds-rules").show();
                 }
+            });
+
+            $('#log_infos_switchmode_on').on('input', function() {
+                $('#logs-detail').show();
+            });
+
+            $('#log_infos_switchmode_off').on('input', function() {
+                $('#logs-detail').hide();
             });
         });
     </script>
