@@ -251,6 +251,29 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label col-lg-3">
+                        <span>
+                            {l s='Display cancel button' mod='hipay_enterprise'}
+                        </span>
+                    </label>
+                    <div class="col-lg-9">
+                        <div class="row">
+                            <span class="switch prestashop-switch fixed-width-lg">
+                                <input type="radio" name="display_cancel_button" id="display_cancel_button_switchmode_on"
+                                    value="1" {if $config_hipay.payment.global.display_cancel_button }checked="checked"
+                                    {/if}>
+                                <label for="display_cancel_button_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                                <input type="radio" name="display_cancel_button" id="display_cancel_button_switchmode_off"
+                                    value="0"
+                                    {if $config_hipay.payment.global.display_cancel_button == false}checked="checked" {/if}>
+                                <label for="display_cancel_button_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
+                                <a class="slide-button btn"></a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="panel-footer">
                 <button type="submit" class="btn btn-default pull-left" name="submitCancel"><i

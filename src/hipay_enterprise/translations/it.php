@@ -606,9 +606,11 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Se \'Arrotonda il totale\' è attivato nella configurazione PrestaShop, il carrello non verrà inviato e i metodi di pagamento che forzano l\'invio del carrello saranno disabilitati.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Manitenti carrello per pagamenti falliti';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Abilita log tecnico';
+$_MODULE['<{hipay_enterprise}prestashop>global_cd54b9688605622150a0ebeb82abfac4'] = 'Conserva i dati GDPR nei log';
 $_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Inviare l\'url di notifica';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Se abilitato, l\'URL del vostro sito sarà inviato quando il pagamento e le notifiche verranno inviate da questo URL. Da utilizzare solo in caso di multi-sito.';
+$_MODULE['<{hipay_enterprise}prestashop>global_b9c78d6f5eb37b1247598d10bea17724'] = 'Visualizzare il pulsante \"Annulla\".';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Elimina modifiche';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Salva modifiche configurazione';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_8a6a1ae7df2ffd93f8cb4ea79d944c99'] = 'Non hai salvato la carta di credito/debito.';

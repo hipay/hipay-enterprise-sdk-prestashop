@@ -4,6 +4,7 @@
 
 - **Add**: Added reference to pay on customer order details for `Mooney` / `Multibanco` payment means
 - **Fix**: Fixed partial capture for `Alma` methods
+- **Add**: Display cancel button
 
 ## 2.20.0
 

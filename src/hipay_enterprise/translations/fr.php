@@ -606,9 +606,11 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi sur le total\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Conserver le panier en cas d’échec du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Activer les logs techniques';
+$_MODULE['<{hipay_enterprise}prestashop>global_cd54b9688605622150a0ebeb82abfac4'] = 'Conserver les données RGPD dans les journaux';
 $_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Envoyer l\'url de notification';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'Si oui, l\'URL de votre site est envoyée lors du paiement et les notifications seront envoyées à cette URL. À utiliser uniquement pour les multis sites.';
+$_MODULE['<{hipay_enterprise}prestashop>global_b9c78d6f5eb37b1247598d10bea17724'] = 'Afficher le bouton \"Annuler\"';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Annuler les changements';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Sauvegarder les changements';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_8a6a1ae7df2ffd93f8cb4ea79d944c99'] = 'Vous n\'avez aucune carte de crédit/débit sauvegardée.';

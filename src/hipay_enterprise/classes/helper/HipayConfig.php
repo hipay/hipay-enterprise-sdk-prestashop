@@ -379,6 +379,7 @@ class HipayConfig
                     ],
                     'ccFrontPosition' => 1,
                     'send_url_notification' => 0,
+                    'display_cancel_button' => 0,
                 ],
                 'credit_card' => [],
                 'local_payment' => [],

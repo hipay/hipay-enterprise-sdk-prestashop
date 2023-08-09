@@ -606,9 +606,11 @@ $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'
 $_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'If \'Round on the total\' is activated in the PrestaShop configuration, the cart will not be sent and the payment methods forcing cart sending will be disabled.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Keep cart when payment fails';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Enable technical logs';
+$_MODULE['<{hipay_enterprise}prestashop>global_cd54b9688605622150a0ebeb82abfac4'] = 'Preserve GDPR data in logs';
 $_MODULE['<{hipay_enterprise}prestashop>global_7012982b9e1d7138d85a9d5493540272'] = 'SDK JS url	';
 $_MODULE['<{hipay_enterprise}prestashop>global_d75017e5888e97c7e88c840de6bc6d4a'] = 'Send url Notification';
 $_MODULE['<{hipay_enterprise}prestashop>global_7befac932a45f12a0ed85683e0f4b68f'] = 'If so, then the URL of your site is sent during the payment and notifications will be sent to this URL. To use only for multi site.';
+$_MODULE['<{hipay_enterprise}prestashop>global_b9c78d6f5eb37b1247598d10bea17724'] = 'Display cancel button';
 $_MODULE['<{hipay_enterprise}prestashop>global_98313f623bb6f464b9a154eca0b99bf3'] = 'Discard changes';
 $_MODULE['<{hipay_enterprise}prestashop>global_e84c1a9ae6ca2dafc5338e6a1c5b080f'] = 'Save configuration changes';
 $_MODULE['<{hipay_enterprise}prestashop>usertoken_8a6a1ae7df2ffd93f8cb4ea79d944c99'] = 'You have no saved credit/debit card.';
