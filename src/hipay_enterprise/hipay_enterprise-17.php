@@ -473,6 +473,13 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
                 ['server' => 'remote', 'position' => 'bottom', 'priority' => 20]
             );
+        } elseif ("module-hipay_enterprise-pending" === $this->context->controller->page_name) {
+            $this->context->controller->addCSS(_MODULE_DIR_.$this->name.'/views/css/hipay-enterprise.css', 'all');
+            $this->context->controller->registerJavascript(
+                'hipay-sdk-js',
+                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
+                ['server' => 'remote', 'position' => 'top', 'priority' => 1]
+            );
         }
     }
 }

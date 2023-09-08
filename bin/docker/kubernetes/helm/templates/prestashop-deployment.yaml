@@ -81,9 +81,6 @@ spec:
         name: prestashop-{{ .Release.Name }}
         resources:
           requests:
-            memory: "256M"
-            cpu: "500m"
-          limits:
             memory: "512M"
             cpu: "1000m"
         envFrom:
@@ -92,10 +89,3 @@ spec:
         ports:
           - containerPort: 80
             name: prestashop
-      nodeSelector:
-        node_pool: default
-      tolerations:
-        - key: cd_service
-          operator: Equal
-          value: only
-          effect: NoExecute

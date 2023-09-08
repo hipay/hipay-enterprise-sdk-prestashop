@@ -352,3 +352,11 @@ a:hover.tooltips span {
     }
   }
 }
+
+.referenceContainer {
+  text-align: center;
+}
+
+.referenceContainer .print {
+  margin-top: 12px;
+}

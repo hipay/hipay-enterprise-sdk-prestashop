@@ -72,8 +72,8 @@ abstract class ApiFormatterAbstract implements ApiFormatterInterface
         try {
             $mappedCarrier = $this->mapper->getMappedHipayCarrierFromPSId((int)$this->cart->id_carrier);
             $method = $this->module->hipayConfigTool->getPaymentProduct(Tools::getValue('method'));
-            if (
-                $mappedCarrier['hp_carrier_mode'] === 'STORE'
+            if (isset($mappedCarrier['hp_carrier_mode'])
+                && $mappedCarrier['hp_carrier_mode'] === 'STORE'
                 && isset($method['group'])
                 && isset($method['group']['label'])
                 && $method['group']['label'] === 'Oney'

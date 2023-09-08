@@ -370,6 +370,8 @@ class HipayNotification
             }
             HipayHelper::changeOrderStatus($order, $newState);
             $this->addOrderMessage($transaction, $order);
+        } elseif (!$this->dbMaintenance->isTransactionExist($order->id)) {
+            $this->addOrderMessage($transaction, $order);
         }
 
         if (TransactionStatus::CAPTURE_REQUESTED == $transaction->getStatus() &&
@@ -850,6 +852,7 @@ class HipayNotification
             'attempt_create_multi_use' => (isset($customData['multiUse']) && $customData['multiUse']) ? 1 : 0,
             'customer_id' => $order->id_customer,
             'eci' => $transaction->getEci(),
+            'reference_to_pay' => $transaction->getReferenceToPay()
         ];
 
         $this->dbMaintenance->setHipayTransaction($data);

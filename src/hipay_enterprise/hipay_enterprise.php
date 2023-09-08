@@ -25,6 +25,8 @@ if (!defined('_PS_VERSION_')) {
  */
 class Hipay_enterprise extends PaymentModule
 {
+
+    public $dbUtils;
     public $hipayConfigTool;
     public $hipayUpdateNotif;
     public $_errors = [];
@@ -37,7 +39,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.20.0';
+        $this->version = '2.21.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -189,6 +191,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionOrderStatusUpdate');
         $return &= $this->registerHook('actionOrderSlipAdd');
         $return &= $this->registerHook('actionDispatcher');
+        $return &= $this->registerHook('displayOrderDetail');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
             $this->registerHook('header') &&
@@ -474,6 +477,31 @@ class Hipay_enterprise extends PaymentModule
 
         $this->context->controller->addJS($this->_path.'/views/js/form-input-control.js', 'all');
         $this->context->controller->addJS($this->_path.'/views/js/md5.js', 'all');
+    }
+
+    public function hookDisplayOrderDetail($params)
+    {
+        $transaction = $this->dbUtils->getTransactionByOrderId($params['order']->id);
+
+        if (isset($transaction['reference_to_pay'])) {
+            $referenceToPay = $transaction['reference_to_pay'];
+
+            $this->context->controller->registerJavascript(
+                'hipay-sdk-js',
+                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
+                ['server' => 'remote', 'position' => 'top', 'priority' => 1]
+            );
+
+            $this->smarty->assign(
+                [
+                    'lang' => Tools::strtolower($this->context->language->iso_code),
+                    'referenceToPay' => $referenceToPay,
+                    'method' => $transaction['payment_product'],
+                ]
+            );
+
+            return $this->display(dirname(__FILE__), 'views/templates/hook/referenceToPay.tpl');
+        }
     }
 
     public function hookHeader()

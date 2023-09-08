@@ -64,5 +64,6 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order->payment_product_list = $this->productList;
         $order->payment_product_category_list = '';
         $order->multi_use = isset($this->params["multi_use"]) ? $this->params["multi_use"] : null;
+        $order->display_cancel_button = $this->configHipay["payment"]["global"]["display_cancel_button"];
     }
 }

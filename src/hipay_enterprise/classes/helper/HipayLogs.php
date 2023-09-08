@@ -31,15 +31,22 @@ class HipayLogs
 
     public $enable = true;
     private $basePath;
-    private $privateDataKeys = ['token', 'cardtoken', 'card_number', 'cvc', 'api_password_sandbox',
-        'api_tokenjs_username_sandbox', 'api_tokenjs_password_publickey_sandbox', 'api_secret_passphrase_sandbox',
-        'api_password_production', 'api_tokenjs_username_production',
+    private $privateDataKeys = ['token', 'cardtoken', 'card_number', 'cvc', 'iban', 'issuer_bank_id',
+        'api_password_sandbox', 'api_tokenjs_username_sandbox', 'api_tokenjs_password_publickey_sandbox',
+        'api_secret_passphrase_sandbox', 'api_password_production', 'api_tokenjs_username_production',
         'api_tokenjs_password_publickey_production', 'api_secret_passphrase_production', 'api_moto_username_production',
         'api_moto_password_production', 'api_moto_secret_passphrase_production',
         'api_apple_pay_username_production', 'api_apple_pay_password_production', 'api_apple_pay_passphrase_production',
         'api_tokenjs_apple_pay_username_production', 'api_tokenjs_apple_pay_password_production',
         'api_apple_pay_username_sandbox', 'api_apple_pay_password_sandbox', 'api_apple_pay_passphrase_sandbox',
         'api_tokenjs_apple_pay_username_sandbox', 'api_tokenjs_apple_pay_password_sandbox',
+    ];
+    private $gdprKeys = ['email', 'firstname', 'lastname', 'gender', 'birthdate', 'phone', 'msisdn',
+        'streetaddress', 'streetaddress2', 'zipcode', 'city', 'state', 'country', 'recipientinfo',
+        'shipto_firstname', 'shipto_lastname', 'shipto_gender', 'shipto_phone', 'shipto_msisdn',
+        'shipto_streetaddress', 'shipto_streetaddress2', 'shipto_zipcode', 'shipto_city',
+        'shipto_state', 'shipto_country', 'shipto_recipientinfo', 'shipto_house_number', 'bank_name', 'card_holder',
+        'card_expiry_month', 'card_expiry_year', 'cardHolder', 'cardExpiryMonth', 'cardExpiryYear'
     ];
 
     private $installProcess = true;
@@ -51,21 +58,21 @@ class HipayLogs
      * HipayLogs constructor.
      *
      * @param Hipay_entreprise $module_instance
-     * @param bool             $enableConf
+     * @param bool $enableConf
      */
     public function __construct($module_instance, $enableConf = true)
     {
         $this->module = $module_instance;
 
         // Init base path for logs
-        $this->basePath = _PS_ROOT_DIR_.'/app/logs/';
+        $this->basePath = _PS_ROOT_DIR_ . '/app/logs/';
 
         if (!file_exists($this->basePath)) {
-            $this->basePath = _PS_ROOT_DIR_.'/var/logs/';
+            $this->basePath = _PS_ROOT_DIR_ . '/var/logs/';
         }
 
         if (!file_exists($this->basePath)) {
-            $this->basePath = _PS_ROOT_DIR_.'/log/';
+            $this->basePath = _PS_ROOT_DIR_ . '/log/';
         }
 
         $this->enable = (isset($enableConf) ? $enableConf : true);
@@ -101,7 +108,7 @@ class HipayLogs
      */
     public function logErrors($msg)
     {
-        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext().':'.$msg);
+        $this->writeLogs(self::LOG_HIPAY_ERROR, $this->getExecutionContext() . ':' . $msg);
     }
 
     /**
@@ -218,7 +225,7 @@ class HipayLogs
      */
     public function displayLogFile($logFile)
     {
-        $path = $this->getBasePath().$logFile;
+        $path = $this->getBasePath() . $logFile;
 
         if (!file_exists($path)) {
             http_response_code(404);
@@ -249,7 +256,11 @@ class HipayLogs
      */
     protected function filterDebugData(array $debugData)
     {
-        $debugReplacePrivateDataKeys = array_map('strtolower', $this->privateDataKeys);
+        $keys = $this->module->hipayConfigTool->getPaymentGlobal()['log_debug']
+            ? $this->privateDataKeys
+            : array_merge($this->privateDataKeys, $this->gdprKeys);
+
+        $debugReplacePrivateDataKeys = array_map('strtolower', $keys);
 
         foreach (array_keys($debugData) as $key) {
             if (false !== strpos($key, "\0")) {
@@ -280,7 +291,7 @@ class HipayLogs
     {
         $debug = debug_backtrace();
         if (isset($debug[2])) {
-            return $debug[2]['class'].':'.$debug[2]['function'];
+            return $debug[2]['class'] . ':' . $debug[2]['function'];
         }
 
         return null;
@@ -295,7 +306,7 @@ class HipayLogs
      */
     private function toArray($object)
     {
-        return (array) $object;
+        return (array)$object;
     }
 
     /**
@@ -308,7 +319,7 @@ class HipayLogs
      */
     private function writeLogs($type, $message)
     {
-        $formatted_message = date('Y/m/d - H:i:s').': '.$message."\r\n";
+        $formatted_message = date('Y/m/d - H:i:s') . ': ' . $message . "\r\n";
 
         return file_put_contents($this->getFilename($type), $formatted_message, FILE_APPEND);
     }
@@ -343,6 +354,6 @@ class HipayLogs
                 break;
         }
 
-        return $this->basePath.date('Y-m-d').'-hipay-'.$filename.'.log';
+        return $this->basePath . date('Y-m-d') . '-hipay-' . $filename . '.log';
     }
 }

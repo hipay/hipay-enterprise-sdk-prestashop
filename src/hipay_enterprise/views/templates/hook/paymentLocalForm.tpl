@@ -31,7 +31,8 @@
             var container = "hipay-container-hosted-fields-{$localPaymentName}";
             var options = {
                 selector: container,
-                template: "auto"
+                template: "auto",
+                isPaymentPageV2: true
             };
 
             var localHipay = new HiPay({

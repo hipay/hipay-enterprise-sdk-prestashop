@@ -20,13 +20,14 @@ data:
   PS_FOLDER_INSTALL: installOLD
   PS_HANDLE_DYNAMIC_DOMAIN: "0"
   PS_ALL_LANGUAGES: "0"
-  DB_SERVER: prestashop-mysql-{{ .Release.Name }}
+  DB_SERVER: prestashop-mysql-{{ .Release.Name }}.default.svc.cluster.local
   DB_USER: root
   DB_PASSWD: admin
+  DB_PORT: "3306"
   DB_NAME: "{{ .Values.db_name }}"
   PS_ENABLE_SSL: "1"
   # Mysql env vars
-  MYSQL_HOST: prestashop-mysql-{{ .Release.Name }}
+  MYSQL_HOST: prestashop-mysql-{{ .Release.Name }}.default.svc.cluster.local
   MYSQL_ROOT_PASSWORD: admin
   # Prod env vars
   HIPAY_INSTALL_AUTO: "0"

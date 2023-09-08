@@ -97,6 +97,11 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
           VALUES
             (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
             (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
+        
+        INSERT INTO ps_currency_lang (id_currency, id_lang, name, symbol, pattern)
+          VALUES
+          (1, 2, 'euro', '€', ''),
+          (1, 3, 'euro', '€', '');
 
         COMMIT;"
     fi
