@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.21.1 - UNRELEASED
+
+- **Fix**: Fixed ApplePay credentials detection in production
+
 ## 2.21.0
 
 - **Add**: Added reference to pay on customer order details for `Mooney` / `Multibanco` payment means
