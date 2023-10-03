@@ -488,9 +488,9 @@ function checkControl(form) {
 
 /**
  *
- * @returns {Form}
+ * @returns {HiPay_Form}
  */
-function Form() {
+function HiPay_Form() {
   this.fields = [];
 }
 
@@ -499,9 +499,9 @@ function Form() {
  * @param {type} field
  * @param {type} type
  * @param {type} required
- * @returns {Input}
+ * @returns {HiPay_Input}
  */
-function Input(field, type, required) {
+function HiPay_Input(field, type, required) {
   this.field = field;
   this.type = type;
   this.required = required;
@@ -517,9 +517,9 @@ function Input(field, type, required) {
  */
 function addInput(form, field, type, required) {
   if (!hiPayInputControl.forms[form]) {
-    hiPayInputControl.forms[form] = new Form();
+    hiPayInputControl.forms[form] = new HiPay_Form();
   }
-  hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
+  hiPayInputControl.forms[form].fields.push(new HiPay_Input(field, type, required));
 }
 
 hiPayInputControl.checkControl = checkControl;
