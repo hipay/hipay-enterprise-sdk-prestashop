@@ -46,7 +46,7 @@ function initDirectPost() {
         return true; // allow whatever action that would normally happen to continue
       }
 
-      var formErrors = !hiPayInputControl.checkControl('cc');
+      var formErrors = !hiPayInputControl.HiPay_checkControl('cc');
       formErrors = !checkPaymentDate() || formErrors;
 
       if (formErrors) {
