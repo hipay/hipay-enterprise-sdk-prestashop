@@ -3,6 +3,7 @@
 ## 2.21.1 - UNRELEASED
 
 - **Fix**: Fixed ApplePay credentials detection in production
+- **Fix**: Fixed name of global JS methods adding HiPay namespace
 
 ## 2.21.0
 

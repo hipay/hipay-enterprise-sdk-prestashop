@@ -19,9 +19,9 @@
 
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $(".money-type").change(function validate() {
-            var inputValue = hiPayInputControl.normalizePrice($(this).val());
+            var inputValue = hiPayInputControl.HiPay_normalizePrice($(this).val());
             var parsedValue = truncateDecimals(inputValue, 6);
             $(this).val(parsedValue);
         });
@@ -29,28 +29,27 @@
 
     $('.multiselect-currency').multiselect();
 
-    $('#collapseCC').on('shown.bs.collapse', function () {
+    $('#collapseCC').on('shown.bs.collapse', function() {
         $("#chevronCC").addClass('icon-chevron-up').removeClass('icon-chevron-down');
     });
 
-    $('#collapseCC').on('hidden.bs.collapse', function () {
+    $('#collapseCC').on('hidden.bs.collapse', function() {
         $("#chevronCC").addClass('icon-chevron-down').removeClass('icon-chevron-up');
     });
 
-    $('#collapseLocalPayment').on('shown.bs.collapse', function () {
+    $('#collapseLocalPayment').on('shown.bs.collapse', function() {
         $("#chevronLocal").addClass('icon-chevron-up').removeClass('icon-chevron-down');
     });
 
-    $('#collapseLocalPayment').on('hidden.bs.collapse', function () {
+    $('#collapseLocalPayment').on('hidden.bs.collapse', function() {
         $("#chevronLocal").addClass('icon-chevron-down').removeClass('icon-chevron-up');
     });
 
-    $('#collapse3ds').on('shown.bs.collapse', function () {
+    $('#collapse3ds').on('shown.bs.collapse', function() {
         $("#chevron3ds").addClass('icon-chevron-up').removeClass('icon-chevron-down');
     });
 
-    $('#collapse3ds').on('hidden.bs.collapse', function () {
+    $('#collapse3ds').on('hidden.bs.collapse', function() {
         $("#chevron3ds").addClass('icon-chevron-down').removeClass('icon-chevron-up');
     });
-
 </script>

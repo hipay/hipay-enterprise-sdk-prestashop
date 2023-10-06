@@ -19,7 +19,7 @@ hiPayInputControl.forms = [];
  * @param {type} targetElement
  * @returns {undefined}
  */
-function insertAfter(newElement, targetElement) {
+function HiPay_insertAfter(newElement, targetElement) {
   // target is what you want it to go after. Look for this elements parent.
   var parent = targetElement.parentNode;
 
@@ -38,7 +38,7 @@ function insertAfter(newElement, targetElement) {
  * @param {type} className
  * @returns {undefined}
  */
-function removeElementsByClass(className) {
+function HiPay_removeElementsByClass(className) {
   var elements = document.getElementsByClassName(className);
   while (elements.length > 0) {
     elements[0].parentNode.removeChild(elements[0]);
@@ -51,7 +51,7 @@ function removeElementsByClass(className) {
  * @param {type} className
  * @returns {Boolean}
  */
-function hasClass(el, className) {
+function HiPay_hasClass(el, className) {
   if (el.classList) {
     return el.classList.contains(className);
   } else {
@@ -65,10 +65,10 @@ function hasClass(el, className) {
  * @param {type} className
  * @returns {undefined}
  */
-function addClass(el, className) {
+function HiPay_addClass(el, className) {
   if (el.classList) {
     el.classList.add(className);
-  } else if (!hasClass(el, className)) {
+  } else if (!HiPay_hasClass(el, className)) {
     el.className += " " + className;
   }
 }
@@ -79,10 +79,10 @@ function addClass(el, className) {
  * @param {type} className
  * @returns {undefined}
  */
-function removeClass(el, className) {
+function HiPay_removeClass(el, className) {
   if (el.classList) {
     el.classList.remove(className);
-  } else if (hasClass(el, className)) {
+  } else if (HiPay_hasClass(el, className)) {
     var reg = new RegExp("(\\s|^)" + className + "(\\s|$)");
     el.className = el.className.replace(reg, " ");
   }
@@ -93,10 +93,10 @@ function removeClass(el, className) {
  * @param {type} text
  * @returns {pInsert|Element}
  */
-function generateElement(text) {
+function HiPay_generateElement(text) {
   var pInsert = document.createElement("span");
   pInsert.textContent = text;
-  addClass(pInsert, "error-text-hp");
+  HiPay_addClass(pInsert, "error-text-hp");
 
   return pInsert;
 }
@@ -107,16 +107,16 @@ function generateElement(text) {
  * @param {type} text
  * @returns {undefined}
  */
-function errorMessage(element, text) {
-  addClass(element, "error-input-hp");
-  insertAfter(generateElement(text), element);
+function HiPay_errorMessage(element, text) {
+  HiPay_addClass(element, "error-input-hp");
+  HiPay_insertAfter(HiPay_generateElement(text), element);
 }
 
 /**
  * validation algorithms
  */
 
-var validIBAN = (function () {
+var HiPay_validIBAN = (function () {
   // use an IIFE
   // A "constant" lookup table of IBAN lengths per country
   // (the funky formatting is just to make it fit better in the answer here on CR)
@@ -186,9 +186,9 @@ var validIBAN = (function () {
     TR: 26
   };
 
-  // piece-wise mod97 using 9 digit "chunks", as per Wikipedia's example:
+  // piece-wise HiPay_mod97 using 9 digit "chunks", as per Wikipedia's example:
   // http://en.wikipedia.org/wiki/International_Bank_Account_Number#Modulo_operation_on_IBAN
-  function mod97(string) {
+  function HiPay_mod97(string) {
     var checksum = string.slice(0, 2),
       fragment;
 
@@ -219,7 +219,7 @@ var validIBAN = (function () {
     });
 
     // final check
-    return mod97(digits) === 1;
+    return HiPay_mod97(digits) === 1;
   };
 })();
 
@@ -228,7 +228,7 @@ var validIBAN = (function () {
  * @param {type} value
  * @returns {Boolean}
  */
-function isCardNumberValid(value) {
+function HiPay_isCardNumberValid(value) {
   // accept only digits, dashes or spaces
   if (/[^0-9-\s]+/.test(value)) {
     return false;
@@ -262,7 +262,7 @@ function isCardNumberValid(value) {
  * @param {type} value
  * @returns {unresolved}
  */
-function isCPFValid(value) {
+function HiPay_isCPFValid(value) {
   return value.match(
     /(\d{2}[.]?\d{3}[.]?\d{3}[\/]?\d{4}[-]?\d{2})|(\d{3}[.]?\d{3}[.]?\d{3}[-]?\d{2})$/
   );
@@ -273,7 +273,7 @@ function isCPFValid(value) {
  * @param {type} value
  * @returns {unresolved}
  */
-function isCPNCURPValid(value) {
+function HiPay_isCPNCURPValid(value) {
   return value.match(/^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}\d{2}$/);
 }
 
@@ -283,11 +283,11 @@ function isCPNCURPValid(value) {
  * @param value
  * @return boolean
  */
-function isPhoneValid(value) {
+function HiPay_isPhoneValid(value) {
   return value.match(/^1(1[2578]|2([09]80|3(45|)|5(3?0|5)|7[67])|414|6(200|(80|91)\d|99[015679])|8(28|91))|(2([1-8]\d|9[136])|30\d|7(0[789]|60)|80[08]|9([136]\d|[124-7]))(\d{6})$/);
 }
 
-function validBic(value) {
+function HiPay_validBic(value) {
   return value.match(/^[a-z]{6}[2-9a-z][0-9a-np-z]([a-z0-9]{3}|x{3})?$/i);
 }
 
@@ -296,7 +296,7 @@ function validBic(value) {
  * @param price
  * @returns {Number|*}
  */
-function normalizePrice(price) {
+function HiPay_normalizePrice(price) {
   price = parseFloat(price.replace(/,/g, "."));
 
   if (isNaN(price) || price === "") {
@@ -311,9 +311,9 @@ function normalizePrice(price) {
  * @param {type} element
  * @returns {Boolean}
  */
-function checkNotEmptyField(element) {
+function HiPay_checkNotEmptyField(element) {
   if (element.value === null || element.value === "") {
-    errorMessage(element, i18nFieldIsMandatory);
+    HiPay_errorMessage(element, i18nFieldIsMandatory);
     return false;
   }
 
@@ -325,30 +325,13 @@ function checkNotEmptyField(element) {
  * @param {type} element
  * @returns {Boolean}
  */
-function checkIban(element) {
-  if (!checkNotEmptyField(element)) {
+function HiPay_checkIban(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
     return false;
   }
 
-  if (!validIBAN(element.value)) {
-    errorMessage(element, i18nBadIban);
-    return false;
-  }
-  return true;
-}
-
-/**
- *
- * @param {type} element
- * @returns {Boolean}
- */
-function checkBic(element) {
-  if (!checkNotEmptyField(element)) {
-    return false;
-  }
-
-  if (!validBic(element.value)) {
-    errorMessage(element, i18nBadBic);
+  if (!HiPay_validIBAN(element.value)) {
+    HiPay_errorMessage(element, i18nBadIban);
     return false;
   }
   return true;
@@ -359,13 +342,13 @@ function checkBic(element) {
  * @param {type} element
  * @returns {Boolean}
  */
-function checkCCNumber(element) {
-  if (!checkNotEmptyField(element)) {
+function HiPay_checkBic(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
     return false;
   }
 
-  if (!isCardNumberValid(element.value)) {
-    errorMessage(element, i18nBadCC);
+  if (!HiPay_validBic(element.value)) {
+    HiPay_errorMessage(element, i18nBadBic);
     return false;
   }
   return true;
@@ -376,17 +359,45 @@ function checkCCNumber(element) {
  * @param {type} element
  * @returns {Boolean}
  */
-function checkCVC(element) {
+function HiPay_checkCCNumber(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
+    return false;
+  }
+
+  if (!HiPay_isCardNumberValid(element.value)) {
+    HiPay_errorMessage(element, i18nBadCC);
+    return false;
+  }
+  return true;
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function HiPay_checkCVC(element) {
   var myCard = Jquery(".card-js");
 
-  if (
-    myCard.CardJs("cardType") !== "Bcmc" &&
+  return !(myCard.CardJs("cardType") !== "Bcmc" &&
     myCard.CardJs("cardType") !== "Maestro" &&
-    !checkNotEmptyField(element)
-  ) {
+    !HiPay_checkNotEmptyField(element));
+}
+
+/**
+ *
+ * @param {type} element
+ * @returns {Boolean}
+ */
+function HiPay_checkCPF(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
     return false;
   }
 
+  if (!HiPay_isCPFValid(element.value)) {
+    HiPay_errorMessage(element, i18nBadCPF);
+    return false;
+  }
   return true;
 }
 
@@ -395,30 +406,13 @@ function checkCVC(element) {
  * @param {type} element
  * @returns {Boolean}
  */
-function checkCPF(element) {
-  if (!checkNotEmptyField(element)) {
+function HiPay_checkCPNCURP(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
     return false;
   }
 
-  if (!isCPFValid(element.value)) {
-    errorMessage(element, i18nBadCPF);
-    return false;
-  }
-  return true;
-}
-
-/**
- *
- * @param {type} element
- * @returns {Boolean}
- */
-function checkCPNCURP(element) {
-  if (!checkNotEmptyField(element)) {
-    return false;
-  }
-
-  if (!isCPNCURPValid(element.value)) {
-    errorMessage(element, i18nBadCPNCURP);
+  if (!HiPay_isCPNCURPValid(element.value)) {
+    HiPay_errorMessage(element, i18nBadCPNCURP);
     return false;
   }
   return true;
@@ -428,13 +422,13 @@ function checkCPNCURP(element) {
  * Checks if the phone number is valid
  * @param element
  */
-function checkPhone(element) {
-  if (!checkNotEmptyField(element)) {
+function HiPay_checkPhone(element) {
+  if (!HiPay_checkNotEmptyField(element)) {
     return false;
   }
 
-  if (!isPhoneValid(element.value)) {
-    errorMessage(element, i18nBadPhone);
+  if (!HiPay_isPhoneValid(element.value)) {
+    HiPay_errorMessage(element, i18nBadPhone);
     return false;
   }
   return true;
@@ -445,27 +439,27 @@ function checkPhone(element) {
  * @param {type} input
  * @returns {Boolean}
  */
-function typeControlCheck(input) {
+function HiPay_typeControlCheck(input) {
   var element = document.getElementById(input.field);
-  removeClass(element, "error-input-hp");
+  HiPay_removeClass(element, "error-input-hp");
 
   switch (input.type) {
     case "iban":
-      return checkIban(element);
+      return HiPay_checkIban(element);
     case "bic":
-      return checkBic(element);
+      return HiPay_checkBic(element);
     case "creditcardnumber":
-      return checkCCNumber(element);
+      return HiPay_checkCCNumber(element);
     case "cvc":
-      return checkCVC(element);
+      return HiPay_checkCVC(element);
     case "cpf":
-      return checkCPF(element);
+      return HiPay_checkCPF(element);
     case "curp-cpn":
-      return checkCPNCURP(element);
+      return HiPay_checkCPNCURP(element);
     case "phone":
-      return checkPhone(element);
+      return HiPay_checkPhone(element);
     default:
-      return checkNotEmptyField(element);
+      return HiPay_checkNotEmptyField(element);
   }
 }
 
@@ -474,12 +468,12 @@ function typeControlCheck(input) {
  * @param {type} form
  * @returns {success|Boolean}
  */
-function checkControl(form) {
+function HiPay_checkControl(form) {
   var success = true;
   if (hiPayInputControl.forms[form]) {
-    removeElementsByClass("error-text-hp");
+    HiPay_removeElementsByClass("error-text-hp");
     hiPayInputControl.forms[form].fields.forEach(function (input) {
-      success = typeControlCheck(input) && success;
+      success = HiPay_typeControlCheck(input) && success;
     });
   }
 
@@ -488,9 +482,9 @@ function checkControl(form) {
 
 /**
  *
- * @returns {Form}
+ * @returns {HiPay_Form}
  */
-function Form() {
+function HiPay_Form() {
   this.fields = [];
 }
 
@@ -499,9 +493,9 @@ function Form() {
  * @param {type} field
  * @param {type} type
  * @param {type} required
- * @returns {Input}
+ * @returns {HiPay_Input}
  */
-function Input(field, type, required) {
+function HiPay_Input(field, type, required) {
   this.field = field;
   this.type = type;
   this.required = required;
@@ -515,13 +509,13 @@ function Input(field, type, required) {
  * @param {type} required
  * @returns {undefined}
  */
-function addInput(form, field, type, required) {
+function HiPay_addInput(form, field, type, required) {
   if (!hiPayInputControl.forms[form]) {
-    hiPayInputControl.forms[form] = new Form();
+    hiPayInputControl.forms[form] = new HiPay_Form();
   }
-  hiPayInputControl.forms[form].fields.push(new Input(field, type, required));
+  hiPayInputControl.forms[form].fields.push(new HiPay_Input(field, type, required));
 }
 
-hiPayInputControl.checkControl = checkControl;
-hiPayInputControl.addInput = addInput;
-hiPayInputControl.normalizePrice = normalizePrice;
+hiPayInputControl.HiPay_checkControl = HiPay_checkControl;
+hiPayInputControl.HiPay_addInput = HiPay_addInput;
+hiPayInputControl.HiPay_normalizePrice = HiPay_normalizePrice;
