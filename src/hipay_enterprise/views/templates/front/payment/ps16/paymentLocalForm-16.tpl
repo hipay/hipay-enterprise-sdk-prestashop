@@ -15,41 +15,41 @@
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
 
-{if $nbProducts <= 0}
+{if $HiPay_nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_enterprise'}</p>
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
-    {if $status_error=='200'}
+    {if $HiPay_status_error=='200'}
         <p class="error"></p>
-    {else if $status_error=='400'}
+    {else if $HiPay_status_error=='400'}
         <p class="error">
             {l s='The request was rejected due to a validation error. Please verify the card details you entered.' mod='hipay_enterprise'}
         </p>
-    {else if $status_error=='503'}
+    {else if $HiPay_status_error=='503'}
         <p class="error">{l s='HiPay TPP is temporarily unable to process the request. Try again later.' mod='hipay_enterprise'}
         </p>
-    {else if $status_error=='403'}
+    {else if $HiPay_status_error=='403'}
         <p class="error">{l s='A forbidden action has been identified, process has been cancelled.' mod='hipay_enterprise'}</p>
-    {else if $status_error=='999'}
+    {else if $HiPay_status_error=='999'}
         <p class="error">{l s='Please select one of the memorized card before continuing.' mod='hipay_enterprise'}</p>
-    {else if $status_error=='404'}
+    {else if $HiPay_status_error=='404'}
         <p class="error">
             {l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}
         </p>
     {else}
         <p class="error">
-            <strong>{l s='Error code' mod='hipay_enterprise'} : {$status_error}</strong>
+            <strong>{l s='Error code' mod='hipay_enterprise'} : {$HiPay_status_error}</strong>
             <br />
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
         </p>
     {/if}
-    <form id="{$localPaymentName}" enctype="application/x-www-form-urlencoded" action="{$action|escape:'html'}"
+    <form id="{$HiPay_localPaymentName}" enctype="application/x-www-form-urlencoded" action="{$HiPay_action|escape:'html'}"
         class="form-horizontal col-lg-4 col-lg-offset-4" method="post" name="tokenizerForm" id="tokenizerForm"
         autocomplete="off">
         <div class="order_carrier_content box">
-            <h2 class="page-subheading">{l s='Pay with %s' sprintf=$methodName mod='hipay_enterprise'}</h2>
+            <h2 class="page-subheading">{l s='Pay with %s' sprintf=$HiPay_methodName mod='hipay_enterprise'}</h2>
             <div class="control-group">
-                <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </p>
+                <p><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$HiPay_amount} {$currency->iso_code} </p>
                 <div style="clear: both;"></div>
             </div>
             <br />
@@ -68,12 +68,12 @@
     </form>
     {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
     <script>
-        $("#{$localPaymentName}").submit(function (e) {
+        $("#{$HiPay_localPaymentName}").submit(function (e) {
             // prevent form from being submitted 
             e.preventDefault();
             e.stopPropagation();
 
-            if (hiPayInputControl.HiPay_checkControl('{$localPaymentName}')) {
+            if (hiPayInputControl.HiPay_checkControl('{$HiPay_localPaymentName}')) {
                 this.submit();
             }
         });

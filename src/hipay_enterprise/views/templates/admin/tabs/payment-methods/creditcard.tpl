@@ -24,26 +24,26 @@
                 <div class="panel">
                     <div class="form-group">
                         <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
-                        {foreach from=$languages item=language key=id}
-                            <div class="col-lg-3 {if $languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
+                        {foreach from=$HiPay_languages item=language key=id}
+                            <div class="col-lg-3 {if $HiPay_languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
                                 {if $id > 0}style="display: none" {/if}>
 
                                 <div class="row">
                                     <input id="ccDisplayName-{$language.iso_code}" type="text"
                                         name="ccDisplayName[{$language.iso_code}]"
                                         class="translatable-field lang-{$language.iso_code}"
-                                        {if isset($config_hipay.payment.global.ccDisplayName[$language.iso_code])}
-                                            value="{$config_hipay.payment.global.ccDisplayName[$language.iso_code]}"
-                                        {elseif isset($config_hipay.payment.global.ccDisplayName) && !is_array($config_hipay.payment.global.ccDisplayName)}
-                                        value="{$config_hipay.payment.global.ccDisplayName}" {else}
-                                        value="{reset($config_hipay.payment.global.ccDisplayName)}" {/if} />
+                                        {if isset($HiPay_config_hipay.payment.global.ccDisplayName[$language.iso_code])}
+                                            value="{$HiPay_config_hipay.payment.global.ccDisplayName[$language.iso_code]}"
+                                        {elseif isset($HiPay_config_hipay.payment.global.ccDisplayName) && !is_array($HiPay_config_hipay.payment.global.ccDisplayName)}
+                                        value="{$HiPay_config_hipay.payment.global.ccDisplayName}" {else}
+                                        value="{reset($HiPay_config_hipay.payment.global.ccDisplayName)}" {/if} />
                                 </div>
 
                                 <p class="help-block ">
                                     {l s='Display name for payment by credit card on your checkout page.' mod='hipay_enterprise'}
                                 </p>
                             </div>
-                            {if $languages|count > 1}
+                            {if $HiPay_languages|count > 1}
                                 <div class="col-lg-2 translatable-field lang-{$language.iso_code} "
                                     {if $id > 0}style="display: none" {/if}>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -52,7 +52,7 @@
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        {foreach from=$languages item=language}
+                                        {foreach from=$HiPay_languages item=language}
                                             <li>
                                                 <a
                                                     href="javascript:selectLanguageHipay('{$language.iso_code}');">{$language.name}</a>
@@ -68,7 +68,7 @@
                         <div class="col-lg-1" style='width:45px;'>
                             <div class="row">
                                 <input type="text" class="money-type" name="ccFrontPosition"
-                                    value="{$config_hipay.payment.global.ccFrontPosition}" />
+                                    value="{$HiPay_config_hipay.payment.global.ccFrontPosition}" />
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                 <div role="tabpanel">
                     <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
                         <li role="presentation" class="disabled summary credit-card-title"></li>
-                        {foreach $config_hipay.payment.credit_card as $creditCard}
+                        {foreach $HiPay_config_hipay.payment.credit_card as $creditCard}
                             <li role="presentation" class="{if $creditCard@first} active {/if} ">
                                 <a href="#payment_form__{$creditCard@key}" aria-controls="payment_form__{$creditCard@key}"
                                     role="tab" data-toggle="tab">{l s=$creditCard["displayName"] mod='hipay_enterprise'}</a>
@@ -86,7 +86,7 @@
 
 
                     <div class="tab-content col-md-10">
-                        {foreach $config_hipay.payment.credit_card as $creditCard}
+                        {foreach $HiPay_config_hipay.payment.credit_card as $creditCard}
                             <div role="tabpanel" class="tab-pane {if $creditCard@first} active {/if}"
                                 id="payment_form__{$creditCard@key}">
                                 <div class="panel">
@@ -153,7 +153,7 @@
                                                 <select id="multiselect-{$creditCard@key}"
                                                     name="{$creditCard@key}_currencies[]" multiple="multiple"
                                                     class="multiselect-currency">
-                                                    {foreach $limitedCurrencies as $currency }
+                                                    {foreach $HiPay_limitedCurrencies as $currency }
                                                         <option value="{$currency@key}"
                                                             {if !empty($creditCard.currencies) && $currency@key|inArray:$creditCard.currencies }
                                                             selected {/if}>{$currency@key}
@@ -171,7 +171,7 @@
                                             <div class="col-lg-6">
                                                 <select id="countries_{$creditCard@key}" multiple="multiple" size="10"
                                                     name="{$creditCard@key}_countries[]">
-                                                    {foreach $limitedCountries as $country}
+                                                    {foreach $HiPay_limitedCountries as $country}
                                                         <option value="{$country@key}"
                                                             {if !empty($creditCard.countries) && $country@key|inArray:$creditCard.countries }
                                                             selected {/if}>{$country}</option>
@@ -203,7 +203,7 @@
     </div>
 </div>
 <script>
-    {foreach $config_hipay.payment.credit_card as $creditCard}
+    {foreach $HiPay_config_hipay.payment.credit_card as $creditCard}
         var cc_{$creditCard@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$creditCard@key}').bootstrapDualListbox({
         showFilterInputs: false,
             moveOnSelect: false,

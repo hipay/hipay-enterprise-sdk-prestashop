@@ -62,19 +62,19 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
         $context->smarty->assign(
             array(
-                'nbProducts' => $cart->nbProducts(),
-                'cust_currency' => $cart->id_currency,
-                'currencies' => $this->module->getCurrency((int)$cart->id_currency),
-                'total' => $cart->getOrderTotal(true, Cart::BOTH),
-                'this_path' => $this->module->getPathUri(),
-                'this_path_bw' => $this->module->getPathUri(),
-                'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
+                'HiPay_nbProducts' => $cart->nbProducts(),
+                'HiPay_cust_currency' => $cart->id_currency,
+                'HiPay_currencies' => $this->module->getCurrency((int)$cart->id_currency),
+                'HiPay_total' => $cart->getOrderTotal(true, Cart::BOTH),
+                'HiPay_this_path' => $this->module->getPathUri(),
+                'HiPay_this_path_bw' => $this->module->getPathUri(),
+                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) .
                     __PS_BASE_URI__ .
                     'modules/' .
                     $this->module->name .
                     '/',
                 'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates',
-                'action' => $this->context->link->getModuleLink(
+                'HiPay_action' => $this->context->link->getModuleLink(
                     $this->module->name,
                     'redirectlocal',
                     array("method" => $method),
@@ -105,7 +105,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 ) {
                     $context->smarty->assign(
                         array(
-                            'url' => $this->apiHandler->handleLocalPayment(ApiMode::HOSTED_PAGE_IFRAME, $params)
+                            'HiPay_url' => $this->apiHandler->handleLocalPayment(ApiMode::HOSTED_PAGE_IFRAME, $params)
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
@@ -150,15 +150,15 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                     // display form
                     $context->smarty->assign(
                         array(
-                            'status_error' => '200', // Force to ok for first call
-                            'cart_id' => $cart->id,
-                            'amount' => $cart->getOrderTotal(true, Cart::BOTH),
-                            'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
-                            'methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
-                            'localPaymentName' => $method,
-                            'language' => $context->language->iso_code,
-                            'methodFields' => $formFields,
-                            'forceHpayment' => false
+                            'HiPay_status_error' => '200', // Force to ok for first call
+                            'HiPay_cart_id' => $cart->id,
+                            'HiPay_amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                            'HiPay_confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                            'HiPay_methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
+                            'HiPay_localPaymentName' => $method,
+                            'HiPay_language' => $context->language->iso_code,
+                            'HiPay_methodFields' => $formFields,
+                            'HiPay_forceHpayment' => false
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .

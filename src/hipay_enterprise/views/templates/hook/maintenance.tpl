@@ -19,38 +19,38 @@
                 </div>
             </div>
             <div class="card-body">
-                {if $errorHipay }
-                    <p class="alert alert-danger">{$errorHipay}</p>
+                {if $HiPay_errorHipay }
+                    <p class="alert alert-danger">{$HiPay_errorHipay}</p>
                 {/if}
-                {if $messagesHipay }
-                    <p class="alert alert-success">{$messagesHipay}</p>
+                {if $HiPay_messagesHipay }
+                    <p class="alert alert-success">{$HiPay_messagesHipay}</p>
                 {/if}
-                {if $showMoto}
+                {if $HiPay_showMoto}
                     <div class="col-lg-6">
                         {include file='../admin/actions/moto.partial.tpl'}
                     </div>
                 {/if}
-                {if $showChallenge}
+                {if $HiPay_showChallenge}
                     <div class="col-lg-12 panel">
                         {include file='../admin/actions/panel-challenge.tpl'}
                     </div>
                 {/if}
-                {if $showCapture && $stillToCapture > 0 && $manualCapture}
+                {if $HiPay_showCapture && $HiPay_stillToCapture > 0 && $HiPay_manualCapture}
                     <div class="col-lg-12 panel">
                         {include file='../admin/actions/capture.partial.tpl'}
                     </div>
                 {/if}
-                {if $showRefund && $alreadyCaptured && $refundableAmount > 0}
+                {if $HiPay_showRefund && $HiPay_alreadyCaptured && $HiPay_refundableAmount > 0}
                     <div class="col-lg-12 panel">
                         {include file='../admin/actions/refund.partial.tpl'}
                     </div>
                 {/if}
-                {if  !$showMoto && !$showChallenge && !$showCapture && !$showRefund}
+                {if  !$HiPay_showMoto && !$HiPay_showChallenge && !$HiPay_showCapture && !$HiPay_showRefund}
                     <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
-                    {if $refundRequestedOS }
+                    {if $HiPay_refundRequestedOS }
                         <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>
                     {/if}
-                    {if $refundStartedFromBo }
+                    {if $HiPay_refundStartedFromBo }
                         <p class="alert alert-warning">{l s='A refund or a capture has been validated from HiPay back-office, you must proceed refund from HiPay back-office.' mod='hipay_enterprise'}</p>
                     {/if}
                 {/if}

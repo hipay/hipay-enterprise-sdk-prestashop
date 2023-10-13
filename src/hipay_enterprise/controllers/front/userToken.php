@@ -49,13 +49,13 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
         }
         $this->context->smarty->assign(
             array(
-                'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
-                'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
+                'HiPay_page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
+                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) .
                     __PS_BASE_URI__ .
                     'modules/' .
                     $this->module->name .
                     '/',
-                'savedCC' => $savedCC
+                'HiPay_savedCC' => $savedCC
             )
         );
 
@@ -90,13 +90,13 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
 
         $this->context->smarty->assign(
             array(
-                'this_path_ssl' => Tools::getShopDomainSsl(true, true) .
+                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) .
                     __PS_BASE_URI__ .
                     'modules/' .
                     $this->module->name .
                     '/',
-                'page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
-                'savedCC' => $savedCC
+                'HiPay_page' => (_PS_VERSION_ >= '1.7') ? $this->getTemplateVarPage() : "",
+                'HiPay_savedCC' => $savedCC
             )
         );
 

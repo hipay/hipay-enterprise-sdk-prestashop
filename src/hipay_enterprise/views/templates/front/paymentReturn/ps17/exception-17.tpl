@@ -13,7 +13,7 @@
 {block name="content"}
     <h2>{l s='Payment Summary' mod='hipay_enterprise'}</h2>
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
-    {if $status_error == 404}
+    {if $HiPay_status_error == 404}
         <div class="alert alert-danger">
             {l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}
         </div>

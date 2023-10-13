@@ -8,31 +8,31 @@
         <div class="form-group">
             <div class="col-lg-2">
                 <label>{l s='Color' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][color]" value="{$config_hipay.payment.global.hosted_fields_style.base.color}">
+                <input type="text" name="hosted_fields_style[base][color]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.color}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Font family' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][fontFamily]" value="{$config_hipay.payment.global.hosted_fields_style.base.fontFamily}">
+                <input type="text" name="hosted_fields_style[base][fontFamily]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.fontFamily}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Font size' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][fontSize]" value="{$config_hipay.payment.global.hosted_fields_style.base.fontSize}">
+                <input type="text" name="hosted_fields_style[base][fontSize]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.fontSize}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Font weight' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][fontWeight]" value="{$config_hipay.payment.global.hosted_fields_style.base.fontWeight}">
+                <input type="text" name="hosted_fields_style[base][fontWeight]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.fontWeight}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Placeholder color' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][placeholderColor]" value="{$config_hipay.payment.global.hosted_fields_style.base.placeholderColor}">
+                <input type="text" name="hosted_fields_style[base][placeholderColor]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.placeholderColor}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Caret color' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][caretColor]" value="{$config_hipay.payment.global.hosted_fields_style.base.caretColor}">
+                <input type="text" name="hosted_fields_style[base][caretColor]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.caretColor}">
             </div>
             <div class="col-lg-2">
                 <label>{l s='Icon color' mod='hipay_enterprise'}</label>
-                <input type="text" name="hosted_fields_style[base][iconColor]" value="{$config_hipay.payment.global.hosted_fields_style.base.iconColor}">
+                <input type="text" name="hosted_fields_style[base][iconColor]" value="{$HiPay_config_hipay.payment.global.hosted_fields_style.base.iconColor}">
             </div>
         </div>
     </div>

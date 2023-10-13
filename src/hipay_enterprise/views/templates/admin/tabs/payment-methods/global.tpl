@@ -26,10 +26,10 @@
                     <div class="row">
                         <select name="operating_mode" class="col-lg-2" id="operating_mode">
                             <option value="hosted_page"
-                                {if $config_hipay.payment.global.operating_mode.UXMode == "hosted_page"}selected="selected"
+                                {if $HiPay_config_hipay.payment.global.operating_mode.UXMode == "hosted_page"}selected="selected"
                                 {/if}>{l s='Hosted page' mod='hipay_enterprise'}</option>
                             <option value="hosted_fields"
-                                {if $config_hipay.payment.global.operating_mode.UXMode == "hosted_fields"}selected="selected"
+                                {if $HiPay_config_hipay.payment.global.operating_mode.UXMode == "hosted_fields"}selected="selected"
                                 {/if}>{l s='Hosted Fields' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
@@ -64,10 +64,10 @@
                     <div class="row">
                         <select name="capture_mode" class="col-lg-2" id="capture_mode">
                             <option value="automatic"
-                                {if $config_hipay.payment.global.capture_mode == "automatic"}selected="selected" {/if}>
+                                {if $HiPay_config_hipay.payment.global.capture_mode == "automatic"}selected="selected" {/if}>
                                 {l s='Automatic' mod='hipay_enterprise'}</option>
                             <option value="manual"
-                                {if $config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if}>
+                                {if $HiPay_config_hipay.payment.global.capture_mode == "manual"}selected="selected" {/if}>
                                 {l s='Manual' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
@@ -94,10 +94,10 @@
                     </span>
                 </label>
                 <div class="col-lg-9">
-                    {if $config_hipay.account.global.sandbox_mode}
-                        {assign var="oneclickAvailable" value=(!empty($config_hipay.account.sandbox.api_tokenjs_username_sandbox) && !empty($config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox))}
+                    {if $HiPay_config_hipay.account.global.sandbox_mode}
+                        {assign var="oneclickAvailable" value=(!empty($HiPay_config_hipay.account.sandbox.api_tokenjs_username_sandbox) && !empty($HiPay_config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox))}
                     {else}
-                        {assign var="oneclickAvailable" value=(!empty($config_hipay.account.production.api_tokenjs_username_production) && !empty($config_hipay.account.production.api_tokenjs_password_publickey_production))}
+                        {assign var="oneclickAvailable" value=(!empty($HiPay_config_hipay.account.production.api_tokenjs_username_production) && !empty($HiPay_config_hipay.account.production.api_tokenjs_password_publickey_production))}
                     {/if}
 
                     <span class="switch prestashop-switch fixed-width-lg label-tooltip" {if !$oneclickAvailable}
@@ -105,11 +105,11 @@
                             data-original-title="{l s='Public credentials must be set in module settings to use Oneclick' mod='hipay_enterprise'}"
                         {/if}>
                         <input type="radio" name="card_token" id="card_token_switchmode_on" value="1"
-                            {if $config_hipay.payment.global.card_token && $oneclickAvailable}checked="checked" {/if}
+                            {if $HiPay_config_hipay.payment.global.card_token && $oneclickAvailable}checked="checked" {/if}
                             {if !$oneclickAvailable}disabled{/if}>
                         <label for="card_token_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                         <input type="radio" name="card_token" id="card_token_switchmode_off" value="0"
-                            {if $config_hipay.payment.global.card_token == false || !$oneclickAvailable}checked="checked"
+                            {if $HiPay_config_hipay.payment.global.card_token == false || !$oneclickAvailable}checked="checked"
                                 {/if} {if !$oneclickAvailable}disabled{/if}>
                             <label for="card_token_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
@@ -128,10 +128,10 @@
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
                             <input type="radio" name="activate_basket" id="activate_basket_switchmode_on" value="1"
-                                {if $config_hipay.payment.global.activate_basket }checked="checked" {/if}>
+                                {if $HiPay_config_hipay.payment.global.activate_basket }checked="checked" {/if}>
                             <label for="activate_basket_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="activate_basket" id="activate_basket_switchmode_off" value="0"
-                                {if $config_hipay.payment.global.activate_basket == false}checked="checked" {/if}>
+                                {if $HiPay_config_hipay.payment.global.activate_basket == false}checked="checked" {/if}>
                             <label for="activate_basket_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
                         </span>
@@ -155,11 +155,11 @@
                         <span class="switch prestashop-switch fixed-width-lg">
                             <input type="radio" name="regenerate_cart_on_decline"
                                 id="regenerate_cart_on_decline_switchmode_on" value="1"
-                                {if $config_hipay.payment.global.regenerate_cart_on_decline }checked="checked" {/if}>
+                                {if $HiPay_config_hipay.payment.global.regenerate_cart_on_decline }checked="checked" {/if}>
                             <label for="regenerate_cart_on_decline_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="regenerate_cart_on_decline"
                                 id="regenerate_cart_on_decline_switchmode_off" value="0"
-                                {if $config_hipay.payment.global.regenerate_cart_on_decline == false}checked="checked"
+                                {if $HiPay_config_hipay.payment.global.regenerate_cart_on_decline == false}checked="checked"
                                 {/if}>
                             <label for="regenerate_cart_on_decline_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
@@ -177,16 +177,16 @@
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
                             <input type="radio" name="log_infos" id="log_infos_switchmode_on" value="1"
-                                {if $config_hipay.payment.global.log_infos }checked="checked" {/if}>
+                                {if $HiPay_config_hipay.payment.global.log_infos }checked="checked" {/if}>
                             <label for="log_infos_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="log_infos" id="log_infos_switchmode_off" value="0"
-                                {if $config_hipay.payment.global.log_infos == false}checked="checked" {/if}>
+                                {if $HiPay_config_hipay.payment.global.log_infos == false}checked="checked" {/if}>
                             <label for="log_infos_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
                         </span>
                     </div>
                 </div>
-                <div id="logs-detail" style="display: {if $config_hipay.payment.global.log_infos}block{else}none{/if}">
+                <div id="logs-detail" style="display: {if $HiPay_config_hipay.payment.global.log_infos}block{else}none{/if}">
                     <div class="form-group">
                         <label class="control-label col-lg-3">
                             <span class="label-tooltip" data-toggle="tooltip" data-html="true" title=""
@@ -197,10 +197,10 @@
                         <div class="col-lg-9">
                             <span class="switch prestashop-switch fixed-width-lg">
                                 <input type="radio" name="log_debug" id="log_debug_on" value="1"
-                                    {if $config_hipay.payment.global.log_debug }checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.payment.global.log_debug }checked="checked" {/if}>
                                 <label for="log_debug_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                 <input type="radio" name="log_debug" id="log_debug_off" value="0"
-                                    {if $config_hipay.payment.global.log_debug == false}checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.payment.global.log_debug == false}checked="checked" {/if}>
                                 <label for="log_debug_off">{l s='No' mod='hipay_enterprise'}</label>
                                 <a class="slide-button btn"></a>
                             </span>
@@ -217,7 +217,7 @@
                     </label>
                     <div class="col-lg-4">
                         <input class="form-control" type="text" name="sdk_js_url"
-                            value="{$config_hipay.payment.global.sdk_js_url}">
+                            value="{$HiPay_config_hipay.payment.global.sdk_js_url}">
                     </div>
                 </div>
 
@@ -234,12 +234,12 @@
                         <div class="row">
                             <span class="switch prestashop-switch fixed-width-lg">
                                 <input type="radio" name="send_url_notification" id="send_url_notification_switchmode_on"
-                                    value="1" {if $config_hipay.payment.global.send_url_notification }checked="checked"
+                                    value="1" {if $HiPay_config_hipay.payment.global.send_url_notification }checked="checked"
                                     {/if}>
                                 <label for="send_url_notification_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                 <input type="radio" name="send_url_notification" id="send_url_notification_switchmode_off"
                                     value="0"
-                                    {if $config_hipay.payment.global.send_url_notification == false}checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.payment.global.send_url_notification == false}checked="checked" {/if}>
                                 <label for="send_url_notification_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                                 <a class="slide-button btn"></a>
                             </span>
@@ -261,12 +261,12 @@
                         <div class="row">
                             <span class="switch prestashop-switch fixed-width-lg">
                                 <input type="radio" name="display_cancel_button" id="display_cancel_button_switchmode_on"
-                                    value="1" {if $config_hipay.payment.global.display_cancel_button }checked="checked"
+                                    value="1" {if $HiPay_config_hipay.payment.global.display_cancel_button }checked="checked"
                                     {/if}>
                                 <label for="display_cancel_button_switchmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                 <input type="radio" name="display_cancel_button" id="display_cancel_button_switchmode_off"
                                     value="0"
-                                    {if $config_hipay.payment.global.display_cancel_button == false}checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.payment.global.display_cancel_button == false}checked="checked" {/if}>
                                 <label for="display_cancel_button_switchmode_off">{l s='No' mod='hipay_enterprise'}</label>
                                 <a class="slide-button btn"></a>
                             </span>

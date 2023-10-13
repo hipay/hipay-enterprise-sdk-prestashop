@@ -17,7 +17,7 @@
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
 
-{if $nbProducts <= 0}
+{if $HiPay_nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_enterprise'}</p>
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
@@ -28,9 +28,9 @@
         <div class="order_carrier_content">
             <h2 class="hipay-form-16-title">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
             {include file="$hipay_enterprise_tpl_dir/front/partial/paymentError.tpl"}
-            <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </h5>
+            <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$HiPay_amount} {$currency->iso_code} </h5>
 
-            {if $confHipay.payment.global.card_token}
+            {if $HiPay_confHipay.payment.global.card_token}
                 {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/oneclick.tpl"}
             {/if}
             <div id="error-js" style="display:none" class="alert alert-danger">
@@ -38,7 +38,7 @@
                     <li class="error"></li>
                 </ul>
             </div>
-            {if $savedCC &&  $confHipay.payment.global.card_token}
+            {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}
                 <div class="option_payment">
                 <span class="custom-radio">
                     <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken"/>
@@ -50,7 +50,7 @@
             <div id="credit-card-group" class="credit-card-group-ps16" >
                 {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-hosted-fields.tpl"}
 
-                {if $confHipay.payment.global.card_token && !$is_guest}
+                {if $HiPay_confHipay.payment.global.card_token && !$HiPay_is_guest}
                     <div class="checkbox one-click" >
                     <span for="newsletter">
                         <div class="checker" id="uniform-newsletter">
@@ -77,28 +77,28 @@
     </form>
     <p id="payment-loader-hp" style='text-align: center; display:none;'>
         <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
-        <img src="{$this_path_ssl}/views/img/loading.gif">
+        <img src="{$HiPay_this_path_ssl}/views/img/loading.gif">
     </p>
     <script type="text/javascript">
-        {if $savedCC &&  $confHipay.payment.global.card_token}
+        {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}
         $('#credit-card-group').collapse('hide');
         {/if}
-        var cardHolderFirstName = "{$customerFirstName}";
-        var cardHolderLastName = "{$customerLastName}";
+        var cardHolderFirstName = "{$HiPay_customerFirstName}";
+        var cardHolderLastName = "{$HiPay_customerLastName}";
         var lang = "{$lang_iso}";
-        var activatedCreditCard = JSON.parse('{$activatedCreditCard}');
+        var activatedCreditCard = JSON.parse('{$HiPay_activatedCreditCard}');
         var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
         var myPaymentMethodSelected = true;
-        {if $confHipay.account.global.sandbox_mode}
+        {if $HiPay_confHipay.account.global.sandbox_mode}
         var api_tokenjs_mode = "stage";
-        var api_tokenjs_username = "{$confHipay.account.sandbox.api_tokenjs_username_sandbox}";
-        var api_tokenjs_password_publickey = "{$confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
+        var api_tokenjs_username = "{$HiPay_confHipay.account.sandbox.api_tokenjs_username_sandbox}";
+        var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
         {else}
         var api_tokenjs_mode = "production";
-        var api_tokenjs_username = "{$confHipay.account.production.api_tokenjs_username_production}";
-        var api_tokenjs_password_publickey = "{$confHipay.account.production.api_tokenjs_password_publickey_production}";
+        var api_tokenjs_username = "{$HiPay_confHipay.account.production.api_tokenjs_username_production}";
+        var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
-        var oneClick = !!{$confHipay.payment.global.card_token};
-        var style = {$confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
+        var oneClick = !!{$HiPay_confHipay.payment.global.card_token};
+        var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
     </script>
 {/if}

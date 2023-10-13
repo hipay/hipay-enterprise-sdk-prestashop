@@ -17,8 +17,8 @@
 </section>
 <script type="text/javascript">
     window.onload = function() {
-        var referenceToPay = JSON.parse('{$referenceToPay nofilter}');
-        var lang = '{$lang}';
+        var referenceToPay = JSON.parse('{$HiPay_referenceToPay nofilter}');
+        var lang = '{$HiPay_lang}';
         var hipaySdk = new HiPay({
             username: 'hosted',
             password: 'hosted',
@@ -26,7 +26,7 @@
             lang
         });
 
-        {if $method === 'multibanco'}
+        {if $HiPay_method === 'multibanco'}
             hipaySdk.createReference('multibanco', {
                 selector: 'referenceToPay',
                 reference: referenceToPay.reference,

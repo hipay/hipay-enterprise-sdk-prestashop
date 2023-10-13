@@ -449,7 +449,7 @@ class Hipay_enterprise extends PaymentModule
         if ($this->hipayConfigTool->getPaymentGlobal()['card_token']) {
             $this->smarty->assign(
                 [
-                    'link' => $this->context->link->getModuleLink($this->name, 'userToken', [], true),
+                    'HiPay_link' => $this->context->link->getModuleLink($this->name, 'userToken', [], true),
                 ]
             );
             if (_PS_VERSION_ >= '1.7') {
@@ -494,9 +494,9 @@ class Hipay_enterprise extends PaymentModule
 
             $this->smarty->assign(
                 [
-                    'lang' => Tools::strtolower($this->context->language->iso_code),
-                    'referenceToPay' => $referenceToPay,
-                    'method' => $transaction['payment_product'],
+                    'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
+                    'HiPay_referenceToPay' => $referenceToPay,
+                    'HiPay_method' => $transaction['payment_product'],
                 ]
             );
 
@@ -528,11 +528,11 @@ class Hipay_enterprise extends PaymentModule
 
         $this->smarty->assign(
             [
-                'domain' => Tools::getShopDomainSSL(true),
-                'module_dir' => $this->_path,
-                'payment_button' => $this->_path.'views/img/cc.png',
-                'configHipay' => $this->hipayConfigTool->getConfigHipay(),
-                'sortedPaymentProducts' => HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
+                'HiPay_domain' => Tools::getShopDomainSSL(true),
+                'HiPay_module_dir' => $this->_path,
+                'HiPay_payment_button' => $this->_path.'views/img/cc.png',
+                'HiPay_configHipay' => $this->hipayConfigTool->getConfigHipay(),
+                'HiPay_sortedPaymentProducts' => HipayHelper::getSortedActivatedPaymentByCountryAndCurrency(
                     $this,
                     $this->hipayConfigTool->getConfigHipay(),
                     $country,
@@ -541,8 +541,8 @@ class Hipay_enterprise extends PaymentModule
                     $address,
                     $customer
                 ),
-                'lang' => Tools::strtolower($this->context->language->iso_code),
-                'isOperatingModeHostedPage' => ApiMode::HOSTED_PAGE === $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'],
+                'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
+                'HiPay_isOperatingModeHostedPage' => ApiMode::HOSTED_PAGE === $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'],
             ]
         );
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()['sandbox_mode']);
@@ -650,15 +650,15 @@ class Hipay_enterprise extends PaymentModule
         }
         $order = $params['objOrder'];
         if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->smarty->assign('status', 'ok');
+            $this->smarty->assign('HiPay_status', 'ok');
         }
         $this->smarty->assign(
             [
-                'id_order' => $order->id,
-                'reference' => $order->reference,
-                'params' => $params,
-                'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-                'shop_name' => $this->context->shop->name,
+                'HiPay_id_order' => $order->id,
+                'HiPay_reference' => $order->reference,
+                'HiPay_params' => $params,
+                'HiPay_total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
+                'HiPay_shop_name' => $this->context->shop->name,
             ]
         );
     }
@@ -711,18 +711,18 @@ class Hipay_enterprise extends PaymentModule
 
         $this->context->smarty->assign(
             [
-                'module_dir' => $this->_path,
-                'config_hipay' => $this->hipayConfigTool->getConfigHipay(),
-                'logs' => $this->getLogs()->getLogFiles(),
-                'module_url' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules'),
-                'fraud_form' => $formGenerator->getFraudForm(),
-                'form_errors' => $this->_errors,
-                'form_successes' => $this->_successes,
-                'technicalErrors' => $this->_technicalErrors,
-                'limitedCurrencies' => $this->currencies_titles,
-                'default_currency' => Configuration::get('PS_SHOP_DEFAULT'),
-                'limitedCountries' => $this->countries_titles,
-                'this_callback' => $this->context->link->getModuleLink(
+                'HiPay_module_dir' => $this->_path,
+                'HiPay_config_hipay' => $this->hipayConfigTool->getConfigHipay(),
+                'HiPay_logs' => $this->getLogs()->getLogFiles(),
+                'HiPay_module_url' => AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules'),
+                'HiPay_fraud_form' => $formGenerator->getFraudForm(),
+                'HiPay_form_errors' => $this->_errors,
+                'HiPay_form_successes' => $this->_successes,
+                'HiPay_technicalErrors' => $this->_technicalErrors,
+                'HiPay_limitedCurrencies' => $this->currencies_titles,
+                'HiPay_default_currency' => Configuration::get('PS_SHOP_DEFAULT'),
+                'HiPay_limitedCountries' => $this->countries_titles,
+                'HiPay_this_callback' => $this->context->link->getModuleLink(
                     $this->name,
                     'notify',
                     [],
@@ -730,23 +730,23 @@ class Hipay_enterprise extends PaymentModule
                     null,
                     (int) Configuration::get('PS_SHOP_DEFAULT')
                 ),
-                'ipaddr' => $_SERVER['REMOTE_ADDR'],
-                'psCategories' => $psCategories,
-                'hipayCategories' => $hipayCategories,
-                'mappedCategories' => $mappedCategories,
-                'psCarriers' => $psCarriers,
-                'hipayCarriers' => $hipayCarriers,
-                'mappedCarriers' => $mappedCarriers,
-                'lang' => Tools::strtolower($this->context->language->iso_code),
-                'languages' => Language::getLanguages(false),
-                'source' => $source,
-                'ps_round_total' => Order::ROUND_TOTAL == Configuration::get('PS_ROUND_TYPE'),
-                'ajax_url' => $this->context->link->getAdminLink('AdminModules'),
-                'url_site' => Tools::getHttpHost(true).__PS_BASE_URI__,
-                'syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
-                'syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
-                'updateNotif' => $this->hipayUpdateNotif,
-                'prestashopVersion' => _PS_VERSION_,
+                'HiPay_ipaddr' => $_SERVER['REMOTE_ADDR'],
+                'HiPay_psCategories' => $psCategories,
+                'HiPay_hipayCategories' => $hipayCategories,
+                'HiPay_mappedCategories' => $mappedCategories,
+                'HiPay_psCarriers' => $psCarriers,
+                'HiPay_hipayCarriers' => $hipayCarriers,
+                'HiPay_mappedCarriers' => $mappedCarriers,
+                'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
+                'HiPay_languages' => Language::getLanguages(false),
+                'HiPay_source' => $source,
+                'HiPay_ps_round_total' => Order::ROUND_TOTAL == Configuration::get('PS_ROUND_TYPE'),
+                'HiPay_ajax_url' => $this->context->link->getAdminLink('AdminModules'),
+                'HiPay_url_site' => Tools::getHttpHost(true).__PS_BASE_URI__,
+                'HiPay_syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
+                'HiPay_syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
+                'HiPay_updateNotif' => $this->hipayUpdateNotif,
+                'HiPay_prestashopVersion' => _PS_VERSION_,
             ]
         );
 
@@ -773,7 +773,7 @@ class Hipay_enterprise extends PaymentModule
             $this->hipayConfigFormHandler->saveAccountInformations();
 
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'account_form'
             );
         // ==================================//
@@ -783,42 +783,42 @@ class Hipay_enterprise extends PaymentModule
             $this->logs->logInfos('# submitGlobalPaymentMethods');
             $this->hipayConfigFormHandler->saveGlobalPaymentInformations();
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('creditCardSubmit')) {
             $this->logs->logInfos('# creditCardSubmit');
             $this->hipayConfigFormHandler->saveCreditCardInformations($this->context);
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('localPaymentSubmit')) {
             $this->logs->logInfos('# localPaymentSubmit');
             $this->hipayConfigFormHandler->saveLocalPaymentInformations($this->context);
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'payment_form'
             );
         } elseif (Tools::isSubmit('fraudSubmit')) {
             $this->logs->logInfos('# fraudSubmit');
             $this->hipayConfigFormHandler->saveFraudInformations();
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'fraud_form'
             );
         } elseif (Tools::isSubmit('submitCategoryMapping')) {
             $this->logs->logInfos('# submitCategoryMapping');
             $this->hipayConfigFormHandler->saveCategoryMappingInformations();
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'category_form'
             );
         } elseif (Tools::isSubmit('submitCarrierMapping')) {
             $this->logs->logInfos('# submitCarrierMapping');
             $this->hipayConfigFormHandler->saveCarrierMappingInformations();
             $this->context->smarty->assign(
-                'active_tab',
+                'HiPay_active_tab',
                 'carrier_form'
             );
         }

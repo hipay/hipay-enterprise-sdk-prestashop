@@ -24,8 +24,8 @@
                     <li role="presentation" class="disabled credit-card-title"></li>
                     {assign var="groupSummary" value=""}
                     {assign var="groupSummaryDone" value=""}
-                    {foreach $config_hipay.payment.local_payment as $localPayment}
-                        {if empty($localPayment["minPrestashopVersion"]) || $localPayment["minPrestashopVersion"] <= $prestashopVersion}
+                    {foreach $HiPay_config_hipay.payment.local_payment as $localPayment}
+                        {if empty($localPayment["minPrestashopVersion"]) || $localPayment["minPrestashopVersion"] <= $HiPay_prestashopVersion}
                             {if 'group'|arrayKeyExists:$localPayment}
                                 {assign var="itemInGroup" value="true"}
                                 {if $groupSummary != $localPayment["group"]["code"] }
@@ -54,8 +54,8 @@
                     <div class="tab-content col-md-10">
                         {assign var="groupSummary" value=""}
                         {assign var="groupSummaryDone" value=""}
-                        {foreach $config_hipay.payment.local_payment as $localPayment}
-                            {if empty($localPayment["minPrestashopVersion"]) || $localPayment["minPrestashopVersion"] <= $prestashopVersion}
+                        {foreach $HiPay_config_hipay.payment.local_payment as $localPayment}
+                            {if empty($localPayment["minPrestashopVersion"]) || $localPayment["minPrestashopVersion"] <= $HiPay_prestashopVersion}
                                 {assign var="itemInGroup" value=false}
                                 {if 'group'|arrayKeyExists:$localPayment}
                                     {assign var="itemInGroup" value=true}
@@ -69,7 +69,7 @@
                                                 <div role="tabpanel">
                                                     <ul class="hipay-enterprise nav nav-tabs" role="tablist">
                                                         {assign var="firstElement" value=true}
-                                                        {foreach $config_hipay.payment.local_payment as $localPaymentGroup}
+                                                        {foreach $HiPay_config_hipay.payment.local_payment as $localPaymentGroup}
                                                             {if 'group'|arrayKeyExists:$localPaymentGroup}
                                                                 {if $localPayment["group"]["code"] == $localPaymentGroup["group"]["code"]}
                                                                     {assign var="groupSummary" value=$localPayment["group"]["code"]}
@@ -87,7 +87,7 @@
                                                 </div>
                                                 <div class="tab-content">
                                                     {assign var="firstElement" value=true}
-                                                    {foreach $config_hipay.payment.local_payment as $localPaymentDetail}
+                                                    {foreach $HiPay_config_hipay.payment.local_payment as $localPaymentDetail}
                                                         {if 'group'|arrayKeyExists:$localPaymentDetail}
                                                             {if $localPayment["group"]["code"] == $localPaymentDetail["group"]["code"]}
                                                                 <div role="tabpanel" class="tab-pane {if $firstElement} active {/if}"
@@ -132,7 +132,7 @@
     </div>
 </div>
 <script>
-    {foreach $config_hipay.payment.local_payment as $localPayment}
+    {foreach $HiPay_config_hipay.payment.local_payment as $localPayment}
         {if !$localPayment["countrySelectorReadOnly"]}
             var local_{$localPayment@key|regex_replace:'/[^a-zA-Z0-9]/':""}_dualistbox = $('#countries_{$localPayment@key}').bootstrapDualListbox({
             showFilterInputs: false,

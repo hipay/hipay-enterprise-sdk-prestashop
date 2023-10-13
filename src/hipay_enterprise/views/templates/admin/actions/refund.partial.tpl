@@ -12,29 +12,29 @@
 <fieldset>
     <legend>{l s='Refund this order'  mod='hipay_enterprise'}</legend>
     <p><b>{l s='Amount that can be refunded' mod='hipay_enterprise' } :</b> <span class="badge badge-success">
-                {displayPrice price=$refundableAmount currency=$id_currency}</span></p>
+                {displayPrice price=$HiPay_refundableAmount currency=$HiPay_id_currency}</span></p>
     <p class="help-block">
         <sup>*</sup> {l s='Amount will be updated once the refund will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}
     </p>
-    <form action="{$refundLink}" method="post" id="hipay_refund_form" class="form-horizontal ">
-        <input type="hidden" name="id_order" value="{$orderId}"/>
-        <input type="hidden" name="id_emp" value="{$employeeId}"/>
-        <input type="hidden" name="token" value="{$tokenRefund}"/>
+    <form action="{$HiPay_refundLink}" method="post" id="hipay_refund_form" class="form-horizontal ">
+        <input type="hidden" name="id_order" value="{$HiPay_orderId}"/>
+        <input type="hidden" name="id_emp" value="{$HiPay_employeeId}"/>
+        <input type="hidden" name="token" value="{$HiPay_tokenRefund}"/>
         <div class="form-group">
             <label class="col-lg-4" for="hipay_refund_type">{l s='Refund type'  mod='hipay_enterprise'}</label>
             <select id="hipay_refund_type" name="hipay_refund_type" class="col-lg-3">
-                {if !$partiallyRefunded}
+                {if !$HiPay_partiallyRefunded}
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
                 <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
             </select>
         </div>
-        <div id="block-refund-amount" {if !$partiallyRefunded} style="display:none;" {/if}
+        <div id="block-refund-amount" {if !$HiPay_partiallyRefunded} style="display:none;" {/if}
              class="form-group bloc-actions-hipay">
-            {if !$basket}
+            {if !$HiPay_basket}
                 <label class="control-label "
                        for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
-                <input type="text" name="hipay_refund_amount" value="{$refundableAmount}"/>
+                <input type="text" name="hipay_refund_amount" value="{$HiPay_refundableAmount}"/>
             {else}
                 <table class="table table-item-hipay">
                     <thead>
@@ -46,19 +46,19 @@
                         <th>{l s='Qty to be refunded'  mod='hipay_enterprise'}</th>
                     </tr>
                     </thead>
-                    {foreach $products as $item}
-                        {if empty($capturedItems) && !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
-                            {assign var="remainQty" value=$item["product_quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
-                        {else if empty($capturedItems) && empty($refundedItems) }
+                    {foreach $HiPay_products as $item}
+                        {if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
+                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_refundedItems[$item["product_id"]]["quantity"]}
+                        {else if empty($HiPay_capturedItems) && empty($HiPay_refundedItems) }
                             {assign var="remainQty" value=$item["product_quantity"] }
-                        {else if empty($capturedItems) && !empty($refundedItems) &&  !isset($refundedItems[$item["product_id"]])}
+                        {else if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) &&  !isset($HiPay_refundedItems[$item["product_id"]])}
                             +                                {assign var="remainQty" value=$item["product_quantity"] }
-                        {else if empty($capturedItems) || !isset($capturedItems[$item["product_id"]]) }
+                        {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$item["product_id"]]) }
                             {assign var="remainQty" value=0}
-                        {else if !empty($refundedItems) && isset($refundedItems[$item["product_id"]]) }
-                            {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"] - $refundedItems[$item["product_id"]]["quantity"]}
+                        {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]]) }
+                            {assign var="remainQty" value=$HiPay_capturedItems[$item["product_id"]]["quantity"] - $HiPay_refundedItems[$item["product_id"]]["quantity"]}
                         {else}
-                            {assign var="remainQty" value=$capturedItems[$item["product_id"]]["quantity"]}
+                            {assign var="remainQty" value=$HiPay_capturedItems[$item["product_id"]]["quantity"]}
                         {/if}
                         <tr>
                             <td>
@@ -70,19 +70,19 @@
                                        value="{$item["product_id"]}"/>{$item["product_name"]}
                             </td>
                             <td>
-                                {displayPrice price=$item.product_price_wt currency=$id_currency}
+                                {displayPrice price=$item.product_price_wt currency=$HiPay_id_currency}
                             </td>
                             <td>
-                                {if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
+                                {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
                                 <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {$refundedItems[$item["product_id"]]["quantity"]}
+                                            {$HiPay_refundedItems[$item["product_id"]]["quantity"]}
                                     {/if}
-                                    {if !empty($refundedItems) && isset($refundedItems[$item["product_id"]])}
+                                    {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
                                         <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {displayPrice price=$refundedItems[$item["product_id"]]["amount"] currency=$id_currency}
+                                            {displayPrice price=$HiPay_refundedItems[$item["product_id"]]["amount"] currency=$HiPay_id_currency}
                                         </span>
                                     {else}
-                                        <span class="badge badge-warning">{displayPrice price=0 currency=$id_currency}</span>
+                                        <span class="badge badge-warning">{displayPrice price=0 currency=$HiPay_id_currency}</span>
                                     {/if}
                             </td>
                             <td>
@@ -105,40 +105,40 @@
                         <td>{l s='Shipping'  mod='hipay_enterprise'}</td>
                         <td>
                                         <span>
-                                            {displayPrice price=$amountFees currency=$id_currency}
+                                            {displayPrice price=$HiPay_amountFees currency=$HiPay_id_currency}
                                             <span>
                         </td>
                         <td>
-                            {if $shippingCost > 0 }
-                                {if !$capturedFees && $manualCapture}
+                            {if $HiPay_shippingCost > 0 }
+                                {if !$HiPay_capturedFees && $HiPay_manualCapture}
                                     <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
-                                {elseif ($capturedFees && !$refundedFees) || ($stillToCapture <= 0 && !$refundedFees)}
-                                    <input id="refund-fee" data-amount="{$amountFees}" type="checkbox"
+                                {elseif ($HiPay_capturedFees && !$HiPay_refundedFees) || ($HiPay_stillToCapture <= 0 && !$HiPay_refundedFees)}
+                                    <input id="refund-fee" data-amount="{$HiPay_amountFees}" type="checkbox"
                                            name="hipay_refund_fee">
                                     {l s='Refund fee(s)'  mod='hipay_enterprise'}
                                 {else}
                                     <span class="badge badge-success">{l s='Refunded'  mod='hipay_enterprise'}</span>
                                 {/if}
                             {else}
-                                {displayPrice price=0 currency=$id_currency}
+                                {displayPrice price=0 currency=$HiPay_id_currency}
                             {/if}
                         </td>
                         <td></td>
                     </tr>
-                    {if $wrappingGift}
+                    {if $HiPay_wrappingGift}
                         <tr>
                             <td></td>
                             <td>{l s='Wrapping gift' mod='hipay_enterprise'}</td>
                             <td>
                                      <span>
-                                         {displayPrice price=$wrapping.value currency=$id_currency}
+                                         {displayPrice price=$HiPay_wrapping.value currency=$HiPay_id_currency}
                                          <span>
                             </td>
                             <td>
-                                {if !$wrapping.captured && $manualCapture}
+                                {if !$HiPay_wrapping.captured && $HiPay_manualCapture}
                                     <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
-                                {elseif !$wrapping.refunded}
-                                    <input id="refund-wrapping" data-amount="{$wrapping.value}" type="checkbox"
+                                {elseif !$HiPay_wrapping.refunded}
+                                    <input id="refund-wrapping" data-amount="{$HiPay_wrapping.value}" type="checkbox"
                                            name="hipay_refund_wrapping">
                                     {l s='Refund Wrapping gift' mod='hipay_enterprise'}
                                 {else}
@@ -148,20 +148,20 @@
                             <td></td>
                         </tr>
                     {/if }
-                    {if not empty($discount)}
+                    {if not empty($HiPay_discount)}
                         <tr>
                             <td></td>
-                            <td>{l s='Discount' mod='hipay_enterprise'} {$discount.name}</td>
+                            <td>{l s='Discount' mod='hipay_enterprise'} {$HiPay_discount.name}</td>
                             <td>
                                      <span>
-                                         {displayPrice price=-1*$discount.value currency=$id_currency}
+                                         {displayPrice price=-1*$HiPay_discount.value currency=$HiPay_id_currency}
                                          <span>
                             </td>
                             <td>
-                                {if !$capturedDiscounts && $manualCapture}
+                                {if !$HiPay_capturedDiscounts && $HiPay_manualCapture}
                                     <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
-                                {elseif !$refundedDiscounts}
-                                    <input id="refund-discount" data-amount="{$discount.value}" type="checkbox"
+                                {elseif !$HiPay_refundedDiscounts}
+                                    <input id="refund-discount" data-amount="{$HiPay_discount.value}" type="checkbox"
                                            name="hipay_refund_discount">
                                     {l s='Refund Discount' mod='hipay_enterprise'}
                                 {else}
@@ -187,8 +187,8 @@
         </div>
         <p style="display:none;" id="danger-js" class="alert alert-danger"></p>
         <div class="form-group">
-            {if !$totallyRefunded}
-                <button type="submit" name="{if !$basket}hipay_refund_submit{else}hipay_refund_basket_submit{/if}"
+            {if !$HiPay_totallyRefunded}
+                <button type="submit" name="{if !$HiPay_basket}hipay_refund_submit{else}hipay_refund_basket_submit{/if}"
                         class="btn btn-primary pull-right">
                     {l s='Refund'  mod='hipay_enterprise'}
                 </button>
@@ -212,8 +212,8 @@
         });
 
         var currencySign = "€";
-        var refundableAmount = {$refundableAmount};
-        {if $refundedDiscounts}
+        var refundableAmount = {$HiPay_refundableAmount};
+        {if $HiPay_refundedDiscounts}
         var refundedDiscount = true;
         {else}
         var refundedDiscount = false;
@@ -246,15 +246,15 @@
                 items.push(item);
             });
 
-            $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
+            $.post('{$HiPay_ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
                 {
                     "captureRefundFee": $("#refund-fee").is(":checked"),
                     "captureRefundDiscount": $("#refund-discount").is(":checked"),
                     "captureRefundWrapping": $("#refund-wrapping").is(":checked"),
                     "items": items,
                     "operation": "refund",
-                    "cartId": {$cartId},
-                    "orderId": {$orderId}
+                    "cartId": {$HiPay_cartId},
+                    "orderId": {$HiPay_orderId}
                 },
                 function (response) {
 

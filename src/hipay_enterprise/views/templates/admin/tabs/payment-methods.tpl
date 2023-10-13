@@ -10,8 +10,8 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 <div class="panel">
-    <script type="text/javascript" src="{$module_dir}views/js/bootstrap-multiselect.js"></script>
-    <script type="text/javascript" src="{$module_dir}views/js/jquery.bootstrap-duallistbox.min.js"></script>
+    <script type="text/javascript" src="{$HiPay_module_dir}views/js/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="{$HiPay_module_dir}views/js/jquery.bootstrap-duallistbox.min.js"></script>
 
     {include file='./payment-methods/global.tpl'}
     {include file='./payment-methods/creditcard.tpl'}

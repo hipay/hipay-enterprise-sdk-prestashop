@@ -10,5 +10,5 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 <div class="panel">
-    {$fraud_form}
+    {$HiPay_fraud_form}
 </div>

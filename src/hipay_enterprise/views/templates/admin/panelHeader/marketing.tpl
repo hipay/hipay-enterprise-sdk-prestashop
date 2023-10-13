@@ -12,7 +12,7 @@
 
 <div class="row" id="hipay-header">
     <div class="col-xs-12 col-sm-12 col-md-6 text-center">
-        <img src="{$module_dir|escape:'html':'UTF-8'}/views/img/logo.png" id="payment-logo"/>
+        <img src="{$HiPay_module_dir|escape:'html':'UTF-8'}/views/img/logo.png" id="payment-logo"/>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 text-center">
         <h4>{l s='HiPay is a global online payment platform designed to handle all your payment needs' mod='hipay_enterprise'}</h4>

@@ -38,7 +38,7 @@ class Hipay_enterpriseExceptionModuleFrontController extends ModuleFrontControll
 
         $this->context->smarty->assign(
             array(
-                'status_error' => Tools::getValue('status_error')
+                'HiPay_status_error' => Tools::getValue('status_error')
             )
         );
 

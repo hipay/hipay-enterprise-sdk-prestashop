@@ -145,7 +145,7 @@ class HipayUpdateNotif
     {
         $this->context->smarty->assign(
             array(
-                'updateNotif' => $this
+                'HiPay_updateNotif' => $this
             )
         );
 

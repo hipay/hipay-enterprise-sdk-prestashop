@@ -11,13 +11,13 @@
 *}
 
 <label class="{if isset($field.required) && $field.required}required{/if}">
-    {if isset($field["label"][$language])}
-        {$field["label"][$language]}
+    {if isset($field["label"][$HiPay_language])}
+        {$field["label"][$HiPay_language]}
     {else}    
         {$field["label"]["en"]}
     {/if}
 </label>
-<input id="{$localPaymentName}-{$name}"
+<input id="{$HiPay_localPaymentName}-{$name}"
        class="form-control {if isset($formErrors) && isset($formErrors[$name])} error-input-hp {/if}" name="{$name}"
        type="text" value="{if isset($field.defaultValue)}{$field.defaultValue}{/if}" {if isset($field.required) && $field.required}required{/if}>
 {if isset($formErrors) && isset($formErrors[$name])}

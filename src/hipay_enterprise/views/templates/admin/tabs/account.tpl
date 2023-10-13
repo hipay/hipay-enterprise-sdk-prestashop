@@ -24,10 +24,10 @@
                         <div class="col-lg-8">
                             <span class="switch prestashop-switch fixed-width-lg">
                                 <input type="radio" name="sandbox_mode" id="account_switchmode_on" value="1"
-                                    {if $config_hipay.account.global.sandbox_mode }checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.account.global.sandbox_mode }checked="checked" {/if}>
                                 <label for="account_switchmode_on">{l s='Test' mod='hipay_enterprise'}</label>
                                 <input type="radio" name="sandbox_mode" id="account_switchmode_off" value="0"
-                                    {if $config_hipay.account.global.sandbox_mode == false}checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.account.global.sandbox_mode == false}checked="checked" {/if}>
                                 <label for="account_switchmode_off">{l s='Live' mod='hipay_enterprise'}</label>
                                 <a class="slide-button btn production-switch"></a>
                             </span>
@@ -72,7 +72,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_username_production"
-                                    value="{$config_hipay.account.production.api_username_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_username_production}">
                             </div>
                         </div>
 
@@ -82,7 +82,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_password_production"
-                                    value="{$config_hipay.account.production.api_password_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_password_production}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -91,7 +91,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_secret_passphrase_production"
-                                    value="{$config_hipay.account.production.api_secret_passphrase_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_secret_passphrase_production}">
                             </div>
                         </div>
                         <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}
@@ -102,7 +102,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_tokenjs_username_production"
-                                    value="{$config_hipay.account.production.api_tokenjs_username_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_tokenjs_username_production}">
                             </div>
                         </div>
 
@@ -113,7 +113,7 @@
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
                                     name="api_tokenjs_password_publickey_production"
-                                    value="{$config_hipay.account.production.api_tokenjs_password_publickey_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_tokenjs_password_publickey_production}">
                             </div>
                         </div>
                         <h5 class="col-lg-offset-2 col-xs-offset-4">
@@ -124,7 +124,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_moto_username_production"
-                                    value="{$config_hipay.account.production.api_moto_username_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_moto_username_production}">
                             </div>
                         </div>
 
@@ -134,7 +134,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_moto_password_production"
-                                    value="{$config_hipay.account.production.api_moto_password_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_moto_password_production}">
                             </div>
                         </div>
 
@@ -144,13 +144,13 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_moto_secret_passphrase_production"
-                                    value="{$config_hipay.account.production.api_moto_secret_passphrase_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_moto_secret_passphrase_production}">
                             </div>
                         </div>
 
                         {if
-                            empty($config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
-                            || $config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $prestashopVersion
+                            empty($HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
+                            || $HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $HiPay_prestashopVersion
                         }
                         <h5 class="col-lg-offset-2 col-xs-offset-4">
                             {l s='Apple Pay credentials (Private)' mod='hipay_enterprise'}
@@ -161,7 +161,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_apple_pay_username_production"
-                                    value="{$config_hipay.account.production.api_apple_pay_username_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_apple_pay_username_production}">
                             </div>
                         </div>
 
@@ -171,7 +171,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_apple_pay_password_production"
-                                    value="{$config_hipay.account.production.api_apple_pay_password_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_apple_pay_password_production}">
                             </div>
                         </div>
 
@@ -181,7 +181,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_apple_pay_passphrase_production"
-                                    value="{$config_hipay.account.production.api_apple_pay_passphrase_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_apple_pay_passphrase_production}">
                             </div>
                         </div>
 
@@ -194,7 +194,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_tokenjs_apple_pay_username_production"
-                                    value="{$config_hipay.account.production.api_tokenjs_apple_pay_username_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_tokenjs_apple_pay_username_production}">
                             </div>
                         </div>
 
@@ -205,7 +205,7 @@
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
                                     name="api_tokenjs_apple_pay_password_production"
-                                    value="{$config_hipay.account.production.api_tokenjs_apple_pay_password_production}">
+                                    value="{$HiPay_config_hipay.account.production.api_tokenjs_apple_pay_password_production}">
                             </div>
                         </div>
                         {/if}
@@ -245,7 +245,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_username_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_username_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_username_sandbox}">
                             </div>
                         </div>
 
@@ -255,7 +255,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_password_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_password_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_password_sandbox}">
                             </div>
                         </div>
 
@@ -265,7 +265,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_secret_passphrase_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
                             </div>
                         </div>
                         <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}
@@ -276,7 +276,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_tokenjs_username_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_tokenjs_username_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_tokenjs_username_sandbox}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -286,7 +286,7 @@
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
                                     name="api_tokenjs_password_publickey_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox}">
                             </div>
                         </div>
                         <h5 class="col-lg-offset-2 col-xs-offset-4">
@@ -297,7 +297,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_moto_username_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_moto_username_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_moto_username_sandbox}">
                             </div>
                         </div>
 
@@ -307,7 +307,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_moto_password_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_moto_password_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_moto_password_sandbox}">
                             </div>
                         </div>
 
@@ -317,13 +317,13 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_moto_secret_passphrase_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_moto_secret_passphrase_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_moto_secret_passphrase_sandbox}">
                             </div>
                         </div>
 
                         {if
-                            empty($config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
-                            || $config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $prestashopVersion
+                            empty($HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
+                            || $HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $HiPay_prestashopVersion
                         }
                         <h5 class="col-lg-offset-2 col-xs-offset-4">
                             {l s='Apple Pay credentials (Private)' mod='hipay_enterprise'}
@@ -334,7 +334,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_apple_pay_username_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_apple_pay_username_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_apple_pay_username_sandbox}">
                             </div>
                         </div>
 
@@ -344,7 +344,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_apple_pay_password_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_apple_pay_password_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_apple_pay_password_sandbox}">
                             </div>
                         </div>
 
@@ -354,7 +354,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="password" name="api_apple_pay_passphrase_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_apple_pay_passphrase_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_apple_pay_passphrase_sandbox}">
                             </div>
                         </div>
 
@@ -367,7 +367,7 @@
                             </label>
                             <div class="col-lg-6">
                                 <input class="form-control" type="text" name="api_tokenjs_apple_pay_username_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_tokenjs_apple_pay_username_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_tokenjs_apple_pay_username_sandbox}">
                             </div>
                         </div>
 
@@ -378,7 +378,7 @@
                             <div class="col-lg-6">
                                 <input class="form-control" type="password"
                                     name="api_tokenjs_apple_pay_password_sandbox"
-                                    value="{$config_hipay.account.sandbox.api_tokenjs_apple_pay_password_sandbox}">
+                                    value="{$HiPay_config_hipay.account.sandbox.api_tokenjs_apple_pay_password_sandbox}">
                             </div>
                         </div>
                         {/if}
@@ -413,13 +413,13 @@
                                         <select name="hash_algorithm_production" class="col-lg-2"
                                             id="hash_algorithm_production" disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.production == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.production == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.production == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -436,13 +436,13 @@
                                         <select name="hash_algorithm_test" class="col-lg-2" id="hash_algorithm_test"
                                             disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.test == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.test == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.test == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -459,13 +459,13 @@
                                         <select name="hash_algorithm_production_moto" class="col-lg-2"
                                             id="hash_algorithm_production_moto" disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.production_moto == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_moto == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.production_moto == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_moto == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.production_moto == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_moto == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -482,13 +482,13 @@
                                         <select name="hash_algorithm_test_moto" class="col-lg-2"
                                             id="hash_algorithm_test_moto" disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.test_moto == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_moto == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.test_moto == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_moto == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.test_moto == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_moto == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -497,8 +497,8 @@
                         </div>
 
                         {if
-                        empty($config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
-                        || $config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $prestashopVersion
+                        empty($HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
+                        || $HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $HiPay_prestashopVersion
                         }
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
@@ -510,13 +510,13 @@
                                         <select name="hash_algorithm_production_apple_pay" class="col-lg-2"
                                             id="hash_algorithm_production_apple_pay" disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_apple_pay == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_apple_pay == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.production_apple_pay == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.production_apple_pay == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -534,13 +534,13 @@
                                         <select name="hash_algorithm_test_apple_pay" class="col-lg-2"
                                             id="hash_algorithm_test_apple_pay" disabled="disabled">
                                             <option value="SHA1"
-                                                {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA1"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_apple_pay == "SHA1"}selected="selected"
                                                 {/if}>SHA-1</option>
                                             <option value="SHA256"
-                                                {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA256"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_apple_pay == "SHA256"}selected="selected"
                                                 {/if}>SHA-256</option>
                                             <option value="SHA512"
-                                                {if $config_hipay.account.hash_algorithm.test_apple_pay == "SHA512"}selected="selected"
+                                                {if $HiPay_config_hipay.account.hash_algorithm.test_apple_pay == "SHA512"}selected="selected"
                                                 {/if}>SHA-512</option>
                                         </select>
                                     </div>
@@ -592,7 +592,7 @@
                                 </label>
                                 <div class="col-lg-7">
                                     <input class="form-control" type="text" name="host_proxy"
-                                        value="{$config_hipay.account.global.host_proxy}">
+                                        value="{$HiPay_config_hipay.account.global.host_proxy}">
                                 </div>
                             </div>
 
@@ -602,7 +602,7 @@
                                 </label>
                                 <div class="col-lg-7">
                                     <input class="form-control" type="text" name="port_proxy"
-                                        value="{$config_hipay.account.global.port_proxy}">
+                                        value="{$HiPay_config_hipay.account.global.port_proxy}">
                                 </div>
                             </div>
 
@@ -612,7 +612,7 @@
                                 </label>
                                 <div class="col-lg-7">
                                     <input class="form-control" type="text" name="user_proxy"
-                                        value="{$config_hipay.account.global.user_proxy}">
+                                        value="{$HiPay_config_hipay.account.global.user_proxy}">
                                 </div>
                             </div>
 
@@ -622,7 +622,7 @@
                                 </label>
                                 <div class="col-lg-7">
                                     <input class="form-control" type="text" name="password_proxy"
-                                        value="{$config_hipay.account.global.password_proxy}">
+                                        value="{$HiPay_config_hipay.account.global.password_proxy}">
                                 </div>
                             </div>
 
@@ -641,13 +641,13 @@
                                     <span class="switch prestashop-switch fixed-width-lg">
                                         <input type="radio" name="order_message_on_notification"
                                             id="order_message_on_notificationmode_on" value="1"
-                                            {if $config_hipay.account.global.order_message_on_notification }checked="checked"
+                                            {if $HiPay_config_hipay.account.global.order_message_on_notification }checked="checked"
                                             {/if}>
                                         <label
                                             for="order_message_on_notificationmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                         <input type="radio" name="order_message_on_notification"
                                             id="order_message_on_notificationmode_off" value="0"
-                                            {if $config_hipay.account.global.order_message_on_notification == false}checked="checked"
+                                            {if $HiPay_config_hipay.account.global.order_message_on_notification == false}checked="checked"
                                             {/if}>
                                         <label
                                             for="order_message_on_notificationmode_off">{l s='No' mod='hipay_enterprise'}</label>
@@ -663,11 +663,11 @@
                                 <div class="col-lg-8">
                                     <span class="switch prestashop-switch fixed-width-lg" id="notification-radio">
                                         <input type="radio" name="notification_cron" id="notification_cron_on" value="1"
-                                            {if $config_hipay.account.global.notification_cron }checked="checked" {/if}>
+                                            {if $HiPay_config_hipay.account.global.notification_cron }checked="checked" {/if}>
                                         <label for="notification_cron_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                         <input type="radio" name="notification_cron" id="notification_cron_off"
                                             value="0"
-                                            {if $config_hipay.account.global.notification_cron == false}checked="checked"
+                                            {if $HiPay_config_hipay.account.global.notification_cron == false}checked="checked"
                                             {/if}>
                                         <label for="notification_cron_off">{l s='No' mod='hipay_enterprise'}</label>
                                         <a class="slide-button btn production-switch"></a>
@@ -675,7 +675,7 @@
                                 </div>
                             </div>
 
-                            <div id="notification-detail" style="display: {if $config_hipay.account.global.notification_cron}block{else}none{/if}">
+                            <div id="notification-detail" style="display: {if $HiPay_config_hipay.account.global.notification_cron}block{else}none{/if}">
                                 <div class="row">
                                     <div class="col-lg-7 col-lg-offset-2">
                                         <div class="alert alert-info">
@@ -695,7 +695,7 @@
                                             <div class="col-lg-8">
                                                 <input class="form-control" type="text" id="notification_cron_token"
                                                     name="notification_cron_token"
-                                                    value="{$config_hipay.account.global.notification_cron_token}">
+                                                    value="{$HiPay_config_hipay.account.global.notification_cron_token}">
                                             </div>
                                             <div class="col-lg-4">
                                                 <button type="button" id="regenerateToken" style="width: 100%"
@@ -713,7 +713,7 @@
                                     <div class="col-lg-7">
                                         <input class="form-control" type="int" id="notification_max_retry"
                                             name="notification_max_retry"
-                                            value="{$config_hipay.account.global.notification_max_retry}">
+                                            value="{$HiPay_config_hipay.account.global.notification_max_retry}">
                                     </div>
                                 </div>
                             </div>
@@ -733,13 +733,13 @@
                                     <span class="switch prestashop-switch fixed-width-lg">
                                         <input type="radio" name="use_prestashop_refund_form"
                                             id="use_prestashop_refund_formmode_on" value="1"
-                                            {if $config_hipay.account.global.use_prestashop_refund_form }checked="checked"
+                                            {if $HiPay_config_hipay.account.global.use_prestashop_refund_form }checked="checked"
                                             {/if}>
                                         <label
                                             for="use_prestashop_refund_formmode_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                         <input type="radio" name="use_prestashop_refund_form"
                                             id="use_prestashop_refund_formmode_off" value="0"
-                                            {if $config_hipay.account.global.use_prestashop_refund_form == false}checked="checked"
+                                            {if $HiPay_config_hipay.account.global.use_prestashop_refund_form == false}checked="checked"
                                             {/if}>
                                         <label
                                             for="use_prestashop_refund_formmode_off">{l s='No' mod='hipay_enterprise'}</label>
@@ -775,7 +775,7 @@
 
         $('#synchronize-hash').on('click', function() {
             if (confirm("{l s='Are you sure you want to sync the hashing configuration for notifications ?' mod='hipay_enterprise'}")) {
-                $.get('{$syncLink}&ajax=1&action=SynchronizeHashing', function(response) {
+                $.get('{$HiPay_syncLink}&ajax=1&action=SynchronizeHashing', function(response) {
                     for (var platform in response) {
                         if (response[platform].status == "success") {
                             showSuccessMessage(response[platform].message);

@@ -11,7 +11,7 @@
  *}
 <fieldset>
     <legend>{l s='Manage Capture' mod='hipay_enterprise'}</legend>
-    {if $stillToCapture}
+    {if $HiPay_stillToCapture}
         <p class="alert alert-warning">
             {l s='The order has not been fully captured.' mod='hipay_enterprise'} <br/>
             {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.' mod='hipay_enterprise'}
@@ -20,26 +20,26 @@
 
     <div class="row">
         <label class="col-lg-4">{l s='Amount already captured' mod='hipay_enterprise'}</label><span
-                class="badge {if $capturedAmount > 0}badge-warning{else}badge-success{/if}">{displayPrice price=$capturedAmount currency=$id_currency}</span>
+                class="badge {if $HiPay_capturedAmount > 0}badge-warning{else}badge-success{/if}">{displayPrice price=$HiPay_capturedAmount currency=$HiPay_id_currency}</span>
     </div>
     <div class="row">
         <label class="col-lg-4">{l s='Amount still to be captured' mod='hipay_enterprise'}</label><span
-                class="badge {if $stillToCapture > 0}badge-warning{else}badge-success{/if}">
-                {displayPrice price=$stillToCapture currency=$id_currency}</span>
+                class="badge {if $HiPay_stillToCapture > 0}badge-warning{else}badge-success{/if}">
+                {displayPrice price=$HiPay_stillToCapture currency=$HiPay_id_currency}</span>
     </div>
     <p class="help-block">
         <sup>*</sup> {l s='Amount will be updated once the capture will be confirmed by HiPay Enterprise' mod='hipay_enterprise'}
     </p>
 
-    <form action="{$captureLink}" method="post" id="hipay_capture_form" class="">
-        <input type="hidden" name="id_order" value="{$orderId}"/>
-        <input type="hidden" name="id_emp" value="{$employeeId}"/>
-        <input type="hidden" name="token" value="{$tokenCapture}"/>
+    <form action="{$HiPay_captureLink}" method="post" id="hipay_capture_form" class="">
+        <input type="hidden" name="id_order" value="{$HiPay_orderId}"/>
+        <input type="hidden" name="id_emp" value="{$HiPay_employeeId}"/>
+        <input type="hidden" name="token" value="{$HiPay_tokenCapture}"/>
         <div class="form-group">
             <label class="col-lg-4" for="hipay_capture_type">{l s='Capture type' mod='hipay_enterprise'}</label>
-            {if $canPartiallyCapture}
+            {if $HiPay_canPartiallyCapture}
             <select id="hipay_capture_type" name="hipay_capture_type" class="col-lg-3">
-                {if !$partiallyCaptured }
+                {if !$HiPay_partiallyCaptured }
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
                 <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
@@ -49,12 +49,12 @@
             {/if}
         </div>
 
-        <div id="block-capture-amount" {if !$partiallyCaptured }style="display:none;" {/if}
+        <div id="block-capture-amount" {if !$HiPay_partiallyCaptured }style="display:none;" {/if}
              class="bloc-actions-hipay form-group">
-            {if !$basket}
+            {if !$HiPay_basket}
                 <label class="control-label "
                        for="hipay_capture_amount">{l s='Capture amount' mod='hipay_enterprise'}</label>
-                <input type="text" name="hipay_capture_amount" value="{$stillToCapture}"/>
+                <input type="text" name="hipay_capture_amount" value="{$HiPay_stillToCapture}"/>
             {else}
                 <table class="table table-item-hipay">
                     <thead>
@@ -66,9 +66,9 @@
                         <th>{l s='Qty to be captured' mod='hipay_enterprise'}</th>
                     </tr>
                     </thead>
-                    {foreach $products as $item}
-                        {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
-                            {assign var="remainQty" value=$item["product_quantity"] - $capturedItems[$item["product_id"]]["quantity"]}
+                    {foreach $HiPay_products as $item}
+                        {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
+                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_capturedItems[$item["product_id"]]["quantity"]}
                         {else}
                             {assign var="remainQty" value=$item["product_quantity"]}
                         {/if}
@@ -82,22 +82,22 @@
                                        value="{$item["product_id"]}"/>{$item["product_name"]}
                             </td>
                             <td>
-                                {displayPrice price=$item.product_price_wt currency=$id_currency}
+                                {displayPrice price=$item.product_price_wt currency=$HiPay_id_currency}
                             </td>
                             <td>
-                                {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
+                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
                                     <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {$capturedItems[$item["product_id"]]["quantity"]}
+                                            {$HiPay_capturedItems[$item["product_id"]]["quantity"]}
                                         </span>
                                 {else}
                                     <span class="badge badge-warning">0</span>
                                 {/if}
-                                {if !empty($capturedItems) && isset($capturedItems[$item["product_id"]])}
+                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
                                     <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {displayPrice price=$capturedItems[$item["product_id"]]["amount"] currency=$id_currency}
+                                            {displayPrice price=$HiPay_capturedItems[$item["product_id"]]["amount"] currency=$HiPay_id_currency}
                                         </span>
                                 {else}
-                                    <span class="badge badge-warning">{displayPrice price=0 currency=$id_currency}</span>
+                                    <span class="badge badge-warning">{displayPrice price=0 currency=$HiPay_id_currency}</span>
                                 {/if}
                             </td>
                             <td>
@@ -122,36 +122,36 @@
                         <td>{l s='Shipping' mod='hipay_enterprise'}</td>
                         <td>
                                      <span>
-                                         {displayPrice price=$amountFees currency=$id_currency}
+                                         {displayPrice price=$HiPay_amountFees currency=$HiPay_id_currency}
                                          <span>
                         </td>
                         <td>
-                            {if $shippingCost > 0 }
-                                {if !$capturedFees}
-                                    <input id="capture-fee" data-amount="{$amountFees}" type="checkbox"
+                            {if $HiPay_shippingCost > 0 }
+                                {if !$HiPay_capturedFees}
+                                    <input id="capture-fee" data-amount="{$HiPay_amountFees}" type="checkbox"
                                            name="hipay_capture_fee">
                                     {l s='Capture fee(s)' mod='hipay_enterprise'}
                                 {else}
                                     <span class="badge badge-success">Captured</span>
                                 {/if}
                             {else}
-                                {displayPrice price=0 currency=$id_currency}
+                                {displayPrice price=0 currency=$HiPay_id_currency}
                             {/if}
                         </td>
                         <td></td>
                     </tr>
-                    {if $wrappingGift}
+                    {if $HiPay_wrappingGift}
                         <tr>
                             <td></td>
                             <td>{l s='Wrapping gift' mod='hipay_enterprise'}</td>
                             <td>
                                      <span>
-                                         {displayPrice price=$wrapping.value currency=$id_currency}
+                                         {displayPrice price=$HiPay_wrapping.value currency=$HiPay_id_currency}
                                          <span>
                             </td>
                             <td>
-                                {if !$wrapping.captured}
-                                    <input id="capture-wrapping" data-amount="{$wrapping.value}" type="checkbox"
+                                {if !$HiPay_wrapping.captured}
+                                    <input id="capture-wrapping" data-amount="{$HiPay_wrapping.value}" type="checkbox"
                                            name="hipay_capture_wrapping">
                                     {l s='Capture Wrapping gift' mod='hipay_enterprise'}
                                 {else}
@@ -161,21 +161,21 @@
                             <td></td>
                         </tr>
                     {/if }
-                    {if !empty($discount)}
+                    {if !empty($HiPay_discount)}
                         <tr>
                             <td></td>
-                            <td>{l s='Discount' mod='hipay_enterprise'} {$discount.name}</td>
+                            <td>{l s='Discount' mod='hipay_enterprise'} {$HiPay_discount.name}</td>
                             <td>
                                          <span>
-                                             {displayPrice price=-1*$discount.value currency=$id_currency}
+                                             {displayPrice price=-1*$HiPay_discount.value currency=$HiPay_id_currency}
                                              <span>
                             </td>
                             <td>
-                                {if !$capturedDiscounts}
-                                    <input id="capture-discount" data-amount="{$discount.value}" type="checkbox"
+                                {if !$HiPay_capturedDiscounts}
+                                    <input id="capture-discount" data-amount="{$HiPay_discount.value}" type="checkbox"
                                            name="hipay_capture_discount">
                                     {l s='Capture Discount' mod='hipay_enterprise'}
-                                    <input type="hidden" name="capture-discount-amount" value="{$discount.value}"/>
+                                    <input type="hidden" name="capture-discount-amount" value="{$HiPay_discount.value}"/>
                                 {else}
                                     <span class="badge badge-success">{l s='Captured'  mod='hipay_enterprise'}</span>
                                 {/if}
@@ -199,7 +199,7 @@
         </div>
         <p style="display:none;" id="danger-js" class="alert alert-danger"></p>
         <div class="form-group">
-            <button type="submit" name="{if !$basket}hipay_capture_submit{else}hipay_capture_basket_submit{/if}"
+            <button type="submit" name="{if !$HiPay_basket}hipay_capture_submit{else}hipay_capture_basket_submit{/if}"
                     class="btn btn-primary pull-right">
                 {l s='Capture' mod='hipay_enterprise'}
             </button>
@@ -223,13 +223,13 @@
         });
 
         var currencySign = "€";
-        {if $capturedDiscounts}
+        {if $HiPay_capturedDiscounts}
         var capturedDiscount = true;
         {else}
         var capturedDiscount = false;
         {/if}
 
-        var stillToCapture = {$stillToCapture};
+        var stillToCapture = {$HiPay_stillToCapture};
 
         updatePrice();
 
@@ -259,15 +259,15 @@
                 items.push(item);
             });
 
-            $.post('{$ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
+            $.post('{$HiPay_ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
                 {
                     "captureRefundFee": $("#capture-fee").is(":checked"),
                     "captureRefundDiscount": $("#capture-discount").is(":checked"),
                     "captureRefundWrapping": $("#capture-wrapping").is(":checked"),
                     "items": items,
                     "operation": "capture",
-                    "cartId": {$cartId},
-                    "orderId": {$orderId}
+                    "cartId": {$HiPay_cartId},
+                    "orderId": {$HiPay_orderId}
                 },
                 function (response) {
                     if (response.amount) {

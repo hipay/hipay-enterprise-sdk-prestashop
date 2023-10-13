@@ -15,20 +15,20 @@
             <a href="{$link->getModuleLink('hipay_enterprise', 'redirect', array(), true)|escape:'htmlall':'UTF-8'}"
                title="{l s='Pay by credit card' mod='hipay_enterprise' }" style="padding-left: 13px;">
 
-                <img src="{$domain|cat:$payment_button|escape:'html':'UTF-8'}"
+                <img src="{$HiPay_domain|cat:$HiPay_payment_button|escape:'html':'UTF-8'}"
                      style="max-width: 160px;max-height: 50px;"
                      alt="{l s='Pay by credit card' mod='hipay_enterprise'}"/>
                 {l s='Pay by ' mod='hipay_enterprise' }
-                {if isset($configHipay.payment.global.ccDisplayName[$lang])}
-                    {$configHipay.payment.global.ccDisplayName[$lang]}
-                {elseif isset($configHipay.payment.global.ccDisplayName) && !is_array($configHipay.payment.global.ccDisplayName)}
-                    {$configHipay.payment.global.ccDisplayName}
+                {if isset($HiPay_configHipay.payment.global.ccDisplayName[$HiPay_lang])}
+                    {$HiPay_configHipay.payment.global.ccDisplayName[$HiPay_lang]}
+                {elseif isset($HiPay_configHipay.payment.global.ccDisplayName) && !is_array($HiPay_configHipay.payment.global.ccDisplayName)}
+                    {$HiPay_configHipay.payment.global.ccDisplayName}
                 {else}
-                    {reset($configHipay.payment.global.ccDisplayName)}
+                    {reset($HiPay_configHipay.payment.global.ccDisplayName)}
                 {/if}
                 <span>
-                    {if $configHipay.payment.global.operating_mode.UXMode != 'direct_post' && $configHipay.payment.global.operating_mode.UXMode != 'hosted_fields'}
-                        {if !$configHipay.payment.global.card_token}
+                    {if $HiPay_configHipay.payment.global.operating_mode.UXMode != 'direct_post' && $HiPay_configHipay.payment.global.operating_mode.UXMode != 'hosted_fields'}
+                        {if !$HiPay_configHipay.payment.global.card_token}
                             <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                         {/if}
                     {/if}

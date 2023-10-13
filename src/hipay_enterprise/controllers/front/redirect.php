@@ -157,14 +157,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $this->context->smarty->assign(
             [
-                'nbProducts' => $this->currentCart->nbProducts(),
-                'cust_currency' => $this->currentCart->id_currency,
-                'activatedCreditCard' => json_encode(array_keys($this->creditCard)),
-                'currencies' => $this->module->getCurrency((int) $this->currentCart->id_currency),
-                'total' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
-                'this_path' => $this->module->getPathUri(),
-                'this_path_bw' => $this->module->getPathUri(),
-                'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                'HiPay_nbProducts' => $this->currentCart->nbProducts(),
+                'HiPay_cust_currency' => $this->currentCart->id_currency,
+                'HiPay_activatedCreditCard' => json_encode(array_keys($this->creditCard)),
+                'HiPay_currencies' => $this->module->getCurrency((int) $this->currentCart->id_currency),
+                'HiPay_total' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
+                'HiPay_this_path' => $this->module->getPathUri(),
+                'HiPay_this_path_bw' => $this->module->getPathUri(),
+                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                     __PS_BASE_URI__.
                     'modules/'.
                     $this->module->name.
@@ -182,7 +182,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     && Tools::getValue('iframeCall')) {
                     $this->context->smarty->assign(
                         [
-                            'url' => $this->apiHandler->handleCreditCard(
+                            'HiPay_url' => $this->apiHandler->handleCreditCard(
                                 ApiMode::HOSTED_PAGE_IFRAME,
                                 [
                                     'method' => CardPaymentProduct::HOSTED,
@@ -220,15 +220,15 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
         $this->context->smarty->assign(
             [
-                'status_error' => '200', // Force to ok for first call
-                'status_error_oc' => '200',
-                'cart_id' => $this->currentCart->id,
-                'savedCC' => $this->savedCC,
-                'is_guest' => $this->customer->is_guest,
-                'customerFirstName' => $this->customer->firstname,
-                'customerLastName' => $this->customer->lastname,
-                'amount' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
-                'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                'HiPay_status_error' => '200', // Force to ok for first call
+                'HiPay_status_error_oc' => '200',
+                'HiPay_cart_id' => $this->currentCart->id,
+                'HiPay_savedCC' => $this->savedCC,
+                'HiPay_is_guest' => $this->customer->is_guest,
+                'HiPay_customerFirstName' => $this->customer->firstname,
+                'HiPay_customerLastName' => $this->customer->lastname,
+                'HiPay_amount' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
+                'HiPay_confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
             ]
         );
     }
@@ -269,12 +269,12 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             }
             $context->smarty->assign(
                 [
-                    'status_error' => '200',
-                    'status_error_oc' => '400',
-                    'cart_id' => $cart->id,
-                    'savedCC' => $savedCC,
-                    'amount' => $cart->getOrderTotal(true, Cart::BOTH),
-                    'confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                    'HiPay_status_error' => '200',
+                    'HiPay_status_error_oc' => '400',
+                    'HiPay_cart_id' => $cart->id,
+                    'HiPay_savedCC' => $savedCC,
+                    'HiPay_amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                    'HiPay_confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
                 ]
             );
 

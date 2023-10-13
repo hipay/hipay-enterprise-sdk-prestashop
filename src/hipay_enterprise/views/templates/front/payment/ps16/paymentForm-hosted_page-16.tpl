@@ -27,7 +27,7 @@
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
 
-{if $nbProducts <= 0}
+{if $HiPay_nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_enterprise'}</p>
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
@@ -38,9 +38,9 @@
         <div class="order_carrier_content box">
             <h2 class="page-subheading">{l s='Pay by credit card' mod='hipay_enterprise'}</h2>
             {include file="$hipay_enterprise_tpl_dir/front/partial/paymentError.tpl"}
-            <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$amount} {$currency->iso_code} </h5>
+            <h5><strong>{l s='Amount to pay ' mod='hipay_enterprise'}:</strong> {$HiPay_amount} {$currency->iso_code} </h5>
 
-            {if $confHipay.payment.global.card_token}
+            {if $HiPay_confHipay.payment.global.card_token}
                 {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/oneclick.tpl"}
             {/if}
             <div id="error-js" style="display:none" class="alert alert-danger">
@@ -48,7 +48,7 @@
                     <li class="error"></li>
                 </ul>
             </div>
-            {if $savedCC &&  $confHipay.payment.global.card_token}
+            {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}
                 <div class="option_payment">
                 <span class="custom-radio">
                     <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken"/>
@@ -58,17 +58,17 @@
                 </div>
             {/if}
 
-            <div class="col-lg-12 col-md-12 col-xs-12" id="group-without-token" style="{if $savedCC && $confHipay.payment.global.card_token}display:none;{/if}">
-                {if $confHipay.payment.global.display_hosted_page != 'iframe'}
+            <div class="col-lg-12 col-md-12 col-xs-12" id="group-without-token" style="{if $HiPay_savedCC && $HiPay_confHipay.payment.global.card_token}display:none;{/if}">
+                {if $HiPay_confHipay.payment.global.display_hosted_page != 'iframe'}
                     <p>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</p>
                 {else}
                     <p>{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
                     <input type="hidden" id="iframe-generate" name="iframeCall" value="1" />
                 {/if}
 
-                {if $confHipay.payment.global.card_token && !$is_guest}
+                {if $HiPay_confHipay.payment.global.card_token && !$HiPay_is_guest}
                     {include file="$hipay_enterprise_tpl_dir/front/partial/ps16/savetoken.tpl"}
-                    {if !$savedCC}
+                    {if !$HiPay_savedCC}
                         <input type="hidden" id="radio-no-token" name="ccTokenHipay" value="noToken" />
                     {/if}
                 {/if}
@@ -88,7 +88,7 @@
     </form>
     <p id="payment-loader-hp" style='text-align: center; display:none;'>
         <strong>{l s='Your payment is being processed. Please wait.' mod='hipay_enterprise'}</strong> <br/>
-        <img src="{$this_path_ssl}/views/img/loading.gif">
+        <img src="{$HiPay_this_path_ssl}/views/img/loading.gif">
     </p>
 {/if}
 <script>
