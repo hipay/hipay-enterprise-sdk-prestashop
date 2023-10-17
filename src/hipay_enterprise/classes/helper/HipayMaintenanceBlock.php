@@ -90,15 +90,15 @@ class HipayMaintenanceBlock
     {
         $this->context->smarty->assign(
             [
-                'errorHipay' => $this->context->cookie->__get('hipay_errors'),
-                'messagesHipay' => $this->context->cookie->__get('hipay_success'),
-                'showMoto' => false,
-                'showChallenge' => false,
-                'refundRequestedOS' => $this->isRefundRequested(),
-                'refundStartedFromBo' => false,
-                'id_currency' => $this->order->id_currency,
-                'orderId' => $this->order->id,
-                'employeeId' => $this->context->employee->id,
+                'HiPay_errorHipay' => $this->context->cookie->__get('hipay_errors'),
+                'HiPay_messagesHipay' => $this->context->cookie->__get('hipay_success'),
+                'HiPay_showMoto' => false,
+                'HiPay_showChallenge' => false,
+                'HiPay_refundRequestedOS' => $this->isRefundRequested(),
+                'HiPay_refundStartedFromBo' => false,
+                'HiPay_id_currency' => $this->order->id_currency,
+                'HiPay_orderId' => $this->order->id,
+                'HiPay_employeeId' => $this->context->employee->id,
             ]
         );
 
@@ -135,12 +135,12 @@ class HipayMaintenanceBlock
         ) {
             $this->context->smarty->assign(
                 [
-                    'config_hipay' => $this->module->hipayConfigTool->getConfigHipay(),
-                    'showMoto' => true,
-                    'showCapture' => false,
-                    'showRefund' => false,
-                    'cartId' => $this->cart->id,
-                    'motoLink' => $this->context->link->getAdminLink('AdminHiPayMoto'),
+                    'HiPay_config_hipay' => $this->module->hipayConfigTool->getConfigHipay(),
+                    'HiPay_showMoto' => true,
+                    'HiPay_showCapture' => false,
+                    'HiPay_showRefund' => false,
+                    'HiPay_cartId' => $this->cart->id,
+                    'HiPay_motoLink' => $this->context->link->getAdminLink('AdminHiPayMoto'),
                 ]
             );
 
@@ -162,10 +162,10 @@ class HipayMaintenanceBlock
         if ($this->order->current_state == $this->getStatusId('HIPAY_OS_CHALLENGED')) {
             $this->context->smarty->assign(
                 [
-                    'showCapture' => false,
-                    'showRefund' => false,
-                    'showChallenge' => true,
-                    'challengeLink' => $this->context->link->getAdminLink('AdminHiPayChallenge'),
+                    'HiPay_showCapture' => false,
+                    'HiPay_showRefund' => false,
+                    'HiPay_showChallenge' => true,
+                    'HiPay_challengeLink' => $this->context->link->getAdminLink('AdminHiPayChallenge'),
                 ]
             );
 
@@ -207,43 +207,43 @@ class HipayMaintenanceBlock
                 }
 
                 $this->context->smarty->assign([
-                        'showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()['use_prestashop_refund_form'],
-                        'manualCapture' => $this->isManualCapture(),
-                        'stillToCapture' => $this->order->total_paid_tax_incl -
+                        'HiPay_showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()['use_prestashop_refund_form'],
+                        'HiPay_manualCapture' => $this->isManualCapture(),
+                        'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
-                        'alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
-                        'refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) -
+                        'HiPay_alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
+                        'HiPay_refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) -
                             HipayHelper::getOrderPaymentAmount($this->order, true),
-                        'refundedFees' => $refundedFees,
-                        'refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
-                        'basket' => $this->basket,
-                        'refundedItems' => $refundedItems,
-                        'tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
-                        'partiallyRefunded' => $this->isPartiallyRefunded(
+                        'HiPay_refundedFees' => $refundedFees,
+                        'HiPay_refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
+                        'HiPay_basket' => $this->basket,
+                        'HiPay_refundedItems' => $refundedItems,
+                        'HiPay_tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
+                        'HiPay_partiallyRefunded' => $this->isPartiallyRefunded(
                             $refundedItems,
                             $refundedFees,
                             $this->isTotallyCaptured(),
                             $refundedDiscounts,
                             $refundedWrapping
                         ),
-                        'totallyRefunded' => $this->isTotallyRefunded(),
-                        'products' => $this->order->getProducts(),
-                        'amountFees' => $shippingFees,
-                        'shippingCost' => $this->order->total_shipping,
-                        'discount' => $discount,
-                        'capturedDiscounts' => $capturedDiscounts,
-                        'refundedDiscounts' => $refundedDiscounts,
-                        'capturedFees' => $capturedFees,
-                        'orderId' => $this->order->id,
-                        'cartId' => $this->cart->id,
-                        'ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
-                        'wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                        'HiPay_totallyRefunded' => $this->isTotallyRefunded(),
+                        'HiPay_products' => $this->order->getProducts(),
+                        'HiPay_amountFees' => $shippingFees,
+                        'HiPay_shippingCost' => $this->order->total_shipping,
+                        'HiPay_discount' => $discount,
+                        'HiPay_capturedDiscounts' => $capturedDiscounts,
+                        'HiPay_refundedDiscounts' => $refundedDiscounts,
+                        'HiPay_capturedFees' => $capturedFees,
+                        'HiPay_orderId' => $this->order->id,
+                        'HiPay_cartId' => $this->cart->id,
+                        'HiPay_ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
+                        'HiPay_wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
                 ]);
 
                 if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
                     $this->context->smarty->assign(
                         [
-                            'wrapping' => [
+                            'HiPay_wrapping' => [
                                 'value' => $this->order->total_wrapping,
                                 'refunded' => $refundedWrapping,
                                 'captured' => $capturedWrapping,
@@ -256,7 +256,7 @@ class HipayMaintenanceBlock
             }
         }
 
-        $this->context->smarty->assign(['showRefund' => false]);
+        $this->context->smarty->assign(['HiPay_showRefund' => false]);
 
         return false;
     }
@@ -286,39 +286,39 @@ class HipayMaintenanceBlock
 
                 $this->context->smarty->assign(
                     [
-                        'showCapture' => true,
-                        'stillToCapture' => $this->order->total_paid_tax_incl -
+                        'HiPay_showCapture' => true,
+                        'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
-                        'manualCapture' => $this->isManualCapture(),
-                        'capturedAmount' => HipayHelper::getOrderPaymentAmount($this->order),
-                        'captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
-                        'tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
-                        'partiallyCaptured' => $this->isPartiallyCaptured(
+                        'HiPay_manualCapture' => $this->isManualCapture(),
+                        'HiPay_capturedAmount' => HipayHelper::getOrderPaymentAmount($this->order),
+                        'HiPay_captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
+                        'HiPay_tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
+                        'HiPay_partiallyCaptured' => $this->isPartiallyCaptured(
                             $capturedItems,
                             $capturedFees,
                             $capturedDiscounts,
                             $capturedWrapping
                         ),
-                        'capturedItems' => $capturedItems,
-                        'capturedFees' => $capturedFees,
-                        'capturedDiscounts' => $capturedDiscounts,
-                        'basket' => $this->basket,
-                        'products' => $this->order->getProducts(),
-                        'amountFees' => $shippingFees,
-                        'shippingCost' => $this->order->total_shipping,
-                        'discount' => $this->getDiscount(),
-                        'orderId' => $this->order->id,
-                        'cartId' => $this->cart->id,
-                        'ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
-                        'wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
-                        'canPartiallyCapture' => $this->paymentMethodCanRefundOrCapture('capturePartial')
+                        'HiPay_capturedItems' => $capturedItems,
+                        'HiPay_capturedFees' => $capturedFees,
+                        'HiPay_capturedDiscounts' => $capturedDiscounts,
+                        'HiPay_basket' => $this->basket,
+                        'HiPay_products' => $this->order->getProducts(),
+                        'HiPay_amountFees' => $shippingFees,
+                        'HiPay_shippingCost' => $this->order->total_shipping,
+                        'HiPay_discount' => $this->getDiscount(),
+                        'HiPay_orderId' => $this->order->id,
+                        'HiPay_cartId' => $this->cart->id,
+                        'HiPay_ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
+                        'HiPay_wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                        'HiPay_canPartiallyCapture' => $this->paymentMethodCanRefundOrCapture('capturePartial')
                     ]
                 );
 
                 if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
                     $this->context->smarty->assign(
                         [
-                            'wrapping' => [
+                            'HiPay_wrapping' => [
                                 'value' => $this->order->total_wrapping,
                                 'captured' => $capturedWrapping,
                             ],
@@ -330,7 +330,7 @@ class HipayMaintenanceBlock
             }
         }
 
-        $this->context->smarty->assign(['showCapture' => false]);
+        $this->context->smarty->assign(['HiPay_showCapture' => false]);
 
         return false;
     }
@@ -567,7 +567,7 @@ class HipayMaintenanceBlock
         }
 
         // if started from BO, displays an message to the BO User
-        $this->context->smarty->assign(['refundStartedFromBo' => true]);
+        $this->context->smarty->assign(['HiPay_refundStartedFromBo' => true]);
 
         return true;
     }

@@ -10,11 +10,11 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 
-{if (isset($form_errors)) && (count($form_errors) > 0)}
+{if (isset($HiPay_form_errors)) && (count($HiPay_form_errors) > 0)}
     <div class="alert alert-danger">
         <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
         <ul class="list-unstyled">
-            {foreach from=$form_errors item='message'}
+            {foreach from=$HiPay_form_errors item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
             {/foreach}
         </ul>
@@ -32,18 +32,18 @@
     </div>
 {/if}
 
-{if (isset($form_successes)) && (count($form_successes) > 0)}
+{if (isset($HiPay_form_successes)) && (count($HiPay_form_successes) > 0)}
     <div class="alert alert-success">
         <h4>{l s='Success!' mod='hipay_enterprise'}</h4>
         <ul class="list-unstyled">
-            {foreach from=$form_successes item='message'}
+            {foreach from=$HiPay_form_successes item='message'}
                 <li>{$message|escape:'html':'UTF-8'}</li>
             {/foreach}
         </ul>
     </div>
 {/if}
 
-{if $ps_round_total}
+{if $HiPay_ps_round_total}
     <div class="alert alert-danger">
         <h4>{l s='Error!' mod='hipay_enterprise'}</h4>
         <p>

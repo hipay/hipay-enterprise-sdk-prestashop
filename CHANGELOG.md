@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.1
+
+- **Fix**: Fixed ApplePay credentials detection in production
+- **Fix**: Fixed name of global JS methods adding HiPay namespace
+- **Fix**: Fixed name of smarty variables adding HiPay namespace
+
 ## 2.21.0
 
 - **Add**: Added reference to pay on customer order details for `Mooney` / `Multibanco` payment means

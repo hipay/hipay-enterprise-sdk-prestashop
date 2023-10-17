@@ -11,22 +11,20 @@
  *}
 <div class="card-js " data-icon-colour="#158CBA">
     <input id="card-number" class="card-number my-custom-class" name="card-number">
-    <input id="the-card-name-id" class="name" name="card-holders-name" value="{$customerFirstName} {$customerLastName}">
+    <input id="the-card-name-id" class="name" name="card-holders-name" value="{$HiPay_customerFirstName} {$HiPay_customerLastName}">
     <input id="expiry-month" class="expiry-month" name="expiry-month">
     <input id="expiry-year" required class="expiry-year" name="expiry-year">
-    <input id="cvc" class="cvc" data-toggle="tooltip"
-           title=""
-           name="cvc">
+    <input id="cvc" class="cvc" data-toggle="tooltip" title="" name="cvc">
     <input name="text" type="text">
 </div>
 
 {include file="$hipay_enterprise_tpl_dir/front/partial/cc.hidden.inputs.tpl"}
 
 <script>
-    (function () {
-        hiPayInputControl.addInput('cc', 'card-number', 'creditcardnumber', true);
-        hiPayInputControl.addInput('cc', 'the-card-name-id', null, true);
-        hiPayInputControl.addInput('cc', 'cvc', 'cvc', true);
+    (function() {
+        hiPayInputControl.HiPay_addInput('cc', 'card-number', 'creditcardnumber', true);
+        hiPayInputControl.HiPay_addInput('cc', 'the-card-name-id', null, true);
+        hiPayInputControl.HiPay_addInput('cc', 'cvc', 'cvc', true);
     })();
 
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -38,7 +36,7 @@
         });
 
         let deviceFingerprintInput = $('#realFingerprint');
-        if(deviceFingerprintInput.length === 0) {
+        if (deviceFingerprintInput.length === 0) {
             deviceFingerprintInput = $('<input/>', {
                 id: 'realFingerprint',
                 type: 'hidden',

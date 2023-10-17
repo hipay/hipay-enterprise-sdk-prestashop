@@ -15,12 +15,12 @@
 {assign var='current_step' value='payment'}
 {include file="$tpl_dir./order-steps.tpl"}
 
-{if $nbProducts <= 0}
+{if $HiPay_nbProducts <= 0}
     <p class="warning">{l s='Your shopping cart is empty.' mod='hipay_enterprise'}</p>
 {else}
     <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
     <section>
         <iframe sandbox="allow-modals allow-top-navigation allow-same-origin allow-scripts allow-forms"
-            src="{$url|escape:'htmlall':'UTF-8'}" width="100%" height="650"></iframe>
+            src="{$HiPay_url|escape:'htmlall':'UTF-8'}" width="100%" height="650"></iframe>
     </section>
 {/if}

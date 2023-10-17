@@ -21,7 +21,7 @@
 <h1 class="page-heading bottom-indent">{l s='Saved credit/debit card' mod='hipay_enterprise'}</h1>
 <p class="info-title">{l s='Here are the saved credit card from previous order.' mod='hipay_enterprise'}</p>
 <div class="block-center">
-    {if $savedCC }
+    {if $HiPay_savedCC }
     <table id="order-list" class="table table-bordered footab default footable-loaded footable">
         <thead>
         <tr>
@@ -33,9 +33,9 @@
         </thead>
         <tbody>
 
-        {foreach $savedCC as $cc}
+        {foreach $HiPay_savedCC as $cc}
             <tr>
-                <td><img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> {$cc.pan}</td>
+                <td><img src="{$HiPay_this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> {$cc.pan}</td>
                 <td>{$cc.card_holder}</td>
                 <td>{"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}</td>
                 <td class="text-xs-center">
@@ -72,7 +72,7 @@
         </a>
     </li>
 </ul>
-{if $savedCC }
+{if $HiPay_savedCC }
     <script>
         $(".delTokenForm").submit(function (e) {
             e.preventDefault();

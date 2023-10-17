@@ -34,13 +34,13 @@
     submitButton = $('#payment-confirmation button');
 
     const parameters = {
-      api_apple_pay_username: '{$credentials.api_apple_pay_username}',
-      api_apple_pay_password: '{$credentials.api_apple_pay_password}',
-      environment: '{$environment}',
-      language_iso_code: '{$language_iso_code}',
-      buttonType: '{$appleFields.buttonType[0]}',
-      buttonStyle: '{$appleFields.buttonStyle[0]}',
-      totalAmount: '{$cart.totalAmount}',
+      api_apple_pay_username: '{$HiPay_credentials.api_apple_pay_username}',
+      api_apple_pay_password: '{$HiPay_credentials.api_apple_pay_password}',
+      environment: '{$HiPay_environment}',
+      language_iso_code: '{$HiPay_language_iso_code}',
+      buttonType: '{$HiPay_appleFields.buttonType[0]}',
+      buttonStyle: '{$HiPay_appleFields.buttonStyle[0]}',
+      totalAmount: '{$HiPay_cart.totalAmount}',
       shopName: '{Configuration::get('PS_SHOP_NAME')}'
     };
 

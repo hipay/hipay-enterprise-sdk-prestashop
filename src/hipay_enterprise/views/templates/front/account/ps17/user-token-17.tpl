@@ -16,7 +16,7 @@
 {/block}
 
 {block name='page_content'}
-    {if $savedCC }
+    {if $HiPay_savedCC }
         <h6>{l s='Saved credit/debit card' mod='hipay_enterprise'}</h6>
         <table class="table table-striped table-bordered hidden-sm-down">
             <thead class="thead-default">
@@ -29,9 +29,9 @@
             </thead>
             <tbody>
 
-            {foreach $savedCC as $cc}
+            {foreach $HiPay_savedCC as $cc}
                 <tr>
-                    <td><img src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> {$cc.pan}</td>
+                    <td><img src="{$HiPay_this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> {$cc.pan}</td>
                     <td>{$cc.card_holder}</td>
                     <td>{"%02d"|sprintf:$cc.card_expiry_month} / {$cc.card_expiry_year}</td>
                     <td>

@@ -11,7 +11,7 @@
  *}
 
 {* Showing update block if needed *}
-{if $updateNotif->getVersion() != $updateNotif->getNewVersion()}
+{if $HiPay_updateNotif->getVersion() != $HiPay_updateNotif->getNewVersion()}
     <section id="hipayupdate" class="panel widget loading">
         <div class="panel-heading">
             <i class="icon-warning"></i>
@@ -24,11 +24,11 @@
             </div>
             <div class="col-xs-18 col-sm-18 col-md-9 text-center">
                 <p>{l s='There is a new version of HiPay Enterprise module available.' mod='hipay_enterprise'}
-                    <a href="{$updateNotif->getReadMeUrl()}">
-                        {l s='View version %s details' mod='hipay_enterprise' sprintf=$updateNotif->getNewVersion()}
+                    <a href="{$HiPay_updateNotif->getReadMeUrl()}">
+                        {l s='View version %s details' mod='hipay_enterprise' sprintf=$HiPay_updateNotif->getNewVersion()}
                     </a>
                     {l s='or' mod='hipay_enterprise'}
-                    <a href="{$updateNotif->getDownloadUrl()}">{l s='update now' mod='hipay_enterprise'}</a>.
+                    <a href="{$HiPay_updateNotif->getDownloadUrl()}">{l s='update now' mod='hipay_enterprise'}</a>.
                 </p>
             </div>
         </div>

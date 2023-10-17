@@ -9,7 +9,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-{if $savedCC}
+{if $HiPay_savedCC}
     <div class="option_payment saved-card"><label
                 for="radio-with-token"><strong>{l s='Pay with a saved credit card' mod='hipay_enterprise'}</strong></label>
     </div>
@@ -19,7 +19,7 @@
             <li class="error-oc"></li>
         </ol>
     </div>
-    {foreach $savedCC as $cc}
+    {foreach $HiPay_savedCC as $cc}
         <div class="form-group row group-card">
             <div class="col-md-1">
                         <span class="custom-radio">
@@ -32,7 +32,7 @@
                 <div class="row">
                     <label for="radio-with-token">
                         <span class="hipay-img col-md-2 col-xs-3"><img class="card-img"
-                                                                       src="{$this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
+                                                                       src="{$HiPay_this_path_ssl}/views/img/{$cc.brand|lower}_small.png"/> </span>
                         <span class="hipay-pan col-md-10 col-xs-9">{$cc.pan}</span>
                         <span class="hipay-exp-date col-md-10 col-xs-9">{l s='Exp. date'  mod='hipay_enterprise'}
                             : {"%02d"|sprintf:$cc.card_expiry_month}/{$cc.card_expiry_year}</span>

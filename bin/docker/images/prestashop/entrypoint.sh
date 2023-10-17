@@ -92,6 +92,7 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         COMMIT;"
     else
         mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+        DELETE FROM ps_currency_lang WHERE name = 'euro' and id_lang IN (2, 3);
         DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
         INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
           VALUES

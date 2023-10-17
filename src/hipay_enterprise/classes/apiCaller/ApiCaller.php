@@ -275,8 +275,8 @@ class ApiCaller
                 )
                 || (
                     !$sandbox
-                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_username_production"])
-                    && !empty($moduleInstance->hipayConfigTool->getAccountSandbox()["api_apple_pay_password_production"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_apple_pay_username_production"])
+                    && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_apple_pay_password_production"])
                 )
             )
         ) {

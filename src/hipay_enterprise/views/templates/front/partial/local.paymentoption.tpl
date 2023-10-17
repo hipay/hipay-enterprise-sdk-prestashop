@@ -9,8 +9,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-{if isset($paymentProduct.displayName[$lang])}
-    {assign var="productName" value=$paymentProduct.displayName[$lang]}
+{if isset($paymentProduct.displayName[$HiPay_lang])}
+    {assign var="productName" value=$paymentProduct.displayName[$HiPay_lang]}
 {elseif isset($paymentProduct.displayName) && !is_array($paymentProduct.displayName)}
     {assign var="productName" value=$paymentProduct.displayName}
 {else}
@@ -24,12 +24,12 @@
                 <a href="javascript:void(0);" onclick="{literal}$(this).closest('form').submit();{/literal}"
                    title="{l s='Pay by ' mod='hipay_enterprise' } {$productName}"
                    style="padding-left: 13px;">
-                    <img src="{$domain|cat:$paymentProduct.payment_button|escape:'html':'UTF-8'}"
+                    <img src="{$HiPay_domain|cat:$paymentProduct.payment_button|escape:'html':'UTF-8'}"
                          style="max-width: 160px;max-height: 50px;" alt="{$productName}"/>
                     {l s='Pay by ' mod='hipay_enterprise' } {$productName}
 
                     <span>
-                        {if (empty($paymentProduct.additionalFields) && (isset($paymentProduct.forceHpayment) && $paymentProduct.forceHpayment)) || ((isset($paymentProduct.handleHpayment) && $paymentProduct.handleHpayment && $isOperatingModeHostedPage))}
+                        {if (empty($paymentProduct.additionalFields) && (isset($paymentProduct.forceHpayment) && $paymentProduct.forceHpayment)) || ((isset($paymentProduct.handleHpayment) && $paymentProduct.handleHpayment && $HiPay_isOperatingModeHostedPage))}
                             {if !(isset($paymentProduct.iframe) && $paymentProduct.iframe)}
                                 <em>{l s='You will be redirected to an external payment page. Please do not refresh the page during the process' mod='hipay_enterprise'}</em>
                             {/if}

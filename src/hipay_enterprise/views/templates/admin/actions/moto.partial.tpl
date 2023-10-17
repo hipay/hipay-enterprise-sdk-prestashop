@@ -12,19 +12,19 @@
 
 <fieldset>
     <legend>{l s='Manual order payment (MO/TO)' mod='hipay_enterprise'}</legend>
-    {if ( $config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.sandbox.api_moto_username_sandbox) || empty($config_hipay.account.sandbox.api_moto_password_sandbox)) )}
+    {if ( $HiPay_config_hipay.account.global.sandbox_mode && (empty($HiPay_config_hipay.account.sandbox.api_moto_username_sandbox) || empty($HiPay_config_hipay.account.sandbox.api_moto_password_sandbox)) )}
         <p class="alert alert-warning">
             {l s='Your Sandbox MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>
             {l s='To generate the invoice, you must capture the remaining amount due which will generate an invoice once the order full amount has been captured.' mod='hipay_enterprise'}
         </p>
-    {else if (  !$config_hipay.account.global.sandbox_mode && (empty($config_hipay.account.production.api_moto_username_production) || empty($config_hipay.account.production.api_moto_password_production)) )}
+    {else if (  !$HiPay_config_hipay.account.global.sandbox_mode && (empty($HiPay_config_hipay.account.production.api_moto_username_production) || empty($HiPay_config_hipay.account.production.api_moto_password_production)) )}
         <p class="alert alert-warning">
             {l s='Your Production MO/TO credentials are empty.' mod='hipay_enterprise'} <br/>
         </p>
     {/if}
     <p>{l s='You\'ll be redirected to HiPay payment page to complete this order payment' mod='hipay_enterprise'}</p>
-    <form action="{$motoLink}" method="post" id="hipay_capture_form" class="form-horizontal">
-        <input type="hidden" name="cart_id" value="{$cartId}"/>
+    <form action="{$HiPay_motoLink}" method="post" id="hipay_capture_form" class="form-horizontal">
+        <input type="hidden" name="cart_id" value="{$HiPay_cartId}"/>
         <button type="submit" name="motoPayment"
                 class="btn btn-primary ">
             {l s='Pay order MO/TO' mod='hipay_enterprise'}

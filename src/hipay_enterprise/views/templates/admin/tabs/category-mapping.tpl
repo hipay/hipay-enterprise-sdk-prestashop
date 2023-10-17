@@ -27,7 +27,7 @@
                             <th>{l s='HiPay category' mod='hipay_enterprise'}</th>
                             </thead>
                             <tbody>
-                            {foreach $psCategories as $cat}
+                            {foreach $HiPay_psCategories as $cat}
                                 <tr>
                                     <td>
                                         <input type="hidden" value="{$cat["id_category"]}"
@@ -36,12 +36,12 @@
                                     </td>
                                     <td>
                                         <select name="hipay_map_{$cat["id_category"]}">
-                                            {if !isset($mappedCategories[$cat["id_category"]])}
+                                            {if !isset($HiPay_mappedCategories[$cat["id_category"]])}
                                                 <option value="">{l s='- Select category - ' mod='hipay_enterprise'}</option>
                                             {/if}
-                                            {foreach $hipayCategories as $hpcat}
-                                                <option {if isset($mappedCategories[$cat["id_category"]]) && $mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}
-                                                        value="{$hpcat->getCode()}">{$hpcat->getLocal($lang|upper)}</option>
+                                            {foreach $HiPay_hipayCategories as $hpcat}
+                                                <option {if isset($HiPay_mappedCategories[$cat["id_category"]]) && $HiPay_mappedCategories[$cat["id_category"]] eq  $hpcat->getCode()} selected {/if}
+                                                        value="{$hpcat->getCode()}">{$hpcat->getLocal($HiPay_lang|upper)}</option>
                                             {/foreach}
                                         </select>
                                     </td>

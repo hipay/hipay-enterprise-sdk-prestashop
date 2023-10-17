@@ -83,8 +83,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
             if (!empty($sortedPaymentProducts)) {
                 $this->context->smarty->assign(
                     [
-                        'module_dir' => $this->_path,
-                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'HiPay_module_dir' => $this->_path,
+                        'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                         'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->name.'/views/templates',
                     ]
                 );
@@ -124,27 +124,27 @@ class HipayEnterpriseNew extends Hipay_enterprise
         if ('applepay' === $name) {
             $this->context->smarty->assign(
                 [
-                    'action' => $this->context->link->getModuleLink(
+                    'HiPay_action' => $this->context->link->getModuleLink(
                         $this->name,
                         'redirect',
                         [],
                         true
                     ),
-                    'localPaymentName' => $name,
-                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                    'HiPay_localPaymentName' => $name,
+                    'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
         } else {
             $this->context->smarty->assign(
                 [
-                    'action' => $this->context->link->getModuleLink(
+                    'HiPay_action' => $this->context->link->getModuleLink(
                         $this->name,
                         'redirectlocal',
                         ['method' => $name],
                         true
                     ),
-                    'localPaymentName' => $name,
-                    'errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                    'HiPay_localPaymentName' => $name,
+                    'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
         }
@@ -172,9 +172,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
             }
 
             $this->context->smarty->assign([
-                'language' => $this->context->language->language_code,
-                'forceHpayment' => true,
-                'iframe' => $iframe,
+                'HiPay_language' => $this->context->language->language_code,
+                'HiPay_forceHpayment' => true,
+                'HiPay_iframe' => $iframe,
             ]);
         } else {
             $formFields = [];
@@ -256,35 +256,35 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                 $this->context->smarty->assign(
                     [
-                        'cart' => $templateCart,
-                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        'HiPay_cart' => $templateCart,
+                        'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                         __PS_BASE_URI__.
                         'modules/'.
                         $this->name.
                         '/',
-                        'configAccountGlobal' => $configAccountGlobal,
-                        'language_iso_code' => $this->context->language->language_code,
-                        'environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
-                        'credentials' => $credentials,
-                        'appleFields' => $formFields,
-                        'language' => $this->context->language->language_code,
-                        'forceHpayment' => false,
-                        'iframe' => false,
+                        'HiPay_configAccountGlobal' => $configAccountGlobal,
+                        'HiPay_language_iso_code' => $this->context->language->language_code,
+                        'HiPay_environment' => $configAccountGlobal['sandbox_mode'] ? 'stage' : 'production',
+                        'HiPay_credentials' => $credentials,
+                        'HiPay_appleFields' => $formFields,
+                        'HiPay_language' => $this->context->language->language_code,
+                        'HiPay_forceHpayment' => false,
+                        'HiPay_iframe' => false,
                     ]
                 );
             } else {
                 $this->context->smarty->assign(
                     [
-                        'language' => $this->context->language->language_code,
-                        'forceHpayment' => false,
-                        'iframe' => false,
-                        'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                        'HiPay_language' => $this->context->language->language_code,
+                        'HiPay_forceHpayment' => false,
+                        'HiPay_iframe' => false,
+                        'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                         __PS_BASE_URI__.
                         'modules/'.
                         $this->name.
                         '/',
-                        'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                        'languageIsoCode' => $this->context->language->iso_code,
+                        'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                        'HiPay_languageIsoCode' => $this->context->language->iso_code,
                     ]
                 );
             }
@@ -356,7 +356,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             $newOption = new PaymentOption();
 
             $this->context->smarty->assign(
-                ['action' => $this->context->link->getModuleLink($this->name, 'redirect', [], true)]
+                ['HiPay_action' => $this->context->link->getModuleLink($this->name, 'redirect', [], true)]
             );
 
             switch ($uxMode) {
@@ -369,19 +369,19 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                     $this->context->smarty->assign(
                         [
-                            'module_dir' => $this->_path,
-                            'this_path_ssl' => Tools::getShopDomainSsl(true, true).
+                            'HiPay_module_dir' => $this->_path,
+                            'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                             __PS_BASE_URI__.
                             'modules/'.
                             $this->name.
                             '/',
-                            'savedCC' => $savedCC,
-                            'activatedCreditCard' => array_keys($paymentProduct['products']),
-                            'confHipay' => $this->hipayConfigTool->getConfigHipay(),
-                            'is_guest' => $this->customer->is_guest,
-                            'customerFirstName' => $this->customer->firstname,
-                            'customerLastName' => $this->customer->lastname,
-                            'languageIsoCode' => $this->context->language->iso_code,
+                            'HiPay_savedCC' => $savedCC,
+                            'HiPay_activatedCreditCard' => array_keys($paymentProduct['products']),
+                            'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                            'HiPay_is_guest' => $this->customer->is_guest,
+                            'HiPay_customerFirstName' => $this->customer->firstname,
+                            'HiPay_customerLastName' => $this->customer->lastname,
+                            'HiPay_languageIsoCode' => $this->context->language->iso_code,
                         ]
                     );
 

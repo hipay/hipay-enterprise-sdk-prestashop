@@ -15,8 +15,8 @@
     <p class="alert alert-danger">The payment was challenged by your fraud ruleset and is pending.
         Please review the fraud screening result and choose whether you want to accept or deny the payment
         transaction.</p>
-    <form action="{$challengeLink}" method="post" id="hipay_challenge_form" class="form-horizontal">
-        <input type="hidden" name="id_order" value="{$orderId}"/>
+    <form action="{$HiPay_challengeLink}" method="post" id="hipay_challenge_form" class="form-horizontal">
+        <input type="hidden" name="id_order" value="{$HiPay_orderId}"/>
         <div class="form-group">
             <button type="submit" name="btn-challenge" id="challenge_accept" value="accept"
                     class="btn btn-success btn-accept col-lg-5">{l s='Accept payment' mod='hipay_enterprise'}</button>
@@ -29,8 +29,8 @@
 <script>
     $(document).ready(function () {
         $("#hipay_challenge_form").submit(function () {
-            msgConfirmation = '{l s='Are-you sure to $action for this order ?' mod='hipay_enterprise'}';
-            if (!confirm(msgConfirmation.replace('$action', $('#' + document.activeElement.id).html()))) {
+            msgConfirmation = '{l s='Are-you sure to $HiPay_action for this order ?' mod='hipay_enterprise'}';
+            if (!confirm(msgConfirmation.replace('$HiPay_action', $('#' + document.activeElement.id).html()))) {
                 return false;
             }
         });

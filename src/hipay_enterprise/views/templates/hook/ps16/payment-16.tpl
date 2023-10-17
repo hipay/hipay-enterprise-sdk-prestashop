@@ -10,9 +10,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 
-{if !empty($sortedPaymentProducts)}
+{if !empty($HiPay_sortedPaymentProducts)}
     <input id="ioBB" type="hidden" name="ioBB">
-    {foreach $sortedPaymentProducts as $name => $paymentProduct}
+    {foreach $HiPay_sortedPaymentProducts as $name => $paymentProduct}
         {if $name == "credit_card"}
             {include file="../../front/partial/cc.paymentoption.tpl"}
         {else}

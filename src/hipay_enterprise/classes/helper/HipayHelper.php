@@ -439,23 +439,23 @@ class HipayHelper
         if ($cart) {
             $context->smarty->assign(
                 [
-                    'status_error' => '404',
-                    'status_error_oc' => '200',
-                    'cart_id' => $cart->id,
-                    'savedCC' => $savedCC,
-                    'amount' => $cart->getOrderTotal(true, Cart::BOTH),
-                    'confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay(),
+                    'HiPay_status_error' => '404',
+                    'HiPay_status_error_oc' => '200',
+                    'HiPay_cart_id' => $cart->id,
+                    'HiPay_savedCC' => $savedCC,
+                    'HiPay_amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                    'HiPay_confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay(),
                 ]
             );
         } else {
             $context->smarty->assign(
                 [
-                    'status_error' => '404',
-                    'status_error_oc' => '200',
-                    'cart_id' => '',
-                    'savedCC' => $savedCC,
-                    'amount' => '',
-                    'confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay(),
+                    'HiPay_status_error' => '404',
+                    'HiPay_status_error_oc' => '200',
+                    'HiPay_cart_id' => '',
+                    'HiPay_savedCC' => $savedCC,
+                    'HiPay_amount' => '',
+                    'HiPay_confHipay' => $moduleInstance->hipayConfigTool->getConfigHipay(),
                 ]
             );
         }

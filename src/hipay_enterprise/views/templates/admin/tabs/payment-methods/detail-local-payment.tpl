@@ -46,8 +46,8 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Display name' mod='hipay_enterprise'}</label>
 
-                    {foreach from=$languages item=language key=id}
-                        <div class="col-lg-3 {if $languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
+                    {foreach from=$HiPay_languages item=language key=id}
+                        <div class="col-lg-3 {if $HiPay_languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
                             {if $id > 0}style="display: none" {/if}>
 
                             <input type="text" name="{$key}_displayName[{$language.iso_code}]"
@@ -59,7 +59,7 @@
                                     {reset($method.displayName)}" 
                                 {/if} />
                         </div>
-                        {if $languages|count > 1}
+                        {if $HiPay_languages|count > 1}
                             <div class="col-lg-2 translatable-field lang-{$language.iso_code} " {if $id > 0}style="display: none"
                                 {/if}>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
@@ -67,7 +67,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    {foreach from=$languages item=language}
+                                    {foreach from=$HiPay_languages item=language}
                                         <li>
                                             <a href="javascript:selectLanguageHipay('{$language.iso_code}');">{$language.name}</a>
                                         </li>
@@ -175,8 +175,8 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                     {foreach  $method["currencies"] as $currency }
-                        {if isset($limitedCurrencies[$currency])}
-                            <span class="label-value col-lg-2">{$limitedCurrencies[$currency]}</span>
+                        {if isset($HiPay_limitedCurrencies[$currency])}
+                            <span class="label-value col-lg-2">{$HiPay_limitedCurrencies[$currency]}</span>
                             <input type="hidden" value="{$currency}" name="{$key}_currencies[]" />
                         {else}
                             <span class="label-value col-lg-3">{$currency}
@@ -194,7 +194,7 @@
                     <div class="col-lg-9">
                         <select id="multiselect-{$key}" name="{$key}_currencies[]" multiple="multiple"
                             class="multiselect-currency">
-                            {foreach $limitedCurrencies as $currency }
+                            {foreach $HiPay_limitedCurrencies as $currency }
                                 <option value="{$currency@key}"
                                     {if !empty($method.currencies) && $currency@key|inArray:$method.currencies } selected {/if}>
                                     {$currency@key}
@@ -212,8 +212,8 @@
                     <label class="control-label col-lg-2">{l s='Activated Countries' mod='hipay_enterprise'}</label>
                     <div class="inline-grid">
                         {foreach  $method["countries"] as $country }
-                            {if isset($limitedCountries[$country])}
-                                <span class="col-lg-6 label-value">{$limitedCountries[$country]}</span>
+                            {if isset($HiPay_limitedCountries[$country])}
+                                <span class="col-lg-6 label-value">{$HiPay_limitedCountries[$country]}</span>
                                 <input type="hidden" readonly value="{$country}" name="{$key}_countries[]" />
                             {else}
                                 <span class="label-value col-lg-8">{$country}
@@ -231,7 +231,7 @@
                     <label class="control-label col-lg-2">{l s='Countries' mod='hipay_enterprise'}</label>
                     <div class="col-lg-6">
                         <select id="countries_{$key}" multiple="multiple" size="10" name="{$key}_countries[]">
-                            {foreach $limitedCountries as $country}
+                            {foreach $HiPay_limitedCountries as $country}
                                 <option value="{$country@key}"
                                     {if !empty($method.countries) && $country@key|inArray:$method.countries } selected {/if}>
                                     {$country}</option>
