@@ -1,73 +1,76 @@
 version: '3'
 
 services:
-  database:
-    image: mysql:8.0
-    ports:
-      - '3318:3306'
-    env_file:
-      - ./bin/docker/conf/development/env
-    mem_limit: 500M
+    database:
+        image: mysql:8.0
+        ports:
+            - '3318:3306'
+        env_file:
+            - ./bin/docker/conf/development/env
+        mem_limit: 500M
 
-  prestashop8:
-    container_name: hipay-enterprise-shop-ps8
-    build:
-      context: .
-      dockerfile: ./bin/docker/images/prestashop/Dockerfile8
-    ports:
-      - '8088:80'
-    links:
-      - database
-      # - smtp
-    env_file:
-      - ./bin/docker/conf/development/env
-      - ./bin/docker/conf/development/env8
-    volumes:
-      - ./web8:/var/www/html
-      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
-      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
-    mem_limit: 500M
+    prestashop8:
+        container_name: hipay-enterprise-shop-ps8
+        platform: linux/adm64
+        build:
+            context: .
+            dockerfile: ./bin/docker/images/prestashop/Dockerfile8
+        ports:
+            - '8088:80'
+        links:
+            - database
+            # - smtp
+        env_file:
+            - ./bin/docker/conf/development/env
+            - ./bin/docker/conf/development/env8
+        volumes:
+            - ./web8:/var/www/html
+            - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+            - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
+        mem_limit: 500M
 
-  prestashop17:
-    container_name: hipay-enterprise-shop-ps17
-    build:
-      context: .
-      dockerfile: ./bin/docker/images/prestashop/Dockerfile17
-    ports:
-      - '8087:80'
-    links:
-      - database
-      # - smtp
-    env_file:
-      - ./bin/docker/conf/development/env
-      - ./bin/docker/conf/development/env17
-    volumes:
-      - ./web17:/var/www/html
-      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
-      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
-    mem_limit: 500M
+    prestashop17:
+        container_name: hipay-enterprise-shop-ps17
+        platform: linux/adm64
+        build:
+            context: .
+            dockerfile: ./bin/docker/images/prestashop/Dockerfile17
+        ports:
+            - '8087:80'
+        links:
+            - database
+            # - smtp
+        env_file:
+            - ./bin/docker/conf/development/env
+            - ./bin/docker/conf/development/env17
+        volumes:
+            - ./web17:/var/www/html
+            - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+            - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
+        mem_limit: 500M
 
-  prestashop16:
-    container_name: hipay-enterprise-shop-ps16
-    build:
-      context: .
-      dockerfile: ./bin/docker/images/prestashop/Dockerfile16
-    ports:
-      - '8086:80'
-    links:
-      - database
-      # - smtp
-    env_file:
-      - ./bin/docker/conf/development/env
-      - ./bin/docker/conf/development/env16
-    volumes:
-      - ./web16:/var/www/html
-      - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
-      - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
-    mem_limit: 500M
+    prestashop16:
+        container_name: hipay-enterprise-shop-ps16
+        platform: linux/adm64
+        build:
+            context: .
+            dockerfile: ./bin/docker/images/prestashop/Dockerfile16
+        ports:
+            - '8086:80'
+        links:
+            - database
+            # - smtp
+        env_file:
+            - ./bin/docker/conf/development/env
+            - ./bin/docker/conf/development/env16
+        volumes:
+            - ./web16:/var/www/html
+            - ./src/hipay_enterprise:/var/www/html/modules/hipay_enterprise
+            - ./conf/sdk:/var/www/html/modules/hipay_enterprise/sdk
+        mem_limit: 500M
 
-  # smtp:
-  #   image: schickling/mailcatcher
-  #   ports:
-  #     - "1018:1080"
-  #   mem_limit: 256M
+    # smtp:
+    #   image: schickling/mailcatcher
+    #   ports:
+    #     - "1018:1080"
+    #   mem_limit: 256M
