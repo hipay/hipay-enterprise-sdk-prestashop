@@ -11,7 +11,7 @@ services:
 
     prestashop8:
         container_name: hipay-enterprise-shop-ps8
-        platform: linux/adm64
+        platform: linux/amd64
         build:
             context: .
             dockerfile: ./bin/docker/images/prestashop/Dockerfile8
@@ -31,7 +31,7 @@ services:
 
     prestashop17:
         container_name: hipay-enterprise-shop-ps17
-        platform: linux/adm64
+        platform: linux/amd64
         build:
             context: .
             dockerfile: ./bin/docker/images/prestashop/Dockerfile17
@@ -51,7 +51,7 @@ services:
 
     prestashop16:
         container_name: hipay-enterprise-shop-ps16
-        platform: linux/adm64
+        platform: linux/amd64
         build:
             context: .
             dockerfile: ./bin/docker/images/prestashop/Dockerfile16
