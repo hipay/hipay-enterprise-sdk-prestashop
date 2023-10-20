@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.21.2
+
+- **Fix**: Fixed polyfill lib maximum version for ps17
+
 ## 2.21.1
 
 - **Fix**: Fixed ApplePay credentials detection in production
