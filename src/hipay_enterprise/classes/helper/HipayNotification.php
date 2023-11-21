@@ -135,6 +135,20 @@ class HipayNotification
      */
     public function dispatchWaitingNotifications()
     {
+        $nbExpiredNotifications = $this->dbMaintenance->updateExpiredNotificationsInProgress();
+        if ($nbExpiredNotifications > 0) {
+            $this->log->logNotificationCron(
+                '[DEBUG]: Retry '.$nbExpiredNotifications.' expired notifications on '.NotificationStatus::IN_PROGRESS.' status'
+            );
+        }
+
+        $nbExpiredNotifications = $this->dbMaintenance->updateProcessingExpiredNotifications();
+        if ($nbExpiredNotifications > 0) {
+            $this->log->logNotificationCron(
+                '[DEBUG]: Retry '.$nbExpiredNotifications.' expired notifications on '.NotificationStatus::PROCESSING.' status'
+            );
+        }
+
         $notifications = $this->dbMaintenance->getWaitingNotificationsAndUpdateStatus(
             NotificationStatus::IN_PROGRESS,
             Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')
@@ -148,6 +162,8 @@ class HipayNotification
         foreach ($notifications as $notification) {
             ++$totalNotification;
             try {
+                $this->dbMaintenance->updateNotificationStatusById($notification["hp_id"], NotificationStatus::PROCESSING);
+
                 /** @var Transaction */
                 $transaction = (new TransactionMapper(json_decode($notification['data'], true)))->getModelObjectMapped();
 
@@ -532,7 +548,7 @@ class HipayNotification
                 $paymentProduct = $this->getPaymentProductName($transaction);
                 $payment_transaction_id = $this->setTransactionRefForPrestashop($transaction, $order);
                 $currency = new Currency($order->id_currency);
-                $payment_date = date('Y-m-d H:i:s');
+                $payment_date = date(HipayDBMaintenance::DATE_FORMAT);
 
                 $invoices = $order->getInvoicesCollection();
                 $invoice = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
@@ -891,6 +907,7 @@ class HipayNotification
             'attempt_number' => $currentAttempt,
             'status' => $status,
             'data' => $transaction->toJson(),
+            'updated_at' => (new DateTime())->format(HipayDBMaintenance::DATE_FORMAT),
         ];
 
         $this->dbMaintenance->saveHipayNotification($data);
@@ -914,6 +931,7 @@ class HipayNotification
             'transaction_ref' => $transaction->getTransactionReference(),
             'notification_code' => $transaction->getStatus(),
             'status' => $status,
+            'updated_at' => (new DateTime())->format(HipayDBMaintenance::DATE_FORMAT)
         ];
 
         $this->log->logInfos('# Notification '.$data['notification_code'].' for cart '.$data['cart_id'].' is on status '.$status);

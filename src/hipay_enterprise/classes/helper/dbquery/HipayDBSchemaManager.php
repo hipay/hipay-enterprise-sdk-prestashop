@@ -159,6 +159,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
                 `attempt_number` INT(3) UNSIGNED NOT NULL,
                 `status` VARCHAR(255) NOT NULL,
                 `data` TEXT NOT NULL,
+                `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`hp_id`),
                 INDEX `hipay_notification.update_keys` (`cart_id`, `transaction_ref`, `notification_code`, `status`)
                 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';

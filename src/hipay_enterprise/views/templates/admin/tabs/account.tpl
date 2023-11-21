@@ -27,7 +27,8 @@
                                     {if $HiPay_config_hipay.account.global.sandbox_mode }checked="checked" {/if}>
                                 <label for="account_switchmode_on">{l s='Test' mod='hipay_enterprise'}</label>
                                 <input type="radio" name="sandbox_mode" id="account_switchmode_off" value="0"
-                                    {if $HiPay_config_hipay.account.global.sandbox_mode == false}checked="checked" {/if}>
+                                    {if $HiPay_config_hipay.account.global.sandbox_mode == false}checked="checked"
+                                    {/if}>
                                 <label for="account_switchmode_off">{l s='Live' mod='hipay_enterprise'}</label>
                                 <a class="slide-button btn production-switch"></a>
                             </span>
@@ -651,7 +652,7 @@
                                             {/if}>
                                         <label
                                             for="order_message_on_notificationmode_off">{l s='No' mod='hipay_enterprise'}</label>
-                                        <a class="slide-button btn production-switch"></a>
+                                        <a class="slide-button btn"></a>
                                     </span>
                                 </div>
                             </div>
@@ -663,19 +664,21 @@
                                 <div class="col-lg-8">
                                     <span class="switch prestashop-switch fixed-width-lg" id="notification-radio">
                                         <input type="radio" name="notification_cron" id="notification_cron_on" value="1"
-                                            {if $HiPay_config_hipay.account.global.notification_cron }checked="checked" {/if}>
+                                            {if $HiPay_config_hipay.account.global.notification_cron }checked="checked"
+                                            {/if}>
                                         <label for="notification_cron_on">{l s='Yes' mod='hipay_enterprise'}</label>
                                         <input type="radio" name="notification_cron" id="notification_cron_off"
                                             value="0"
                                             {if $HiPay_config_hipay.account.global.notification_cron == false}checked="checked"
                                             {/if}>
                                         <label for="notification_cron_off">{l s='No' mod='hipay_enterprise'}</label>
-                                        <a class="slide-button btn production-switch"></a>
+                                        <a class="slide-button btn"></a>
                                     </span>
                                 </div>
                             </div>
 
-                            <div id="notification-detail" style="display: {if $HiPay_config_hipay.account.global.notification_cron}block{else}none{/if}">
+                            <div id="notification-detail"
+                                style="display: {if $HiPay_config_hipay.account.global.notification_cron}block{else}none{/if}">
                                 <div class="row">
                                     <div class="col-lg-7 col-lg-offset-2">
                                         <div class="alert alert-info">
@@ -689,7 +692,8 @@
                                     </label>
                                     <div class="col-lg-7">
                                         <p class="help-text">
-                                            {l s='Url to call' mod='hipay_enterprise'} <strong><span id="notification-url"></span></strong>
+                                            {l s='Url to call' mod='hipay_enterprise'} <strong><span
+                                                    id="notification-url"></span></strong>
                                         </p>
                                         <div class="row">
                                             <div class="col-lg-8">
@@ -703,7 +707,7 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -743,7 +747,7 @@
                                             {/if}>
                                         <label
                                             for="use_prestashop_refund_formmode_off">{l s='No' mod='hipay_enterprise'}</label>
-                                        <a class="slide-button btn production-switch"></a>
+                                        <a class="slide-button btn"></a>
                                     </span>
                                 </div>
                             </div>
@@ -766,87 +770,87 @@
 </div>
 
 <script type="text/javascript">
-
     $(document).ready(function() {
-        
+
         function updateValueHashingAlgorithm(plaform, value) {
             $("div#hashAlgorithm select#hash_algorithm_" + plaform).val(value);
         }
 
         $('#synchronize-hash').on('click', function() {
             if (confirm("{l s='Are you sure you want to sync the hashing configuration for notifications ?' mod='hipay_enterprise'}")) {
-                $.get('{$HiPay_syncLink}&ajax=1&action=SynchronizeHashing', function(response) {
-                    for (var platform in response) {
-                        if (response[platform].status == "success") {
-                            showSuccessMessage(response[platform].message);
-                        } else {
-                            showErrorMessage(response[platform].message);
-                        }
+            $.get('{$HiPay_syncLink}&ajax=1&action=SynchronizeHashing', function(response) {
+            for (var platform in response) {
+                if (response[platform].status == "success") {
+                    showSuccessMessage(response[platform].message);
+                } else {
+                    showErrorMessage(response[platform].message);
+                }
 
-                        if (response[platform].hasOwnProperty("value")) {
-                            updateValueHashingAlgorithm(platform, response[platform].value);
-                        }
-                    }
-                }).fail(function() {
-                    showErrorMessage("{l s='An error has occured. Please try again' mod='hipay_enterprise'}");
-                });
+                if (response[platform].hasOwnProperty("value")) {
+                    updateValueHashingAlgorithm(platform, response[platform].value);
+                }
             }
+        }).fail(function() {
+            showErrorMessage("{l s='An error has occured. Please try again' mod='hipay_enterprise'}");
         });
+    }
+    });
 
 
-        $('#account_form__collapseProduction').on('shown.bs.collapse', function() {
-            $("#chevronProd").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-        });
+    $('#account_form__collapseProduction').on('shown.bs.collapse', function() {
+        $("#chevronProd").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
 
-        $('#account_form__collapseProduction').on('hidden.bs.collapse', function() {
-            $("#chevronProd").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-        });
+    $('#account_form__collapseProduction').on('hidden.bs.collapse', function() {
+        $("#chevronProd").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
 
-        $('#account_form__collapseSandbox').on('shown.bs.collapse', function() {
-            $("#chevronSand").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-        });
+    $('#account_form__collapseSandbox').on('shown.bs.collapse', function() {
+        $("#chevronSand").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
 
-        $('#account_form__collapseSandbox').on('hidden.bs.collapse', function() {
-            $("#chevronSand").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-        });
+    $('#account_form__collapseSandbox').on('hidden.bs.collapse', function() {
+        $("#chevronSand").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
 
-        $('#account_form__collapseConfiguration').on('shown.bs.collapse', function() {
-            $("#chevronConf").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-        });
+    $('#account_form__collapseConfiguration').on('shown.bs.collapse', function() {
+        $("#chevronConf").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
 
-        $('#account_form__collapseConfiguration').on('hidden.bs.collapse', function() {
-            $("#chevronConf").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-        });
+    $('#account_form__collapseConfiguration').on('hidden.bs.collapse', function() {
+        $("#chevronConf").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
 
-        $('#account_form__collapseTechnical').on('shown.bs.collapse', function() {
-            $("#chevronTec").addClass('icon-chevron-up').removeClass('icon-chevron-down');
-        });
+    $('#account_form__collapseTechnical').on('shown.bs.collapse', function() {
+        $("#chevronTec").addClass('icon-chevron-up').removeClass('icon-chevron-down');
+    });
 
-        $('#account_form__collapseTechnical').on('hidden.bs.collapse', function() {
-            $("#chevronTec").addClass('icon-chevron-down').removeClass('icon-chevron-up');
-        });
+    $('#account_form__collapseTechnical').on('hidden.bs.collapse', function() {
+        $("#chevronTec").addClass('icon-chevron-down').removeClass('icon-chevron-up');
+    });
 
-        $('#notification_cron_on').on('input', function() {
-            $('#notification-detail').show();
-        });
+    $('#notification_cron_on').on('input', function() {
+        $('#notification-detail').show();
+    });
 
-        $('#notification_cron_off').on('input', function() {
-            $('#notification-detail').hide();
-        });
+    $('#notification_cron_off').on('input', function() {
+        $('#notification-detail').hide();
+    });
 
-        var showUrl = function() {
-           var token = $('#notification_cron_token').val();
-            $('#notification-url').text(document.location.origin + '/index.php?fc=module&module=hipay_enterprise&controller=dispatch?token=' + token);
-        }
+    var showUrl = function() {
+        var token = $('#notification_cron_token').val();
+        $('#notification-url').text(document.location.origin +
+            '/index.php?fc=module&module=hipay_enterprise&controller=dispatch&token=' + token);
+    }
 
+    showUrl();
+
+    $('#regenerateToken').on('click', function() {
+        $('#notification_cron_token').val(md5(Date.now()));
         showUrl();
+    });
 
-        $('#regenerateToken').on('click', function() {
-            $('#notification_cron_token').val(md5(Date.now()));
-            showUrl();
-        });
-
-        $('#notification_cron_token').on('input', showUrl);
+    $('#notification_cron_token').on('input', showUrl);
 
     });
 </script>
