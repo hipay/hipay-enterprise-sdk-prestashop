@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix**: Fixed notification process when using CRON
+
 ## 2.21.2
 
 - **Fix**: Fixed polyfill lib maximum version for ps17
