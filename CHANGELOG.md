@@ -3,6 +3,8 @@
 ## Unreleased
 
 - **Fix**: Fixed notification process when using CRON
+- **Fix**: Fixed issue about interruption during notification by CRON
+- **Fix**: Fixed Prestashop credit note with discount in order
 
 ## 2.21.2
 

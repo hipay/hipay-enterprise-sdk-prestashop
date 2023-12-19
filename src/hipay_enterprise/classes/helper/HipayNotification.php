@@ -217,7 +217,7 @@ class HipayNotification
                     $orders = $this->registerOrder($transaction, $cart, Configuration::get('HIPAY_OS_PENDING'));
                 } else {
                     if (in_array($transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {
-                        exit;
+                        return;
                     }
 
                     throw new NotificationException('Orders not found for cart ID '.$cart->id, Context::getContext(), $this->module, 'HTTP/1.0 404 Not found');
@@ -228,8 +228,9 @@ class HipayNotification
 
             foreach ($orders as $order) {
                 if (!$this->transactionIsValid($transaction->getStatus(), $order->id)) {
+                    $this->log->logInfos('Notification already received and handled.');
                     $this->updateNotificationState($transaction, NotificationStatus::NOT_HANDLED);
-                    exit('Notification already received and handled.');
+                    continue;
                 }
 
                 $orderHasBeenPaid = _PS_OS_OUTOFSTOCK_PAID_ == (int) $order->getCurrentState() ||
@@ -551,6 +552,7 @@ class HipayNotification
                 $payment_date = date(HipayDBMaintenance::DATE_FORMAT);
 
                 $invoices = $order->getInvoicesCollection();
+                /** @var OrderInvoice|null */
                 $invoice = $invoices && $invoices->getFirst() ? $invoices->getFirst() : null;
 
                 if ($order && Validate::isLoadedObject($order)) {
@@ -608,8 +610,7 @@ class HipayNotification
                                     $product['product_quantity_refunded'] = $product['product_quantity'];
                                     $product['quantity'] = $product['product_quantity'];
                                 }
-
-                                $orderPaymentResult = OrderSlip::create($order, $productArray, null);
+                                $orderPaymentResult = OrderSlip::create($order, $productArray, null, $amount);
                             }
                         }
                     } else {
@@ -1003,9 +1004,8 @@ class HipayNotification
      */
     private function transactionIsValid($status, $orderId)
     {
-        if (in_array($status, self::REPEATABLE_NOTIFICATIONS)) {
-            return true;
-        } elseif (!in_array($status, $this->dbUtils->getNotificationsForOrder($orderId))) {
+        if (in_array($status, self::REPEATABLE_NOTIFICATIONS) ||
+            !in_array($status, $this->dbUtils->getNotificationsForOrder($orderId))) {
             return true;
         }
 
