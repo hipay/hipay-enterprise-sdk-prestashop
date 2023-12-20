@@ -14,6 +14,8 @@ require_once dirname(__FILE__).'/../classes/helper/dbquery/HipayDBSchemaManager.
 
 function upgrade_module_2_20_0($module)
 {
+    $module->registerHook('actionDispatcher');
+
     $log = $module->getLogs();
 
     $sql = ' ALTER TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`
