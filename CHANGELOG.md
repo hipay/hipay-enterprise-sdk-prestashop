@@ -6,6 +6,7 @@
 - **Fix**: Fixed issue about interruption during notification by CRON
 - **Fix**: Fixed Prestashop credit note with discount in order
 - **Fix**: Fixed division by 0 error on `getFeesItem` method, thanks to [Crouvizier](https://github.com/Crouvizier) on [PR #86](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/86)
+- **Fix**: Fixed SQL lock issue which was potentially unreleased
 
 ## 2.21.2
 

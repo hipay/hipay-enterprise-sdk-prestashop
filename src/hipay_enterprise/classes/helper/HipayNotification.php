@@ -355,11 +355,12 @@ class HipayNotification
 
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
         } catch (NotificationException $e) {
+            $this->dbUtils->releaseSQLLock('Notification exception # processTransaction for cart ID : '.$cart->id);
             throw $e;
         } catch (Exception $e) {
-            $this->updateNotificationState($transaction, NotificationStatus::ERROR);
             $this->dbUtils->releaseSQLLock('Exception # processTransaction for cart ID : '.$cart->id);
             $this->log->logException($e);
+            $this->updateNotificationState($transaction, NotificationStatus::ERROR);
             throw $e;
         }
     }
