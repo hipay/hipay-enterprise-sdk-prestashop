@@ -124,7 +124,7 @@ class HipayNotification
         $this->log->logInfos('# handleNotification for cart ID : '.$cart->id.' and status '.$transaction->getStatus());
 
         if (!$this->configHipay['account']['global']['notification_cron']) {
-            $this->processTransaction($transaction, $cart, $this->saveNotificationAttempt($transaction, $cart));
+            $this->processTransaction($transaction, $cart, $this->saveNotificationAttempt($transaction, $cart), false);
         } else {
             $this->saveNotificationAttempt($transaction, $cart, NotificationStatus::WAIT);
         }
@@ -172,7 +172,8 @@ class HipayNotification
                 $this->processTransaction(
                     $transaction,
                     new Cart($transaction->getOrder()->getId()),
-                    $notification['attempt_number']
+                    $notification['attempt_number'],
+                    true
                 );
             } catch (Exception $e) {
                 ++$totalError;
@@ -196,7 +197,7 @@ class HipayNotification
      * @throws PrestaShopDatabaseException
      * @throws Exception
      */
-    private function processTransaction($transaction, $cart, $currentAttempt)
+    private function processTransaction($transaction, $cart, $currentAttempt, $isCron)
     {
         try {
             if (!empty($orders = $this->getOrdersByCartId($cart->id))) {
@@ -230,7 +231,11 @@ class HipayNotification
                 if (!$this->transactionIsValid($transaction->getStatus(), $order->id)) {
                     $this->log->logInfos('Notification already received and handled.');
                     $this->updateNotificationState($transaction, NotificationStatus::NOT_HANDLED);
-                    continue;
+                    if ($isCron) {
+                        continue;
+                    } else {
+                        exit('Notification already received and handled.');
+                    }
                 }
 
                 $orderHasBeenPaid = _PS_OS_OUTOFSTOCK_PAID_ == (int) $order->getCurrentState() ||
