@@ -189,6 +189,7 @@ class HipayNotification
      * @param Transaction $transaction
      * @param Cart        $cart
      * @param int         $currentAttempt
+     * @param bool        $isCron
      *
      * @return void
      *
@@ -234,6 +235,7 @@ class HipayNotification
                     if ($isCron) {
                         continue;
                     } else {
+                        $this->dbUtils->releaseSQLLock('# processTransaction for cart ID : '.$cart->id);
                         exit('Notification already received and handled.');
                     }
                 }
