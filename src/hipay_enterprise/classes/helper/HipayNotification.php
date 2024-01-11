@@ -127,8 +127,7 @@ class HipayNotification
             $result = $this->processTransaction(
                 $transaction,
                 $cart,
-                $this->saveNotificationAttempt($transaction, $cart),
-                false
+                $this->saveNotificationAttempt($transaction, $cart)
             );
 
             // Show result in response
@@ -179,12 +178,15 @@ class HipayNotification
 
                 $this->log->logNotificationCron('[INFO]:  Dispatching Notification for cart id '.$transaction->getOrder()->getId().' and status '.$transaction->getStatus());
 
-                $this->processTransaction(
+                $result = $this->processTransaction(
                     $transaction,
                     new Cart($transaction->getOrder()->getId()),
-                    $notification['attempt_number'],
-                    true
+                    $notification['attempt_number']
                 );
+
+                if (!is_null($result)) {
+                    $this->log->logNotificationCron('[INFO]: '.$result);
+                }
             } catch (Exception $e) {
                 ++$totalError;
                 $this->log->logNotificationCron('[Error]: '.$e->getMessage());
@@ -199,7 +201,6 @@ class HipayNotification
      * @param Transaction $transaction
      * @param Cart        $cart
      * @param int         $currentAttempt
-     * @param bool        $isCron
      *
      * @return void|string
      *
@@ -208,7 +209,7 @@ class HipayNotification
      * @throws PrestaShopDatabaseException
      * @throws Exception
      */
-    private function processTransaction($transaction, $cart, $currentAttempt, $isCron)
+    private function processTransaction($transaction, $cart, $currentAttempt)
     {
         try {
             if (!empty($orders = $this->getOrdersByCartId($cart->id))) {
@@ -241,13 +242,9 @@ class HipayNotification
             foreach ($orders as $order) {
                 if (!$this->transactionIsValid($transaction->getStatus(), $order->id)) {
                     $this->updateNotificationState($transaction, NotificationStatus::NOT_HANDLED);
-                    if ($isCron) {
-                        $this->log->logInfos('Notification already received and handled.');
-                        continue;
-                    } else {
-                        $this->dbUtils->releaseSQLLock('# processTransaction for cart ID : '.$cart->id);
-                        return 'Notification already received and handled.';
-                    }
+                    $message = 'Notification already received and handled.';
+                    $this->dbUtils->releaseSQLLock($message.' # processTransaction for cart ID : '.$cart->id);
+                    return $message;
                 }
 
                 $orderHasBeenPaid = _PS_OS_OUTOFSTOCK_PAID_ == (int) $order->getCurrentState() ||
