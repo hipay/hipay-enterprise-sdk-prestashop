@@ -8,6 +8,7 @@
 - **Fix**: Fixed division by 0 error on `getFeesItem` method, thanks to [Crouvizier](https://github.com/Crouvizier) on [PR #86](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/86)
 - **Fix**: Fixed SQL lock issue which was potentially unreleased
 - **Fix**: Fixed errors during some upgrade, thanks to [clotairer](https://github.com/clotairer) on [PR #84](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/84)
+- **Fix**: Fixed issue about duplicate transaction with same Cart adding automatic cancellation
 
 ## 2.21.2
 
