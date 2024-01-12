@@ -17,6 +17,7 @@ require_once dirname(__FILE__).'/HipayMaintenanceData.php';
 require_once dirname(__FILE__).'/HipayHelper.php';
 require_once dirname(__FILE__).'/HipayOrderMessage.php';
 require_once dirname(__FILE__).'/HipayMail.php';
+require_once dirname(__FILE__).'/../apiHandler/ApiHandler.php';
 require_once dirname(__FILE__).'/../exceptions/PaymentProductNotFoundException.php';
 require_once dirname(__FILE__).'/../exceptions/NotificationException.php';
 
@@ -70,6 +71,8 @@ class HipayNotification
     protected $dbMaintenance;
     /** @var HipayConfig */
     protected $configHipay;
+    /** @var Apihandler */
+    protected $apiHandler;
 
     /**
      * HipayNotification constructor.
@@ -91,6 +94,7 @@ class HipayNotification
         $this->dbMaintenance = new HipayDBMaintenance($this->module);
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
         $this->ccToken = new HipayCCToken($this->module);
+        $this->apiHandler = new Apihandler($this->module, $this->context);
     }
 
     /**
@@ -240,9 +244,48 @@ class HipayNotification
             $this->dbUtils->setSQLLockForCart($order->id, '# processTransaction for order ID : '.$order->id);
 
             foreach ($orders as $order) {
+                $orderInBase = $this->dbUtils->getTransactionByOrderId($order->id);
+
                 if (!$this->transactionIsValid($transaction->getStatus(), $order->id)) {
                     $this->updateNotificationState($transaction, NotificationStatus::NOT_HANDLED);
                     $message = 'Notification already received and handled.';
+
+                    // If 116 notification is resent and if order in database has a different trx ref than trx ref in notif,
+                    // it means double transaction with same Cart, we will cancel/refund the duplicate
+                    if ($transaction->getStatus() === TransactionStatus::AUTHORIZED
+                        && $orderInBase
+                        && $transaction->getTransactionReference() !== $orderInBase['transaction_ref']
+                    ) {
+                        $this->log->logInfos('Duplicate transaction for order '.$order->id);
+
+                        // Try refund operation firstly because often captured after authorized
+                        $refundOp = $this->apiHandler->handleRefund([
+                            'transaction_reference' => $transaction->getTransactionReference(),
+                            'order' => $order->id,
+                            'amount' => $transaction->getAuthorizedAmount(),
+                            'capture_refund_discount' => true,
+                            'capture_refund_fee' => true,
+                            'capture_refund_wrapping' => true,
+                            'refundItems' => 'full'
+                        ]);
+
+                        if ($refundOp) {
+                            $message = 'Found duplicate transaction which has been refunded for order '.$order->id;
+                        } else {
+                            // If refund maintenance didn't worked, try cancel operation
+                            if ($this->apiHandler->handleCancel([
+                                    'order' => $order->id,
+                                    'transaction_reference' => $transaction->getTransactionReference()
+                            ])) {
+                                $message = 'Found duplicate transaction which has been cancelled for order '.$order->id;
+                            } else {
+                                throw new NotificationException('Failed to cancel or refund duplicate transaction for order '.$order->id, Context::getContext(), $this->module, 'HTTP/1.0 500 Internal server error');
+                            }
+                        }
+
+                        $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
+                    }
+
                     $this->dbUtils->releaseSQLLock($message.' # processTransaction for cart ID : '.$cart->id);
                     return $message;
                 }
@@ -305,7 +348,8 @@ class HipayNotification
                         break;
                     case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
                     case TransactionStatus::CANCELLED:
-                        if (!$orderHasBeenPaid) {
+                        // For cancelled duplicate transaction, do not cancel original order
+                        if ($transaction->getTransactionReference() === $orderInBase['transaction_ref'] && !$orderHasBeenPaid) {
                             $this->updateOrderStatus($transaction, $order, _PS_OS_CANCELED_);
                         }
                         break;
@@ -339,7 +383,7 @@ class HipayNotification
                     case TransactionStatus::REFUND_REQUESTED: // 124
                     case TransactionStatus::REFUNDED: // 125
                     case TransactionStatus::PARTIALLY_REFUNDED: // 126
-                        $this->refundOrder($transaction, $order);
+                        $this->refundOrder($transaction, $order, $orderInBase);
                         break;
                     case TransactionStatus::CAPTURE_REFUSED:
                         if (!$orderHasBeenPaid) {
@@ -772,16 +816,20 @@ class HipayNotification
      *
      * @param Transaction $transaction
      * @param Order       $order
+     * @param mixed       $orderInBase
      *
      * @return true
      *
      * @throws Exception
      */
-    private function refundOrder($transaction, $order)
+    private function refundOrder($transaction, $order, $orderInBase)
     {
         $this->log->logInfos('# Refund Order {'.$order->reference.'} with refund amount {'.$transaction->getRefundedAmount().'}');
 
-        if (HipayHelper::orderExists($transaction->getOrder()->getId())) {
+        // For refunded duplicate transaction, do not refund original order
+        if (HipayHelper::orderExists($transaction->getOrder()->getId())
+            && $transaction->getTransactionReference() === $orderInBase['transaction_ref']
+        ) {
             // If Capture is originated in the TPP BO the Operation field is null
             // Otherwise transaction has already been saved
             if (null == $transaction->getOperation() && $transaction->getAttemptId() < 2) {
