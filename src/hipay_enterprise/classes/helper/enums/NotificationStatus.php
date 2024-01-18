@@ -22,6 +22,8 @@ class NotificationStatus
 {
     public const IN_PROGRESS = 'IN PROGRESS';
 
+    public const PROCESSING = 'PROCESSING';
+
     public const SUCCESS = 'SUCCESS';
 
     public const NOT_HANDLED = 'NOT HANDLED';

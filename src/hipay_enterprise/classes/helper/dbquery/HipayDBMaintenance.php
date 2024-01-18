@@ -26,6 +26,8 @@ require_once dirname(__FILE__).'/../enums/NotificationStatus.php';
  */
 class HipayDBMaintenance extends HipayDBQueryAbstract
 {
+    public const DATE_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * save order capture data (basket).
      *
@@ -501,6 +503,75 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * Update the status of a notification
+     * @param string $id
+     * @param string $status
+     */
+    public function updateNotificationStatusById($id, $status)
+    {
+        $where = 'hp_id = "'.$id.'"';
+        Db::getInstance()->update(
+            HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
+            ['status' => $status, 'updated_at' => (new DateTime())->format(self::DATE_FORMAT)],
+            $where
+        );
+    }
+
+    /**
+     * Update all expired notifications still in progress
+     * @return int counted expired notifications on IN PROGRESS status
+     */
+    public function updateExpiredNotificationsInProgress()
+    {
+        $now = new DateTime();
+        $where = 'status = "'.NotificationStatus::IN_PROGRESS.'"'
+        .' AND updated_at < "'.date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())).'"';
+
+        $sql = 'SELECT *'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
+        .' WHERE '.$where;
+        $expiredNotifications = Db::getInstance()->executeS($sql);
+
+        Db::getInstance()->update(
+            HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
+            ['status' => NotificationStatus::WAIT, 'updated_at' => $now->format(self::DATE_FORMAT)],
+            $where
+        );
+
+        return count($expiredNotifications);
+    }
+
+    /**
+     * Update all expired notifications still processing
+     * @return int counted expired notifications on PROCESSING status
+     */
+    public function updateProcessingExpiredNotifications()
+    {
+        $now = new DateTime();
+        $where = 'status = "'.NotificationStatus::PROCESSING.'"'
+        .' AND updated_at < "'.date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())).'"';
+
+        $sql = 'SELECT *'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
+        .' WHERE '.$where;
+        $expiredNotifications = Db::getInstance()->executeS($sql);
+
+        $data = [
+            'status' => NotificationStatus::ERROR,
+            'updated_at' => $now->format(self::DATE_FORMAT),
+        ];
+        foreach ($expiredNotifications as $notification) {
+            Db::getInstance()->update(
+                HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
+                $data + ['attempt_number' => $notification['attempt_number'] + 1],
+                'hp_id = "'.$notification['hp_id'].'"'
+            );
+        }
+
+        return count($expiredNotifications);
+    }
+
+    /**
      * Get all transactions waiting to be dispatched.
      *
      * @param int $maxAttempt
@@ -573,7 +644,11 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
 
         $selected = Db::getInstance()->executeS($sql);
 
-        Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, ['status' => $status], $where);
+        Db::getInstance()->update(
+            HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
+            ['status' => $status, 'updated_at' => (new DateTime())->format(self::DATE_FORMAT)],
+            $where
+        );
 
         return $selected;
     }

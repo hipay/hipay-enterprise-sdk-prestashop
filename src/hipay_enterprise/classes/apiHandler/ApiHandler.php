@@ -163,9 +163,9 @@ class Apihandler
      *
      * @return bool
      */
-    public function handleCapture($params)
+    public function handleCapture($params, $eci = null)
     {
-        return $this->handleMaintenance(Operation::CAPTURE, $params);
+        return $this->handleMaintenance(Operation::CAPTURE, $params, $eci);
     }
 
     /**
@@ -173,9 +173,9 @@ class Apihandler
      *
      * @return bool
      */
-    public function handleRefund($params)
+    public function handleRefund($params, $eci = null)
     {
-        return $this->handleMaintenance(Operation::REFUND, $params);
+        return $this->handleMaintenance(Operation::REFUND, $params, $eci);
     }
 
     /**
@@ -183,9 +183,9 @@ class Apihandler
      *
      * @return bool
      */
-    public function handleAcceptChallenge($params)
+    public function handleAcceptChallenge($params, $eci = null)
     {
-        return $this->handleMaintenance(Operation::ACCEPT_CHALLENGE, $params);
+        return $this->handleMaintenance(Operation::ACCEPT_CHALLENGE, $params, $eci);
     }
 
     /**
@@ -193,47 +193,52 @@ class Apihandler
      *
      * @return bool
      */
-    public function handleDenyChallenge($params)
+    public function handleDenyChallenge($params, $eci = null)
     {
-        return $this->handleMaintenance(Operation::DENY_CHALLENGE, $params);
+        return $this->handleMaintenance(Operation::DENY_CHALLENGE, $params, $eci);
     }
 
-    public function handleCancel($params)
+    public function handleCancel($params, $eci = null)
     {
-        return $this->handleMaintenance(Operation::CANCEL, $params);
+        return $this->handleMaintenance(Operation::CANCEL, $params, $eci);
     }
 
     /**
      * handle maintenance request.
      *
+     * @param $mode
      * @param array $params
+     * @param $eci
      *
      * @return bool
      */
-    private function handleMaintenance($mode, $params = [])
+    private function handleMaintenance($mode, $params = [], $eci = null)
     {
         try {
             switch ($mode) {
                 case Operation::CAPTURE:
                     $params['operation'] = Operation::CAPTURE;
-                    ApiCaller::requestMaintenance($this->module, $params);
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     break;
                 case Operation::REFUND:
                     $params['operation'] = Operation::REFUND;
-                    ApiCaller::requestMaintenance($this->module, $params);
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     break;
                 case Operation::ACCEPT_CHALLENGE:
                     $params['operation'] = Operation::ACCEPT_CHALLENGE;
-                    ApiCaller::requestMaintenance($this->module, $params);
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     break;
                 case Operation::DENY_CHALLENGE:
                     $params['operation'] = Operation::DENY_CHALLENGE;
-                    ApiCaller::requestMaintenance($this->module, $params);
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     break;
                 case Operation::CANCEL:
                     $params['operation'] = Operation::CANCEL;
                     $displayMsg = null;
                     $order = new Order($params['order']);
+
+                    $transactionRef = '';
+                    $status = '';
 
                     if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
                         $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING')) {
@@ -244,7 +249,7 @@ class Apihandler
                             // and the transaction is already cancelled
                             if (!$hipayDbMaintenance->isTransactionCancelled($order->id)) {
                                 try {
-                                    $result = ApiCaller::requestMaintenance($this->module, $params);
+                                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
 
                                     if (!in_array($result->getStatus(), [TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED, TransactionStatus::CANCELLED])) {
                                         $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
@@ -268,8 +273,10 @@ class Apihandler
                                     $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)\n";
                                     $displayMsg .= $this->module->l('Message was : ').preg_replace("/\r|\n/", '', $errorMsg[0]);
 
-                                    $transactionRef = $transaction['transaction_ref'];
-                                    $status = $transaction['status'];
+                                    if ($transaction) {
+                                        $transactionRef = $transaction['transaction_ref'];
+                                        $status = $transaction['status'];
+                                    }
                                 }
                             }
                         } else {
