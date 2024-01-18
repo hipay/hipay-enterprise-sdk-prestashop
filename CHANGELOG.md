@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.21.3
 
 - **Fix**: Fixed notification process when using CRON
 - **Fix**: Fixed issue about interruption during notification by CRON
