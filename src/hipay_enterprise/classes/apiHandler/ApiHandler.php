@@ -206,7 +206,9 @@ class Apihandler
     /**
      * handle maintenance request.
      *
+     * @param $mode
      * @param array $params
+     * @param $eci
      *
      * @return bool
      */
@@ -271,7 +273,7 @@ class Apihandler
                                     $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)\n";
                                     $displayMsg .= $this->module->l('Message was : ').preg_replace("/\r|\n/", '', $errorMsg[0]);
 
-                                    if($transaction){
+                                    if ($transaction) {
                                         $transactionRef = $transaction['transaction_ref'];
                                         $status = $transaction['status'];
                                     }

@@ -161,6 +161,7 @@ class ApiCaller
      *
      * @param $moduleInstance
      * @param $params
+     * @param $eci
      * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel
      * @throws GatewayException
      */
@@ -170,11 +171,11 @@ class ApiCaller
             $hipayDBMaintenance = new HipayDBMaintenance($moduleInstance);
             $transaction = $hipayDBMaintenance->getTransactionByRef($params["transaction_reference"]);
 
-            if(is_null($eci)){
+            if (is_null($eci)) {
                 $eci = $transaction['eci'];
             }
 
-            //Create your gateway client 
+            //Create your gateway client
             $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, (\HiPay\Fullservice\Enum\Transaction\ECI::MOTO == $eci));
 
             //Manage maintenance data local storage
