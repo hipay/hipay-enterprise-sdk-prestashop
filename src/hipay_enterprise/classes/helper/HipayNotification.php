@@ -267,7 +267,7 @@ class HipayNotification
                             'capture_refund_fee' => true,
                             'capture_refund_wrapping' => true,
                             'refundItems' => 'full'
-                        ]);
+                        ], $transaction->getEci());
 
                         if ($refundOp) {
                             $message = 'Found duplicate transaction which has been refunded for order '.$order->id;
@@ -276,7 +276,7 @@ class HipayNotification
                             if ($this->apiHandler->handleCancel([
                                     'order' => $order->id,
                                     'transaction_reference' => $transaction->getTransactionReference()
-                            ])) {
+                            ], $transaction->getEci())) {
                                 $message = 'Found duplicate transaction which has been cancelled for order '.$order->id;
                             } else {
                                 throw new NotificationException('Failed to cancel or refund duplicate transaction for order '.$order->id, Context::getContext(), $this->module, 'HTTP/1.0 500 Internal server error');
