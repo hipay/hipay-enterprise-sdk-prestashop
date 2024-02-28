@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.21.4
+
+- **Fix**: Fixed upgrade script from previous version `2.21.3`
+
 ## 2.21.3
 
 - **Fix**: Fixed notification process when using CRON
