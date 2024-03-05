@@ -1,5 +1,4 @@
-FROM prestashop/prestashop:8.0.4
-# version >= 8.0.5 ~> bug d'import des données de configuration
+FROM prestashop/prestashop:8.1
 
 LABEL maintainer="PI-Ecommerce"
 LABEL maintainer_email="integration@hipay.com"
