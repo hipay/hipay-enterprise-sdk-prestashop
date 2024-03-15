@@ -198,6 +198,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 } elseif ($this->module->hipayConfigTool->getPaymentGlobal()['card_token'] && _PS_VERSION_ < '1.7') {
                     $this->assignTemplate();
                     $path = 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
+                } else {
+                    $this->assignTemplate();
+                    $path = _PS_VERSION_ >= '1.7' ?
+                        'payment/ps17/paymentForm-'.$uxMode.'-17.tpl'
+                        : 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
                 }
                 break;
             case UXMode::DIRECT_POST:
