@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix**: Fixed redirect controller when Hosted Page is selected
+
 ## 2.21.4
 
 - **Fix**: Fixed upgrade script from previous version `2.21.3`
