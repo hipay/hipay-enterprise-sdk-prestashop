@@ -246,7 +246,7 @@ class HipayConfig
         // add new fields
         $configHipay['account'] = array_merge(
             $configHipay['account'],
-            array_diff_key($defaultConfig['account'], $configHipay['account'])
+            array_diff_key($defaultConfig['account'], $configHipay['account'] ?? [])
         );
     }
 
@@ -260,7 +260,7 @@ class HipayConfig
         // add new fields
         $configHipay['payment']['global'] = array_merge(
             $configHipay['payment']['global'],
-            array_diff_key($defaultConfig['payment']['global'], $configHipay['payment']['global'])
+            array_diff_key($defaultConfig['payment']['global'], $configHipay['payment']['global'] ?? [])
         );
 
         // update operating_mode with new format
@@ -403,11 +403,11 @@ class HipayConfig
         // Add new payment Method
         $configHipay['payment'][$paymentMethodType] = array_merge(
             $configHipay['payment'][$paymentMethodType],
-            array_diff_key($paymentMethod, $configHipay['payment'][$paymentMethodType])
+            array_diff_key($paymentMethod, $configHipay['payment'][$paymentMethodType] ?? [])
         );
 
         // remove deprecated payment method
-        foreach (array_diff_key($configHipay['payment'][$paymentMethodType], $paymentMethod) as $removeKey => $item) {
+        foreach (array_diff_key($configHipay['payment'][$paymentMethodType], $paymentMethod ?? []) as $removeKey => $item) {
             unset($configHipay['payment'][$paymentMethodType][$removeKey]);
         }
 
@@ -415,13 +415,13 @@ class HipayConfig
             // Add new parameters to payment method
             $configHipay['payment'][$paymentMethodType][$key] = array_merge(
                 $configHipay['payment'][$paymentMethodType][$key],
-                array_diff_key($paymentMethod[$key], $configHipay['payment'][$paymentMethodType][$key])
+                array_diff_key($paymentMethod[$key], $configHipay['payment'][$paymentMethodType][$key] ?? [])
             );
 
             // remove old parameters
             $configHipay['payment'][$paymentMethodType][$key] = array_diff_key(
                 $configHipay['payment'][$paymentMethodType][$key],
-                array_diff_key($configHipay['payment'][$paymentMethodType][$key], $paymentMethod[$key])
+                array_diff_key($configHipay['payment'][$paymentMethodType][$key], $paymentMethod[$key] ?? [])
             );
 
             // preserve saved parameters in Database, only parameters not in $keepParameters[$key] will be override

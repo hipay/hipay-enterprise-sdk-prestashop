@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Fix**: Fixed redirect controller when Hosted Page is selected
+- **Fix**: Fixed PHP warning messages during installation
 
 ## 2.21.4
 
