@@ -146,20 +146,20 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     else
         CONFIG=$(./prestashopConsole.phar configuration:get HIPAY_CONFIG)
     fi
-    CONFIG=${CONFIG/'"api_username_sandbox":""'/'"api_username_sandbox":"'$HIPAY_API_USER_TEST'"'}
-    CONFIG=${CONFIG/'"api_password_sandbox":""'/'"api_password_sandbox":"'$HIPAY_API_PASSWORD_TEST'"'}
-    CONFIG=${CONFIG/'"api_tokenjs_username_sandbox":""'/'"api_tokenjs_username_sandbox":"'$HIPAY_TOKENJS_USERNAME_TEST'"'}
-    CONFIG=${CONFIG/'"api_tokenjs_password_publickey_sandbox":""'/'"api_tokenjs_password_publickey_sandbox":"'$HIPAY_TOKENJS_PUBLICKEY_TEST'"'}
-    CONFIG=${CONFIG/'"api_secret_passphrase_sandbox":""'/'"api_secret_passphrase_sandbox":"'$HIPAY_SECRET_PASSPHRASE_TEST'"'}
-    CONFIG=${CONFIG/'"api_moto_username_sandbox":""'/'"api_moto_username_sandbox":"'$HIPAY_API_MOTO_USER_TEST'"'}
-    CONFIG=${CONFIG/'"api_moto_password_sandbox":""'/'"api_moto_password_sandbox":"'$HIPAY_API_MOTO_PASSWORD_TEST'"'}
-    CONFIG=${CONFIG/'"api_moto_secret_passphrase_sandbox":""'/'"api_moto_secret_passphrase_sandbox":"'$HIPAY_MOTO_SECRET_PASSPHRASE_TEST'"'}
+    CONFIG=${CONFIG/'"api_username_sandbox":""'/'"api_username_sandbox":"'"$HIPAY_API_USER_TEST"'"'}
+    CONFIG=${CONFIG/'"api_password_sandbox":""'/'"api_password_sandbox":"'"$HIPAY_API_PASSWORD_TEST"'"'}
+    CONFIG=${CONFIG/'"api_tokenjs_username_sandbox":""'/'"api_tokenjs_username_sandbox":"'"$HIPAY_TOKENJS_USERNAME_TEST"'"'}
+    CONFIG=${CONFIG/'"api_tokenjs_password_publickey_sandbox":""'/'"api_tokenjs_password_publickey_sandbox":"'"$HIPAY_TOKENJS_PUBLICKEY_TEST"'"'}
+    CONFIG=${CONFIG/'"api_secret_passphrase_sandbox":""'/'"api_secret_passphrase_sandbox":"'"$HIPAY_SECRET_PASSPHRASE_TEST"'"'}
+    CONFIG=${CONFIG/'"api_moto_username_sandbox":""'/'"api_moto_username_sandbox":"'"$HIPAY_API_MOTO_USER_TEST"'"'}
+    CONFIG=${CONFIG/'"api_moto_password_sandbox":""'/'"api_moto_password_sandbox":"'"$HIPAY_API_MOTO_PASSWORD_TEST"'"'}
+    CONFIG=${CONFIG/'"api_moto_secret_passphrase_sandbox":""'/'"api_moto_secret_passphrase_sandbox":"'"$HIPAY_MOTO_SECRET_PASSPHRASE_TEST"'"'}
 
-    CONFIG=${CONFIG/'"api_apple_pay_username_sandbox":""'/'"api_apple_pay_username_sandbox":"'$HIPAY_API_APPLE_PAY_USER_TEST'"'}
-    CONFIG=${CONFIG/'"api_apple_pay_password_sandbox":""'/'"api_apple_pay_password_sandbox":"'$HIPAY_API_APPLE_PAY_PASSWORD_TEST'"'}
-    CONFIG=${CONFIG/'"api_apple_pay_passphrase_sandbox":""'/'"api_apple_pay_passphrase_sandbox":"'$HIPAY_APPLE_PAY_PASSPHRASE_TEST'"'}
-    CONFIG=${CONFIG/'"api_tokenjs_apple_pay_username_sandbox":""'/'"api_tokenjs_apple_pay_username_sandbox":"'$HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST'"'}
-    CONFIG=${CONFIG/'"api_tokenjs_apple_pay_password_sandbox":""'/'"api_tokenjs_apple_pay_password_sandbox":"'$HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST'"'}
+    CONFIG=${CONFIG/'"api_apple_pay_username_sandbox":""'/'"api_apple_pay_username_sandbox":"'"$HIPAY_API_APPLE_PAY_USER_TEST"'"'}
+    CONFIG=${CONFIG/'"api_apple_pay_password_sandbox":""'/'"api_apple_pay_password_sandbox":"'"$HIPAY_API_APPLE_PAY_PASSWORD_TEST"'"'}
+    CONFIG=${CONFIG/'"api_apple_pay_passphrase_sandbox":""'/'"api_apple_pay_passphrase_sandbox":"'"$HIPAY_APPLE_PAY_PASSPHRASE_TEST"'"'}
+    CONFIG=${CONFIG/'"api_tokenjs_apple_pay_username_sandbox":""'/'"api_tokenjs_apple_pay_username_sandbox":"'"$HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST"'"'}
+    CONFIG=${CONFIG/'"api_tokenjs_apple_pay_password_sandbox":""'/'"api_tokenjs_apple_pay_password_sandbox":"'"$HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST"'"'}
 
     if [ "$ENVIRONMENT" = "$ENV_PROD" ]; then
         CONFIG=${CONFIG/'"send_url_notification":0'/'"send_url_notification":1'}

@@ -10,6 +10,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+require_once dirname(__FILE__).'/../../lib/vendor/autoload.php';
 require_once dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php';
 require_once dirname(__FILE__).'/../../classes/helper/HipayHelper.php';
 require_once dirname(__FILE__).'/../../classes/helper/HipayCCToken.php';
@@ -198,6 +199,21 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 } elseif ($this->module->hipayConfigTool->getPaymentGlobal()['card_token'] && _PS_VERSION_ < '1.7') {
                     $this->assignTemplate();
                     $path = 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
+                } else {
+                    // Impossible case but necessary
+                    $this->assignTemplate();
+                    $this->context->smarty->assign(
+                        [
+                            'HiPay_action' => $this->context->link->getModuleLink(
+                                $this->module->name, 'redirect', [], true
+                            ),
+                            'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                        ]
+                    );
+                    $path = _PS_VERSION_ >= '1.7' ?
+                        'module:'.$this->module->name.
+                        '/views/templates/front/payment/ps17/paymentForm-'.$uxMode.'-17.tpl'
+                        : 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
                 }
                 break;
             case UXMode::DIRECT_POST:
