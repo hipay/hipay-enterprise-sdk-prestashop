@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.21.5
 
 - **Fix**: Fixed redirect controller when Hosted Page is selected
 - **Fix**: Fixed PHP warning messages during installation
