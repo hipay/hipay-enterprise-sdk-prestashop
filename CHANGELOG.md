@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## Unreleased (2.21.6)
 
 - **Fix**: Fixed HiPay refund formular with shipping costs
 
