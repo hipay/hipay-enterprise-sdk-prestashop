@@ -30,4 +30,6 @@ function upgrade_module_2_21_4($module)
             throw new Exception('Error during SQL request');
         }
     }
+
+    return true;
 }

@@ -18,14 +18,6 @@ function upgrade_module_2_20_0($module)
 
     $log = $module->getLogs();
 
-    $sql = ' ALTER TABLE `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`
-        ADD COLUMN `data` TEXT NOT NULL,
-	    ADD INDEX `hipay_notification.update_keys` (`cart_id`, `transaction_ref`, `notification_code`, `status`)';
-
-    if (!Db::getInstance()->execute($sql)) {
-        throw new Exception('Error during SQL request');
-    }
-
     $log->logInfos('Upgrade to 2.20.0');
 
     try {
