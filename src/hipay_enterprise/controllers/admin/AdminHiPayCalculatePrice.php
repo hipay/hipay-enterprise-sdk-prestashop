@@ -56,9 +56,9 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
                 "discounts" => $order->getCartRules(),
                 "order" => $order,
                 "cart" => $cart,
-                "captureRefundFee" => $captureRefundFee === "false" ? 0 : 1,
-                "captureRefundDiscount" => $captureRefundDiscount === "false" ? 0 : 1,
-                "captureRefundWrapping" => $captureRefundWrapping === "false" ? 0 : 1,
+                "captureRefundFee" => $captureRefundFee === "true",
+                "captureRefundDiscount" => $captureRefundDiscount === "true",
+                "captureRefundWrapping" => $captureRefundWrapping === "true",
                 "operation" => $operation,
                 "transactionAttempt" => 0
             );

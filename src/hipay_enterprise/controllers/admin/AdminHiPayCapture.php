@@ -108,17 +108,17 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-capture-input') <= 0) {
+                } elseif (Tools::getValue('total-capture-input') <= 0) {
                     $hipay_redirect_status = $this->module->l('Capture amount must be greater than zero.', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-capture-input') > $stillToCapture + 0.01) {
+                } elseif (Tools::getValue('total-capture-input') > $stillToCapture + 0.01) {
                     $hipay_redirect_status = $this->module->l('Capture amount must be lower than the amount still to be captured.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('hipay_capture_discount')) {
+                } elseif (Tools::getValue('hipay_capture_discount')) {
                     if (!$capturedDiscounts &&
                         Tools::getValue('hipay_capture_discount') !== "on" &&
                         ($stillToCapture - Tools::getValue('total-capture-input') <=
@@ -132,9 +132,9 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
                 }
 
                 $this->params["refundItems"] = $refundItems;
-                $this->params["capture_refund_fee"] = Tools::getValue('hipay_capture_fee');
-                $this->params["capture_refund_discount"] = Tools::getValue('hipay_capture_discount');
-                $this->params["capture_refund_wrapping"] = Tools::getValue('hipay_capture_wrapping');
+                $this->params["capture_refund_fee"] = Tools::getValue('hipay_capture_fee') === 'on';
+                $this->params["capture_refund_discount"] = Tools::getValue('hipay_capture_discount') === 'on';
+                $this->params["capture_refund_wrapping"] = Tools::getValue('hipay_capture_wrapping') === 'on';
             } else {
                 $this->params["capture_refund_fee"] = true;
                 $this->params["capture_refund_discount"] = true;

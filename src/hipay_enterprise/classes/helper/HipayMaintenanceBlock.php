@@ -193,8 +193,7 @@ class HipayMaintenanceBlock
             $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
             $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
 
-            if (
-                $this->paymentMethodCanRefundOrCapture('refund')
+            if ($this->paymentMethodCanRefundOrCapture('refund')
                 && !$this->statusNotAvailableForOperation('refund')
                 && !$this->hasRefundStartedFromBO()
                 && $this->statusAvailableForOperation('capture')
@@ -202,7 +201,7 @@ class HipayMaintenanceBlock
                 $discount = $this->getDiscount();
 
                 $shippingFees = 0;
-                if ($shipping = $this->order->getShipping() && !empty($shipping[0]['shipping_cost_tax_incl'])) {
+                if (($shipping = $this->order->getShipping()) && !empty($shipping[0]['shipping_cost_tax_incl'])) {
                     $shippingFees = $shipping[0]['shipping_cost_tax_incl'];
                 }
 
@@ -267,8 +266,7 @@ class HipayMaintenanceBlock
     private function checkCapture()
     {
         if ($this->paymentProduct) {
-            if (
-                $this->paymentMethodCanRefundOrCapture('capture')
+            if ($this->paymentMethodCanRefundOrCapture('capture')
                 && !$this->statusNotAvailableForOperation('capture')
                 && !($this->captureOrRefundFromBo && (null !== $this->basket))
                 && $this->statusAvailableForOperation('capture')
@@ -436,8 +434,7 @@ class HipayMaintenanceBlock
             Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1)
         );
 
-        if (
-            $this->dbMaintenance->isManualCapture($this->order->id)
+        if ($this->dbMaintenance->isManualCapture($this->order->id)
             || (bool) $isChallenged
         ) {
             return true;
@@ -485,7 +482,7 @@ class HipayMaintenanceBlock
      */
     private function paymentMethodCanRefundOrCapture($operation)
     {
-        switch($operation) {
+        switch ($operation) {
             case 'capture':
                 $label  = 'canManualCapture';
                 break;
@@ -497,8 +494,7 @@ class HipayMaintenanceBlock
                 break;
         }
 
-        if (
-            (isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
+        if ((isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
                 && !(bool) $this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
             ||
             (isset($this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct])
