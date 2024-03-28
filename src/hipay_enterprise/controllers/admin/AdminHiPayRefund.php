@@ -136,7 +136,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-refund-input') <= 0) {
+                } elseif (Tools::getValue('total-refund-input') <= 0) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be greater than zero.', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
 
@@ -146,7 +146,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-refund-input') > $refundableAmount) {
+                } elseif (Tools::getValue('total-refund-input') > $refundableAmount) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be lower than the amount still to be refunded.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
 
@@ -156,7 +156,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('hipay_refund_discount')) {
+                } elseif (Tools::getValue('hipay_refund_discount')) {
                     if (!$refundedDiscounts &&
                         Tools::getValue('hipay_refund_discount') !== "on" &&
                         ($refundableAmount - Tools::getValue('total-refund-input') <=
@@ -178,9 +178,9 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     "refundItems" => $refundItems,
                     "order" => $this->order->id,
                     "transaction_reference" => $this->transactionReference,
-                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee'),
-                    "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping'),
-                    "capture_refund_discount" => Tools::getValue('hipay_refund_discount')
+                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee') === 'on',
+                    "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping') === 'on',
+                    "capture_refund_discount" => Tools::getValue('hipay_refund_discount') === 'on'
                 );
 
                 $this->module->getLogs()->logInfos(print_r($this->params, true));

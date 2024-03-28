@@ -140,6 +140,8 @@ class HipayNotification
             }
         } else {
             $this->saveNotificationAttempt($transaction, $cart, NotificationStatus::WAIT);
+
+            echo 'Notification will be processed later';
         }
     }
 

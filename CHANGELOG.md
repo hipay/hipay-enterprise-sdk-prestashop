@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased (2.21.6)
+
+- **Fix**: Fixed HiPay refund formular with shipping costs
+
 ## 2.21.5
 
 - **Fix**: Fixed redirect controller when Hosted Page is selected
