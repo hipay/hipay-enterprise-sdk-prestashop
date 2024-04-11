@@ -135,7 +135,11 @@
   color: #A50979!important;
 }
 
-#hipay-module li a{
+#hipay-module ul>.active>a{
+  color: #fff!important;
+}
+
+#hipay-module .nav-tabs>li>a{
   color: #fff!important;
 }
 
@@ -173,7 +177,6 @@
   background-color: #A50979!important;
 }
 
-
 #hipay-module .dropdown-menu>.active>a{
   color: #fff!important;
   background-color: #A50979!important;
@@ -183,6 +186,7 @@
   color: #fff!important;
   background-color: #A50979!important;
 }
+
 #hipay-module .dropdown-menu>a{
   color: #20272B!important;
 }
