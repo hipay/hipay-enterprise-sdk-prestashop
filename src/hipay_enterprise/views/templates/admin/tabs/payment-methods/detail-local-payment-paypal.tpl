@@ -253,10 +253,10 @@
                     <div class="col-lg-2">
                         <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>
-                                Rectangular
+                                {l s="Rectangular" mod='hipay_enterprise'}
                             </option>
                             <option value="pill" {if $method.buttonShape[0] == "pill"}selected{/if}>
-                                Rounded
+                                {l s="Rounded" mod='hipay_enterprise'}
                             </option>
                         </select>
                     </div>
@@ -271,19 +271,19 @@
                     <div class="col-lg-2">
                         <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel">
                             <option value="paypal" {if $method.buttonLabel[0] == "paypal"}selected{/if}>
-                                Paypal
+                                {l s="Paypal" mod='hipay_enterprise'}
                             </option>
                             <option value="pay" {if $method.buttonLabel[0] == "pay"}selected{/if}>
-                                Pay
+                                {l s="Pay" mod='hipay_enterprise'}
                             </option>
                             <option value="subscribe" {if $method.buttonLabel[0] == "subscribe"}selected{/if}>
-                                Subscribe
+                                {l s="Subscribe" mod='hipay_enterprise'}
                             </option>
                             <option value="checkout" {if $method.buttonLabel[0] == "checkout"}selected{/if}>
-                                Checkout
+                                {l s="Checkout" mod='hipay_enterprise'}
                             </option>
                             <option value="buynow" {if $method.buttonLabel[0] == "buynow"}selected{/if}>
-                                Buy Now
+                                {l s="Buy Now" mod='hipay_enterprise'}
                             </option>
                         </select>
                     </div>
@@ -297,19 +297,19 @@
                     <div class="col-lg-2">
                         <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor">
                             <option value="gold" {if $method.buttonColor[0] == "gold"}selected{/if}>
-                                Gold
+                                {l s="Gold" mod='hipay_enterprise'}
                             </option>
                             <option value="blue" {if $method.buttonColor[0] == "blue"}selected{/if}>
-                                Blue
+                                {l s="Blue" mod='hipay_enterprise'}
                             </option>
                             <option value="black" {if $method.buttonColor[0] == "black"}selected{/if}>
-                                Black
+                                {l s="Black" mod='hipay_enterprise'}
                             </option>
                             <option value="silver" {if $method.buttonColor[0] == "silver"}selected{/if}>
-                                Silver
+                                {l s="Silver" mod='hipay_enterprise'}
                             </option>
                             <option value="white" {if $method.buttonColor[0] == "white"}selected{/if}>
-                                White
+                                {l s="White" mod='hipay_enterprise'}
                             </option>
                         </select>
                     </div>
@@ -339,6 +339,8 @@
                         <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
                         <a class="slide-button btn"></a>
                     </span>
+                    <br>
+                    <p class="alert alert-info">{l s="\"Buy now, Pay later\" feature is only available if the store currency is euros and if the basket amount is between 30 and 2000" mod='hipay_enterprise'}</p>
                 </div>
             </div>
         </div>

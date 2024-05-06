@@ -22,7 +22,6 @@
 </div>
 
 <script>
-
     var submitButton;
     document.addEventListener('DOMContentLoaded', function () {
         submitButton = $('#payment-confirmation button');
@@ -162,7 +161,6 @@
 
 </script>
 <input type="hidden" name="localSubmit" />
-
 <input class="ioBB" type="hidden" name="ioBB" />
 <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="browserInfo" />
 <input id="{$HiPay_localPaymentName}-orderId" type="hidden" name="orderId" />
