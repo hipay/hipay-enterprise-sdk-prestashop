@@ -3,6 +3,7 @@
 ## Unreleased (2.21.6)
 
 - **Fix**: Fixed HiPay refund formular with shipping costs
+- **Fix**: Fixed incompatibility issue with other Prestashop themes
 
 ## 2.21.5
 

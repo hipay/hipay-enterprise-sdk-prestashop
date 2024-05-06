@@ -94,11 +94,11 @@
     var myPaymentMethodSelected = false;
 
     function setSelectedPaymentMethod() {
-        myPaymentMethodSelected = $(".payment-options").find(
+        myPaymentMethodSelected = $("#checkout-payment-step").find(
             "input[data-module-name='credit_card']").is(
             ":checked");
-        $(document).on("change", ".payment-options", function() {
-            myPaymentMethodSelected = $(".payment-options").find(
+        $(document).on("change", "#checkout-payment-step", function() {
+            myPaymentMethodSelected = $("#checkout-payment-step").find(
                 "input[data-module-name='credit_card']").is(
                 ":checked");
         });
