@@ -44,6 +44,7 @@
             buttonLabel: '{$HiPay_paypalFields.buttonLabel[0]}',
             buttonColor: '{$HiPay_paypalFields.buttonColor[0]}',
             buttonHeight: '{$HiPay_paypalFields.buttonHeight}',
+            bnpl:{$HiPay_paypalFields.bnpl},
             merchantId: '{$HiPay_paypalFields.merchantId}',
             totalAmount: '{$HiPay_cart.totalAmount}',
             shopName: '{Configuration::get('PS_SHOP_NAME')}'
@@ -57,57 +58,16 @@
      */
     function initPaypal(parameters) {
         handleSubmitButton();
+        handleTermsOfService();
 
-        if (canMakePaypalPayment()) {
-            handleTermsOfService();
+        $('#paypal-field').hide();
+        $('#paypal-info-message').hide();
 
-            $('#paypal-field').hide();
-            $('#paypal-info-message').hide();
+        $('#paypal-error-message').css('display', 'inline');
+        $('#paypal-error-message').text($('#paypal-terms-of-service-error-message').text());
+        const instancePaypalButton = createPaypalInstance(parameters);
 
-            $('#paypal-error-message').css('display', 'inline');
-            $('#paypal-error-message').text($('#paypal-terms-of-service-error-message').text());
-            const instancePaypalButton = createPaypalInstance(parameters);
-
-            handlePaypalEvents(instancePaypalButton);
-        } else {
-            $('#paypal-field').hide();
-
-            $('#paypal-info-message')
-                .show()
-                .html(
-                    '{l s='This browser does not handle Apple Pay.' mod='hipay_enterprise'}'
-                    + '<br />'
-                    + '{l s='Please use another payment method.' mod='hipay_enterprise'}'
-                );
-
-            $('#paypal-error-message').hide();
-
-            $("#payment-confirmation button[type=submit]").attr('disabled', 'true');
-        }
-
-        $('form#paypal-hipay').on('submit', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            var form = this;
-            var isFormOk = true;
-
-            $('#apple-pay-form input[required]').each(function (index, element) {
-                isFormOk = $(element).val();
-                // jQuery each breaks if return == false
-                return isFormOk;
-            });
-
-            if (isFormOk) {
-                $('#paypal-error-message').hide();
-                form.submit();
-                return true;
-            } else {
-                $('#paypal-error-message').css('display', 'inline');
-                $('#paypal-error-message').text('{l s='Please select a card to complete the Apple Pay payment.' mod='hipay_enterprise'}');
-                return false;
-            }
-        });
+        handlePaypalEvents(instancePaypalButton);
     }
 
     function handleSubmitButton() {
@@ -138,18 +98,6 @@
             $('#paypal-error-message').hide();
             $("#payment-confirmation button[type=submit]").attr('disabled', 'true');
             $("#payment-confirmation button[type=submit]").hide();
-        }
-    }
-
-    /**
-     * Check if card is available for this merchantID or if browser handles Paypal
-     * @returns boolean
-     */
-    function canMakePaypalPayment() {
-        try {
-            return true
-        } catch (e) {
-            return false;
         }
     }
 
@@ -185,7 +133,7 @@
             paypalButtonStyle: paypalButtonStyle,
             selector: 'paypal-field',
             merchantPaypalId: parameters.merchantId,
-            canPayLater: true
+            canPayLater: Boolean(parameters.bnpl)
         };
 
         return paypalInstance.create(

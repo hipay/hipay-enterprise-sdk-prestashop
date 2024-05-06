@@ -18,6 +18,7 @@
       "merchantId",
       "buttonShape",
       "buttonLabel",
+      "bnpl",
       "buttonColor"
     ],
     "countrySelectorReadOnly": 0,
@@ -38,6 +39,7 @@
     "minPrestashopVersion": "1.7",
     "canManualCapture": false,
     "canManualCapturePartially": false,
+    "bnpl": true,
     "logo": "paypal.png"
   }
 }

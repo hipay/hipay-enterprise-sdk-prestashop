@@ -275,11 +275,13 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ]
                 );
             } elseif ('paypal' === $name && !empty($paymentProduct['merchantId'])) {
+
                 $formFields = [
                     'buttonShape' => $paymentProduct['buttonShape'],
                     'buttonLabel' => $paymentProduct['buttonLabel'],
                     'buttonColor' => $paymentProduct['buttonColor'],
                     'buttonHeight' => $paymentProduct['buttonHeight'],
+                    'bnpl' => $paymentProduct['bnpl'],
                     'merchantId' => $paymentProduct['merchantId'],
                 ];
 

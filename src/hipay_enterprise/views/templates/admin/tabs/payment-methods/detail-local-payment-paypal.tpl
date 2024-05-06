@@ -16,13 +16,6 @@
                 {l s=$method["displayNameBO"] mod='hipay_enterprise'}
             </h4>
         </div>
-        {if $key === "applepay"}
-            <div class="row">
-                <p class="col-lg-offset-2 alert-warning notice">
-                    {l s='Please, add the field [1]custom_data[/1] among the notification fields in your merchant account settings' tags=['<code>'] mod='hipay_enterprise'}
-                </p>
-            </div>
-        {/if}
         <div class="row">
             <div class="form-group">
                 <label class="control-label col-lg-2">
@@ -245,8 +238,10 @@
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
-                    <div class="col-lg-2">
-                        <input type="text" class="merchantId" name="{$key}_merchantId" value="{$method.merchantId}" />
+                    <div class="col-lg-4">
+                        <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId" value="{$method.merchantId}" />
+                        <br>
+                        <p class="alert alert-info">{l s='Enter your Merchant PayPal ID to activate PayPal V2 integration.' mod='hipay_enterprise'}</p>
                     </div>
                 </div>
             </div>
@@ -256,7 +251,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">Button Shape</label>
                     <div class="col-lg-2">
-                        <select id="select-{$key}" name="{$key}_buttonShape[]" class="select-buttonShape">
+                        <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>
                                 Rectangular
                             </option>
@@ -274,7 +269,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Label" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="select-{$key}" name="{$key}_buttonLabel[]" class="select-buttonLabel">
+                        <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel">
                             <option value="paypal" {if $method.buttonLabel[0] == "paypal"}selected{/if}>
                                 Paypal
                             </option>
@@ -300,7 +295,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Color" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="select-{$key}" name="{$key}_buttonColor[]" class="select-_buttonColor">
+                        <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor">
                             <option value="gold" {if $method.buttonColor[0] == "gold"}selected{/if}>
                                 Gold
                             </option>
@@ -325,9 +320,47 @@
             <div class="form-group">
                 <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
                 <div class="col-lg-2">
-                    <input type="number" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight[]" value="{$method.buttonHeight}" />
+                    <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight[]" value="{$method.buttonHeight}" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="control-label col-lg-2">
+                    {l s='Pay Later Button' mod='hipay_enterprise'}
+                </label>
+                <div class="col-lg-9">
+                    <span class="switch prestashop-switch fixed-width-lg">
+                        <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_on" value="1"
+                               {if $method.bnpl }checked="checked" {/if}>
+                        <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                        <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_off" value="0"
+                               {if $method.bnpl === false }checked="checked" {/if}>
+                        <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
+                        <a class="slide-button btn"></a>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleFields(merchantId) {
+        ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function (fieldId) {
+            var field = document.getElementById(fieldId);
+            field.disabled = merchantId === '';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var merchantIdInput = document.getElementById('input-merchantId');
+        if (merchantIdInput !== null) {
+            merchantIdInput.addEventListener('input', function () {
+                toggleFields(this.value);
+            });
+        }
+    });
+</script>
+
+
