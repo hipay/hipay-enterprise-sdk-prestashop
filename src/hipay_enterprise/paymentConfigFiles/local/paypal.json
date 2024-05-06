@@ -2,26 +2,42 @@
   "name": "paypal",
   "config": {
     "displayNameBO": "Paypal",
+    "template": "./detail-local-payment-paypal.tpl",
     "displayName":  {
       "fr": "Paypal",
       "en": "Paypal"
     },
-    "frontPosition": 20,
+    "frontPosition": 100,
     "activated": 0,
     "displayConfigurationFields": [
       "displayName",
+      "currencies",
+      "countries",
       "minAmount",
       "maxAmount",
-      "countries"
+      "merchantId",
+      "buttonShape",
+      "buttonLabel",
+      "buttonColor"
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
+    "currencies": [],
+    "countries": [],
     "minAmount": {
       "EUR": 0
     },
     "maxAmount": {
       "EUR": false
     },
+    "buttonShape": "rect",
+    "buttonColor": "white",
+    "buttonHeight": "40",
+    "buttonLabel" : "pay",
+    "merchantId": "",
+    "minPrestashopVersion": "1.7",
+    "canManualCapture": false,
+    "canManualCapturePartially": false,
     "logo": "paypal.png"
   }
 }

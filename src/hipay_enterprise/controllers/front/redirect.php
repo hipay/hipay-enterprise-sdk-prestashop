@@ -93,7 +93,6 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $apiMode = ApiMode::DIRECT_POST;
             $isApplePay = true;
         }
-
         switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
                 if ('redirect' == $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']) {
@@ -124,9 +123,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 }
                 break;
             case ApiMode::DIRECT_POST:
-                if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
+                 if (Tools::getValue('orderId')) {
+                     $this->apiOrderID($this->currentCart, $this->context, $this->customer);
+                 } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
-                } elseif (Tools::getValue('ccTokenHipay')) {
+                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
                         $this->currentCart,
@@ -332,6 +333,36 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         } else {
             return HipayHelper::redirectToErrorPage($context, $this->module, $cart, $savedCC);
         }
+    }
+
+    /**
+     * Handle Credit card payment (not one click).
+     *
+     * @return string
+     */
+    private function apiOrderID($cart, $context, $customer)
+    {
+        $selectedCC = Tools::getValue('productlist');
+
+        if (isset($selectedCC)) {
+            try {
+                $providerData = ['paypal_id' => Tools::getValue('orderId')];
+                $params = [
+                    'deviceFingerprint' => Tools::getValue('ioBB'),
+                    'productlist' => $selectedCC,
+                    'method' => $selectedCC,
+                    'browser_info' => json_decode(Tools::getValue('browserInfo')),
+                    'provider_data' => (string) json_encode($providerData)
+                ];
+                $this->apiHandler->handleLocalPayment(ApiMode::DIRECT_POST, $params);
+            } catch (Exception $e) {
+                $this->module->getLogs()->logException($e);
+
+                return HipayHelper::redirectToErrorPage($context, $this->module, $cart);
+            }
+        }
+
+        return HipayHelper::redirectToErrorPage($context, $this->module, $cart);
     }
 
     /**
