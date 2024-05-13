@@ -348,14 +348,15 @@
 </div>
 
 <script>
-    function toggleFields(merchantId) {
-        ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function (fieldId) {
-            var field = document.getElementById(fieldId);
-            field.disabled = merchantId === '';
-        });
-    }
 
     document.addEventListener('DOMContentLoaded', function () {
+        function toggleFields(merchantId) {
+            ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function (fieldId) {
+                var field = document.getElementById(fieldId);
+                field.disabled = merchantId === '';
+            });
+        }
+
         var merchantIdInput = document.getElementById('input-merchantId');
         if (merchantIdInput !== null) {
             merchantIdInput.addEventListener('input', function () {

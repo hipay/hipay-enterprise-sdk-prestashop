@@ -114,8 +114,8 @@
         });
 
         const request = {
-            locale: 'fr_FR',
-            currency: 'EUR',
+            locale: '{$language.locale|replace:"-":"_"}',
+            currency: '{$currency.iso_code}',
             amount: Number(parameters.totalAmount)
         };
 
@@ -163,7 +163,7 @@
 <input type="hidden" name="localSubmit" />
 <input class="ioBB" type="hidden" name="ioBB" />
 <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="browserInfo" />
-<input id="{$HiPay_localPaymentName}-orderId" type="hidden" name="orderId" />
+<input id="{$HiPay_localPaymentName}-orderId" type="hidden" name="paypalOrderId" />
 <input id="{$HiPay_localPaymentName}-payment-product" type="hidden" name="method"/>
 <input id="{$HiPay_localPaymentName}-payment-method" type="hidden" name="paymentmethod" />
 <input id="{$HiPay_localPaymentName}-productlist" type="hidden" name="productlist" />

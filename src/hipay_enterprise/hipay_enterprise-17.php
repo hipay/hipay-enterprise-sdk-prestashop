@@ -121,7 +121,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-        if ('applepay' === $name || ('paypal' === $name && !empty($paymentProduct['merchantId']))) {
+        if ('applepay' === $name || HipayHelper::isPaypalV2($paymentProduct)) {
             $this->context->smarty->assign(
                 [
                     'HiPay_action' => $this->context->link->getModuleLink(
@@ -274,7 +274,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'HiPay_iframe' => false,
                     ]
                 );
-            } elseif ('paypal' === $name && !empty($paymentProduct['merchantId'])) {
+            } elseif (HipayHelper::isPaypalV2($paymentProduct)) {
 
                 $formFields = [
                     'buttonShape' => $paymentProduct['buttonShape'],

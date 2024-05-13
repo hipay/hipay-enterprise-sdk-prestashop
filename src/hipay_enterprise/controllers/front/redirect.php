@@ -123,8 +123,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 }
                 break;
             case ApiMode::DIRECT_POST:
-                 if (Tools::getValue('orderId')) {
-                     $this->apiOrderID($this->currentCart, $this->context, $this->customer);
+                 if (Tools::getValue('paypalOrderId')) {
+                     $this->apiPayPalOrderId($this->currentCart, $this->context, $this->customer);
                  } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
                  } elseif (Tools::getValue('ccTokenHipay')) {
@@ -336,17 +336,17 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     }
 
     /**
-     * Handle Credit card payment (not one click).
+     * Handle Paypal V2
      *
      * @return string
      */
-    private function apiOrderID($cart, $context, $customer)
+    private function apiPayPalOrderId($cart, $context, $customer)
     {
         $selectedCC = Tools::getValue('productlist');
 
         if (isset($selectedCC)) {
             try {
-                $providerData = ['paypal_id' => Tools::getValue('orderId')];
+                $providerData = ['paypal_id' => Tools::getValue('paypalOrderId')];
                 $params = [
                     'deviceFingerprint' => Tools::getValue('ioBB'),
                     'productlist' => $selectedCC,
