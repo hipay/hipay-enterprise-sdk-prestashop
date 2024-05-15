@@ -316,34 +316,38 @@
                 </div>
             </div>
         {/if}
-        <div class="row">
-            <div class="form-group">
-                <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
-                <div class="col-lg-2">
-                    <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight[]" value="{$method.buttonHeight}" />
+        {if "buttonHeight"|inArray:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
+                    <div class="col-lg-2">
+                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight[]" value="{$method.buttonHeight}" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="form-group">
-                <label class="control-label col-lg-2">
-                    {l s='Pay Later Button' mod='hipay_enterprise'}
-                </label>
-                <div class="col-lg-9">
-                    <span class="switch prestashop-switch fixed-width-lg">
-                        <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_on" value="1"
-                               {if $method.bnpl }checked="checked" {/if}>
-                        <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                        <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_off" value="0"
-                               {if $method.bnpl === false }checked="checked" {/if}>
-                        <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
-                        <a class="slide-button btn"></a>
-                    </span>
-                    <br>
-                    <p class="alert alert-info">{l s="\"Buy now, Pay later\" feature is only available if the store currency is euros and if the basket amount is between 30 and 2000" mod='hipay_enterprise'}</p>
+        {/if}
+        {if "bnpl"|inArray:$method.displayConfigurationFields}
+            <div class="row">
+                <div class="form-group">
+                    <label class="control-label col-lg-2">
+                        {l s='Pay Later Button' mod='hipay_enterprise'}
+                    </label>
+                    <div class="col-lg-9">
+                        <span class="switch prestashop-switch fixed-width-lg">
+                            <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_on" value="1"
+                                   {if $method.bnpl }checked="checked" {/if}>
+                            <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
+                            <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_off" value="0"
+                                   {if $method.bnpl === false }checked="checked" {/if}>
+                            <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
+                            <a class="slide-button btn"></a>
+                        </span>
+                        <br>
+                        <p class="alert alert-info">{l s="\"Buy now, Pay later\" feature is only available if the store currency is euros and if the basket amount is between 30 and 2000" mod='hipay_enterprise'}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        {/if}
     </div>
 </div>
 

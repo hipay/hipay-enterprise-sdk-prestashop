@@ -170,6 +170,12 @@ function upgrade_module_2_22_0($module)
                 'activated' => '',
                 'currencies' => '',
                 'countries' => '',
+                'merchantId' => '',
+                'buttonLabel' => '',
+                'buttonShape' => '',
+                'buttonHeight' => '',
+                'buttonColor' => '',
+                'bnpl' => '',
             ],
             'postfinance-card' => [
                 'displayName' => '',

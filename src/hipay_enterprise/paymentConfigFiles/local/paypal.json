@@ -18,8 +18,9 @@
       "merchantId",
       "buttonShape",
       "buttonLabel",
-      "bnpl",
-      "buttonColor"
+      "buttonHeight",
+      "buttonColor",
+      "bnpl"
     ],
     "countrySelectorReadOnly": 0,
     "currencySelectorReadOnly": 0,
