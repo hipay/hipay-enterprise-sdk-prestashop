@@ -32,7 +32,7 @@
       "EUR": false
     },
     "buttonShape": "rect",
-    "buttonColor": "white",
+    "buttonColor": "gold",
     "buttonHeight": "40",
     "buttonLabel" : "pay",
     "merchantId": "",

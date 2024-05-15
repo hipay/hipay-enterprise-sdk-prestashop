@@ -359,11 +359,15 @@
 
         var merchantIdInput = document.getElementById('input-merchantId');
         if (merchantIdInput !== null) {
+            // Call toggleFields initially to set the correct state on page load
+            toggleFields(merchantIdInput.value);
+
             merchantIdInput.addEventListener('input', function () {
                 toggleFields(this.value);
             });
         }
     });
+
 </script>
 
 
