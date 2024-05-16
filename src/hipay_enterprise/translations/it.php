@@ -470,7 +470,7 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_f96e345fdc19
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_25a81701fbfa4a1efdf660a950c1d006'] = 'Bianco';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_1eaf65fd9527c22ed4383c0434889bfb'] = 'Altezza del pulsante';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_c23607da7a697c9f161e932c9da22c4a'] = 'Mostra il pulsante \'Compra ora / Paga dopo\'';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_b2462da9180581df5276b05b7ef2015d'] = '\"La funzione \'Compra ora /paga dopo\' è disponibile solo se la valuta del negozio è l\'euro e se l\'importo del carrello è compreso tra 30 e 2000.\"';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_b2462da9180581df5276b05b7ef2015d'] = 'La funzione \'Compra ora /paga dopo\' è disponibile solo se la valuta del negozio è l\'euro e se l\'importo del carrello è compreso tra 30 e 2000.';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_e7f9e382dc50889098cbe56f2554c77b'] = 'Carte di credito';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_bc9e270b7b1a09eeac794d32b3d9dc8f'] = 'Nome visualizato';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_8d536440734fa779815bee3efa7d4c76'] = 'Mostra il nome della carta di credito per il pagamento nella tua pagina di checkout.';

@@ -470,7 +470,7 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_f96e345fdc19
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_25a81701fbfa4a1efdf660a950c1d006'] = 'Blanc';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_1eaf65fd9527c22ed4383c0434889bfb'] = 'Hauteur du bouton';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_c23607da7a697c9f161e932c9da22c4a'] = 'Acheter maintenant / Payer plus tard';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_b2462da9180581df5276b05b7ef2015d'] = '\"La fonctionnalité \'Achetez maintenant, payez plus tard\' est uniquement disponible si la devise du magasin est l\'euro et si le montant du panier est compris entre 30 et 2000.\"';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_b2462da9180581df5276b05b7ef2015d'] = 'La fonctionnalité \'Achetez maintenant, payez plus tard\' est uniquement disponible si la devise du magasin est l\'euro et si le montant du panier est compris entre 30 et 2000.';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_e7f9e382dc50889098cbe56f2554c77b'] = 'Carte de crédit';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_bc9e270b7b1a09eeac794d32b3d9dc8f'] = 'Nom affiché';
 $_MODULE['<{hipay_enterprise}prestashop>creditcard_8d536440734fa779815bee3efa7d4c76'] = 'Nom affiché pour le paiement par carte de crédit sur la page de paiement';
