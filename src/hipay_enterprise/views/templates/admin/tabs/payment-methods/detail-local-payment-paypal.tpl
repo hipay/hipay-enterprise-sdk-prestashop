@@ -321,7 +321,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight[]" value="{$method.buttonHeight}" />
+                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight" value="{$method.buttonHeight}" />
                     </div>
                 </div>
             </div>

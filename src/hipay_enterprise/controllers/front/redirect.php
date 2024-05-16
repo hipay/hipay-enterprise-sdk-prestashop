@@ -92,6 +92,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         if ('true' === Tools::getValue('is-apple-pay')) {
             $apiMode = ApiMode::DIRECT_POST;
             $isApplePay = true;
+        } elseif (Tools::getValue('paypalOrderId')) {
+            $apiMode = ApiMode::DIRECT_POST;
         }
         switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
