@@ -88,12 +88,14 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
         $apiMode = $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'];
         $isApplePay = false;
+        $isPayPalV2 = false;
         // If it's an apple pay payment, force the api mode to direct post
         if ('true' === Tools::getValue('is-apple-pay')) {
             $apiMode = ApiMode::DIRECT_POST;
             $isApplePay = true;
-        } elseif (Tools::getValue('paypalOrderId')) {
+        } elseif (!(empty(Tools::getValue('paypalOrderId')))) {
             $apiMode = ApiMode::DIRECT_POST;
+            $isPayPalV2 = true;
         }
         switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
@@ -125,8 +127,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 }
                 break;
             case ApiMode::DIRECT_POST:
-                 if (Tools::getValue('paypalOrderId')) {
-                     $this->apiPayPalOrderId($this->currentCart, $this->context, $this->customer);
+                 if ($isPayPalV2) {
+                     $this->apiPayPalOrderId($this->currentCart, $this->context);
                  } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
                  } elseif (Tools::getValue('ccTokenHipay')) {
@@ -340,9 +342,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     /**
      * Handle Paypal V2
      *
+     * @param $cart
+     * @param $context
      * @return string
      */
-    private function apiPayPalOrderId($cart, $context, $customer)
+    private function apiPayPalOrderId($cart, $context)
     {
         $selectedCC = Tools::getValue('productlist');
 

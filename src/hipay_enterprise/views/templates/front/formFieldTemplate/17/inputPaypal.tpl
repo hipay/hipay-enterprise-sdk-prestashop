@@ -12,7 +12,7 @@
 
 <div class="form-group row">
     <div class="col-md-9" id="paypal-form">
-        <div id="paypal-field" style="height: 30px"></div>
+        <div id="paypal-field" style="height: 30px;"></div>
         <p id="paypal-info-message" style="display: none;"></p>
         <span class="error-text-hp" id="paypal-error-message"></span>
         <p id="paypal-terms-of-service-error-message" style="display: none">
@@ -20,7 +20,7 @@
         </p>
     </div>
 </div>
-
+<br>
 <script>
     var submitButton;
     document.addEventListener('DOMContentLoaded', function () {
