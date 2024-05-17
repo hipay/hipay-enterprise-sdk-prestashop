@@ -88,12 +88,15 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
         $apiMode = $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'];
         $isApplePay = false;
+        $isPayPalV2 = false;
         // If it's an apple pay payment, force the api mode to direct post
         if ('true' === Tools::getValue('is-apple-pay')) {
             $apiMode = ApiMode::DIRECT_POST;
             $isApplePay = true;
+        } elseif (!(empty(Tools::getValue('paypalOrderId')))) {
+            $apiMode = ApiMode::DIRECT_POST;
+            $isPayPalV2 = true;
         }
-
         switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
                 if ('redirect' == $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']) {
@@ -124,9 +127,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 }
                 break;
             case ApiMode::DIRECT_POST:
-                if (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
+                 if ($isPayPalV2) {
+                     $this->apiPayPalOrderId($this->currentCart, $this->context);
+                 } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
-                } elseif (Tools::getValue('ccTokenHipay')) {
+                 } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
                         $this->currentCart,
@@ -332,6 +337,38 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         } else {
             return HipayHelper::redirectToErrorPage($context, $this->module, $cart, $savedCC);
         }
+    }
+
+    /**
+     * Handle Paypal V2
+     *
+     * @param $cart
+     * @param $context
+     * @return string
+     */
+    private function apiPayPalOrderId($cart, $context)
+    {
+        $selectedCC = Tools::getValue('productlist');
+
+        if (isset($selectedCC)) {
+            try {
+                $providerData = ['paypal_id' => Tools::getValue('paypalOrderId')];
+                $params = [
+                    'deviceFingerprint' => Tools::getValue('ioBB'),
+                    'productlist' => $selectedCC,
+                    'method' => $selectedCC,
+                    'browser_info' => json_decode(Tools::getValue('browserInfo')),
+                    'provider_data' => (string) json_encode($providerData)
+                ];
+                $this->apiHandler->handleLocalPayment(ApiMode::DIRECT_POST, $params);
+            } catch (Exception $e) {
+                $this->module->getLogs()->logException($e);
+
+                return HipayHelper::redirectToErrorPage($context, $this->module, $cart);
+            }
+        }
+
+        return HipayHelper::redirectToErrorPage($context, $this->module, $cart);
     }
 
     /**

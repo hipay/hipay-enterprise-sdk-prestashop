@@ -360,3 +360,7 @@ a:hover.tooltips span {
 .referenceContainer .print {
   margin-top: 12px;
 }
+
+#paypal-field {
+  padding-bottom: 70px;
+}

@@ -107,7 +107,8 @@
                                 {if !$itemInGroup}
                                     <div role="tabpanel" class="tab-pane {if $localPayment@first} active {/if}"
                                         id="payment_form__{$localPayment@key}">
-                                        {include file='./detail-local-payment.tpl' method=$localPayment key=$localPayment@key first=$localPayment@first}
+                                        {assign var="templateRenderer" value=$localPayment["template"]|default:'./detail-local-payment.tpl'}
+                                        {include file=$templateRenderer method=$localPayment key=$localPayment@key first=$localPayment@first}
                                     </div>
                                 {/if}
                             {/if}

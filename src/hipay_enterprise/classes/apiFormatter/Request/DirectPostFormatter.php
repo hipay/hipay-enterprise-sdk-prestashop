@@ -33,12 +33,15 @@ class DirectPostFormatter extends RequestFormatterAbstract
 
     private $cardHolder;
 
+    private $provider_data;
+
     public function __construct($moduleInstance, $params)
     {
         parent::__construct($moduleInstance, $params);
         $this->paymentProduct = $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];
+        $this->provider_data = (isset($params["provider_data"])) ? $params["provider_data"] : '';
         $this->cardHolder = (isset($params["card_holder"])) ? $params["card_holder"] : '';
     }
 
@@ -65,6 +68,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
         $order->payment_product = $this->paymentProduct;
         $order->device_fingerprint = $this->deviceFingerprint;
         $order->paymentMethod = $this->paymentMethod;
+        $order->provider_data = $this->provider_data;
         $this->getCustomerNames($order);
     }
 

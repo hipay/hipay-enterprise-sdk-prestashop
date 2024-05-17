@@ -12,6 +12,8 @@
 
 {if $HiPay_localPaymentName eq "applepay"}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
+{elseif $HiPay_localPaymentName eq "paypal" &&  isset($HiPay_merchantId)}
+    {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
     <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
 
