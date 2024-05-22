@@ -651,34 +651,7 @@ class HipayNotification
                         }
 
                         if (!$alreadyExists) {
-                            if ($amount !== floatval($order->total_paid)) {
-                                // Force amount to the chosen one
-                                $productArray = $order->getProducts();
-
-                                $product = array_pop($productArray);
-
-                                $order_detail = new OrderDetail((int) $product['id_order_detail']);
-                                $tax_calculator = $order_detail->getTaxCalculator();
-                                $amount = $tax_calculator->removeTaxes($amount);
-
-                                $product['unit_price'] = $amount;
-                                $product['product_quantity_refunded'] = $product['product_quantity'];
-                                $product['quantity'] = 1;
-
-                                $orderPaymentResult = OrderSlip::create(
-                                    $order,
-                                    [$product]
-                                );
-                            } else {
-                                $productArray = $order->getProducts();
-
-                                foreach ($productArray as &$product) {
-                                    $product['unit_price'] = $product['unit_price_tax_excl'];
-                                    $product['product_quantity_refunded'] = $product['product_quantity'];
-                                    $product['quantity'] = $product['product_quantity'];
-                                }
-                                $orderPaymentResult = OrderSlip::create($order, $productArray, null, $amount);
-                            }
+                            $orderPaymentResult = $this->createOrderSlip($order, $transaction);
                         }
                     } else {
                         $orderPaymentResult = $order->addOrderPayment(
@@ -708,6 +681,72 @@ class HipayNotification
                 $this->log->logInfos('# Order Payment of 0 amount not added');
             }
         }
+    }
+
+    /**
+     * Handle refund products and create order slip.
+     *
+     * @param Order         $order
+     * @param Transaction   $transaction
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    private function createOrderSlip($order, $transaction)
+    {
+        $orderProducts = $order->getProducts();
+        $transactionProducts = json_decode($transaction->getBasket()); //good, fee, discount
+
+        $refundedProducts = [];
+        $fees = false;
+        $discount = 0;
+
+        foreach ($transactionProducts as $transactionProduct) {
+            switch ($transactionProduct->type) {
+                case 'good':
+                    foreach ($orderProducts as $orderProduct) {
+                        $productCombination = new Combination($orderProduct["product_attribute_id"]);
+                        $productAttributes = $productCombination->getAttributesName((int)Context::getContext()->language->id);
+                        if(empty($productAttributes)){
+                            $orderProductReference = $orderProduct["product_reference"]."-n-a";
+                        }else{
+                            $orderProductReference = $orderProduct["product_reference"]."-".$productAttributes[0]["name"];
+                        }
+                        if($transactionProduct->product_reference == $orderProductReference){
+                            $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
+                            $orderDetail->total_refunded_tax_excl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_excl;
+                            $orderDetail->total_refunded_tax_incl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_incl;
+                            $orderProduct['quantity'] = $transactionProduct->quantity;
+                            $orderProduct['unit_price'] = $orderDetail->unit_price_tax_excl;
+                            $refundedProducts[] = $orderProduct;
+                            $orderDetail->update();
+
+                            $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
+                            if (Validate::isLoadedObject($stock_available)) {
+                                $newQuantity = StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id) + (int)$transactionProduct->quantity;
+                                $stock_available->quantity = $newQuantity;
+                                $stock_available->update();
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case 'fee':
+                    $fees = (float) $order->total_shipping_tax_excl;
+                case 'discount':
+                    $discount = (float) $order->total_discounts_tax_incl;
+                default:
+                    break;
+            }
+        }
+
+        OrderSlip::create(
+            $order,
+            $refundedProducts,
+            $fees,
+            (float) $discount
+        );
     }
 
     /**

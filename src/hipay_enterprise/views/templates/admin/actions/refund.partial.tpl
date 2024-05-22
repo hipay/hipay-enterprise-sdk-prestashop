@@ -47,18 +47,21 @@
                     </tr>
                     </thead>
                     {foreach $HiPay_products as $item}
-                        {if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
-                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_refundedItems[$item["product_id"]]["quantity"]}
+
+                        {assign var="itemId" value=($item["id_product"]|cat:$item["product_attribute_id"])|intval}
+
+                        {if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
+                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_refundedItems[$itemId]["quantity"] }
                         {else if empty($HiPay_capturedItems) && empty($HiPay_refundedItems) }
-                            {assign var="remainQty" value=$item["product_quantity"] }
-                        {else if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) &&  !isset($HiPay_refundedItems[$item["product_id"]])}
+                            {assign var="remainQty" value=$item["product_quantity"] - $item["product_quantity_refunded"] }
+                        {else if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) &&  !isset($HiPay_refundedItems[$itemId])}
                             +                                {assign var="remainQty" value=$item["product_quantity"] }
-                        {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$item["product_id"]]) }
+                        {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$itemId]) }
                             {assign var="remainQty" value=0}
-                        {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]]) }
-                            {assign var="remainQty" value=$HiPay_capturedItems[$item["product_id"]]["quantity"] - $HiPay_refundedItems[$item["product_id"]]["quantity"]}
+                        {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["proproduct_attribute_idduct_id"]]) }
+                            {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
                         {else}
-                            {assign var="remainQty" value=$HiPay_capturedItems[$item["product_id"]]["quantity"]}
+                            {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"]}
                         {/if}
                         <tr>
                             <td>
@@ -66,20 +69,20 @@
                             </td>
                             <td>
                                 <input type="hidden" {if $remainQty == 0} disabled {/if}
-                                       name="hipayrefund[{$item["product_id"]}]"
-                                       value="{$item["product_id"]}"/>{$item["product_name"]}
+                                       name="hipayrefund[{$itemId}]"
+                                       value="{$itemId}"/>{$item["product_name"]}
                             </td>
                             <td>
                                 {displayPrice price=$item.product_price_wt currency=$HiPay_id_currency}
                             </td>
                             <td>
-                                {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
+                                {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
                                 <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {$HiPay_refundedItems[$item["product_id"]]["quantity"]}
+                                            {$HiPay_refundedItems[$itemId]["quantity"]}
                                     {/if}
-                                    {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_id"]])}
+                                    {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
                                         <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {displayPrice price=$HiPay_refundedItems[$item["product_id"]]["amount"] currency=$HiPay_id_currency}
+                                            {displayPrice price=$HiPay_refundedItems[$itemId]["amount"] currency=$HiPay_id_currency}
                                         </span>
                                     {else}
                                         <span class="badge badge-warning">{displayPrice price=0 currency=$HiPay_id_currency}</span>
@@ -89,8 +92,8 @@
                                 {if $remainQty > 0}
                                     <div class="col-lg-6 input-group">
                                         <input data-unit-price="{$item.unit_price_tax_incl}"
-                                               data-id="{$item["product_id"]}"
-                                               class="good-selector-refund" name="hipayrefund[{$item["product_id"]}]"
+                                               data-id="{$itemId}"
+                                               class="good-selector-refund" name="hipayrefund[{$itemId}]"
                                                type="number" min="0"
                                                max="{$remainQty}" name="" value="0">
                                         <div class="input-group-addon">/ {$remainQty}</div>
@@ -257,8 +260,7 @@
                     "orderId": {$HiPay_orderId}
                 },
                 function (response) {
-
-                    if (response.amount) {
+                    if ('amount' in response) {
                         amount = response.amount.toFixed(2);
                         remain = refundableAmount - amount;
                         if (remain.toFixed(2) == -0.01) {
