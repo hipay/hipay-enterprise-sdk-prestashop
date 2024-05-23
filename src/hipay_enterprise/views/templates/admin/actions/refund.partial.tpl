@@ -260,7 +260,7 @@
                     "orderId": {$HiPay_orderId}
                 },
                 function (response) {
-                    if ('amount' in response) {
+                    if (response && typeof response === 'object' && 'amount' in response) {
                         amount = response.amount.toFixed(2);
                         remain = refundableAmount - amount;
                         if (remain.toFixed(2) == -0.01) {
