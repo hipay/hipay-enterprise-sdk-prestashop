@@ -168,7 +168,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $productsFromCartWithId = $this->cart->getProducts(true, (int)$product["product_id"]);
 
-        if(sizeof($productsFromCartWithId) > 1){
+        if(count($productsFromCartWithId) > 1){
             foreach ($productsFromCartWithId as $currentProduct) {
                 if($product['product_attribute_id'] == $currentProduct['id_product_attribute']){
                     $productFromCart = $currentProduct;

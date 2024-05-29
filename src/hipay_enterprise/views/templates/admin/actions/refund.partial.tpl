@@ -55,7 +55,7 @@
                         {else if empty($HiPay_capturedItems) && empty($HiPay_refundedItems) }
                             {assign var="remainQty" value=$item["product_quantity"] - $item["product_quantity_refunded"] }
                         {else if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) &&  !isset($HiPay_refundedItems[$itemId])}
-                            +                                {assign var="remainQty" value=$item["product_quantity"] }
+                            {assign var="remainQty" value=$item["product_quantity"] }
                         {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$itemId]) }
                             {assign var="remainQty" value=0}
                         {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["proproduct_attribute_idduct_id"]]) }
