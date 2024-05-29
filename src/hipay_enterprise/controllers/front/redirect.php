@@ -127,11 +127,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 }
                 break;
             case ApiMode::DIRECT_POST:
-                 if ($isPayPalV2) {
-                     $this->apiPayPalOrderId($this->currentCart, $this->context);
-                 } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
+                if ($isPayPalV2) {
+                    $this->apiPayPalOrderId($this->currentCart, $this->context);
+                } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
                     $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
-                 } elseif (Tools::getValue('ccTokenHipay')) {
+                } elseif (Tools::getValue('ccTokenHipay')) {
                     $path = $this->apiSavedCC(
                         Tools::getValue('ccTokenHipay'),
                         $this->currentCart,
@@ -151,15 +151,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     public function initContent()
     {
-        // $this->display_column_left = false;
-        // $this->display_column_right = false;
         parent::initContent();
 
         if (null == $this->currentCart->id) {
             $this->module->getLogs()->logErrors('# Cart ID is null in initContent');
             Tools::redirect('index.php?controller=order');
         }
-        $this->module->getLogs()->logInfos('# Redirect init CART ID'.$this->context->cart->id);
+        $this->module->getLogs()->logInfos('# Redirect init CART ID '.$this->context->cart->id);
 
         $this->context->smarty->assign(
             [
@@ -181,6 +179,11 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
 
         $uxMode = $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['UXMode'];
 
+        $path = (_PS_VERSION_ >= '1.7' ?
+            'module:'.$this->module->name.
+            '/views/templates/front/payment/ps17/paymentForm-'.$uxMode.'-17'
+            : 'payment/ps16/paymentForm-'.$uxMode.'-16').'.tpl';
+
         // Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
             case UXMode::HOSTED_PAGE:
@@ -197,8 +200,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             ),
                         ]
                     );
-                    $path = (_PS_VERSION_ >= '1.7' ? 'module:'.
-                            $this->module->name.
+                    $path = (_PS_VERSION_ >= '1.7' ?
+                            'module:'.$this->module->name.
                             '/views/templates/front/payment/ps17/paymentFormIframe-17'
                             : 'payment/ps16/paymentFormIframe-16').'.tpl';
                 } elseif ($this->module->hipayConfigTool->getPaymentGlobal()['card_token'] && _PS_VERSION_ < '1.7') {
@@ -210,22 +213,19 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     $this->context->smarty->assign(
                         [
                             'HiPay_action' => $this->context->link->getModuleLink(
-                                $this->module->name, 'redirect', [], true
+                                $this->module->name,
+                                'redirect',
+                                [],
+                                true
                             ),
                             'HiPay_languageIsoCode' => $this->context->language->iso_code,
                         ]
                     );
-                    $path = _PS_VERSION_ >= '1.7' ?
-                        'module:'.$this->module->name.
-                        '/views/templates/front/payment/ps17/paymentForm-'.$uxMode.'-17.tpl'
-                        : 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
                 }
                 break;
             case UXMode::DIRECT_POST:
             case UXMode::HOSTED_FIELDS:
                 $this->assignTemplate();
-
-                $path = 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
                 break;
             default:
                 break;

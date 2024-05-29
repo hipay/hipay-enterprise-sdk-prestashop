@@ -4,6 +4,7 @@
 
 - **Fix**: Fixed HiPay refund formular with shipping costs
 - **Fix**: Fixed incompatibility issue with other Prestashop themes
+- **Fix**: Fixed template path on redirect controller when HostedFields is selected
 
 ## 2.21.5
 
