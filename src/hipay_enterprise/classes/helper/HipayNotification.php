@@ -232,7 +232,9 @@ class HipayNotification
                     || $this->getPaymentProductConfig($transaction, 'orderOnPending')
                     && TransactionStatus::AUTHORIZATION_REQUESTED === $transaction->getStatus()
                 ) {
-                    $this->log->logInfos('Received '.$currentAttempt.' '.$transaction->getStatus().' Notifications for cart : '.$cart->id.', creating order now');
+                    $this->log->logInfos(
+                        'Received '.$currentAttempt.' of '.$transaction->getStatus().' notifications for cart : '.$cart->id.', creating order now'
+                    );
                     $orders = $this->registerOrder($transaction, $cart, Configuration::get('HIPAY_OS_PENDING'));
                 } else {
                     if (in_array($transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {
