@@ -157,7 +157,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $this->module->getLogs()->logErrors('# Cart ID is null in initContent');
             Tools::redirect('index.php?controller=order');
         }
-        $this->module->getLogs()->logInfos('# Redirect init CART ID '.$this->context->cart->id);
+        $this->module->getLogs()->logInfos(
+            '# Redirect init context cart ID '.$this->context->cart->id.' - current cart ID '.$this->currentCart->id
+        );
 
         $this->context->smarty->assign(
             [
@@ -189,6 +191,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case UXMode::HOSTED_PAGE:
                 if ('redirect' !== $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']
                     && Tools::getValue('iframeCall')) {
+                    $this->module->getLogs()->logInfos(
+                        '# UXMode: '.$uxMode.' (Iframe case) - Redirect to path '.$path
+                    );
                     $this->context->smarty->assign(
                         [
                             'HiPay_url' => $this->apiHandler->handleCreditCard(
@@ -205,10 +210,15 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                             '/views/templates/front/payment/ps17/paymentFormIframe-17'
                             : 'payment/ps16/paymentFormIframe-16').'.tpl';
                 } elseif ($this->module->hipayConfigTool->getPaymentGlobal()['card_token'] && _PS_VERSION_ < '1.7') {
+                    $this->module->getLogs()->logInfos(
+                        '# UXMode: '.$uxMode.' (PS_VERSION < 1.7) - Redirect to path '.$path
+                    );
                     $this->assignTemplate();
                     $path = 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
                 } else {
                     // Impossible case but necessary
+                    $this->module->getLogs()->logInfos('# UXMode: '.$uxMode.' (Else case) - Redirect to path '.$path);
+                    $this->module->getLogs()->logInfos($this->currentCart);
                     $this->assignTemplate();
                     $this->context->smarty->assign(
                         [
@@ -225,6 +235,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 break;
             case UXMode::DIRECT_POST:
             case UXMode::HOSTED_FIELDS:
+                $this->module->getLogs()->logInfos('# UXMode: '.$uxMode.' - Redirect to path '.$path);
+                $this->module->getLogs()->logInfos($this->currentCart);
                 $this->assignTemplate();
                 break;
             default:
