@@ -288,7 +288,9 @@ class HipayNotification
                         $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
                     }
 
-                    $this->dbUtils->releaseSQLLock($message.' # processTransaction for cart ID : '.$cart->id);
+                    $this->dbUtils->releaseSQLLock(
+                        $message.' # processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+                    );
                     return $message;
                 }
 
@@ -395,7 +397,9 @@ class HipayNotification
                 }
             }
 
-            $this->dbUtils->releaseSQLLock('# processTransaction for cart ID : '.$cart->id);
+            $this->dbUtils->releaseSQLLock(
+                '# processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+            );
 
             /*
              * If 116 or 118, we save the token
@@ -410,10 +414,14 @@ class HipayNotification
 
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
         } catch (NotificationException $e) {
-            $this->dbUtils->releaseSQLLock('Notification exception # processTransaction for cart ID : '.$cart->id);
+            $this->dbUtils->releaseSQLLock(
+                'Notification exception # processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+            );
             throw $e;
         } catch (Exception $e) {
-            $this->dbUtils->releaseSQLLock('Exception # processTransaction for cart ID : '.$cart->id);
+            $this->dbUtils->releaseSQLLock(
+                'Exception # processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+            );
             $this->log->logException($e);
             $this->updateNotificationState($transaction, NotificationStatus::ERROR);
             throw $e;
