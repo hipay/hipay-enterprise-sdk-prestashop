@@ -381,6 +381,65 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * Get amount refunded without basket
+     *
+     * @param int $orderId
+     *
+     * @return float
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function getAmountRefundedWithoutBasket($orderId)
+    {
+        $sql = 'SELECT `refunded_amount`, `basket`'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+        .' WHERE `order_id` = '.(int) $orderId
+        .' AND `status` = 126';
+
+        $result = Db::getInstance()->executeS($sql);
+        $totalRefunded = 0;
+        foreach($result as $transaction){
+            if(($transaction["basket"] === "" || $transaction["basket"] === null)){
+                $totalRefunded += $transaction['refunded_amount'];
+            }
+        }
+        return $totalRefunded;
+    }
+
+    /**
+     * Get amount already refunded.
+     *
+     * @param int $orderId
+     *
+     * @return float
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function getAmountRefunded($orderId)
+    {
+        $totalRefunded = 0;
+        $statusArray = [125, 126];
+
+        foreach ($statusArray as $status) {
+            $sql = 'SELECT `refunded_amount`'
+            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE `order_id` = '.(int) $orderId
+            .' AND `status` = '.$status;
+
+            $results = Db::getInstance()->executeS($sql);
+
+            if(count($results)){
+                foreach($results as $transaction){
+                    $totalRefunded += $transaction['refunded_amount'];
+                }
+                break;
+            }
+        }
+
+        return $totalRefunded;
+    }
+
+    /**
      * return order basket from hipay transaction.
      *
      * @param int $orderId

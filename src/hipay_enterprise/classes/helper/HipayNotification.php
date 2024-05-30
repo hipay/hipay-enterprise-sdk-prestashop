@@ -445,7 +445,8 @@ class HipayNotification
      */
     private function updateOrderStatus($transaction, $order, $newState)
     {
-        if ((int) $order->getCurrentState() != (int) $newState) {
+        if ((int) $order->getCurrentState() != (int) $newState
+            || ((int) $order->getCurrentState() == (int) $newState && $transaction->getStatus() == TransactionStatus::PARTIALLY_REFUNDED)) {
             // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
             if ($this->controleIfStatusHistoryExist($order->id, _PS_OS_OUTOFSTOCK_UNPAID_)
                 && (_PS_OS_PAYMENT_ == $newState)
@@ -715,7 +716,9 @@ class HipayNotification
 
                 $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
                 if (Validate::isLoadedObject($stock_available)) {
-                    $newQuantity = StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id) + (int) $orderDetail->product_quantity;
+                    $stockAvailable = (int) StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id);
+                    $quantityToAdd = (int) $orderDetail->product_quantity - (int) $orderDetail->product_quantity_refunded;
+                    $newQuantity = $stockAvailable + $quantityToAdd;
                     $stock_available->quantity = $newQuantity;
                     $stock_available->update();
                 }
@@ -731,9 +734,9 @@ class HipayNotification
                             $productCombination = new Combination($orderProduct["product_attribute_id"]);
                             $productAttributes = $productCombination->getAttributesName((int)Context::getContext()->language->id);
                             if(empty($productAttributes)){
-                                $orderProductReference = $orderProduct["product_reference"]."-n-a";
+                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-n-a");
                             }else{
-                                $orderProductReference = $orderProduct["product_reference"]."-".$productAttributes[0]["name"];
+                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-".$productAttributes[0]["name"]);
                             }
                             if($transactionProduct->product_reference == $orderProductReference){
                                 $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
@@ -987,7 +990,7 @@ class HipayNotification
     private function addOrderMessage($transaction, $order)
     {
         $customData = $transaction->getCustomData();
-
+        $amountAlreadyRefunded = $this->dbMaintenance->getAmountRefunded($order->id);
         $data = [
             'order_id' => $order->id,
             'transaction_ref' => $transaction->getTransactionReference(),
@@ -996,7 +999,7 @@ class HipayNotification
             'message' => $transaction->getMessage(),
             'amount' => $transaction->getAuthorizedAmount(),
             'captured_amount' => $transaction->getCapturedAmount(),
-            'refunded_amount' => $transaction->getRefundedAmount(),
+            'refunded_amount' => (string) ((float) $transaction->getRefundedAmount() - (float) $amountAlreadyRefunded),
             'payment_product' => $transaction->getPaymentProduct(),
             'payment_start' => $transaction->getDateCreated(),
             'payment_authorized' => $transaction->getDateAuthorized(),
@@ -1164,5 +1167,44 @@ class HipayNotification
         }
 
         return $orders;
+    }
+
+    /**
+     * Remove accents
+     *
+     * @param string string
+     *
+     * @return string
+     */
+    function remove_accents($string) {
+        if (!preg_match('/[\x80-\xff]/', $string)) {
+            return $string;
+        }
+
+        $chars = [
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C', 'È' => 'E', 'É' => 'E',
+            'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O',
+            'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'Th',
+            'ß' => 'ss', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c', 'è' => 'e',
+            'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'd', 'ñ' => 'n', 'ò' => 'o',
+            'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y',
+            'þ' => 'th', 'ÿ' => 'y'
+        ];
+
+        return strtr($string, $chars);
+    }
+
+    /**
+     * Remove accents and lowercase text
+     *
+     * @param string string
+     *
+     * @return string
+     */
+    function sanitize_string($string) {
+        $string = mb_strtolower($string, 'UTF-8');
+        $string = $this->remove_accents($string);
+
+        return $string;
     }
 }
