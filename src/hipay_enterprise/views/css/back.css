@@ -404,3 +404,36 @@
 .inline-grid {
   display: inline-grid;
 }
+
+#hipay_refund_type {
+  padding: 4px 8px 4px 8px;
+  border-radius: 6px;
+
+  margin-left: 6px;
+}
+
+#hipay_refund_amount{
+  padding: 4px 8px 4px 8px;
+  border-radius: 6px;
+
+  margin-left: 6px;
+  width: 80px;
+}
+
+.input-group-addon{
+  margin-left: 6px;
+}
+
+.good-selector-refund{
+  padding: 4px 0px 4px 8px;
+  border-radius: 6px;
+
+  margin-left: 6px;
+}
+
+.refund-quantity-selector{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

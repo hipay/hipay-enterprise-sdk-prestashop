@@ -23,8 +23,8 @@
         <input type="hidden" name="token" value="{$HiPay_tokenRefund}"/>
 
         <div class="form-group">
-            <label class="col-lg-4" for="hipay_refund_type">{l s='Refund type'  mod='hipay_enterprise'}</label>
-            <select id="hipay_refund_type" name="hipay_refund_type" class="col-lg-3">
+            <label for="hipay_refund_type">{l s='Refund type'  mod='hipay_enterprise'}</label>
+            <select id="hipay_refund_type" name="hipay_refund_type">
                 {if !$HiPay_partiallyRefunded}
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
@@ -36,7 +36,7 @@
         </div>
 
         <div id="block-refund-amount" style="display:none;" class="form-group bloc-actions-hipay">
-            <table class="table table-item-hipay">
+            <table class="table table-item-hipay refund-table">
                 <thead>
                 <tr>
                     <th>{l s='Reference'  mod='hipay_enterprise'}</th>
@@ -90,7 +90,7 @@
                         </td>
                         <td>
                             {if $remainQty > 0}
-                                <div class="col-lg-6 input-group">
+                                <div class="input-group refund-quantity-selector">
                                     <input data-unit-price="{$item.unit_price_tax_incl}"
                                             data-id="{$itemId}"
                                             class="good-selector-refund" name="hipayrefund[{$itemId}]"
@@ -349,7 +349,7 @@
                     </tr>
                 </tfoot>
             </table>
-            <label class="control-label "
+            <label class="control-label"
                     for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
             <input type="text" id="hipay_refund_amount" name="hipay_refund_amount" value="{$HiPay_refundableAmount}"/>
         </div>
@@ -393,6 +393,9 @@
                 };
                 items.push(item);
             });
+
+            $("#total-refund").text("- " + currencySign);
+            $("#total-refund-input").val(0);
 
             $.post('{$HiPay_ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
                 {
