@@ -232,7 +232,9 @@ class HipayNotification
                     || $this->getPaymentProductConfig($transaction, 'orderOnPending')
                     && TransactionStatus::AUTHORIZATION_REQUESTED === $transaction->getStatus()
                 ) {
-                    $this->log->logInfos('Received '.$currentAttempt.' '.$transaction->getStatus().' Notifications for cart : '.$cart->id.', creating order now');
+                    $this->log->logInfos(
+                        'Received '.$currentAttempt.' of '.$transaction->getStatus().' notifications for cart : '.$cart->id.', creating order now'
+                    );
                     $orders = $this->registerOrder($transaction, $cart, Configuration::get('HIPAY_OS_PENDING'));
                 } else {
                     if (in_array($transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {
@@ -243,7 +245,10 @@ class HipayNotification
                 }
             }
 
-            $this->dbUtils->setSQLLockForCart($order->id, '# processTransaction for order ID : '.$order->id);
+            $this->dbUtils->setSQLLockForCart(
+                $order->id,
+                '# processTransaction '.$transaction->getStatus().' for order ID : '.$order->id
+            );
 
             foreach ($orders as $order) {
                 $orderInBase = $this->dbUtils->getTransactionByOrderId($order->id);
@@ -288,7 +293,9 @@ class HipayNotification
                         $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
                     }
 
-                    $this->dbUtils->releaseSQLLock($message.' # processTransaction for cart ID : '.$cart->id);
+                    $this->dbUtils->releaseSQLLock(
+                        $message.' # processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+                    );
                     return $message;
                 }
 
@@ -351,7 +358,10 @@ class HipayNotification
                     case TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED:
                     case TransactionStatus::CANCELLED:
                         // For cancelled duplicate transaction, do not cancel original order
-                        if ($transaction->getTransactionReference() === $orderInBase['transaction_ref'] && !$orderHasBeenPaid) {
+                        if ($orderInBase
+                            && $transaction->getTransactionReference() === $orderInBase['transaction_ref']
+                            && !$orderHasBeenPaid
+                        ) {
                             $this->updateOrderStatus($transaction, $order, _PS_OS_CANCELED_);
                         }
                         break;
@@ -395,7 +405,9 @@ class HipayNotification
                 }
             }
 
-            $this->dbUtils->releaseSQLLock('# processTransaction for cart ID : '.$cart->id);
+            $this->dbUtils->releaseSQLLock(
+                '# processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+            );
 
             /*
              * If 116 or 118, we save the token
@@ -409,11 +421,10 @@ class HipayNotification
             }
 
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
-        } catch (NotificationException $e) {
-            $this->dbUtils->releaseSQLLock('Notification exception # processTransaction for cart ID : '.$cart->id);
-            throw $e;
         } catch (Exception $e) {
-            $this->dbUtils->releaseSQLLock('Exception # processTransaction for cart ID : '.$cart->id);
+            $this->dbUtils->releaseSQLLock(
+                get_class($e).' # processTransaction '.$transaction->getStatus().' for cart ID : '.$cart->id
+            );
             $this->log->logException($e);
             $this->updateNotificationState($transaction, NotificationStatus::ERROR);
             throw $e;
@@ -818,7 +829,7 @@ class HipayNotification
      *
      * @param Transaction $transaction
      * @param Order       $order
-     * @param mixed       $orderInBase
+     * @param mixed|false $orderInBase
      *
      * @return true
      *
@@ -830,6 +841,7 @@ class HipayNotification
 
         // For refunded duplicate transaction, do not refund original order
         if (HipayHelper::orderExists($transaction->getOrder()->getId())
+            && $orderInBase
             && $transaction->getTransactionReference() === $orderInBase['transaction_ref']
         ) {
             // If Capture is originated in the TPP BO the Operation field is null

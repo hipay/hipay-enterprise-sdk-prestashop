@@ -263,6 +263,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
 
     /**
      * @param int $orderId
+     * @return mixed|false
      */
     public function getTransactionByOrderId($orderId)
     {
