@@ -29,7 +29,7 @@
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
                 {if $HiPay_refundedAmountWithoutBasket == 0}
-                    <option value="partial">{l s='Partial' mod='hipay_enterprise'}</option>
+                    <option value="partial">{l s='Partial with basket' mod='hipay_enterprise'}</option>
                 {/if}
                 <option value="partialWithoutBasket">{l s='Partial without basket' mod='hipay_enterprise'}</option>
             </select>
@@ -180,7 +180,10 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <span id="total-refund"> </span>
+                        <div id="total-container">
+                            <span id="total-refund"></span>
+                            <span id="total-loader" class="loader"></span>
+                        </div>
                         <input type="hidden" id="total-refund-input" name="total-refund-input" value="0.00"/>
                     </td>
                 </tr>
@@ -190,9 +193,7 @@
 
         <div id="block-refund-amount-without-basket" style="display:none;" class="form-group bloc-actions-hipay">
             <p id="warning-js" class="alert alert-warning">
-                {l s='Refund without basket means that, from now on,
-                refunds will be unbundled from products and stocks will no longer be managed.
-                You will no longer be able to make classic partial refunds. '}
+                {l s='Refund without basket means that, from now on, refunds will be unbundled from products and stocks will no longer be managed. You will no longer be able to make classic partial refunds.'  mod='hipay_enterprise'}
             </p>
             <table class="table table-item-hipay">
                 <thead>
@@ -351,7 +352,11 @@
             </table>
             <label class="control-label"
                     for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
-            <input type="text" id="hipay_refund_amount" name="hipay_refund_amount" value="{$HiPay_refundableAmount}"/>
+            <div class="input-group refund-amount">
+                <input type="text" id="hipay_refund_amount" name="hipay_refund_amount" value="{$HiPay_refundableAmount}" 
+                class="form-control" aria-describedby="basic-addon2">
+                <span class="input-group-text" id="basic-addon2">{$currency->sign}</span>
+            </div>
         </div>
         <p style="display:none;" id="danger-js" class="alert alert-danger"></p>
         <div class="form-group">
@@ -374,6 +379,7 @@
 
         handleRefundTypeDisplay($("#hipay_refund_type").find(":selected").val());
         addEvents();
+        $("#total-loader").css("display", "none");
 
         var currencySign = "€";
         var refundableAmount = {$HiPay_refundableAmount};
@@ -385,6 +391,10 @@
         updateRefundPrice();
 
         function updateRefundPrice() {
+            $("#total-refund").css("display", "none");
+            $("#total-loader").css("display", "block");
+            $("#total-refund-input").val(0);
+
             var items = [];
             $(".good-selector-refund").each(function () {
                 var item = {
@@ -393,9 +403,6 @@
                 };
                 items.push(item);
             });
-
-            $("#total-refund").text("- " + currencySign);
-            $("#total-refund-input").val(0);
 
             $.post('{$HiPay_ajaxCalculatePrice}&ajax=1&action=CalculatePrice',
                 {
@@ -415,6 +422,8 @@
                             amount = amount - 0.01;
                         }
 
+                        $("#total-loader").css("display", "none");
+                        $("#total-refund").css("display", "block");
                         $("#total-refund").text(amount + " " + currencySign);
                         $("#total-refund-input").val(amount);
                     }

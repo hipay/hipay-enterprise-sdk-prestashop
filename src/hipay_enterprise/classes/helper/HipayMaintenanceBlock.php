@@ -99,6 +99,7 @@ class HipayMaintenanceBlock
                 'HiPay_id_currency' => $this->order->id_currency,
                 'HiPay_orderId' => $this->order->id,
                 'HiPay_employeeId' => $this->context->employee->id,
+                'currency' =>  $this->context->currency
             ]
         );
 

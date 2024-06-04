@@ -412,28 +412,63 @@
   margin-left: 6px;
 }
 
-#hipay_refund_amount{
+#hipay_refund_amount {
   padding: 4px 8px 4px 8px;
-  border-radius: 6px;
 
   margin-left: 6px;
   width: 80px;
+
+  text-align: right;
 }
 
-.input-group-addon{
+.refund-amount {
+  width: 120px;
+}
+
+.input-group-text {
+  border-radius: 0px 4px 4px 0px;
+}
+
+.input-group-addon {
   margin-left: 6px;
 }
 
-.good-selector-refund{
+.good-selector-refund {
   padding: 4px 0px 4px 8px;
   border-radius: 6px;
 
   margin-left: 6px;
 }
 
-.refund-quantity-selector{
+.refund-quantity-selector {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+#total-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #101010;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
