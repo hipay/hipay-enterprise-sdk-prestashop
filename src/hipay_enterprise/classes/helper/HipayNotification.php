@@ -652,7 +652,7 @@ class HipayNotification
                         }
 
                         if (!$alreadyExists) {
-                            $orderPaymentResult = $this->createOrderSlip($order, $transaction);
+                            $this->createOrderSlip($order, $transaction);
                         }
                     } else {
                         $orderPaymentResult = $order->addOrderPayment(
