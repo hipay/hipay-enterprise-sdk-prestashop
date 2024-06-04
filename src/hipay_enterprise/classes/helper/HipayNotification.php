@@ -759,8 +759,10 @@ class HipayNotification
                         break;
                     case 'fee':
                         $fees = (float) $order->total_shipping_tax_excl;
+                        break;
                     case 'discount':
                         $discount = (float) $order->total_discounts_tax_incl;
+                        break;
                     default:
                         break;
                 }
