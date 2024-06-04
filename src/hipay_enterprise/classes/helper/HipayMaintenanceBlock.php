@@ -366,7 +366,7 @@ class HipayMaintenanceBlock
         $refundedItems = $this->dbMaintenance->getRefundedItems($this->order->id);
         $refundedFees = $this->dbMaintenance->feesAreRefunded($this->order->id);
         $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
-        $refundedWrappings = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
+        $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
 
         foreach ($this->order->getProducts() as $product) {
             $productId = (int)($product['id_product'].$product['product_attribute_id']);
@@ -374,7 +374,7 @@ class HipayMaintenanceBlock
                 $refundedItems[$productId]['quantity'] >= $product['product_quantity']);
         }
 
-        if (!$refundedFees || !$refundedDiscounts || !$refundedWrappings) {
+        if (!$refundedFees || !$refundedDiscounts || !$refundedWrapping) {
             $totallyRefunded = false;
         }
 
