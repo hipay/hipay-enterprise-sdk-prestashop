@@ -350,9 +350,9 @@
                     </tr>
                 </tfoot>
             </table>
-            <label class="control-label"
-                    for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
             <div class="input-group refund-amount">
+                <label class="control-label"
+                    for="hipay_refund_amount">{l s='Refund amount' mod='hipay_enterprise'}</label>
                 <input type="text" id="hipay_refund_amount" name="hipay_refund_amount" value="{$HiPay_refundableAmount}" 
                 class="form-control" aria-describedby="basic-addon2">
                 <span class="input-group-text" id="basic-addon2">{$currency->sign}</span>
