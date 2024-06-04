@@ -249,15 +249,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      *  Retrieve discount from original cart
      *
      * @param $name
+     * @param $index
      * @return mixed
      */
     private
     function getOriginalDiscount(
-        $name
+        $name,
+        $index
     ) {
         foreach ($this->originalHipayBasket as $key => $value) {
-            if ($value["name"] == $name
-                && $value["type"] == 'discount') {
+            if (
+                $value["type"] == 'discount'
+                && explode('/', $value["name"])[$index] == $name
+            ) {
                 return $value;
             }
         }
@@ -293,10 +297,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $discount_description = array();
         $total_amount = 0;
 
-        foreach ($this->discounts as $disc) {
+        foreach ($this->discounts as $i => $disc) {
+            $productRef = $this->getOriginalDiscount($disc["name"], $i);
             $cartRule = new CartRule($disc["id_cart_rule"]);
             $name[] = $disc["name"];
-            $product_reference[] = $this->getOriginalDiscount($disc["name"])["product_reference"];
+            $product_reference[] = explode('/', $productRef["product_reference"])[$i];
             $unit_price += -1 * Tools::ps_round($disc["value"], 2);
             $tax_rate = 0.00;
             $discount = 0.00;
