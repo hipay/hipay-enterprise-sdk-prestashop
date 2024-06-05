@@ -1,3 +1,4 @@
+var placeOrderButton = true;
 jQuery(document).ready(function ($) {
   initEventsHostedFields();
 });
@@ -197,5 +198,58 @@ function handleErrorhipayHF(errors) {
     if (domElement) {
       domElement.innerText = errors[error].error;
     }
+  }
+}
+
+//Only if one Page checkout module is activated
+if (typeof PaymentOPC !== typeof undefined ) {
+  jQuery(document).ready(function ($) {
+    initHostedFields();
+    ajaxCompleteCheckoutPlaceOrder().then(({event, xhr, settings}) => {
+      setSelectedPaymentMethod();
+      $('#tokenizerForm').submit();
+    });
+  });
+  function ajaxCompleteCheckoutPlaceOrder() {
+    return new Promise((resolve, reject) => {
+      $(document).ajaxComplete((event, xhr, settings) => {
+        if (
+            settings.url.includes(prestashop.urls.pages.order) &&
+            typeof settings.data === 'string' && // Check if data is a string
+            settings.data.includes("placeOrder")
+        ) {
+          resolve({ event, xhr, settings });
+        }
+      });
+    });
+  }
+  function setSelectedPaymentMethod() {
+    myPaymentMethodSelected = $("#onepagecheckoutps_step_three_container").find(
+        "input[data-module-name='credit_card']").is(
+        ":checked");
+    $(document).on("change", 'input[name="payment-option"]', function() {
+      myPaymentMethodSelected = $("#onepagecheckoutps_step_three_container").find(
+          "input[data-module-name='credit_card']").is(
+          ":checked");
+    });
+  }
+
+  /**
+   * One Page Checkout Module
+   *
+   * @returns {Promise<unknown>}
+   */
+  function ajaxCompleteCheckoutReview() {
+    return new Promise((resolve, reject) => {
+      $(document).ajaxComplete((event, xhr, settings) => {
+        if (
+            settings.url.includes(prestashop.urls.pages.order) &&
+            typeof settings.data === 'string' && // Check if data is a string
+            settings.data.includes("loadReview")
+        ) {
+          resolve({ event, xhr, settings });
+        }
+      });
+    });
   }
 }
