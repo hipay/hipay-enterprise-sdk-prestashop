@@ -29,9 +29,54 @@
     </div>
 </div>
 <script>
+  var methodsInstance = {};
   var submitButton;
+  var checkbox;
+
+  /**
+   * If One page Checkout module is actived,
+   *
+   * @type boolean
+   */
+  var OPC_enabled = typeof PaymentOPC !== 'undefined';
+
   document.addEventListener('DOMContentLoaded', function () {
-    submitButton = $('#payment-confirmation button');
+    checkbox = document.querySelector('input[id^="conditions_to_approve"]');
+    submitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
+    if (!OPC_enabled) {
+      initApplePayInstance();
+    }
+  }, false);
+
+  //One Page Checkout Is activated
+  if (OPC_enabled) {
+    $(document).ready(function () {
+      eventTarget.addEventListener('opc_update_card', handleApplePayAndReview);
+    });
+  }
+
+  /**
+   * One Page Checkout - Handles the Applepay payment process and review, including payment option change and terms of service checkbox events.
+   *
+   * @param event
+   */
+  function handleApplePayAndReview(event) {
+    handleSubmitButton();
+    handleTermsOfService();
+
+    //After page checkout is totally loaded and updated
+    ajaxCompleteCheckoutReview().then(({ event, xhr, settings }) => {
+      checkbox = document.querySelector('input[id^="conditions_to_approve"]');
+      submitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
+      initApplePayInstance();
+      applePayHandlePaymentOptionChange(false);
+    });
+  }
+
+  /**
+   * Initializes the ApplePay instance with appropriate credentials and configuration based on sandbox or production mode.
+   */
+  function initApplePayInstance() {
 
     const parameters = {
       api_apple_pay_username: '{$HiPay_credentials.api_apple_pay_username}',
@@ -45,14 +90,12 @@
     };
 
     initApplePay(parameters);
-  }, false);
-
+  }
   /**
    * Create Apple Pay button
    */
   function initApplePay(parameters) {
     handleSubmitButton();
-
 
     if (canMakeApplePayPayment()) {
       handleTermsOfService();
@@ -62,9 +105,11 @@
 
       $('#apple-pay-error-message').css('display', 'inline');
       $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
-      const intanceApplePayButton = createApplePayInstance(parameters);
 
-      handleApplePayEvents(intanceApplePayButton);
+      applePayDestroyMethods(methodsInstance);
+      createApplePayInstance(parameters);
+      handleApplePayEvents(methodsInstance['applepay']);
+
     } else {
       $('#apple-pay-button').hide();
 
@@ -106,34 +151,79 @@
     });
   }
 
+  /**
+   * Handles the payment option change event by calling paypalHandlePaymentOptionChange.
+   */
   function handleSubmitButton() {
     $('input[name="payment-option"]').on('change', function() {
       // If the displayed payment method is apple pay, remove the payment button
-      if ($('#pay-with-' + $(this).attr('id') + '-form form').attr('id') === 'applepay-hipay') {
-        $('#payment-confirmation button').remove();
-      } else if (!$('#payment-confirmation button').length) {
-        $('#payment-confirmation .ps-shown-by-js').append(submitButton);
-      }
+     applePayHandlePaymentOptionChange();
     });
   }
 
+  /**
+   * Shows/hides the ApplePay button based on the selected payment option (Paypal, Apple Pay, or others).
+   *
+   * @param initApplePay (reinit ApplePay button instance)
+   */
+  function applePayHandlePaymentOptionChange(initApplePay = true) {
+    let paymentOptionId = $('input[name="payment-option"]:checked').attr('id');
+    let paymentFormId = $('#pay-with-' + paymentOptionId + '-form form').attr('id');
+
+    if (paymentFormId === 'applepay-hipay' || paymentFormId === 'paypal-hipay') {
+      placeOrderButton = false;
+      // If the displayed payment method is Apple Pay or PayPal, remove the payment button
+      submitButton.remove();
+      if (OPC_enabled) {
+        $('#btn_place_order').remove();
+      }
+      if (initApplePay) {
+        initApplePayInstance();
+      }
+    } else {
+      applePayDestroyMethods(methodsInstance);
+      placeOrderButton = true;
+    }
+
+    if (!$('#payment-confirmation button').length || !$('#btn_place_order').length) {
+      if (placeOrderButton) {
+        $('#payment-confirmation .ps-shown-by-js').append(submitButton);
+        if (OPC_enabled) {
+          $('#buttons_footer_review div').append(submitButton);
+        }
+      }
+      applePayDestroyMethods(methodsInstance);
+    }
+  }
+
+  /**
+   * Handles the terms of service checkbox change event by calling paypalCheckTermeOfService.
+   */
   function handleTermsOfService() {
+    if (OPC_enabled) {
+      $('input[id^=conditions_to_approve][required]:checkbox').prop('checked', false);
+    }
     $('input[id^=conditions_to_approve][required]:checkbox').on('change', function () {
       checkTermeOfService();
     });
   }
 
+  /**
+   * Shows/hides the Applepay button and error message based on the state of the terms of service checkbox.
+   */
   function checkTermeOfService() {
-    if ($('input[id^=conditions_to_approve][required]:checkbox:not(:checked)').length) {
-      $('#apple-pay-button').hide();
-      $('#apple-pay-error-message').css('display', 'inline');
-      $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
-      $("#payment-confirmation button[type=submit]").show();
+    const applePayButton = $('#apple-pay-button');
+    const applePayErrorMessage = $('#apple-pay-error-message');
+    const submitButton = $("#payment-confirmation button[type=submit]");
+
+    if (checkbox && !checkbox.checked) {
+      applePayButton.hide();
+      applePayErrorMessage.css('display', 'inline').text($('#apple-pay-termes-of-service-error-message').text());
+      submitButton.show();
     } else {
-      $('#apple-pay-button').show();
-      $('#apple-pay-error-message').hide();
-      $("#payment-confirmation button[type=submit]").attr('disabled', 'true');
-      $("#payment-confirmation button[type=submit]").hide();
+      applePayButton.show();
+      applePayErrorMessage.hide();
+      submitButton.attr('disabled', 'true').hide();
     }
   }
 
@@ -187,7 +277,7 @@
       selector: 'apple-pay-button'
     };
 
-    return appleHipay.create(
+    return methodsInstance['applepay'] = appleHipay.create(
       'paymentRequestButton',
       options
     );
@@ -239,6 +329,22 @@
     $("#apple-pay-card-expiry-year").val(card_expiry_year);
     $("#apple-pay-card-issuer").val(issuer);
     $("#apple-pay-card-country").val(country);
+  }
+
+  /**
+   * Destroy already created instance for applePay
+   *
+   * @param methodsInstance
+   */
+  function applePayDestroyMethods(methodsInstance) {
+    // Iterate over the object values to call the destroy method
+    Object.values(methodsInstance).forEach((method) => {
+      if (method && typeof method.destroy === 'function') {
+        method.destroy();
+      }
+    });
+    // Reassign methodsInstance to a new empty object to clear all properties
+    methodsInstance = {};
   }
 
   /**
