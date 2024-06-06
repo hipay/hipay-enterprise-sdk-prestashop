@@ -445,7 +445,8 @@ class HipayNotification
      */
     private function updateOrderStatus($transaction, $order, $newState)
     {
-        if ((int) $order->getCurrentState() != (int) $newState) {
+        if ((int) $order->getCurrentState() != (int) $newState
+            || ((int) $order->getCurrentState() == (int) $newState && $transaction->getStatus() == TransactionStatus::PARTIALLY_REFUNDED)) {
             // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
             if ($this->controleIfStatusHistoryExist($order->id, _PS_OS_OUTOFSTOCK_UNPAID_)
                 && (_PS_OS_PAYMENT_ == $newState)
@@ -651,34 +652,7 @@ class HipayNotification
                         }
 
                         if (!$alreadyExists) {
-                            if ($amount !== floatval($order->total_paid)) {
-                                // Force amount to the chosen one
-                                $productArray = $order->getProducts();
-
-                                $product = array_pop($productArray);
-
-                                $order_detail = new OrderDetail((int) $product['id_order_detail']);
-                                $tax_calculator = $order_detail->getTaxCalculator();
-                                $amount = $tax_calculator->removeTaxes($amount);
-
-                                $product['unit_price'] = $amount;
-                                $product['product_quantity_refunded'] = $product['product_quantity'];
-                                $product['quantity'] = 1;
-
-                                $orderPaymentResult = OrderSlip::create(
-                                    $order,
-                                    [$product]
-                                );
-                            } else {
-                                $productArray = $order->getProducts();
-
-                                foreach ($productArray as &$product) {
-                                    $product['unit_price'] = $product['unit_price_tax_excl'];
-                                    $product['product_quantity_refunded'] = $product['product_quantity'];
-                                    $product['quantity'] = $product['product_quantity'];
-                                }
-                                $orderPaymentResult = OrderSlip::create($order, $productArray, null, $amount);
-                            }
+                            $this->createOrderSlip($order, $transaction);
                         }
                     } else {
                         $orderPaymentResult = $order->addOrderPayment(
@@ -707,6 +681,101 @@ class HipayNotification
             } else {
                 $this->log->logInfos('# Order Payment of 0 amount not added');
             }
+        }
+    }
+
+    /**
+     * Handle refund products and create order slip.
+     *
+     * @param Order         $order
+     * @param Transaction   $transaction
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    private function createOrderSlip($order, $transaction)
+    {
+        $orderProducts = $order->getProducts();
+        $transactionProducts = json_decode($transaction->getBasket()) !== null ? json_decode($transaction->getBasket()) : []; //good, fee, discount
+
+        $refundedProducts = [];
+        $fees = false;
+        $discount = 0;
+        $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getCapturedAmount() ? true : false;
+
+        if($isCompleteRefund){
+            foreach ($orderProducts as $orderProduct) {
+                $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
+                $orderDetail->total_refunded_tax_excl = (float) $orderDetail->total_price_tax_excl;
+                $orderDetail->total_refunded_tax_incl = (float) $orderDetail->total_price_tax_incl;
+                $orderProduct['quantity'] = $orderDetail->product_quantity;
+                $orderProduct['unit_price'] = $orderDetail->unit_price_tax_excl;
+                $refundedProducts[] = $orderProduct;
+                $orderDetail->update();
+
+                $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
+                if (Validate::isLoadedObject($stock_available)) {
+                    $stockAvailable = (int) StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id);
+                    $quantityToAdd = (int) $orderDetail->product_quantity - (int) $orderDetail->product_quantity_refunded;
+                    $newQuantity = $stockAvailable + $quantityToAdd;
+                    $stock_available->quantity = $newQuantity;
+                    $stock_available->update();
+                }
+            }
+
+            $fees = (float) $order->total_shipping_tax_excl;
+            $discount = (float) $order->total_discounts_tax_incl;
+        }else{
+            foreach ($transactionProducts as $transactionProduct) {
+                switch ($transactionProduct->type) {
+                    case 'good':
+                        foreach ($orderProducts as $orderProduct) {
+                            $productCombination = new Combination($orderProduct["product_attribute_id"]);
+                            $productAttributes = $productCombination->getAttributesName((int)Context::getContext()->language->id);
+                            if(empty($productAttributes)){
+                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-n-a");
+                            }else{
+                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-".$productAttributes[0]["name"]);
+                            }
+                            if($transactionProduct->product_reference == $orderProductReference){
+                                $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
+                                $orderDetail->total_refunded_tax_excl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_excl;
+                                $orderDetail->total_refunded_tax_incl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_incl;
+                                $orderProduct['quantity'] = $transactionProduct->quantity;
+                                $orderProduct['unit_price'] = $orderDetail->unit_price_tax_excl;
+                                $refundedProducts[] = $orderProduct;
+                                $orderDetail->update();
+
+                                $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
+                                if (Validate::isLoadedObject($stock_available)) {
+                                    $newQuantity = StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id) + (int)$transactionProduct->quantity;
+                                    $stock_available->quantity = $newQuantity;
+                                    $stock_available->update();
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    case 'fee':
+                        $fees = (float) $order->total_shipping_tax_excl;
+                        break;
+                    case 'discount':
+                        $discount = (float) $order->total_discounts_tax_incl;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        if(count($refundedProducts)){
+            OrderSlip::create(
+                $order,
+                $refundedProducts,
+                $fees,
+                (float) $discount
+            );
         }
     }
 
@@ -923,7 +992,7 @@ class HipayNotification
     private function addOrderMessage($transaction, $order)
     {
         $customData = $transaction->getCustomData();
-
+        $amountAlreadyRefunded = $this->dbMaintenance->getAmountRefunded($order->id);
         $data = [
             'order_id' => $order->id,
             'transaction_ref' => $transaction->getTransactionReference(),
@@ -932,7 +1001,7 @@ class HipayNotification
             'message' => $transaction->getMessage(),
             'amount' => $transaction->getAuthorizedAmount(),
             'captured_amount' => $transaction->getCapturedAmount(),
-            'refunded_amount' => $transaction->getRefundedAmount(),
+            'refunded_amount' => (string) ((float) $transaction->getRefundedAmount() - (float) $amountAlreadyRefunded),
             'payment_product' => $transaction->getPaymentProduct(),
             'payment_start' => $transaction->getDateCreated(),
             'payment_authorized' => $transaction->getDateAuthorized(),
@@ -1100,5 +1169,44 @@ class HipayNotification
         }
 
         return $orders;
+    }
+
+    /**
+     * Remove accents
+     *
+     * @param string string
+     *
+     * @return string
+     */
+    function remove_accents($string) {
+        if (!preg_match('/[\x80-\xff]/', $string)) {
+            return $string;
+        }
+
+        $chars = [
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C', 'È' => 'E', 'É' => 'E',
+            'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O',
+            'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'Th',
+            'ß' => 'ss', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c', 'è' => 'e',
+            'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'd', 'ñ' => 'n', 'ò' => 'o',
+            'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y',
+            'þ' => 'th', 'ÿ' => 'y'
+        ];
+
+        return strtr($string, $chars);
+    }
+
+    /**
+     * Remove accents and lowercase text
+     *
+     * @param string string
+     *
+     * @return string
+     */
+    function sanitize_string($string) {
+        $string = mb_strtolower($string, 'UTF-8');
+        $string = $this->remove_accents($string);
+
+        return $string;
     }
 }

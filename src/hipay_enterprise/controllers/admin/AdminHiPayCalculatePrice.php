@@ -65,12 +65,14 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
 
             if (!empty($items)) {
                 foreach ($order->getProducts() as $product) {
+                    $productId = (int) $product["id_product"].$product["product_attribute_id"];
                     foreach ($items as $item) {
-                        if ($item["id"] == $product["id_product"]) {
+                        if ($item["id"] == $productId) {
                             $params["products"][] = array(
                                 "item" => $product,
                                 "quantity" => $item["qty"]
                             );
+                            break;
                         }
                     }
                 }

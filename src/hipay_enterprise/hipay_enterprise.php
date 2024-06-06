@@ -329,7 +329,7 @@ class Hipay_enterprise extends PaymentModule
                                 $productId = null;
                                 foreach ($orderDetailList as $orderDetail) {
                                     if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
-                                        $productId = $orderDetail['product_id'];
+                                        $productId = $orderDetail['product_attribute_id'];
                                         break;
                                     }
                                 }

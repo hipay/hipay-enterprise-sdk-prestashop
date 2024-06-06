@@ -166,7 +166,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $qty
     ) {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
-        $productFromCart = $this->cart->getProducts(true, (int)$product["product_id"])[0];
+        $productsFromCartWithId = $this->cart->getProducts(true, (int)$product["product_id"]);
+
+        if(count($productsFromCartWithId) > 1){
+            foreach ($productsFromCartWithId as $currentProduct) {
+                if($product['product_attribute_id'] == $currentProduct['id_product_attribute']){
+                    $productFromCart = $currentProduct;
+                    break;
+                }
+            }
+        }else{
+            $productFromCart = $productsFromCartWithId[0];
+        }
+
 
         $european_article_numbering = null;
         if (!empty($product["ean13"]) && $product["ean13"] != "0") {
@@ -220,7 +232,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         if ($this->maintenanceData) {
             $captureData = array(
                 "hp_ps_order_id" => $this->order->id,
-                "hp_ps_product_id" => $product["product_id"],
+                "hp_ps_product_id" => (int)($product["id_product"].$product["product_attribute_id"]),
                 "operation" => $this->operation,
                 "type" => 'good',
                 "attempt_number" => $this->transactionAttempt + 1,
@@ -237,15 +249,19 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      *  Retrieve discount from original cart
      *
      * @param $name
+     * @param $index
      * @return mixed
      */
     private
     function getOriginalDiscount(
-        $name
+        $name,
+        $index
     ) {
         foreach ($this->originalHipayBasket as $key => $value) {
-            if ($value["name"] == $name
-                && $value["type"] == 'discount') {
+            if (
+                $value["type"] == 'discount'
+                && explode('/', $value["name"])[$index] == $name
+            ) {
                 return $value;
             }
         }
@@ -281,10 +297,11 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $discount_description = array();
         $total_amount = 0;
 
-        foreach ($this->discounts as $disc) {
+        foreach ($this->discounts as $i => $disc) {
+            $productRef = $this->getOriginalDiscount($disc["name"], $i);
             $cartRule = new CartRule($disc["id_cart_rule"]);
             $name[] = $disc["name"];
-            $product_reference[] = $this->getOriginalDiscount($disc["name"])["product_reference"];
+            $product_reference[] = explode('/', $productRef["product_reference"])[$i];
             $unit_price += -1 * Tools::ps_round($disc["value"], 2);
             $tax_rate = 0.00;
             $discount = 0.00;
