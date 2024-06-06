@@ -6,6 +6,7 @@
 - **Fix**: Fixed incompatibility issue with other Prestashop themes
 - **Fix**: Fixed template path on redirect controller when HostedFields is selected
 - **Fix**: Fixed upgrade scripts from previous versions `2.20.0` and `2.21.4`, thanks to [Kaikina](https://github.com/Kaikina) for issue [#87](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/87)
+- **Add**: Add rebranding colors to hipay module
 
 ## 2.21.5
 
