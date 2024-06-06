@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased (2.22.0)
+## 2.22.0
 
 - **Add**: Add PayPal v2
 - **Add**: Add rebranding colors to hipay module
