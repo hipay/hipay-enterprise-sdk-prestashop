@@ -12,12 +12,14 @@
 
 <div class="panel hipay-tabs" id="panel-local-payment">
     <div class="form-wrapper">
-        <a data-toggle="collapse" href="#payment_form__collapseLocalPayment" aria-expanded="true"
-            aria-controls="payment_form__collapseLocalPayment">
-            <h3><i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_enterprise'}<i id="chevronLocal"
-                    class="pull-right chevron icon icon-chevron-down"></i>
-            </h3>
-        </a>
+        <div class="panel-heading">
+            <a data-toggle="collapse" href="#payment_form__collapseLocalPayment" aria-expanded="true"
+                aria-controls="payment_form__collapseLocalPayment">
+                <i class="icon icon-credit-card"></i> {l s='Local payment' mod='hipay_enterprise'}<i id="chevronLocal"
+                        class="pull-right chevron icon icon-chevron-down"></i>
+                
+            </a>
+        </div>
         <div class="collapse in" id="payment_form__collapseLocalPayment">
             <div role="tabpanel">
                 <ul class="nav nav-pills nav-stacked col-md-2" role="tablist">
