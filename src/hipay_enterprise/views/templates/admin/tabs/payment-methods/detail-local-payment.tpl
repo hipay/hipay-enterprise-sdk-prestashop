@@ -83,8 +83,9 @@
         <div class="row">
             <div class="form-group">
                 <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
-                <div class="col-lg-1" style='width:45px;'>
-                    <input type="text" class="money-type positioning" name="{$key}_frontPosition" value="{$method.frontPosition}" />
+                <div class="col-lg-1">
+                    <input type="text" class="money-type positioning" name="{$key}_frontPosition"
+                        value="{$method.frontPosition}" />
                 </div>
             </div>
         </div>

@@ -40,7 +40,7 @@
     "minPrestashopVersion": "1.7",
     "canManualCapture": false,
     "canManualCapturePartially": false,
-    "bnpl": true,
+    "bnpl": 1,
     "logo": "paypal.png"
   }
 }
