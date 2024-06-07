@@ -237,7 +237,7 @@ class Apihandler
                     $displayMsg = null;
                     $order = new Order($params['order']);
 
-                    $transactionRef = '';
+                    $transactionRef = $params['transaction_reference'] || '';
                     $status = '';
 
                     if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
@@ -282,16 +282,10 @@ class Apihandler
                         } else {
                             $displayMsg = $this->module->l("The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay's BackOffice");
                             $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
-
-                            $transactionRef = '';
-                            $status = '';
                         }
                     } else {
                         $displayMsg = $this->module->l("The HiPay transaction was not canceled because it's status doesn't allow cancellation. You can see and cancel the transaction directly from HiPay's BackOffice");
                         $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
-
-                        $transactionRef = '';
-                        $status = '';
                     }
 
                     if (!empty($displayMsg)) {

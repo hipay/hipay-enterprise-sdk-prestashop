@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Private)' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">{l s='Credentials (Private)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
@@ -95,7 +95,7 @@
                                     value="{$HiPay_config_hipay.account.production.api_secret_passphrase_production}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">{l s='Credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
@@ -117,7 +117,7 @@
                                     value="{$HiPay_config_hipay.account.production.api_tokenjs_password_publickey_production}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='MO/TO private credentials' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">
@@ -153,7 +153,7 @@
                             empty($HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
                             || $HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $HiPay_prestashopVersion
                         }
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='Apple Pay credentials (Private)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
@@ -186,7 +186,7 @@
                             </div>
                         </div>
 
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='Apple Pay credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
@@ -238,7 +238,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Private)' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">{l s='Credentials (Private)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
@@ -269,7 +269,7 @@
                                     value="{$HiPay_config_hipay.account.sandbox.api_secret_passphrase_sandbox}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Credentials (Public)' mod='hipay_enterprise'}
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">{l s='Credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
@@ -290,7 +290,7 @@
                                     value="{$HiPay_config_hipay.account.sandbox.api_tokenjs_password_publickey_sandbox}">
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='MO/TO private credentials' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="control-label col-lg-2">
@@ -326,7 +326,7 @@
                             empty($HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"])
                             || $HiPay_config_hipay.payment.local_payment['applepay']["minPrestashopVersion"] <= $HiPay_prestashopVersion
                         }
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='Apple Pay credentials (Private)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
@@ -359,7 +359,7 @@
                             </div>
                         </div>
 
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">
                             {l s='Apple Pay credentials (Public)' mod='hipay_enterprise'}
                         </h5>
                         <div class="form-group">
@@ -403,7 +403,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="col-lg-offset-2 col-xs-offset-4">{l s='Hash Algorithm' mod='hipay_enterprise'}</h5>
+                        <h5 class="col-lg-offset-2 col-xs-offset-0">{l s='Hash Algorithm' mod='hipay_enterprise'}</h5>
                         <div class="form-group">
                             <label class="required control-label col-lg-2">
                                 {l s='Production' mod='hipay_enterprise'}

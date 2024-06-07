@@ -106,10 +106,16 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
             if ($refund_type == 'complete') {
                 $this->params["amount"] = $refundableAmount;
-                $this->apiHandler->handleRefund($this->params);
-            } elseif ($refund_type == 'partial') {
+                if ($this->apiHandler->handleRefund($this->params)) {
+                    $this->module->getLogs()->logInfos('# Complete refund Capture success');
+                    $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
+                }
+            } elseif ($refund_type == 'partialWithoutBasket') {
                 $this->params["amount"] = $refund_amount;
-                $this->apiHandler->handleRefund($this->params);
+                if ($this->apiHandler->handleRefund($this->params)) {
+                    $this->module->getLogs()->logInfos('# Partial refund (without basket) capture success');
+                    $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
+                }
             }
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
             $this->module->getLogs()->logInfos('# Refund Capture with basket order ID {$this->order->id}');
@@ -118,7 +124,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
             //refund with basket
-            if (Tools::getValue('hipay_refund_type') == "partial") {
+            if (Tools::getValue('hipay_refund_type') == "partial" || Tools::getValue('hipay_refund_type') == "partialWithoutBasket") {
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_refund_fee') !== "on" &&
@@ -136,7 +142,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-refund-input') <= 0) {
+                } elseif (Tools::getValue('total-refund-input') <= 0) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be greater than zero.', 'capture');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
 
@@ -146,7 +152,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('total-refund-input') > $refundableAmount) {
+                } elseif (Tools::getValue('total-refund-input') > $refundableAmount) {
                     $hipay_redirect_status = $this->module->l('Refund amount must be lower than the amount still to be refunded.');
                     $this->context->cookie->__set('hipay_errors', $hipay_redirect_status);
 
@@ -156,7 +162,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
                     $this->redirectToOrder();
                     die('');
-                } else if (Tools::getValue('hipay_refund_discount')) {
+                } elseif (Tools::getValue('hipay_refund_discount')) {
                     if (!$refundedDiscounts &&
                         Tools::getValue('hipay_refund_discount') !== "on" &&
                         ($refundableAmount - Tools::getValue('total-refund-input') <=
@@ -178,9 +184,9 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                     "refundItems" => $refundItems,
                     "order" => $this->order->id,
                     "transaction_reference" => $this->transactionReference,
-                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee'),
-                    "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping'),
-                    "capture_refund_discount" => Tools::getValue('hipay_refund_discount')
+                    "capture_refund_fee" => Tools::getValue('hipay_refund_fee') === 'on',
+                    "capture_refund_wrapping" => Tools::getValue('hipay_refund_wrapping') === 'on',
+                    "capture_refund_discount" => Tools::getValue('hipay_refund_discount') === 'on'
                 );
 
                 $this->module->getLogs()->logInfos(print_r($this->params, true));
@@ -192,7 +198,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             }
 
             if ($this->apiHandler->handleRefund($this->params)) {
-                $this->module->getLogs()->logInfos('# Refund Capture success');
+                $this->module->getLogs()->logInfos('# Partial refund Capture success');
                 $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
             }
         }

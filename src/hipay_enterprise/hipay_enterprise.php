@@ -39,7 +39,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.21.5';
+        $this->version = '2.22.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -329,7 +329,7 @@ class Hipay_enterprise extends PaymentModule
                                 $productId = null;
                                 foreach ($orderDetailList as $orderDetail) {
                                     if ($orderDetail['id_order_detail'] == $product['id_order_detail']) {
-                                        $productId = $orderDetail['product_id'];
+                                        $productId = $orderDetail['product_attribute_id'];
                                         break;
                                     }
                                 }

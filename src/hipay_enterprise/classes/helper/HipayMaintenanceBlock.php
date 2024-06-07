@@ -99,6 +99,7 @@ class HipayMaintenanceBlock
                 'HiPay_id_currency' => $this->order->id_currency,
                 'HiPay_orderId' => $this->order->id,
                 'HiPay_employeeId' => $this->context->employee->id,
+                'currency' =>  $this->context->currency
             ]
         );
 
@@ -192,17 +193,16 @@ class HipayMaintenanceBlock
             $capturedDiscounts = $this->dbMaintenance->discountsAreCaptured($this->order->id);
             $capturedWrapping = $this->dbMaintenance->wrappingIsCaptured($this->order->id);
             $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
+            $refundedAmount = (float) $this->dbMaintenance->getAmountRefunded($this->order->id);
 
-            if (
-                $this->paymentMethodCanRefundOrCapture('refund')
+            if ($this->paymentMethodCanRefundOrCapture('refund')
                 && !$this->statusNotAvailableForOperation('refund')
-                && !$this->hasRefundStartedFromBO()
                 && $this->statusAvailableForOperation('capture')
             ) {
                 $discount = $this->getDiscount();
 
                 $shippingFees = 0;
-                if ($shipping = $this->order->getShipping() && !empty($shipping[0]['shipping_cost_tax_incl'])) {
+                if (($shipping = $this->order->getShipping()) && !empty($shipping[0]['shipping_cost_tax_incl'])) {
                     $shippingFees = $shipping[0]['shipping_cost_tax_incl'];
                 }
 
@@ -212,8 +212,7 @@ class HipayMaintenanceBlock
                         'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
-                        'HiPay_refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) -
-                            HipayHelper::getOrderPaymentAmount($this->order, true),
+                        'HiPay_refundableAmount' => $this->order->total_paid_tax_incl - $refundedAmount,
                         'HiPay_refundedFees' => $refundedFees,
                         'HiPay_refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
                         'HiPay_basket' => $this->basket,
@@ -238,6 +237,9 @@ class HipayMaintenanceBlock
                         'HiPay_cartId' => $this->cart->id,
                         'HiPay_ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
                         'HiPay_wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
+                        'HiPay_refundedAmountWithoutBasket' => (float) $this->dbMaintenance->getAmountRefundedWithoutBasket($this->order->id),
+                        'HiPay_refundedAmount' => $refundedAmount,
+                        'HiPay_totalPaidTaxIncl' => (float) $this->order->total_paid_tax_incl
                 ]);
 
                 if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
@@ -267,8 +269,7 @@ class HipayMaintenanceBlock
     private function checkCapture()
     {
         if ($this->paymentProduct) {
-            if (
-                $this->paymentMethodCanRefundOrCapture('capture')
+            if ($this->paymentMethodCanRefundOrCapture('capture')
                 && !$this->statusNotAvailableForOperation('capture')
                 && !($this->captureOrRefundFromBo && (null !== $this->basket))
                 && $this->statusAvailableForOperation('capture')
@@ -366,13 +367,15 @@ class HipayMaintenanceBlock
         $refundedItems = $this->dbMaintenance->getRefundedItems($this->order->id);
         $refundedFees = $this->dbMaintenance->feesAreRefunded($this->order->id);
         $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
+        $refundedWrapping = $this->dbMaintenance->wrappingIsRefunded($this->order->id);
 
         foreach ($this->order->getProducts() as $product) {
-            $totallyRefunded &= (isset($refundedItems[$product['product_id']]) &&
-                $refundedItems[$product['product_id']]['quantity'] >= $product['product_quantity']);
+            $productId = (int)($product['id_product'].$product['product_attribute_id']);
+            $totallyRefunded &= (isset($refundedItems[$productId]) &&
+                $refundedItems[$productId]['quantity'] >= $product['product_quantity']);
         }
 
-        if (!$refundedFees || !$refundedDiscounts) {
+        if (!$refundedFees || !$refundedDiscounts || !$refundedWrapping) {
             $totallyRefunded = false;
         }
 
@@ -436,8 +439,7 @@ class HipayMaintenanceBlock
             Configuration::get('HIPAY_OS_CHALLENGED', null, null, 1)
         );
 
-        if (
-            $this->dbMaintenance->isManualCapture($this->order->id)
+        if ($this->dbMaintenance->isManualCapture($this->order->id)
             || (bool) $isChallenged
         ) {
             return true;
@@ -485,7 +487,7 @@ class HipayMaintenanceBlock
      */
     private function paymentMethodCanRefundOrCapture($operation)
     {
-        switch($operation) {
+        switch ($operation) {
             case 'capture':
                 $label  = 'canManualCapture';
                 break;
@@ -497,8 +499,7 @@ class HipayMaintenanceBlock
                 break;
         }
 
-        if (
-            (isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
+        if ((isset($this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct])
                 && !(bool) $this->module->hipayConfigTool->getLocalPayment()[$this->paymentProduct][$label])
             ||
             (isset($this->module->hipayConfigTool->getPaymentCreditCard()[$this->paymentProduct])

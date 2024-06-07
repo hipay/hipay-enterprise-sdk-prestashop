@@ -56,21 +56,23 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
                 "discounts" => $order->getCartRules(),
                 "order" => $order,
                 "cart" => $cart,
-                "captureRefundFee" => $captureRefundFee === "false" ? 0 : 1,
-                "captureRefundDiscount" => $captureRefundDiscount === "false" ? 0 : 1,
-                "captureRefundWrapping" => $captureRefundWrapping === "false" ? 0 : 1,
+                "captureRefundFee" => $captureRefundFee === "true",
+                "captureRefundDiscount" => $captureRefundDiscount === "true",
+                "captureRefundWrapping" => $captureRefundWrapping === "true",
                 "operation" => $operation,
                 "transactionAttempt" => 0
             );
 
             if (!empty($items)) {
                 foreach ($order->getProducts() as $product) {
+                    $productId = (int) $product["id_product"].$product["product_attribute_id"];
                     foreach ($items as $item) {
-                        if ($item["id"] == $product["id_product"]) {
+                        if ($item["id"] == $productId) {
                             $params["products"][] = array(
                                 "item" => $product,
                                 "quantity" => $item["qty"]
                             );
+                            break;
                         }
                     }
                 }

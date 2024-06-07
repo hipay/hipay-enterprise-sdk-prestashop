@@ -67,8 +67,11 @@
                     </tr>
                     </thead>
                     {foreach $HiPay_products as $item}
-                        {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
-                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_capturedItems[$item["product_id"]]["quantity"]}
+                    
+                        {assign var="itemId" value=($item["id_product"]|cat:$item["product_attribute_id"])|intval}
+
+                        {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$itemId])}
+                            {assign var="remainQty" value=$item["product_quantity"] - $HiPay_capturedItems[$itemId]["quantity"]}
                         {else}
                             {assign var="remainQty" value=$item["product_quantity"]}
                         {/if}
@@ -78,23 +81,23 @@
                             </td>
                             <td>
                                 <input type="hidden" {if $remainQty == 0} disabled {/if}
-                                       name="hipaycapture[{$item["product_id"]}]"
-                                       value="{$item["product_id"]}"/>{$item["product_name"]}
+                                       name="hipaycapture[{$itemId}]"
+                                       value="{$itemId}"/>{$item["product_name"]}
                             </td>
                             <td>
                                 {displayPrice price=$item.product_price_wt currency=$HiPay_id_currency}
                             </td>
                             <td>
-                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
+                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$itemId])}
                                     <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {$HiPay_capturedItems[$item["product_id"]]["quantity"]}
+                                            {$HiPay_capturedItems[$itemId]["quantity"]}
                                         </span>
                                 {else}
                                     <span class="badge badge-warning">0</span>
                                 {/if}
-                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$item["product_id"]])}
+                                {if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$itemId])}
                                     <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                            {displayPrice price=$HiPay_capturedItems[$item["product_id"]]["amount"] currency=$HiPay_id_currency}
+                                            {displayPrice price=$HiPay_capturedItems[$itemId]["amount"] currency=$HiPay_id_currency}
                                         </span>
                                 {else}
                                     <span class="badge badge-warning">{displayPrice price=0 currency=$HiPay_id_currency}</span>
@@ -104,9 +107,9 @@
                                 <div class="col-lg-6 input-group">
                                     {if $remainQty > 0}
                                         <input data-unit-price="{$item.unit_price_tax_incl}"
-                                               data-id="{$item["product_id"]}"
-                                               class="good-selector-capture" id="good-selector-{$item["product_id"]}"
-                                               name="hipaycapture[{$item["product_id"]}]" type="number" min="0"
+                                               data-id="{$itemId}"
+                                               class="good-selector-capture" id="good-selector-{$itemId}"
+                                               name="hipaycapture[{$itemId}]" type="number" min="0"
                                                max="{$remainQty}" name="" value="0">
                                         <div class="input-group-addon">/ {$remainQty}</div>
                                     {else}

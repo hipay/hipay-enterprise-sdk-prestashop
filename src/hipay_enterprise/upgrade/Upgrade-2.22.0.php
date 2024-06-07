@@ -2,7 +2,7 @@
 /**
  * HiPay Enterprise SDK Prestashop.
  *
- * 2022 HiPay
+ * 2024 HiPay
  *
  * NOTICE OF LICENSE
  *
@@ -12,13 +12,11 @@
  */
 require_once dirname(__FILE__).'/../classes/helper/dbquery/HipayDBSchemaManager.php';
 
-function upgrade_module_2_20_0($module)
+function upgrade_module_2_22_0($module)
 {
-    $module->registerHook('actionDispatcher');
-
     $log = $module->getLogs();
 
-    $log->logInfos('Upgrade to 2.20.0');
+    $log->logInfos('Upgrade to 2.22.0');
 
     try {
         $keepParameters = [
@@ -172,6 +170,12 @@ function upgrade_module_2_20_0($module)
                 'activated' => '',
                 'currencies' => '',
                 'countries' => '',
+                'merchantId' => '',
+                'buttonLabel' => '',
+                'buttonShape' => '',
+                'buttonHeight' => '',
+                'buttonColor' => '',
+                'bnpl' => '',
             ],
             'postfinance-card' => [
                 'displayName' => '',
