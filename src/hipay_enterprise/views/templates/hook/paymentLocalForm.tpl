@@ -9,7 +9,9 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-
+{if ($HiPay_localPaymentName eq "paypal" &&  isset($HiPay_merchantId)) OR $HiPay_localPaymentName eq "applepay"}
+    {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/paymentButtonForm.tpl"}
+{/if}
 {if $HiPay_localPaymentName eq "applepay"}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
 {elseif $HiPay_localPaymentName eq "paypal" &&  isset($HiPay_merchantId)}

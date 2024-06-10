@@ -22,34 +22,22 @@
 </div>
 <br>
 <script>
-    var methodsInstance = {};
-    var checkoutSubmitButton;
-    var checkbox;
-
-    /**
-     * If One page Checkout module is actived,
-     *
-     * @type boolean
-     */
-    var OPC_enabled = typeof PaymentOPC !== 'undefined';
-
-    //Classic Checkout Page
-    document.addEventListener('DOMContentLoaded', function () {
-        checkbox = document.querySelector('input[id^="conditions_to_approve"]');
-        checkoutSubmitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
-        if (!OPC_enabled) {
-            paypalHandleSubmitButton();
-            initPaypalInstance();
-        }
-
-    }, false);
-
-    //One Page Checkout Is activated
+    // Check if One Page Checkout (OPC) is enabled
     if (OPC_enabled) {
-        $(document).ready(function () {
+        // Use jQuery's ready method because DOMContentLoaded doesn't work well with OPC
+        jQuery(document).ready(function ($) {
             eventTarget.addEventListener('opc_update_card', handlePaypalAndReview);
         });
     }
+
+    // For Classic Checkout Page
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!OPC_enabled) {=
+            paypalHandleTermsOfService();
+        }
+    }, false);
+
+
 
     /**
      * One Page Checkout Module - Handles the Paypal payment process and review, including payment option change and terms of service checkbox events.
@@ -57,16 +45,15 @@
      * @param event
      */
     function handlePaypalAndReview(event) {
-        paypalHandleSubmitButton();
+        handleSubmitButton();
         paypalHandleTermsOfService();
 
         //After page checkout is totally loaded and updated
         ajaxCompleteCheckoutReview().then(({ event, xhr, settings }) => {
             checkbox = document.querySelector('input[id^="conditions_to_approve"]');
-            checkoutSubmitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
+            submitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
             initPaypalInstance();
-            paypalHandlePaymentOptionChange(false);
-
+            handlePaymentOptionChange(false);
         });
     }
 
@@ -116,55 +103,14 @@
             $('#paypal-error-message').text($('#paypal-terms-of-service-error-message').text());
         }
 
-        paypalDestroyMethods(methodsInstance);
-        createPaypalInstance(parameters);
-        handlePaypalEvents(methodsInstance['paypal']);
-
-    }
-
-    /**
-     * Handles the payment option change event by calling paypalHandlePaymentOptionChange.
-     */
-    function paypalHandleSubmitButton() {
-        $('input[name="payment-option"]').on('change', function() {
-            // If the displayed payment method is Paypal, remove the payment button
-            paypalHandlePaymentOptionChange();
-        });
-    }
-
-    /**
-     * Shows/hides the Paypal button based on the selected payment option (Paypal, Apple Pay, or others).
-     *
-     * @param initPaypal (reinit Paypal button instance)
-     */
-    function paypalHandlePaymentOptionChange(initPaypal = true) {
-        let paymentOptionId = $('input[name="payment-option"]:checked').attr('id');
-        let paymentFormId = $('#pay-with-' + paymentOptionId + '-form form').attr('id');
-
-        if (paymentFormId === 'applepay-hipay' || paymentFormId === 'paypal-hipay') {
-            placeOrderButton = false;
-            // If the displayed payment method is PayPal or Apple Pay, remove the payment button
-            checkoutSubmitButton.remove();
-            if (OPC_enabled) {
-                $('#btn_place_order').remove();
-            }
-            if (initPaypal) {
-                initPaypalInstance();
-            }
-        } else {
-            placeOrderButton = true;
-            paypalDestroyMethods(methodsInstance);
-        }
-
-        if (!$('#payment-confirmation button').length || !$('#btn_place_order').length) {
-            if (placeOrderButton) {
-                $('#payment-confirmation .ps-shown-by-js').append(checkoutSubmitButton);
-                if (OPC_enabled) {
-                    $('#buttons_footer_review div').append(checkoutSubmitButton);
-                }
-            }
-            paypalDestroyMethods(methodsInstance);
-        }
+        destroyMethods(methodsInstance)
+            .then(() => {
+                createPaypalInstance(parameters);
+                handlePaypalEvents(methodsInstance['paypal']);
+            })
+            .catch((error) => {
+                console.error("Failed to destroy methods:", error);
+            });
     }
 
     /**
@@ -238,28 +184,15 @@
     }
 
     /**
-     * Destroy already created instance for paypal
-     *
-     * @param methodsInstance
-     */
-    function paypalDestroyMethods(methodsInstance) {
-        // Iterate over the object values to call the destroy method
-        Object.values(methodsInstance).forEach((method) => {
-            if (method && typeof method.destroy === 'function') {
-                method.destroy();
-            }
-        });
-        // Reassign methodsInstance to a new empty object to clear all properties
-        methodsInstance = {};
-    }
-
-    /**
      * Create Paypal event handlers
      * @param instancePaypalButton
      */
     function handlePaypalEvents(instancePaypalButton) {
         var form = $("#{$HiPay_localPaymentName}-hipay");
         instancePaypalButton.on('paymentAuthorized', function (hipayToken) {
+            if (_validateOPC() === false) {
+                return false;
+            }
             $("#{$HiPay_localPaymentName}-orderId").val(hipayToken.orderID);
             $("#{$HiPay_localPaymentName}-payment-product").val('paypal');
             $("#{$HiPay_localPaymentName}-browserInfo").val(JSON.stringify(hipayToken.browser_info));
