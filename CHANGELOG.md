@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix** : Fixed exception on confirmation page when duplicate order is received
+
 ## 2.22.0
 
 - **Add**: Add PayPal v2
