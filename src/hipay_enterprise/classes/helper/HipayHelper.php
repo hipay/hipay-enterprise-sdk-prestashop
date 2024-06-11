@@ -658,20 +658,24 @@ class HipayHelper
             $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
-            $module->validateOrder(
-                (int) $cart->id,
-                $status,
-                (float) $cart->getOrderTotal(true),
-                $productName,
-                $module->l('Order created by HiPay.'),
-                [],
-                $context->currency->id,
-                false,
-                $customer->secure_key,
-                $shop
-            );
+            if(!self::orderExists((int) $cart->id)) {
+                $module->validateOrder(
+                    (int) $cart->id,
+                    $status,
+                    (float) $cart->getOrderTotal(true),
+                    $productName,
+                    $module->l('Order created by HiPay.'),
+                    [],
+                    $context->currency->id,
+                    false,
+                    $customer->secure_key,
+                    $shop
+                );
+            } else {
+                $module->getLogs()->logInfos('## Validate order ( cart '.$cart->id.' exist but order '.$orderId.' too )');
+            }
         } else {
-            $module->getLogs()->logInfos("## Validate order ( order exist  $orderId )");
+            $module->getLogs()->logInfos('## Validate order ( order '.$orderId.' already exist )');
         }
 
         if ($customer) {
