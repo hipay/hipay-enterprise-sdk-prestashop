@@ -3,30 +3,29 @@ jQuery(document).ready(function ($) {
   if (typeof PaymentOPC !== typeof undefined) {
     initHostedFields();
     ajaxCompleteCheckoutPlaceOrder().then(({ event, xhr, settings }) => {
-      setSelectedPaymentMethod();
-      $("#tokenizerForm").submit();
+      setMyPaymentMethodSelected();
+      $('#tokenizerForm').submit();
     });
   }
 });
-
 function initEventsHostedFields() {
-  $("#card-number").focus(function () {
-    $("#radio-no-token").prop("checked", true);
+  $('#card-number').focus(function () {
+    $('#radio-no-token').prop('checked', true);
   });
 
-  $("#radio-no-token").change(function () {
-    $("#credit-card-group").collapse("show");
+  $('#radio-no-token').change(function () {
+    $('#credit-card-group').collapse('show');
   });
 
-  $(".radio-with-token").change(function () {
-    $("#credit-card-group").collapse("hide");
+  $('.radio-with-token').change(function () {
+    $('#credit-card-group').collapse('hide');
   });
 
-  $("#saveTokenHipay").change(function () {
+  $('#saveTokenHipay').change(function () {
     hipayHF.setMultiUse(allowMultiUse(this));
   });
 
-  $("#tokenizerForm").submit(function (e) {
+  $('#tokenizerForm').submit(function (e) {
     var form = this;
     // prevent form from being submitted
     e.preventDefault();
@@ -47,8 +46,8 @@ function initEventsHostedFields() {
             form.submit();
             return true;
           } else {
-            $("#error-js").show();
-            $("#error-js").text(activatedCreditCardError);
+            $('#error-js').show();
+            $('#error-js').text(activatedCreditCardError);
             return false;
           }
         },
@@ -66,26 +65,26 @@ var hipayHF;
 //--------------------------------
 if (window.opc_dispatcher && window.opc_dispatcher.events) {
   window.opc_dispatcher.events.addEventListener(
-    "payment-getPaymentList-complete",
+    'payment-getPaymentList-complete',
     () => {
       initEventsHostedFields();
       initHostedFields();
     },
   );
 } else {
-  document.addEventListener("DOMContentLoaded", initHostedFields, false);
+  document.addEventListener('DOMContentLoaded', initHostedFields, false);
 }
 //--------------------------------
 
 function allowMultiUse(saveTokenEl) {
-  return oneClick && $(saveTokenEl).is(":checked");
+  return oneClick && $(saveTokenEl).is(':checked');
 }
 
 function initHostedFields() {
   if (
-    typeof api_tokenjs_username !== "undefined" &&
-    typeof api_tokenjs_password_publickey !== "undefined" &&
-    typeof api_tokenjs_mode !== "undefined"
+    typeof api_tokenjs_username !== 'undefined' &&
+    typeof api_tokenjs_password_publickey !== 'undefined' &&
+    typeof api_tokenjs_mode !== 'undefined'
   ) {
     var hipay = new HiPay({
       username: api_tokenjs_username,
@@ -95,24 +94,24 @@ function initHostedFields() {
     });
 
     var config = {
-      selector: "hipayHF-container",
-      multi_use: allowMultiUse("#saveTokenHipay"),
+      selector: 'hipayHF-container',
+      multi_use: allowMultiUse('#saveTokenHipay'),
       fields: {
         cardHolder: {
-          selector: "hipayHF-card-holder",
+          selector: 'hipayHF-card-holder',
           defaultFirstname: cardHolderFirstName,
           defaultLastname: cardHolderLastName,
         },
         cardNumber: {
-          selector: "hipayHF-card-number",
+          selector: 'hipayHF-card-number',
         },
         expiryDate: {
-          selector: "hipayHF-date-expiry",
+          selector: 'hipayHF-date-expiry',
         },
         cvc: {
-          selector: "hipayHF-cvc",
+          selector: 'hipayHF-cvc',
           helpButton: true,
-          helpSelector: "hipayHF-help-cvc",
+          helpSelector: 'hipayHF-help-cvc',
         },
       },
       styles: {
@@ -120,11 +119,11 @@ function initHostedFields() {
       },
     };
 
-    hipayHF = hipay.create("card", config);
+    hipayHF = hipay.create('card', config);
 
     hipay.injectBaseStylesheet();
 
-    hipayHF.on("blur", function (data) {
+    hipayHF.on('blur', function (data) {
       // Get error container
       var domElement = document.querySelector(
         "[data-hipay-id='hipay-card-field-error-" + data.element + "']",
@@ -139,11 +138,11 @@ function initHostedFields() {
       if (!data.validity.valid && !data.validity.empty) {
         domElement.innerText = data.validity.error;
       } else {
-        domElement.innerText = "";
+        domElement.innerText = '';
       }
     });
 
-    hipayHF.on("inputChange", function (data) {
+    hipayHF.on('inputChange', function (data) {
       // Get error container
       var domElement = document.querySelector(
         "[data-hipay-id='hipay-card-field-error-" + data.element + "']",
@@ -158,22 +157,22 @@ function initHostedFields() {
       if (!data.validity.valid && !data.validity.potentiallyValid) {
         domElement.innerText = data.validity.error;
       } else {
-        domElement.innerText = "";
+        domElement.innerText = '';
       }
     });
 
-    let deviceFingerprintInput = $("#realFingerprint");
+    let deviceFingerprintInput = $('#realFingerprint');
     if (deviceFingerprintInput.length === 0) {
-      deviceFingerprintInput = $("<input/>", {
-        id: "realFingerprint",
-        type: "hidden",
-        name: "ioBB",
+      deviceFingerprintInput = $('<input/>', {
+        id: 'realFingerprint',
+        type: 'hidden',
+        name: 'ioBB',
       });
-      $("#ioBB").attr("name", "ioBB_old");
-      $("#ioBB").parent().append(deviceFingerprintInput);
+      $('#ioBB').attr('name', 'ioBB_old');
+      $('#ioBB').parent().append(deviceFingerprintInput);
     }
     deviceFingerprintInput.val(hipay.getDeviceFingerprint());
-    $(".ioBB").val(deviceFingerprintInput.val());
+    $('.ioBB').val(deviceFingerprintInput.val());
     if (hipay.getDeviceFingerprint() === undefined) {
       let retryCounter = 0;
       let interval = setInterval(function timeoutFunc() {
@@ -181,7 +180,7 @@ function initHostedFields() {
         // If global_info init send event
         if (hipay.getDeviceFingerprint() !== undefined) {
           deviceFingerprintInput.val(hipay.getDeviceFingerprint());
-          $(".ioBB").val(deviceFingerprintInput.val());
+          $('.ioBB').val(deviceFingerprintInput.val());
           clearInterval(interval);
         }
         // Max retry = 3
@@ -190,7 +189,7 @@ function initHostedFields() {
         }
       }, 1000);
     }
-    $("#browserInfo").val(JSON.stringify(hipay.getBrowserInfo()));
+    $('#browserInfo').val(JSON.stringify(hipay.getBrowserInfo()));
   }
 }
 
@@ -212,21 +211,33 @@ function ajaxCompleteCheckoutPlaceOrder() {
     $(document).ajaxComplete((event, xhr, settings) => {
       if (
         settings.url.includes(prestashop.urls.pages.order) &&
-        typeof settings.data === "string" && // Check if data is a string
-        settings.data.includes("placeOrder")
+        typeof settings.data === 'string' && // Check if data is a string
+        settings.data.includes('placeOrder')
       ) {
         resolve({ event, xhr, settings });
       }
     });
   });
 }
-function setSelectedPaymentMethod() {
-  myPaymentMethodSelected = $("#onepagecheckoutps_step_three_container")
+
+function setMyPaymentMethodSelected() {
+  // Your existing code here
+  var primarySelector = '#onepagecheckoutps_step_three_container';
+  var fallbackSelector = '#payment_method_container';
+  var container = $(primarySelector).length
+    ? $(primarySelector)
+    : $(fallbackSelector);
+
+  myPaymentMethodSelected = container
     .find("input[data-module-name='credit_card']")
-    .is(":checked");
-  $(document).on("change", 'input[name="payment-option"]', function () {
-    myPaymentMethodSelected = $("#onepagecheckoutps_step_three_container")
+    .is(':checked');
+
+  $(document).on('change', 'input[name="payment-option"]', function () {
+    container = $(primarySelector).length
+      ? $(primarySelector)
+      : $(fallbackSelector);
+    myPaymentMethodSelected = container
       .find("input[data-module-name='credit_card']")
-      .is(":checked");
+      .is(':checked');
   });
 }
