@@ -103,4 +103,17 @@
                 ":checked");
         });
     }
+
+    if (typeof OPC !== 'undefined') {
+      new Promise((resolve) => {
+        prestashop.on('opc-payment-getPaymentList-complete', resolve);
+      }).then(() => {
+        jQuery(document).ready(function ($) {
+          setMyPaymentMethodSelected();
+          initEventsHostedFields();
+          initHostedFields();
+        });
+      });
+    }
+
 </script>

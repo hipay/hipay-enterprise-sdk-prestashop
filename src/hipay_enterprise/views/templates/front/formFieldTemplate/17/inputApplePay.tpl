@@ -29,19 +29,39 @@
     </div>
 </div>
 <script>
-  // Check if One Page Checkout (OPC) is enabled
+
+  // For Classic Checkout Page
+  document.addEventListener(
+          'DOMContentLoaded',
+          function () {
+            if (!OPC_enabled) {
+              handleTermsOfService();
+              initApplePayInstance();
+            }
+          },
+          false,
+  );
+
+  //For OPC Checkout 4
+  if (typeof OPC !== 'undefined') {
+    new Promise((resolve) => {
+      prestashop.on('opc-payment-getPaymentList-complete', resolve);
+    }).then(() => {
+      handleTermsOfService();
+      jQuery(document).ready(function ($) {
+        initApplePayInstance();
+        handleSubmitButton(false);
+      });
+    })
+  }
+
+  // For OPC checkout 5.0
   if (OPC_enabled) {
     // Use jQuery's ready method because DOMContentLoaded doesn't work well with OPC
     jQuery(document).ready(function ($) {
       eventTarget.addEventListener('opc_update_card', handleApplePayAndReview);
     });
   }
-  // For Classic Checkout Page
-  document.addEventListener('DOMContentLoaded', function () {
-    if (!OPC_enabled) {
-      handleTermsOfService();
-    }
-  }, false);
 
   /**
    * One Page Checkout - Handles the Applepay payment process and review, including payment option change and terms of service checkbox events.
@@ -49,18 +69,8 @@
    * @param event
    */
   function handleApplePayAndReview(event) {
-    handleSubmitButton();
-    handleTermsOfService();
-
-    //After page checkout is totally loaded and updated
-    ajaxCompleteCheckoutReview().then(({ event, xhr, settings }) => {
-      checkbox = document.querySelector('input[id^="conditions_to_approve"]');
-      submitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
-      initApplePayInstance();
-      handlePaymentOptionChange(false);
-    });
+    handlePaymentAndReview(event, initApplePayInstance, handleTermsOfService);
   }
-
 
   /**
    * Initializes the ApplePay instance with appropriate credentials and configuration based on sandbox or production mode.
@@ -80,6 +90,7 @@
 
     initApplePay(parameters);
   }
+
   /**
    * Create Apple Pay button
    */
@@ -159,11 +170,13 @@
   function checkTermeOfService() {
     const applePayButton = $('#apple-pay-button');
     const applePayErrorMessage = $('#apple-pay-error-message');
-    const submitButton = $("#payment-confirmation button[type=submit]");
+    const submitButton = $('#payment-confirmation button[type=submit]');
 
     if (checkbox && !checkbox.checked) {
       applePayButton.hide();
-      applePayErrorMessage.css('display', 'inline').text($('#apple-pay-termes-of-service-error-message').text());
+      applePayErrorMessage
+              .css('display', 'inline')
+              .text($('#apple-pay-termes-of-service-error-message').text());
       submitButton.show();
     } else {
       applePayButton.show();
@@ -270,14 +283,14 @@
     var country = hipayToken.country;
 
     // set tokenization response
-    $("#apple-pay-card-token").val(token);
-    $("#apple-pay-card-brand").val(brand);
-    $("#apple-pay-card-pan").val(pan);
-    $("#apple-pay-card-holder").val(card_holder);
-    $("#apple-pay-card-expiry-month").val(card_expiry_month);
-    $("#apple-pay-card-expiry-year").val(card_expiry_year);
-    $("#apple-pay-card-issuer").val(issuer);
-    $("#apple-pay-card-country").val(country);
+    $('#apple-pay-card-token').val(token);
+    $('#apple-pay-card-brand').val(brand);
+    $('#apple-pay-card-pan').val(pan);
+    $('#apple-pay-card-holder').val(card_holder);
+    $('#apple-pay-card-expiry-month').val(card_expiry_month);
+    $('#apple-pay-card-expiry-year').val(card_expiry_year);
+    $('#apple-pay-card-issuer').val(issuer);
+    $('#apple-pay-card-country').val(country);
   }
 
   /**

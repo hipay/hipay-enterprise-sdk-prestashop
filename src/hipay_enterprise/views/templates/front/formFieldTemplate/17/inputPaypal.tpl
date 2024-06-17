@@ -22,22 +22,34 @@
 </div>
 <br>
 <script>
-    // Check if One Page Checkout (OPC) is enabled
-    if (OPC_enabled) {
-        // Use jQuery's ready method because DOMContentLoaded doesn't work well with OPC
-        jQuery(document).ready(function ($) {
-            eventTarget.addEventListener('opc_update_card', handlePaypalAndReview);
-        });
-    }
 
-    // For Classic Checkout Page
+    // For Classic Checkout Page when OPC is not enabled
     document.addEventListener('DOMContentLoaded', function () {
-        if (!OPC_enabled) {=
+        if (!OPC_enabled) {
             paypalHandleTermsOfService();
+            initPaypalInstance();
         }
     }, false);
 
+    //For OPC Checkout 4
+    if (typeof OPC !== 'undefined') {
+      new Promise((resolve) => {
+        prestashop.on('opc-payment-getPaymentList-complete', resolve);
+      }).then(() => {
+        paypalHandleTermsOfService();
+        jQuery(document).ready(function ($) {
+          initPaypalInstance();
+          handleSubmitButton(false);
+        });
+      });
+    }
 
+    //For OPC Checkout 5
+    if (OPC_enabled) {
+        jQuery(document).ready(function ($) {
+                eventTarget.addEventListener('opc_update_card', handlePaypalAndReview);
+        });
+    }
 
     /**
      * One Page Checkout Module - Handles the Paypal payment process and review, including payment option change and terms of service checkbox events.
@@ -45,16 +57,7 @@
      * @param event
      */
     function handlePaypalAndReview(event) {
-        handleSubmitButton();
-        paypalHandleTermsOfService();
-
-        //After page checkout is totally loaded and updated
-        ajaxCompleteCheckoutReview().then(({ event, xhr, settings }) => {
-            checkbox = document.querySelector('input[id^="conditions_to_approve"]');
-            submitButton = (!OPC_enabled) ? $('#payment-confirmation button') : $('#btn_place_order');
-            initPaypalInstance();
-            handlePaymentOptionChange(false);
-        });
+      handlePaymentAndReview(event, initPaypalInstance, paypalHandleTermsOfService);
     }
 
     /**
@@ -63,11 +66,11 @@
     function initPaypalInstance() {
 
         {if $HiPay_confHipay.account.global.sandbox_mode}
-        var api_tokenjs_mode = "stage";
+        var api_tokenjs_mode = 'stage';
         var api_tokenjs_username = "{$HiPay_confHipay.account.sandbox.api_tokenjs_username_sandbox}";
         var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.sandbox.api_tokenjs_password_publickey_sandbox}";
         {else}
-        var api_tokenjs_mode = "production";
+        var api_tokenjs_mode = 'production';
         var api_tokenjs_username = "{$HiPay_confHipay.account.production.api_tokenjs_username_production}";
         var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
@@ -93,24 +96,26 @@
      * Creates the Paypal Pay button, handles terms of service checkbox, destroys existing Paypal methods, and handles Paypal events.
      */
     function initPaypal(parameters) {
-        paypalHandleTermsOfService();
+      paypalHandleTermsOfService();
 
-        if (checkbox && !checkbox.checked) {
-            $('#paypal-field').hide();
-            $('#paypal-info-message').hide();
+      if (checkbox && !checkbox.checked) {
+        $('#paypal-field').hide();
+        $('#paypal-info-message').hide();
 
-            $('#paypal-error-message').css('display', 'inline');
-            $('#paypal-error-message').text($('#paypal-terms-of-service-error-message').text());
-        }
+        $('#paypal-error-message').css('display', 'inline');
+        $('#paypal-error-message').text(
+          $('#paypal-terms-of-service-error-message').text(),
+        );
+      }
 
-        destroyMethods(methodsInstance)
-            .then(() => {
-                createPaypalInstance(parameters);
-                handlePaypalEvents(methodsInstance['paypal']);
-            })
-            .catch((error) => {
-                console.error("Failed to destroy methods:", error);
-            });
+      destroyMethods(methodsInstance)
+        .then(() => {
+          createPaypalInstance(parameters);
+          handlePaypalEvents(methodsInstance['paypal']);
+        })
+        .catch((error) => {
+          console.error('Failed to destroy methods:', error);
+        });
     }
 
     /**
@@ -124,7 +129,6 @@
             paypalCheckTermeOfService();
         });
     }
-
 
     function paypalCheckTermeOfService() {
         const paypalField = $('#paypal-field');
@@ -188,21 +192,22 @@
      * @param instancePaypalButton
      */
     function handlePaypalEvents(instancePaypalButton) {
-        var form = $("#{$HiPay_localPaymentName}-hipay");
-        instancePaypalButton.on('paymentAuthorized', function (hipayToken) {
-            if (_validateOPC() === false) {
-                return false;
-            }
-            $("#{$HiPay_localPaymentName}-orderId").val(hipayToken.orderID);
-            $("#{$HiPay_localPaymentName}-payment-product").val('paypal');
-            $("#{$HiPay_localPaymentName}-browserInfo").val(JSON.stringify(hipayToken.browser_info));
-            $("#{$HiPay_localPaymentName}-paymentmethod").val('paypal');
-            $("#{$HiPay_localPaymentName}-productlist").val('paypal');
-            form.submit();
-            return true;
-        });
+      var form = $('#{$HiPay_localPaymentName}-hipay');
+      instancePaypalButton.on('paymentAuthorized', function (hipayToken) {
+        if (_validateOPC() === false) {
+          return false;
+        }
+        $('#{$HiPay_localPaymentName}-orderId').val(hipayToken.orderID);
+        $('#{$HiPay_localPaymentName}-payment-product').val('paypal');
+        $('#{$HiPay_localPaymentName}-browserInfo').val(
+          JSON.stringify(hipayToken.browser_info),
+        );
+        $('#{$HiPay_localPaymentName}-paymentmethod').val('paypal');
+        $('#{$HiPay_localPaymentName}-productlist').val('paypal');
+        form.submit();
+        return true;
+      });
     }
-
 </script>
 <input type="hidden" name="localSubmit" />
 <input class="ioBB" type="hidden" name="ioBB" />
