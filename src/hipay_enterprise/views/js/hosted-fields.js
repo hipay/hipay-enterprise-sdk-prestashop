@@ -1,9 +1,13 @@
 jQuery(document).ready(function ($) {
+  updatePaymentMethodSelected();
   initEventsHostedFields();
   if (typeof PaymentOPC !== typeof undefined) {
     initHostedFields();
     ajaxCompleteCheckoutPlaceOrder().then(({ event, xhr, settings }) => {
-      setMyPaymentMethodSelected();
+      updatePaymentMethodSelected();
+      $(document).on('change', 'input[name="payment-option"]', function () {
+        updatePaymentMethodSelected();
+      });
       $('#tokenizerForm').submit();
     });
   }
@@ -53,7 +57,7 @@ function initEventsHostedFields() {
         },
         function (errors) {
           handleErrorhipayHF(errors);
-        },
+        }
       );
     }
   });
@@ -61,20 +65,7 @@ function initEventsHostedFields() {
 
 var hipayHF;
 
-//Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
-//--------------------------------
-if (window.opc_dispatcher && window.opc_dispatcher.events) {
-  window.opc_dispatcher.events.addEventListener(
-    'payment-getPaymentList-complete',
-    () => {
-      initEventsHostedFields();
-      initHostedFields();
-    },
-  );
-} else {
-  document.addEventListener('DOMContentLoaded', initHostedFields, false);
-}
-//--------------------------------
+document.addEventListener('DOMContentLoaded', initHostedFields, false);
 
 function allowMultiUse(saveTokenEl) {
   return oneClick && $(saveTokenEl).is(':checked');
@@ -90,7 +81,7 @@ function initHostedFields() {
       username: api_tokenjs_username,
       password: api_tokenjs_password_publickey,
       environment: api_tokenjs_mode,
-      lang,
+      lang
     });
 
     var config = {
@@ -100,23 +91,23 @@ function initHostedFields() {
         cardHolder: {
           selector: 'hipayHF-card-holder',
           defaultFirstname: cardHolderFirstName,
-          defaultLastname: cardHolderLastName,
+          defaultLastname: cardHolderLastName
         },
         cardNumber: {
-          selector: 'hipayHF-card-number',
+          selector: 'hipayHF-card-number'
         },
         expiryDate: {
-          selector: 'hipayHF-date-expiry',
+          selector: 'hipayHF-date-expiry'
         },
         cvc: {
           selector: 'hipayHF-cvc',
           helpButton: true,
-          helpSelector: 'hipayHF-help-cvc',
-        },
+          helpSelector: 'hipayHF-help-cvc'
+        }
       },
       styles: {
-        base: style.base,
-      },
+        base: style.base
+      }
     };
 
     hipayHF = hipay.create('card', config);
@@ -126,7 +117,7 @@ function initHostedFields() {
     hipayHF.on('blur', function (data) {
       // Get error container
       var domElement = document.querySelector(
-        "[data-hipay-id='hipay-card-field-error-" + data.element + "']",
+        "[data-hipay-id='hipay-card-field-error-" + data.element + "']"
       );
 
       // Finish function if no error DOM element
@@ -145,7 +136,7 @@ function initHostedFields() {
     hipayHF.on('inputChange', function (data) {
       // Get error container
       var domElement = document.querySelector(
-        "[data-hipay-id='hipay-card-field-error-" + data.element + "']",
+        "[data-hipay-id='hipay-card-field-error-" + data.element + "']"
       );
 
       // Finish function if no error DOM element
@@ -166,7 +157,7 @@ function initHostedFields() {
       deviceFingerprintInput = $('<input/>', {
         id: 'realFingerprint',
         type: 'hidden',
-        name: 'ioBB',
+        name: 'ioBB'
       });
       $('#ioBB').attr('name', 'ioBB_old');
       $('#ioBB').parent().append(deviceFingerprintInput);
@@ -196,7 +187,7 @@ function initHostedFields() {
 function handleErrorhipayHF(errors) {
   for (var error in errors) {
     var domElement = document.querySelector(
-      "[data-hipay-id='hipay-card-field-error-" + errors[error].field + "']",
+      "[data-hipay-id='hipay-card-field-error-" + errors[error].field + "']"
     );
 
     // If DOM element add error inside
@@ -220,24 +211,17 @@ function ajaxCompleteCheckoutPlaceOrder() {
   });
 }
 
-function setMyPaymentMethodSelected() {
-  // Your existing code here
-  var primarySelector = '#onepagecheckoutps_step_three_container';
-  var fallbackSelector = '#payment_method_container';
-  var container = $(primarySelector).length
-    ? $(primarySelector)
-    : $(fallbackSelector);
+function getCheckoutPaymentContainer() {
+  var container = $('#onepagecheckoutps_step_three_container');
+  if (!container.length) {
+    container = $('#payment_method_container');
+  }
+  return container;
+}
 
+function updatePaymentMethodSelected() {
+  var container = getCheckoutPaymentContainer();
   myPaymentMethodSelected = container
     .find("input[data-module-name='credit_card']")
     .is(':checked');
-
-  $(document).on('change', 'input[name="payment-option"]', function () {
-    container = $(primarySelector).length
-      ? $(primarySelector)
-      : $(fallbackSelector);
-    myPaymentMethodSelected = container
-      .find("input[data-module-name='credit_card']")
-      .is(':checked');
-  });
 }

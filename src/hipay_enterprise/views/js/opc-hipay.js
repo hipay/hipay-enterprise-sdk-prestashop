@@ -5,8 +5,8 @@ var eventTarget = new EventTarget();
 var opcUpdateCardEvent = new CustomEvent('opc_update_card', {
   detail: {
     message: 'Card updated successfully',
-    timestamp: new Date(),
-  },
+    timestamp: new Date()
+  }
 });
 
 // Function to trigger the custom event
@@ -18,9 +18,7 @@ function triggerOpcUpdateCard() {
 loadScript(
   prestashop.urls.base_url +
     'modules/hipay_enterprise/views/js/hosted-fields.js',
-  function () {
-    triggerOpcUpdateCard();
-  },
+  triggerOpcUpdateCard
 );
 
 function loadScript(url, callback) {
