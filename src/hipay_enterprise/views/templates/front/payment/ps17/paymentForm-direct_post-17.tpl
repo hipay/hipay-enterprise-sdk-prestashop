@@ -60,7 +60,7 @@
 </div>
 
 <script>
-   document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
+    document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
     var activatedCreditCard = [];
     {foreach $HiPay_activatedCreditCard as $cc}
