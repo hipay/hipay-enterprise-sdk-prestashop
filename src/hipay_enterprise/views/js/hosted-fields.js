@@ -3,11 +3,13 @@ jQuery(document).ready(function ($) {
   initEventsHostedFields();
   if (typeof PaymentOPC !== typeof undefined) {
     initHostedFields();
-    ajaxCompleteCheckoutPlaceOrder().then(({ event, xhr, settings }) => {
+    ajaxCompleteCheckoutPlaceOrder().then(() => {
       updatePaymentMethodSelected();
-      $(document).on('change', 'input[name="payment-option"]', function () {
-        updatePaymentMethodSelected();
-      });
+      $(document).on(
+        'change',
+        'input[name="payment-option"]',
+        updatePaymentMethodSelected
+      );
       $('#tokenizerForm').submit();
     });
   }

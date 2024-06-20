@@ -71,12 +71,12 @@
     {/if}
 
     var cardHolderFirstName = typeof PaymentOPC !== 'undefined'
-      ? (prestashop.customer.is_logged ? '{$HiPay_customerFirstName}' : '')
-      : '{$HiPay_customerFirstName}';
+    ? (prestashop.customer.is_logged ? '{$HiPay_customerFirstName}' : '')
+    : '{$HiPay_customerFirstName}';
 
     var cardHolderLastName = typeof PaymentOPC !== 'undefined'
-      ? (prestashop.customer.is_logged ? '{$HiPay_customerLastName}' : '')
-      : '{$HiPay_customerLastName}';
+    ? (prestashop.customer.is_logged ? '{$HiPay_customerLastName}' : '')
+    : '{$HiPay_customerLastName}';
 
     var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
 
@@ -103,15 +103,14 @@
     }
 
     if (typeof OPC !== 'undefined') {
-      new Promise((resolve) => {
-        prestashop.on('opc-payment-getPaymentList-complete', resolve);
-      }).then(() => {
-        jQuery(document).ready(function ($) {
-          updatePaymentMethodSelected();
-          initEventsHostedFields();
-          initHostedFields();
+        new Promise((resolve) => {
+            prestashop.on('opc-payment-getPaymentList-complete', resolve);
+        }).then(() => {
+            jQuery(document).ready(function($) {
+                updatePaymentMethodSelected();
+                initEventsHostedFields();
+                initHostedFields();
+            });
         });
-      });
     }
-
 </script>
