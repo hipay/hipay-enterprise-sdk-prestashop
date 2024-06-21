@@ -251,11 +251,12 @@
       if (_validateOPC() === false) {
         intanceApplePayButton.completePaymentWithFailure();
         return false;
-      }
-      afterApplePayTokenization(hipayToken);
-      intanceApplePayButton.completePaymentWithSuccess();
+      } else {
+        afterApplePayTokenization(hipayToken);
+        intanceApplePayButton.completePaymentWithSuccess();
 
-      handlePaymentApplePay();
+        handlePaymentApplePay();
+      }
     });
 
     intanceApplePayButton.on('cancel', function() {
@@ -308,7 +309,11 @@
       return false;
     } else {
       $('#apple-pay-error-message').hide();
-      $('form#applepay-hipay').submit();
+      if (OPC_enabled) {
+        Review.placeOrder();
+      } else {
+        $('form#applepay-hipay').submit();
+      }
       return true;
     }
   }
