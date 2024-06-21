@@ -34,7 +34,7 @@ class GatewayException extends Exception
      * @param $context
      * @param $moduleInstance
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null, $context, $moduleInstance)
+    public function __construct($context, $moduleInstance, $message = "", $code = 0, Throwable $previous = null, )
     {
         parent::__construct($message, $code, $previous);
 

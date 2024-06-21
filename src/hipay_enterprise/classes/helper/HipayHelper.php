@@ -486,9 +486,9 @@ class HipayHelper
         $configHipay,
         $country,
         $currency,
-        $orderTotal = 1,
         $address,
-        $customer
+        $customer,
+        $orderTotal = 1
     ) {
         $activatedCreditCard = [];
         $creditCards = self::getActivatedPaymentByCountryAndCurrency(
