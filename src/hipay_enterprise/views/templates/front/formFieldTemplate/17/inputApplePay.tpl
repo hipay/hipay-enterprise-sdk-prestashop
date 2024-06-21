@@ -96,12 +96,14 @@
   function initApplePay(parameters) {
     if (canMakeApplePayPayment()) {
       handleTermsOfService();
+      if (checkbox && !checkbox.checked) {
+        $('#apple-pay-button').hide();
+        $('#apple-pay-info-message').hide();
 
-      $('#apple-pay-button').hide();
-      $('#apple-pay-info-message').hide();
+        $('#apple-pay-error-message').css('display', 'inline');
+        $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
+      }
 
-      $('#apple-pay-error-message').css('display', 'inline');
-      $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
       destroyMethods(methodsInstance)
         .then(() => {
           createApplePayInstance(parameters);
