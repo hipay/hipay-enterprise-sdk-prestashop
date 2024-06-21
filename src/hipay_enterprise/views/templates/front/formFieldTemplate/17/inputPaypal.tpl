@@ -193,9 +193,6 @@
   function handlePaypalEvents(instancePaypalButton) {
     var form = $('#{$HiPay_localPaymentName}-hipay');
     instancePaypalButton.on('paymentAuthorized', function(hipayToken) {
-        if (_validateOPC() === false) {
-          return false;
-        }
         $('#{$HiPay_localPaymentName}-orderId').val(hipayToken.orderID);
         $('#{$HiPay_localPaymentName}-payment-product').val('paypal');
         $('#{$HiPay_localPaymentName}-browserInfo').val(
@@ -203,7 +200,11 @@
       );
       $('#{$HiPay_localPaymentName}-paymentmethod').val('paypal');
       $('#{$HiPay_localPaymentName}-productlist').val('paypal');
-      form.submit();
+      if (OPC_enabled) {
+        Review.placeOrder();
+      } else {
+        form.submit();
+      }
       return true;
     });
   }
