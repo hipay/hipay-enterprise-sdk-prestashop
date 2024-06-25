@@ -75,9 +75,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $this->hipayConfigTool->getConfigHipay(),
                 $country,
                 $currency,
-                $params['cart']->getOrderTotal(),
                 $address,
-                $this->customer
+                $this->customer,
+                $params['cart']->getOrderTotal()
             );
 
             if (!empty($sortedPaymentProducts)) {
