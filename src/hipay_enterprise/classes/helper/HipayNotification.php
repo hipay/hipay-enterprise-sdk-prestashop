@@ -774,6 +774,8 @@ class HipayNotification
                 $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
 
                 $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                $order_detail->product_quantity += 1;
+                $order_detail->update();
                 $tax_calculator = $order_detail->getTaxCalculator();
                 $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
 
