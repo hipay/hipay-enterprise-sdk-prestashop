@@ -139,11 +139,11 @@
 }
 
 .HiPayField--focused + .hipayHF-label {
-  color: #00ade9 !important;
+  color: #A50979 !important;
 }
 
 .HiPayField--focused + .hipayHF-baseline {
-  color: #00ade9 !important;
+  color: #A50979 !important;
 }
 
 .HiPayField--invalid + .hipayHF-label {
@@ -164,7 +164,7 @@
 }
 
 .HiPayField--focused + .hipayHF-label + .hipayHF-baseline {
-  border-bottom: solid 1px #00ade9;
+  border-bottom: solid 1px #A50979;
 }
 
 .HiPayField--invalid + .hipayHF-label + .hipayHF-baseline {
@@ -311,7 +311,7 @@ a:hover.tooltips span {
 
 .card-js input:focus,
 .card-js select:focus {
-  border-color: #66afe9 !important;
+  border-color: #A50979 !important;
 }
 
 .card-js select option[hidden] {

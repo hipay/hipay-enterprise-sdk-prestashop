@@ -24,10 +24,10 @@
                 <div class="col-lg-9">
                     <span class="switch prestashop-switch fixed-width-lg">
                         <input type="radio" name="{$key}_activated" id="{$key}_activated_on" value="1"
-                               {if $method.activated }checked="checked" {/if}>
+                            {if $method.activated }checked="checked" {/if}>
                         <label for="{$key}_activated_on">{l s='Yes' mod='hipay_enterprise'}</label>
                         <input type="radio" name="{$key}_activated" id="{$key}_activated_off" value="0"
-                               {if $method.activated == false }checked="checked" {/if}>
+                            {if $method.activated == false }checked="checked" {/if}>
                         <label for="{$key}_activated_off">{l s='No' mod='hipay_enterprise'}</label>
                         <a class="slide-button btn"></a>
                     </span>
@@ -41,20 +41,20 @@
 
                     {foreach from=$HiPay_languages item=language key=id}
                         <div class="col-lg-3 {if $HiPay_languages|count > 1} translatable-field lang-{$language.iso_code} {/if}"
-                             {if $id > 0}style="display: none" {/if}>
+                            {if $id > 0}style="display: none" {/if}>
 
                             <input type="text" name="{$key}_displayName[{$language.iso_code}]"
-                                   class="translatable-field lang-{$language.iso_code}"
-                                    {if isset($method.displayName[$language.iso_code])}
-                                        value="{$method.displayName[$language.iso_code]}"
-                                    {elseif isset($method.displayName) && !is_array($method.displayName)}
-                                        value="{$method.displayName}" {else} value="
-                                    {reset($method.displayName)}"
-                                    {/if} />
+                                class="translatable-field lang-{$language.iso_code}"
+                                {if isset($method.displayName[$language.iso_code])}
+                                    value="{$method.displayName[$language.iso_code]}"
+                                {elseif isset($method.displayName) && !is_array($method.displayName)}
+                                value="{$method.displayName}" {else} value="
+                                    {reset($method.displayName)}" 
+                                {/if} />
                         </div>
                         {if $HiPay_languages|count > 1}
                             <div class="col-lg-2 translatable-field lang-{$language.iso_code} " {if $id > 0}style="display: none"
-                                    {/if}>
+                                {/if}>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" tabindex="-1">
                                     {$language.iso_code}
                                     <span class="caret"></span>
@@ -76,7 +76,7 @@
         <div class="row">
             <div class="form-group">
                 <label class="control-label col-lg-2">{l s='Front positioning' mod='hipay_enterprise'}</label>
-                <div class="col-lg-1" style='width:45px;'>
+                <div class="col-lg-1">
                     <input type="text" class="money-type" name="{$key}_frontPosition" value="{$method.frontPosition}" />
                 </div>
             </div>
@@ -91,10 +91,10 @@
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
                             <input type="radio" name="{$key}_iframe" id="{$key}_iframe_on" value="1"
-                                   {if $method.iframe }checked="checked" {/if}>
+                                {if $method.iframe }checked="checked" {/if}>
                             <label for="{$key}_iframe_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="{$key}_iframe" id="{$key}_iframe_off" value="0"
-                                   {if $method.iframe == false }checked="checked" {/if}>
+                                {if $method.iframe == false }checked="checked" {/if}>
                             <label for="{$key}_iframe_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
                         </span>
@@ -108,7 +108,7 @@
                     <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"
-                                {if $method.minAmount.fixed|default:false eq true } readonly {/if} />
+                            {if $method.minAmount.fixed|default:false eq true } readonly {/if} />
                         {if isset($method.minAmount.fixed)}
                             <input type="hidden" name="{$key}_minAmount[fixed]" value="{$method.minAmount.fixed}" />
                         {/if}
@@ -123,7 +123,7 @@
                     <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"
-                                {if $method.maxAmount.fixed|default:false eq true } readonly {/if} />
+                            {if $method.maxAmount.fixed|default:false eq true } readonly {/if} />
                         {if isset($method.maxAmount.fixed)}
                             <input type="hidden" name="{$key}_maxAmount[fixed]" value="{$method.maxAmount.fixed}" />
                         {/if}
@@ -139,14 +139,14 @@
                     <div class="input-group col-lg-2">
                         <select name="{$key}_orderExpirationTime">
                             <option value="3"
-                                    {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "3"}selected="selected"
-                                    {/if}>{l s='3 days' mod='hipay_enterprise'}</option>
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "3"}selected="selected"
+                                {/if}>{l s='3 days' mod='hipay_enterprise'}</option>
                             <option value="30"
-                                    {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "30"}selected="selected"
-                                    {/if}>{l s='30 days' mod='hipay_enterprise'}</option>
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "30"}selected="selected"
+                                {/if}>{l s='30 days' mod='hipay_enterprise'}</option>
                             <option value="90"
-                                    {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "90"}selected="selected"
-                                    {/if}>{l s='90 days' mod='hipay_enterprise'}</option>
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "90"}selected="selected"
+                                {/if}>{l s='90 days' mod='hipay_enterprise'}</option>
                         </select>
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                     <label class="control-label col-lg-2">{l s='Merchant Promotion' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <input title="OPC provided by Oney" type="text" name="{$key}_merchantPromotion"
-                               value="{$method.merchantPromotion}" />
+                            value="{$method.merchantPromotion}" />
                     </div>
                 </div>
             </div>
@@ -186,10 +186,10 @@
                     <label class="control-label col-lg-2">{l s='Activated Currencies' mod='hipay_enterprise'}</label>
                     <div class="col-lg-9">
                         <select id="multiselect-{$key}" name="{$key}_currencies[]" multiple="multiple"
-                                class="multiselect-currency">
+                            class="multiselect-currency">
                             {foreach $HiPay_limitedCurrencies as $currency }
                                 <option value="{$currency@key}"
-                                        {if !empty($method.currencies) && $currency@key|inArray:$method.currencies } selected {/if}>
+                                    {if !empty($method.currencies) && $currency@key|inArray:$method.currencies } selected {/if}>
                                     {$currency@key}
                                     - {$currency} </option>
                             {/foreach}
@@ -226,7 +226,7 @@
                         <select id="countries_{$key}" multiple="multiple" size="10" name="{$key}_countries[]">
                             {foreach $HiPay_limitedCountries as $country}
                                 <option value="{$country@key}"
-                                        {if !empty($method.countries) && $country@key|inArray:$method.countries } selected {/if}>
+                                    {if !empty($method.countries) && $country@key|inArray:$method.countries } selected {/if}>
                                     {$country}</option>
                             {/foreach}
                         </select>
@@ -239,9 +239,12 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
                     <div class="col-lg-4">
-                        <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId" value="{$method.merchantId}" />
+                        <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId"
+                            value="{$method.merchantId}" />
                         <br>
-                        <p class="alert alert-info">{l s='Enter your Merchant PayPal ID to activate PayPal V2 integration.' mod='hipay_enterprise'}</p>
+                        <p class="alert alert-info">
+                            {l s='Enter your Merchant PayPal ID to activate PayPal V2 integration.' mod='hipay_enterprise'}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -321,7 +324,8 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55" name="{$key}_buttonHeight" value="{$method.buttonHeight}" />
+                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55"
+                            name="{$key}_buttonHeight" value="{$method.buttonHeight}" />
                     </div>
                 </div>
             </div>
@@ -334,16 +338,18 @@
                     </label>
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
-                            <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_on" value="1"
-                                   {if $method.bnpl }checked="checked" {/if}>
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1"
+                                {if $method.bnpl }checked="checked" {/if}>
                             <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                            <input id="bnpl" type="radio" name="{$key}_bnpl" id="{$key}_bnpl_off" value="0"
-                                   {if $method.bnpl === false }checked="checked" {/if}>
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_off" value="0"
+                                {if $method.bnpl === false }checked="checked" {/if}>
                             <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
                         </span>
                         <br>
-                        <p class="alert alert-info">{l s="\"Buy now, Pay later\" feature is only available if the store currency is euros and if the basket amount is between 30 and 2000" mod='hipay_enterprise'}</p>
+                        <p class="alert alert-info">
+                            {l s="\"Buy now, Pay later\" feature is only available if the store currency is euros and if the basket amount is between 30 and 2000" mod='hipay_enterprise'}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -352,13 +358,17 @@
 </div>
 
 <script>
-
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         function toggleFields(merchantId) {
-            ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function (fieldId) {
-                var field = document.getElementById(fieldId);
-                field.disabled = merchantId === '';
-            });
+            ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(
+                function(fieldId) {
+                    var field = document.getElementById(fieldId);
+                    if (merchantId === '') {
+                        field.classList.add('readonly');
+                    } else {
+                        field.classList.remove('readonly');
+                    }
+                });
         }
 
         var merchantIdInput = document.getElementById('input-merchantId');
@@ -366,12 +376,9 @@
             // Call toggleFields initially to set the correct state on page load
             toggleFields(merchantIdInput.value);
 
-            merchantIdInput.addEventListener('input', function () {
+            merchantIdInput.addEventListener('input', function() {
                 toggleFields(this.value);
             });
         }
     });
-
 </script>
-
-

@@ -94,12 +94,13 @@ class MaintenanceFormatter extends CommonRequestFormatterAbstract
                 "transactionAttempt" => $transactionAttempt
             );
             foreach ($this->order->getProducts() as $item) {
+                $itemId = (int)($item["id_product"].$item["product_attribute_id"]);
                 if ($this->refundItems === "full") {
                     $params["products"][] = array("item" => $item, "quantity" => $item["product_quantity"]);
-                } elseif (isset($this->refundItems[$item["id_product"]]) && $this->refundItems[$item["id_product"]] > 0) {
+                } elseif (isset($this->refundItems[$itemId]) && $this->refundItems[$itemId] > 0) {
                     $params["products"][] = array(
                         "item" => $item,
-                        "quantity" => $this->refundItems[$item["id_product"]]
+                        "quantity" => $this->refundItems[$itemId]
                     );
                 }
             }

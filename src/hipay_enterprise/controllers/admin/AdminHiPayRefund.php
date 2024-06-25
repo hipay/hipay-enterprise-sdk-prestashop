@@ -106,10 +106,16 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
 
             if ($refund_type == 'complete') {
                 $this->params["amount"] = $refundableAmount;
-                $this->apiHandler->handleRefund($this->params);
-            } elseif ($refund_type == 'partial') {
+                if ($this->apiHandler->handleRefund($this->params)) {
+                    $this->module->getLogs()->logInfos('# Complete refund Capture success');
+                    $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
+                }
+            } elseif ($refund_type == 'partialWithoutBasket') {
                 $this->params["amount"] = $refund_amount;
-                $this->apiHandler->handleRefund($this->params);
+                if ($this->apiHandler->handleRefund($this->params)) {
+                    $this->module->getLogs()->logInfos('# Partial refund (without basket) capture success');
+                    $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
+                }
             }
         } elseif ((Tools::isSubmit('hipay_refund_basket_submit'))) {
             $this->module->getLogs()->logInfos('# Refund Capture with basket order ID {$this->order->id}');
@@ -118,7 +124,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
             //refund with basket
-            if (Tools::getValue('hipay_refund_type') == "partial") {
+            if (Tools::getValue('hipay_refund_type') == "partial" || Tools::getValue('hipay_refund_type') == "partialWithoutBasket") {
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_refund_fee') !== "on" &&
@@ -192,7 +198,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             }
 
             if ($this->apiHandler->handleRefund($this->params)) {
-                $this->module->getLogs()->logInfos('# Refund Capture success');
+                $this->module->getLogs()->logInfos('# Partial refund Capture success');
                 $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
             }
         }

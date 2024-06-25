@@ -96,12 +96,14 @@
   function initApplePay(parameters) {
     if (canMakeApplePayPayment()) {
       handleTermsOfService();
+      if (checkbox && !checkbox.checked) {
+        $('#apple-pay-button').hide();
+        $('#apple-pay-info-message').hide();
 
-      $('#apple-pay-button').hide();
-      $('#apple-pay-info-message').hide();
+        $('#apple-pay-error-message').css('display', 'inline');
+        $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
+      }
 
-      $('#apple-pay-error-message').css('display', 'inline');
-      $('#apple-pay-error-message').text($('#apple-pay-termes-of-service-error-message').text());
       destroyMethods(methodsInstance)
         .then(() => {
           createApplePayInstance(parameters);
@@ -249,11 +251,12 @@
       if (_validateOPC() === false) {
         intanceApplePayButton.completePaymentWithFailure();
         return false;
-      }
-      afterApplePayTokenization(hipayToken);
-      intanceApplePayButton.completePaymentWithSuccess();
+      } else {
+        afterApplePayTokenization(hipayToken);
+        intanceApplePayButton.completePaymentWithSuccess();
 
-      handlePaymentApplePay();
+        handlePaymentApplePay();
+      }
     });
 
     intanceApplePayButton.on('cancel', function() {
@@ -306,7 +309,11 @@
       return false;
     } else {
       $('#apple-pay-error-message').hide();
-      $('form#applepay-hipay').submit();
+      if (OPC_enabled) {
+        Review.placeOrder();
+      } else {
+        $('form#applepay-hipay').submit();
+      }
       return true;
     }
   }
