@@ -537,9 +537,9 @@ class Hipay_enterprise extends PaymentModule
                     $this->hipayConfigTool->getConfigHipay(),
                     $country,
                     $currency,
-                    $orderTotal,
                     $address,
-                    $customer
+                    $customer,
+                    $orderTotal
                 ),
                 'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
                 'HiPay_isOperatingModeHostedPage' => ApiMode::HOSTED_PAGE === $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'],
@@ -563,6 +563,7 @@ class Hipay_enterprise extends PaymentModule
         $country = new Country((int) $address->id_country);
         $currency = new Currency((int) $params['cart']->id_currency);
         $orderTotal = $params['cart']->getOrderTotal();
+        $customer = new Customer((int) $params['cart']->id_customer);
 
         $paymentOptions = [];
 
@@ -571,6 +572,8 @@ class Hipay_enterprise extends PaymentModule
             $this->hipayConfigTool->getConfigHipay(),
             $country,
             $currency,
+            $address,
+            $customer,
             $orderTotal
         );
 
