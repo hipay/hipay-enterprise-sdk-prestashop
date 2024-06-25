@@ -21,6 +21,7 @@ RUN sed -i "/exec apache2-foreground/d" /tmp/docker_run.sh \
     && sed -i "/Almost ! Starting Apache now/d" /tmp/docker_run.sh
 
 COPY bin/docker/conf/apache2/mpm_prefork.conf /etc/apache2/mods-available/
+COPY bin/docker/conf/php/php-override.ini /usr/local/etc/php/conf.d/php-override.ini
 
 COPY bin/docker/images/prestashop/entrypoint.sh /tmp
 RUN chmod +x /tmp/entrypoint.sh
