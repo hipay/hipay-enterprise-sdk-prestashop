@@ -285,6 +285,7 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_d8ca6f07c1c9
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_790d59ef178acbc75d233bf4211763c6'] = 'Nazioni';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_229a7ec501323b94db7ff3157a7623c9'] = 'ID del mercante';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_603715e2b4d5b6a0da0930b768943b3f'] = 'Si prega di fornire il proprio ID commerciante PayPal per abilitare l\'integrazione PayPal V2.';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_98fda8353078093250ae630037bb2c08'] = 'Forma del pulsante';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_7545c5d3ad246a683a197a2903a4d5e6'] = 'Rettangolo';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_bef2481eda40bd121482f1814d72314f'] = 'Arrotondato';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_eb7f929fae900d3f139398b2403823cd'] = 'Etichetta del pulsante';
