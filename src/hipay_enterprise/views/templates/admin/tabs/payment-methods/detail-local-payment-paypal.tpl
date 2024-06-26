@@ -252,7 +252,7 @@
         {if "buttonShape"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
-                    <label class="control-label col-lg-2">Button Shape</label>
+                    <label class="control-label col-lg-2">{l s="Button Shape" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
                         <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>

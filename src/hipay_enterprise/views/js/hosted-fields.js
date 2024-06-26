@@ -1,7 +1,19 @@
 jQuery(document).ready(function ($) {
+  updatePaymentMethodSelected();
   initEventsHostedFields();
+  if (typeof PaymentOPC !== typeof undefined) {
+    initHostedFields();
+    ajaxCompleteCheckoutPlaceOrder().then(() => {
+      updatePaymentMethodSelected();
+      $(document).on(
+        'change',
+        'input[name="payment-option"]',
+        updatePaymentMethodSelected
+      );
+      $('#tokenizerForm').submit();
+    });
+  }
 });
-
 function initEventsHostedFields() {
   $('#card-number').focus(function () {
     $('#radio-no-token').prop('checked', true);
@@ -55,20 +67,7 @@ function initEventsHostedFields() {
 
 var hipayHF;
 
-//Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
-//--------------------------------
-if (window.opc_dispatcher && window.opc_dispatcher.events) {
-  window.opc_dispatcher.events.addEventListener(
-    'payment-getPaymentList-complete',
-    () => {
-      initEventsHostedFields();
-      initHostedFields();
-    }
-  );
-} else {
-  document.addEventListener('DOMContentLoaded', initHostedFields, false);
-}
-//--------------------------------
+document.addEventListener('DOMContentLoaded', initHostedFields, false);
 
 function allowMultiUse(saveTokenEl) {
   return oneClick && $(saveTokenEl).is(':checked');
@@ -198,4 +197,33 @@ function handleErrorhipayHF(errors) {
       domElement.innerText = errors[error].error;
     }
   }
+}
+
+function ajaxCompleteCheckoutPlaceOrder() {
+  return new Promise((resolve, reject) => {
+    $(document).ajaxComplete((event, xhr, settings) => {
+      if (
+        settings.url.includes(prestashop.urls.pages.order) &&
+        typeof settings.data === 'string' && // Check if data is a string
+        settings.data.includes('placeOrder')
+      ) {
+        resolve({ event, xhr, settings });
+      }
+    });
+  });
+}
+
+function getCheckoutPaymentContainer() {
+  var container = $('#onepagecheckoutps_step_three_container');
+  if (!container.length) {
+    container = $('#payment_method_container');
+  }
+  return container;
+}
+
+function updatePaymentMethodSelected() {
+  var container = getCheckoutPaymentContainer();
+  myPaymentMethodSelected = container
+    .find("input[data-module-name='credit_card']")
+    .is(':checked');
 }
