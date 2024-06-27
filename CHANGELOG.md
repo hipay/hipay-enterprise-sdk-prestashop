@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix**: Fixed HiPay refund formular when no basket in order
+
 ## 2.22.0
 
 - **Add**: Add PayPal v2
