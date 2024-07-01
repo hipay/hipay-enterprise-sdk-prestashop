@@ -83,9 +83,11 @@ class AdminHiPayCaptureController extends AdminHiPayActionsController
             if ($capture_type == 'complete') {
                 $this->params["amount"] = $stillToCapture;
                 $this->apiHandler->handleCapture($this->params);
-            } elseif ($capture_type == 'partial') {
+            } elseif ($capture_type == 'partialWithoutBasket') {
                 $this->params["amount"] = $capture_amount;
                 $this->apiHandler->handleCapture($this->params);
+                $this->module->getLogs()->logInfos('# Manual Capture success');
+                $this->context->cookie->__set('hipay_success', $this->module->l('Capture has been validated'));
             }
         } elseif ((Tools::isSubmit('hipay_capture_basket_submit'))) {
             $this->module->getLogs()->logInfos('# Manual Capture with basket');

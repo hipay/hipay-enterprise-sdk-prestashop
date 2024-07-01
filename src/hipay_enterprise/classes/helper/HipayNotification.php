@@ -459,6 +459,12 @@ class HipayNotification
             $this->addOrderMessage($transaction, $order);
         }
 
+        if(((int) $order->getCurrentState() == (int) $newState
+            && $transaction->getStatus() == TransactionStatus::CAPTURED)
+            && $transaction->getCapturedAmount() < $transaction->getAuthorizedAmount()){
+                $this->addOrderMessage($transaction, $order);
+        }
+
         if (TransactionStatus::CAPTURE_REQUESTED == $transaction->getStatus() &&
             $transaction->getCapturedAmount() < $transaction->getAuthorizedAmount()
         ) {
@@ -993,6 +999,7 @@ class HipayNotification
     {
         $customData = $transaction->getCustomData();
         $amountAlreadyRefunded = $this->dbMaintenance->getAmountRefunded($order->id);
+        $amountAlreadyCaptured = $this->dbMaintenance->getAmountCaptured($order->id);
         $data = [
             'order_id' => $order->id,
             'transaction_ref' => $transaction->getTransactionReference(),
@@ -1000,7 +1007,7 @@ class HipayNotification
             'status' => $transaction->getStatus(),
             'message' => $transaction->getMessage(),
             'amount' => $transaction->getAuthorizedAmount(),
-            'captured_amount' => $transaction->getCapturedAmount(),
+            'captured_amount' => (string) ((float) $transaction->getCapturedAmount() - (float) $amountAlreadyCaptured),
             'refunded_amount' => (string) ((float) $transaction->getRefundedAmount() - (float) $amountAlreadyRefunded),
             'payment_product' => $transaction->getPaymentProduct(),
             'payment_start' => $transaction->getDateCreated(),

@@ -29,7 +29,7 @@
                 {if !$HiPay_partiallyRefunded}
                     <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                 {/if}
-                {if $HiPay_basket && $HiPay_refundedAmountWithoutBasket == 0}
+                {if $HiPay_basket && $HiPay_refundedAmountWithoutBasket == 0 && $HiPay_capturedAmountWithoutBasket == 0}
                     <option value="partial">{l s='Partial with basket' mod='hipay_enterprise'}</option>
                 {/if}
                 <option value="partialWithoutBasket">{l s='Partial without basket' mod='hipay_enterprise'}</option>
@@ -49,7 +49,6 @@
                         </tr>
                     </thead>
                     {foreach $HiPay_products as $item}
-
                         {assign var="itemId" value=($item["id_product"]|cat:$item["product_attribute_id"])|intval}
                         {if empty($HiPay_capturedItems) && !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
                             {assign var="remainQty" value=$item["product_quantity"] - $HiPay_refundedItems[$itemId]["quantity"] }
@@ -59,10 +58,10 @@
                             {assign var="remainQty" value=$item["product_quantity"] }
                         {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$itemId]) }
                             {assign var="remainQty" value=0}
-                        {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["proproduct_attribute_idduct_id"]]) }
+                        {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId]) }
                             {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
                         {else}
-                            {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"]}
+                            {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
                         {/if}
                         <tr>
                             <td>
@@ -181,7 +180,7 @@
                             <td>
                                 <div id="total-container">
                                     <span id="total-refund"></span>
-                                    <span id="total-loader" class="loader"></span>
+                                    <span id="total-refund-loader" class="loader"></span>
                                 </div>
                                 <input type="hidden" id="total-refund-input" name="total-refund-input" value="0.00" />
                             </td>
@@ -214,7 +213,7 @@
                         {assign var="remainQty" value=$item["product_quantity"] }
                     {else if empty($HiPay_capturedItems) || !isset($HiPay_capturedItems[$itemId]) }
                         {assign var="remainQty" value=0}
-                    {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["proproduct_attribute_idduct_id"]]) }
+                    {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$item["product_attribute_id"]]) }
                         {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
                     {else}
                         {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"]}
@@ -361,11 +360,11 @@
         <p style="display:none;" id="danger-js" class="alert alert-danger"></p>
         <div class="form-group">
             {if !$HiPay_totallyRefunded}
-                <button id="submitButton" style="display:none;" type="submit" name="hipay_refund_submit"
+                <button id="submitRefundButton" style="display:none;" type="submit" name="hipay_refund_submit"
                     class="btn btn-primary pull-right">
                     {l s='Refund'  mod='hipay_enterprise'}
                 </button>
-                <button id="basketSubmitButton" style="display:none;" type="submit" name="hipay_refund_basket_submit"
+                <button id="basketSubmitRefundButton" style="display:none;" type="submit" name="hipay_refund_basket_submit"
                     class="btn btn-primary pull-right">
                     {l s='Refund'  mod='hipay_enterprise'}
                 </button>
@@ -379,7 +378,7 @@
 
         handleRefundTypeDisplay($("#hipay_refund_type").find(":selected").val());
         addEvents();
-        $("#total-loader").hide();
+        $("#total-refund-loader").hide();
 
         var currencySign = "€";
         var refundableAmount = {$HiPay_refundableAmount};
@@ -392,7 +391,7 @@
 
         function updateRefundPrice() {
             $("#total-refund").hide();
-            $("#total-loader").show();
+            $("#total-refund-loader").show();
             $("#total-refund-input").val(0);
 
             var items = [];
@@ -422,7 +421,7 @@
                         amount = amount - 0.01;
                     }
 
-                    $("#total-loader").hide();
+                    $("#total-refund-loader").hide();
                     $("#total-refund").show();
                     $("#total-refund").text(amount + " " + currencySign);
                     $("#total-refund-input").val(amount);
@@ -509,20 +508,20 @@
             case 'complete':
                 $("#block-refund-amount").hide();
                 $("#block-refund-amount-without-basket").hide();
-                $("#basketSubmitButton").hide();
-                $("#submitButton").show();
+                $("#basketSubmitRefundButton").hide();
+                $("#submitRefundButton").show();
                 break;
             case 'partial':
                 $("#block-refund-amount-without-basket").hide();
                 $("#block-refund-amount").show();
-                $("#submitButton").hide();
-                $("#basketSubmitButton").show();
+                $("#submitRefundButton").hide();
+                $("#basketSubmitRefundButton").show();
                 break;
             case 'partialWithoutBasket':
                 $("#block-refund-amount").hide();
                 $("#block-refund-amount-without-basket").show();
-                $("#basketSubmitButton").hide();
-                $("#submitButton").show();
+                $("#basketSubmitRefundButton").hide();
+                $("#submitRefundButton").show();
                 break;
         }
     }

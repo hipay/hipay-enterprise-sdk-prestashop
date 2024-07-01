@@ -212,11 +212,13 @@ class HipayMaintenanceBlock
                         'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
-                        'HiPay_refundableAmount' => $this->order->total_paid_tax_incl - $refundedAmount,
+                        'HiPay_refundableAmount' => ($this->order->total_paid_tax_incl - ($this->order->total_paid_tax_incl -
+                        HipayHelper::getOrderPaymentAmount($this->order))) - $refundedAmount,
                         'HiPay_refundedFees' => $refundedFees,
                         'HiPay_refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
                         'HiPay_basket' => $this->basket,
                         'HiPay_refundedItems' => $refundedItems,
+                        'HiPay_capturedAmountWithoutBasket' => $this->dbMaintenance->getAmountCapturedWithoutBasket($this->order->id),
                         'HiPay_tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
                         'HiPay_partiallyRefunded' => $this->isPartiallyRefunded(
                             $refundedItems,
@@ -292,6 +294,7 @@ class HipayMaintenanceBlock
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_manualCapture' => $this->isManualCapture(),
                         'HiPay_capturedAmount' => HipayHelper::getOrderPaymentAmount($this->order),
+                        'HiPay_capturedAmountWithoutBasket' => $this->dbMaintenance->getAmountCapturedWithoutBasket($this->order->id),
                         'HiPay_captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
                         'HiPay_tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
                         'HiPay_partiallyCaptured' => $this->isPartiallyCaptured(

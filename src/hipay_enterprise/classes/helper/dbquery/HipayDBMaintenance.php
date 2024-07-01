@@ -381,6 +381,65 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     }
 
     /**
+     * Get amount captured without basket
+     *
+     * @param int $orderId
+     *
+     * @return float
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function getAmountCapturedWithoutBasket($orderId)
+    {
+        $sql = 'SELECT `captured_amount`, `basket`'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+        .' WHERE `order_id` = '.(int) $orderId
+        .' AND `status` = '.TransactionStatus::CAPTURED;
+
+        $result = Db::getInstance()->executeS($sql);
+        $totalCaptured = 0;
+        foreach($result as $transaction){
+            if(($transaction["basket"] === "" || $transaction["basket"] === null)){
+                $totalCaptured += $transaction['captured_amount'];
+            }
+        }
+        return $totalCaptured;
+    }
+
+    /**
+     * Get amount already captured.
+     *
+     * @param int $orderId
+     *
+     * @return float
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function getAmountCaptured($orderId)
+    {
+        $totalCaptured = 0;
+        $statusArray = [TransactionStatus::CAPTURED, TransactionStatus::PARTIALLY_CAPTURED];
+
+        foreach ($statusArray as $status) {
+            $sql = 'SELECT `captured_amount`'
+            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+            .' WHERE `order_id` = '.(int) $orderId
+            .' AND `status` = '.$status;
+
+            $results = Db::getInstance()->executeS($sql);
+
+            if(count($results)){
+                foreach($results as $transaction){
+                    $totalCaptured += $transaction['captured_amount'];
+                }
+                break;
+            }
+        }
+
+        return $totalCaptured;
+    }
+
+    /**
      * Get amount refunded without basket
      *
      * @param int $orderId
