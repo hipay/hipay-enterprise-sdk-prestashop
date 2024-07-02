@@ -704,7 +704,7 @@ class HipayNotification
         $discount = 0;
         $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getCapturedAmount() ? true : false;
 
-        if($isCompleteRefund){
+        if($isCompleteRefund && count($transactionProducts)){ // complete refund with basket
             foreach ($orderProducts as $orderProduct) {
                 $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
                 $orderDetail->total_refunded_tax_excl = (float) $orderDetail->total_price_tax_excl;
@@ -726,8 +726,7 @@ class HipayNotification
 
             $fees = (float) $order->total_shipping_tax_excl;
             $discount = (float) $order->total_discounts_tax_incl;
-        }else{
-            if(count($transactionProducts)){
+        } else if(!$isCompleteRefund && count($transactionProducts)){ // partial refund with basket
                 foreach ($transactionProducts as $transactionProduct) {
                     switch ($transactionProduct->type) {
                         case 'good':
@@ -768,26 +767,25 @@ class HipayNotification
                             break;
                     }
                 }
-            }else{
-                $product = array_pop($orderProducts);
+        }else{ // complete or partial refund without basket
+            $product = array_pop($orderProducts);
 
-                $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
+            $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
 
-                $order_detail = new OrderDetail((int) $product['id_order_detail']);
-                $order_detail->product_quantity += 1;
-                $order_detail->update();
-                $tax_calculator = $order_detail->getTaxCalculator();
-                $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+            $order_detail = new OrderDetail((int) $product['id_order_detail']);
+            $order_detail->product_quantity += 1;
+            $order_detail->update();
+            $tax_calculator = $order_detail->getTaxCalculator();
+            $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
 
-                $product['unit_price'] = $amountToRefund;
-                $product['product_quantity_refunded'] = $product['product_quantity'];
-                $product['quantity'] = 1;
+            $product['unit_price'] = $amountToRefund;
+            $product['product_quantity_refunded'] = $product['product_quantity'];
+            $product['quantity'] = 1;
 
-                OrderSlip::create(
-                    $order,
-                    [$product],
-                );
-            }
+            OrderSlip::create(
+                $order,
+                [$product],
+            );
         }
 
         if(count($refundedProducts) && count($transactionProducts)){
