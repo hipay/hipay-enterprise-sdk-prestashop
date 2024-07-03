@@ -58,6 +58,7 @@ variables:
     HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST: $HIPAY_TOKENJS_PUBLICKEY_TEST
     HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST: $HIPAY_TOKENJS_USERNAME_TEST
     PI_DATA_URL: $PI_CI_DATA_URL
+    HIPAY_GITHUB_ACCESS_TOKEN: $GITHUB_TOKEN
 
   services:
     - name: $REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}
@@ -149,6 +150,7 @@ variables:
       --set hipay_tokenjs_apple_pay_username_test="$HIPAY_APPLEPAY_TOKENJS_USERNAME_RE7"
       --set hipay_tokenjs_apple_pay_password_test="$HIPAY_APPLEPAY_TOKENJS_PUBLICKEY_RE7"
       --set pi_data_url="$PI_CI_DATA_URL"
+      --set hipay_github_access_token="$GITHUB_TOKEN"
   allow_failure: true
   tags:
     - small
