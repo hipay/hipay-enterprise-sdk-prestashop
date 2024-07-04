@@ -399,7 +399,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
         $result = Db::getInstance()->executeS($sql);
         $totalCaptured = 0;
         foreach($result as $transaction){
-            if(($transaction["basket"] === "" || $transaction["basket"] === null)){
+            if((empty($transaction["basket"]) || is_null($transaction["basket"]))){
                 $totalCaptured += $transaction['captured_amount'];
             }
         }

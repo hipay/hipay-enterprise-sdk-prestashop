@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Fix**: Fixed HiPay refund formular when no basket in order
+- **Fix**: Fixed HiPay capture system
 
 ## 2.22.0
 

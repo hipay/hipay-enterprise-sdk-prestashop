@@ -446,7 +446,7 @@ class HipayNotification
     private function updateOrderStatus($transaction, $order, $newState)
     {
         if ((int) $order->getCurrentState() != (int) $newState
-            || ((int) $order->getCurrentState() == (int) $newState && $transaction->getStatus() == TransactionStatus::PARTIALLY_REFUNDED)) {
+            || ((int) $order->getCurrentState() === (int) $newState && $transaction->getStatus() == TransactionStatus::PARTIALLY_REFUNDED)) {
             // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
             if ($this->controleIfStatusHistoryExist($order->id, _PS_OS_OUTOFSTOCK_UNPAID_)
                 && (_PS_OS_PAYMENT_ == $newState)
@@ -459,7 +459,7 @@ class HipayNotification
             $this->addOrderMessage($transaction, $order);
         }
 
-        if(((int) $order->getCurrentState() == (int) $newState
+        if(((int) $order->getCurrentState() === (int) $newState
             && $transaction->getStatus() == TransactionStatus::CAPTURED)
             && $transaction->getCapturedAmount() < $transaction->getAuthorizedAmount()){
                 $this->addOrderMessage($transaction, $order);

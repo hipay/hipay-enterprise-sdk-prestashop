@@ -36,7 +36,7 @@
             </select>
         </div>
 
-        {if $HiPay_basket && $HiPay_refundedAmountWithoutBasket == 0 }
+        {if $HiPay_basket && $HiPay_refundedAmountWithoutBasket == 0 && $HiPay_capturedAmountWithoutBasket == 0 }
             <div id="block-refund-amount" style="display:none;" class="form-group bloc-actions-hipay">
                 <table class="table table-item-hipay refund-table">
                     <thead>
