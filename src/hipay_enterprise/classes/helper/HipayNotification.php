@@ -708,7 +708,7 @@ class HipayNotification
         $refundedProducts = [];
         $fees = false;
         $discount = 0;
-        $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getCapturedAmount() ? true : false;
+        $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getAuthorizedAmount() ? true : false;
 
         if($isCompleteRefund){
             foreach ($orderProducts as $orderProduct) {

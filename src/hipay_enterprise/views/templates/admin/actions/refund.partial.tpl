@@ -60,8 +60,10 @@
                             {assign var="remainQty" value=0}
                         {else if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId]) }
                             {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
-                        {else}
+                        {else if !empty($HiPay_capturedItems) && isset($HiPay_capturedItems[$itemId]) && !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
                             {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"] - $HiPay_refundedItems[$itemId]["quantity"]}
+                        {else}
+                            {assign var="remainQty" value=$HiPay_capturedItems[$itemId]["quantity"]}
                         {/if}
                         <tr>
                             <td>

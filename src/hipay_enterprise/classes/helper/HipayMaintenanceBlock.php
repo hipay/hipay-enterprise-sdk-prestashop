@@ -212,8 +212,7 @@ class HipayMaintenanceBlock
                         'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
-                        'HiPay_refundableAmount' => ($this->order->total_paid_tax_incl - ($this->order->total_paid_tax_incl -
-                        HipayHelper::getOrderPaymentAmount($this->order))) - $refundedAmount,
+                        'HiPay_refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) - $refundedAmount,
                         'HiPay_refundedFees' => $refundedFees,
                         'HiPay_refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
                         'HiPay_basket' => $this->basket,
