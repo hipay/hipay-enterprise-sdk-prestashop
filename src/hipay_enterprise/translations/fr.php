@@ -284,7 +284,9 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_9e0bb754171c
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_d8ca6f07c1c9e3641e6ff6a3f4ec520c'] = 'Ce pays n\'est pas activé dans votre boutique PrestaShop.';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_790d59ef178acbc75d233bf4211763c6'] = 'Pays';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_229a7ec501323b94db7ff3157a7623c9'] = 'ID du marchand';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_603715e2b4d5b6a0da0930b768943b3f'] = 'Entrez votre identifiant marchand PayPal pour activer l\'intégration PayPal V2';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_24d459a81449d7210c8f9a86c2913034'] = 'NOUVEAU';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_633e9ad570229dc557afac383fe8ec05'] = 'La nouvelle intégration de PayPal vous permet de payer avec PayPal sans redirection et de proposer des paiements échelonnés.';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_70fad9a20f1649235ee11c1fa80992c3'] = 'Disponible uniquement sur invitation pour le moment, veuillez contacter notre service d\'assistance ou votre gestionnaire de compte pour plus d\'informations.';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_98fda8353078093250ae630037bb2c08'] = 'Forme du bouton';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_7545c5d3ad246a683a197a2903a4d5e6'] = 'Rectangle';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_bef2481eda40bd121482f1814d72314f'] = 'Arrondi';
