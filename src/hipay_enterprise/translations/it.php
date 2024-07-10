@@ -286,7 +286,9 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_790d59ef178a
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_229a7ec501323b94db7ff3157a7623c9'] = 'ID del mercante';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_24d459a81449d7210c8f9a86c2913034'] = 'NUOVO';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_633e9ad570229dc557afac383fe8ec05'] = 'La nuova integrazione con PayPal consente di pagare con PayPal senza reindirizzamento e di offrire il pagamento a rate.';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_70fad9a20f1649235ee11c1fa80992c3'] = 'Al momento è disponibile solo su invito; per ulteriori informazioni, contattate il nostro supporto o il vostro account manager.';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_5d669298858349baaa255b8acc846821'] = 'Disponibile da ';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_3db5045f0087b21f1b24763ed7d1cb50'] = 'solo su invito ';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_ab785d0ff47caf735eb4f78c5b75bb9b'] = 'al momento, si prega di contattare il nostro supporto o il vostro account manager per ulteriori informazioni.';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_98fda8353078093250ae630037bb2c08'] = 'Forma del pulsante';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_7545c5d3ad246a683a197a2903a4d5e6'] = 'Rettangolo';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_bef2481eda40bd121482f1814d72314f'] = 'Arrotondato';

@@ -285,8 +285,10 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_d8ca6f07c1c9
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_790d59ef178acbc75d233bf4211763c6'] = 'Pays';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_229a7ec501323b94db7ff3157a7623c9'] = 'ID du marchand';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_24d459a81449d7210c8f9a86c2913034'] = 'NOUVEAU';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_633e9ad570229dc557afac383fe8ec05'] = 'La nouvelle intégration de PayPal vous permet de payer avec PayPal sans redirection et de proposer des paiements échelonnés.';
-$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_70fad9a20f1649235ee11c1fa80992c3'] = 'Disponible uniquement sur invitation pour le moment, veuillez contacter notre service d\'assistance ou votre gestionnaire de compte pour plus d\'informations.';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_633e9ad570229dc557afac383fe8ec05'] = 'La nouvelle version de PayPal permet de payer avec PayPal sans redirection et de proposer le paiement en plusieurs fois';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_5d669298858349baaa255b8acc846821'] = 'Disponible sur ';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_3db5045f0087b21f1b24763ed7d1cb50'] = 'invitation uniquement ';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_ab785d0ff47caf735eb4f78c5b75bb9b'] = 'pour le moment, veuillez contacter notre support ou votre chargé de compte pour en bénéficier';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_98fda8353078093250ae630037bb2c08'] = 'Forme du bouton';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_7545c5d3ad246a683a197a2903a4d5e6'] = 'Rectangle';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment-paypal_bef2481eda40bd121482f1814d72314f'] = 'Arrondi';

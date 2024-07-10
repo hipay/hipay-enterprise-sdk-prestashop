@@ -245,7 +245,9 @@
                         <p class="alert alert-warning">
                             <b>{l s='NEW' mod='hipay_enterprise'}</b><br/>
                             {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br/><br/>
-                            {l s='Available by invitation only at this time, please contact our support or your account manager for more information.' mod='hipay_enterprise'}
+                            {l s='Available by ' mod='hipay_enterprise'}
+                            <b>{l s='invitation only' mod='hipay_enterprise'}</b>
+                            {l s='at this time, please contact our support or your account manager for more information.' mod='hipay_enterprise'}
                         </p>
                     </div>
                 </div>
