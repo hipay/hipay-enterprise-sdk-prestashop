@@ -64,13 +64,13 @@ class ApiCaller
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
                 'An error occured during request requestSecuritySettings. Please Retry later. Reason [' .
                 $e->getMessage() .
                 ']',
                 $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance
+                null
             );
         }
     }
@@ -105,13 +105,13 @@ class ApiCaller
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
                 'An error occured during request getHostedPaymentPage. Please Retry later. Reason [' .
                 $e->getMessage() .
                 ']',
                 $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance
+                null
             );
         }
     }
@@ -146,12 +146,12 @@ class ApiCaller
             $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
                 $e->getMessage() . ']',
                 $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance
+                null
             );
         }
     }
@@ -209,12 +209,12 @@ class ApiCaller
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
                 'An error occured during request Maintenance. Please Retry later. Reason [' .
                 $e->getMessage() . ']',
                 $e->getCode(),
-                null,
-                Context::getContext(),
-                $moduleInstance
+                null
             );
         }
     }

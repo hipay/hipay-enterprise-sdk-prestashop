@@ -704,7 +704,7 @@ class HipayNotification
         $discount = 0;
         $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getCapturedAmount() ? true : false;
 
-        if($isCompleteRefund){
+        if($isCompleteRefund && count($transactionProducts)){ // complete refund with basket
             foreach ($orderProducts as $orderProduct) {
                 $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
                 $orderDetail->total_refunded_tax_excl = (float) $orderDetail->total_price_tax_excl;
@@ -726,50 +726,69 @@ class HipayNotification
 
             $fees = (float) $order->total_shipping_tax_excl;
             $discount = (float) $order->total_discounts_tax_incl;
-        }else{
-            foreach ($transactionProducts as $transactionProduct) {
-                switch ($transactionProduct->type) {
-                    case 'good':
-                        foreach ($orderProducts as $orderProduct) {
-                            $productCombination = new Combination($orderProduct["product_attribute_id"]);
-                            $productAttributes = $productCombination->getAttributesName((int)Context::getContext()->language->id);
-                            if(empty($productAttributes)){
-                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-n-a");
-                            }else{
-                                $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-".$productAttributes[0]["name"]);
-                            }
-                            if($transactionProduct->product_reference == $orderProductReference){
-                                $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
-                                $orderDetail->total_refunded_tax_excl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_excl;
-                                $orderDetail->total_refunded_tax_incl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_incl;
-                                $orderProduct['quantity'] = $transactionProduct->quantity;
-                                $orderProduct['unit_price'] = $orderDetail->unit_price_tax_excl;
-                                $refundedProducts[] = $orderProduct;
-                                $orderDetail->update();
-
-                                $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
-                                if (Validate::isLoadedObject($stock_available)) {
-                                    $newQuantity = StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id) + (int)$transactionProduct->quantity;
-                                    $stock_available->quantity = $newQuantity;
-                                    $stock_available->update();
+        } else if(!$isCompleteRefund && count($transactionProducts)){ // partial refund with basket
+                foreach ($transactionProducts as $transactionProduct) {
+                    switch ($transactionProduct->type) {
+                        case 'good':
+                            foreach ($orderProducts as $orderProduct) {
+                                $productCombination = new Combination($orderProduct["product_attribute_id"]);
+                                $productAttributes = $productCombination->getAttributesName((int)Context::getContext()->language->id);
+                                if(empty($productAttributes)){
+                                    $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-n-a");
+                                }else{
+                                    $orderProductReference = $this->sanitize_string($orderProduct["product_reference"]."-".$productAttributes[0]["name"]);
                                 }
-                                break;
+                                if($transactionProduct->product_reference == $orderProductReference){
+                                    $orderDetail = new OrderDetail((int) $orderProduct['id_order_detail']);
+                                    $orderDetail->total_refunded_tax_excl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_excl;
+                                    $orderDetail->total_refunded_tax_incl = ($orderDetail->product_quantity_refunded+$transactionProduct->quantity)*$orderDetail->unit_price_tax_incl;
+                                    $orderProduct['quantity'] = $transactionProduct->quantity;
+                                    $orderProduct['unit_price'] = $orderDetail->unit_price_tax_excl;
+                                    $refundedProducts[] = $orderProduct;
+                                    $orderDetail->update();
+
+                                    $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($orderProduct['product_id'], $orderProduct['product_attribute_id']));
+                                    if (Validate::isLoadedObject($stock_available)) {
+                                        $newQuantity = StockAvailable::getQuantityAvailableByProduct($orderDetail->product_id, $orderDetail->product_attribute_id) + (int)$transactionProduct->quantity;
+                                        $stock_available->quantity = $newQuantity;
+                                        $stock_available->update();
+                                    }
+                                    break;
+                                }
                             }
-                        }
-                        break;
-                    case 'fee':
-                        $fees = (float) $order->total_shipping_tax_excl;
-                        break;
-                    case 'discount':
-                        $discount = (float) $order->total_discounts_tax_incl;
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 'fee':
+                            $fees = (float) $order->total_shipping_tax_excl;
+                            break;
+                        case 'discount':
+                            $discount = (float) $order->total_discounts_tax_incl;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
+        }else{ // complete or partial refund without basket
+            $product = array_pop($orderProducts);
+
+            $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
+
+            $order_detail = new OrderDetail((int) $product['id_order_detail']);
+            $order_detail->product_quantity += 1;
+            $order_detail->update();
+            $tax_calculator = $order_detail->getTaxCalculator();
+            $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+
+            $product['unit_price'] = $amountToRefund;
+            $product['product_quantity_refunded'] = $product['product_quantity'];
+            $product['quantity'] = 1;
+
+            OrderSlip::create(
+                $order,
+                [$product],
+            );
         }
 
-        if(count($refundedProducts)){
+        if(count($refundedProducts) && count($transactionProducts)){
             OrderSlip::create(
                 $order,
                 $refundedProducts,
