@@ -391,14 +391,19 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
      */
     public function getAmountCapturedWithoutBasket($orderId)
     {
-        $statusArray = [TransactionStatus::CAPTURED, TransactionStatus::PARTIALLY_CAPTURED];
+        $sql = 'SELECT `captured_amount`, `basket`'
+        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
+        .' WHERE `order_id` = '.(int) $orderId
+        .' AND `status` = '.TransactionStatus::CAPTURED;
 
-        $sql = 'SELECT SUM(`captured_amount`) as total
-        FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`
-        WHERE `order_id` = '.(int) $orderId.'
-        AND `status` IN ('.implode(',', $statusArray).')';
-
-        return (float) Db::getInstance()->getValue($sql);
+        $result = Db::getInstance()->executeS($sql);
+        $totalCaptured = 0;
+        foreach($result as $transaction){
+            if((empty($transaction["basket"]) || is_null($transaction["basket"]))){
+                $totalCaptured += $transaction['captured_amount'];
+            }
+        }
+        return $totalCaptured;
     }
 
     /**
