@@ -113,7 +113,7 @@
                             </td>
                             <td>
                                 {if $HiPay_shippingCost > 0 }
-                                    {if !$HiPay_capturedFees && $HiPay_manualCapture}
+                                    {if !$HiPay_capturedFees && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                         <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
                                     {elseif ($HiPay_capturedFees && !$HiPay_refundedFees) || ($HiPay_stillToCapture <= 0 && !$HiPay_refundedFees)}
                                         <input id="refund-fee" data-amount="{$HiPay_amountFees}" type="checkbox"
@@ -138,7 +138,7 @@
                                     <span>
                                 </td>
                                 <td>
-                                    {if !$HiPay_wrapping.captured && $HiPay_manualCapture}
+                                    {if !$HiPay_wrapping.captured && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                         <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
                                     {elseif !$HiPay_wrapping.refunded}
                                         <input id="refund-wrapping" data-amount="{$HiPay_wrapping.value}" type="checkbox"
@@ -161,7 +161,7 @@
                                     <span>
                                 </td>
                                 <td>
-                                    {if !$HiPay_capturedDiscounts && $HiPay_manualCapture}
+                                    {if !$HiPay_capturedDiscounts && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                         <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
                                     {elseif !$HiPay_refundedDiscounts}
                                         <input id="refund-discount" data-amount="{$HiPay_discount.value}" type="checkbox"
@@ -260,7 +260,7 @@
                         </td>
                         <td>
                             {if $HiPay_shippingCost > 0 }
-                                {if !$HiPay_capturedFees && $HiPay_manualCapture}
+                                {if !$HiPay_capturedFees && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                     <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
                                 {else}
                                     {if $HiPay_refundedFees}
@@ -287,7 +287,7 @@
                                 <span>
                             </td>
                             <td>
-                                {if !$HiPay_wrapping.captured && $HiPay_manualCapture}
+                                {if !$HiPay_wrapping.captured && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                     <span class="badge badge-warning">
                                         {l s='Not captured'  mod='hipay_enterprise'}
                                     </span>
@@ -316,7 +316,7 @@
                                 <span>
                             </td>
                             <td>
-                                {if !$HiPay_capturedDiscounts && $HiPay_manualCapture}
+                                {if !$HiPay_capturedDiscounts && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
                                     <span class="badge badge-warning">{l s='Not captured'  mod='hipay_enterprise'}</span>
                                 {else}
                                     {if $HiPay_refundedDiscounts}
