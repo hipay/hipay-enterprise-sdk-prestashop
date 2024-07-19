@@ -1,7 +1,6 @@
 #====================================================
 # Specific configuration for Prestashop 8
 #=====================================================
-PS_VERSION=8.0.3
 PS_DOMAIN=localhost:8088
 DB_NAME=prestashop8
 # PS_ENABLE_SSL=1
