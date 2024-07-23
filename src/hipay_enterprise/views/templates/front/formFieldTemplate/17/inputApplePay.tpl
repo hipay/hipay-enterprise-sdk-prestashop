@@ -172,17 +172,21 @@
     const applePayButton = $('#apple-pay-button');
     const applePayErrorMessage = $('#apple-pay-error-message');
     const submitButton = $('#payment-confirmation button[type=submit]');
+    const applePayContainer= $('form[id=applepay-hipay]').parent();
 
-    if (checkbox && !checkbox.checked) {
-      applePayButton.hide();
-      applePayErrorMessage
-        .css('display', 'inline')
-        .text($('#apple-pay-termes-of-service-error-message').text());
-      submitButton.show();
-    } else {
-      applePayButton.show();
-      applePayErrorMessage.hide();
-      submitButton.attr('disabled', 'true').hide();
+
+    if(applePayContainer.is(':visible')){
+      if (checkbox && !checkbox.checked) {
+        applePayButton.hide();
+        applePayErrorMessage
+          .css('display', 'inline')
+          .text($('#apple-pay-termes-of-service-error-message').text());
+        submitButton.show();
+      } else {
+        applePayButton.show();
+        applePayErrorMessage.hide();
+        submitButton.attr('disabled', 'true').hide();
+      }
     }
   }
 

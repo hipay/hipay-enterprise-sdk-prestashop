@@ -133,15 +133,19 @@
     const paypalField = $('#paypal-field');
     const paypalErrorMessage = $('#paypal-error-message');
     const submitButton = $("#payment-confirmation button[type=submit]");
+    const paypalContainer= $('form[id=paypal-hipay]').parent();
 
-    if (checkbox && !checkbox.checked) {
-      paypalField.hide();
-      paypalErrorMessage.css('display', 'inline').text($('#paypal-terms-of-service-error-message').text());
-      submitButton.show();
-    } else {
-      paypalField.show();
-      paypalErrorMessage.hide();
-      submitButton.attr('disabled', 'true').hide();
+
+    if(paypalContainer.is(':visible')){
+      if (checkbox && !checkbox.checked) {
+        paypalField.hide();
+        paypalErrorMessage.css('display', 'inline').text($('#paypal-terms-of-service-error-message').text());
+        submitButton.show();
+      } else {
+        paypalField.show();
+        paypalErrorMessage.hide();
+        submitButton.attr('disabled', 'true').hide();
+      }
     }
   }
 
