@@ -109,7 +109,7 @@
                             <td>
                                 <span>
                                     {displayPrice price=$HiPay_amountFees currency=$HiPay_id_currency}
-                                <span>
+                                    <span>
                             </td>
                             <td>
                                 {if $HiPay_shippingCost > 0 }
@@ -135,7 +135,7 @@
                                 <td>
                                     <span>
                                         {displayPrice price=$HiPay_wrapping.value currency=$HiPay_id_currency}
-                                    <span>
+                                        <span>
                                 </td>
                                 <td>
                                     {if !$HiPay_wrapping.captured && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
@@ -158,7 +158,7 @@
                                 <td>
                                     <span>
                                         {displayPrice price=-1*$HiPay_discount.value currency=$HiPay_id_currency}
-                                    <span>
+                                        <span>
                                 </td>
                                 <td>
                                     {if !$HiPay_capturedDiscounts && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
@@ -234,16 +234,16 @@
                             {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
                                 <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
                                     {$HiPay_refundedItems[$itemId]["quantity"]}
-                            {/if}
-                            {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
-                                <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
-                                    {displayPrice price=$HiPay_refundedItems[$itemId]["amount"] currency=$HiPay_id_currency}
-                                </span>
-                            {else}
-                                <span class="badge badge-warning">
-                                    {displayPrice price=0 currency=$HiPay_id_currency}
-                                </span>
-                            {/if}
+                                {/if}
+                                {if !empty($HiPay_refundedItems) && isset($HiPay_refundedItems[$itemId])}
+                                    <span class="badge {if $remainQty == 0}badge-success{else}badge-warning{/if}">
+                                        {displayPrice price=$HiPay_refundedItems[$itemId]["amount"] currency=$HiPay_id_currency}
+                                    </span>
+                                {else}
+                                    <span class="badge badge-warning">
+                                        {displayPrice price=0 currency=$HiPay_id_currency}
+                                    </span>
+                                {/if}
                         </td>
                     </tr>
                 {/foreach}
@@ -256,7 +256,7 @@
                         <td>
                             <span>
                                 {displayPrice price=$HiPay_amountFees currency=$HiPay_id_currency}
-                            <span>
+                                <span>
                         </td>
                         <td>
                             {if $HiPay_shippingCost > 0 }
@@ -284,7 +284,7 @@
                             <td>
                                 <span>
                                     {displayPrice price=$HiPay_wrapping.value currency=$HiPay_id_currency}
-                                <span>
+                                    <span>
                             </td>
                             <td>
                                 {if !$HiPay_wrapping.captured && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
@@ -298,8 +298,8 @@
                                         {else}
                                             {displayPrice price=0 currency=$HiPay_id_currency}
                                         {/if}
-                                    <span>
-                                {/if}
+                                        <span>
+                                        {/if}
                             </td>
                             <td></td>
                         </tr>
@@ -313,7 +313,7 @@
                             <td>
                                 <span>
                                     {displayPrice price=-1*$HiPay_discount.value currency=$HiPay_id_currency}
-                                <span>
+                                    <span>
                             </td>
                             <td>
                                 {if !$HiPay_capturedDiscounts && $HiPay_manualCapture && $HiPay_stillToCapture > 0}
@@ -359,7 +359,7 @@
                 <span class="input-group-text" id="basic-addon2">{$currency->sign}</span>
             </div>
         </div>
-        <p style="display:none;" id="danger-js" class="alert alert-danger"></p>
+        <p style="display:none;" id="refund-danger-js" class="alert alert-danger"></p>
         <div class="form-group">
             {if !$HiPay_totallyRefunded}
                 <button id="submitRefundButton" style="display:none;" type="submit" name="hipay_refund_submit"
@@ -377,7 +377,6 @@
 
 <script>
     $(document).ready(function() {
-
         handleRefundTypeDisplay($("#hipay_refund_type").find(":selected").val());
         addEvents();
         $("#total-refund-loader").hide();
@@ -433,7 +432,6 @@
     }
 
     function checkRefundAmount() {
-
         if ($("#hipay_refund_type option:selected").val() == "complete") {
             return true;
         }
@@ -463,8 +461,12 @@
         }
 
         if ($("#hipay_refund_type option:selected").val() == "partialWithoutBasket") {
-            if (parseFloat($("#hipay_refund_amount").val()) == 0 || $("#hipay_refund_amount").val() >
-                refundableAmount) {
+            if (parseFloat($("#hipay_refund_amount").val()) <= 0) {
+                displayError("{l s='Refund amount must be greater than zero.' mod='hipay_enterprise'}");
+                return false;
+            }
+
+            if ($("#hipay_refund_amount").val() > refundableAmount) {
                 displayError("{l s='Refund amount must be lower than the amount still to be refunded.' mod='hipay_enterprise'}");
                 return false
             }
@@ -501,8 +503,8 @@
     }
 
     function displayError(text) {
-        $("#danger-js").text(text);
-        $("#danger-js").show();
+        $("#refund-danger-js").text(text);
+        $("#refund-danger-js").show();
     }
 
     function handleRefundTypeDisplay(type) {
