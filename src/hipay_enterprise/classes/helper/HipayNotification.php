@@ -708,7 +708,9 @@ class HipayNotification
         $refundedProducts = [];
         $fees = false;
         $discount = 0;
-        $isCompleteRefund = (float) $transaction->getRefundedAmount() == (float) $transaction->getAuthorizedAmount() ? true : false;
+        $amountAlreadyRefunded = $this->dbMaintenance->getAmountRefunded($order->id);
+        $isCompleteRefund = ((float) $transaction->getRefundedAmount() == (float) $transaction->getAuthorizedAmount() ? true : false) && $amountAlreadyRefunded == 0;
+
 
         if($isCompleteRefund && count($transactionProducts)){ // complete refund with basket
             foreach ($orderProducts as $orderProduct) {
