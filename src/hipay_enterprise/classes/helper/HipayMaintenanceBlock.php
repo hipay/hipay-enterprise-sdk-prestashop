@@ -64,7 +64,6 @@ class HipayMaintenanceBlock
             _PS_OS_ERROR_,
             _PS_OS_CANCELED_,
             Configuration::get('HIPAY_OS_EXPIRED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1),
             Configuration::get('HIPAY_OS_REFUNDED', null, null, 1),
         ];
         $this->statusAvailableForRefund = [
