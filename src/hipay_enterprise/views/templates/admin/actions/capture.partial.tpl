@@ -47,7 +47,7 @@
                     {if !$HiPay_partiallyCaptured}
                         <option value="complete">{l s='Complete' mod='hipay_enterprise'}</option>
                     {/if}
-                    {if $HiPay_basket && $HiPay_capturedAmountWithoutBasket == 0}
+                    {if $HiPay_basket && $HiPay_capturedAmountWithoutBasket == 0 && $HiPay_refundedAmountWithoutBasket == 0}
                         <option value="partial">{l s='Partial with basket' mod='hipay_enterprise'}</option>
                     {/if}
                     <option value="partialWithoutBasket">{l s='Partial without basket' mod='hipay_enterprise'}</option>

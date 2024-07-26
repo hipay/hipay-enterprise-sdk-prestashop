@@ -194,7 +194,7 @@
 
         <div id="block-refund-amount-without-basket" style="display:none;" class="form-group bloc-actions-hipay">
             <p id="warning-js" class="alert alert-warning">
-                {l s='Refund without basket means that, from now on, refunds will be unbundled from products and stocks will no longer be managed. You will no longer be able to make classic partial refunds.'  mod='hipay_enterprise'}
+                {l s='Refund without basket means that, from now on, refunds and captures will be unbundled from products and stocks will no longer be managed. You will no longer be able to make classic partial refunds and captures.'  mod='hipay_enterprise'}
             </p>
             <table class="table table-item-hipay">
                 <thead>

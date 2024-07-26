@@ -312,6 +312,7 @@ class HipayMaintenanceBlock
                         'HiPay_orderId' => $this->order->id,
                         'HiPay_cartId' => $this->cart->id,
                         'HiPay_ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
+                        'HiPay_refundedAmountWithoutBasket' => (float) $this->dbMaintenance->getAmountRefundedWithoutBasket($this->order->id),
                         'HiPay_wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
                         'HiPay_canPartiallyCapture' => $this->paymentMethodCanRefundOrCapture('capturePartial')
                     ]
