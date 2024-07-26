@@ -416,7 +416,7 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Discount';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Refund discount';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
-$_MODULE['<{hipay_enterprise}prestashop>refund.partial_f3749fe31f99e3f9e6ed53660c0435e3'] = 'Refund without basket means that, from now on, refunds will be unbundled from products and stocks will no longer be managed. You will no longer be able to make classic partial refunds.';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_4b9af9403c3d89b5b0182d8e3ea8369e'] = 'Refund without basket means that, from now on, refunds and captures will be unbundled from products and stocks will no longer be managed. You will no longer be able to make classic partial refunds and captures.';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_870f622f6c6e122fe3991dcfdafaf7be'] = 'Already refunded';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_9db674f944c13e7c225cb8554fa456bb'] = 'Amount already refunded without basket';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f384c0d786949e14a0bd5b653abfec6c'] = 'Total refunded';
@@ -454,7 +454,7 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Discount';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Capture discount';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_43708c5d8d43886323bda7dceb125133'] = 'Capture without basket means that, from now on, captures will be unbundled from products. You will no longer be able to make classic partial captures.';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_955fb0517fbf3bf9c3adaf6a8d407b53'] = 'Capture without basket means that, from now on, captures will be unbundled from products. You will no longer be able to make classic partial refunds and captures.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_cad98c39f52b7d1b63c0622980adb243'] = 'Already captured';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Not captured';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_051b4941686b0ea48d9fd19f5ee7ae19'] = 'Amount already captured without basket';
@@ -464,7 +464,6 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_44a50f07b4bdc57740901280
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_1216ce40106a95ed7b36d1e97b31599d'] = 'Capture amount must be greater than zero.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c71d3ad9c88bcad768b88af9d7b31bd5'] = 'Capture amount must be lower than the amount still to be captured.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_7c1231480954da0e29816ecc4bb5f90e'] = 'You must capture the discount because the next capture amount will be lower than the total discount amount.';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8277e2277acde3ac16e6bae1711ba57d'] = 'Refund amount must be lower than the amount still to be refunded.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_6ad3589c7c0207875a4193ccdc39a2bc'] = 'Are you sure you want to capture this order?';
 $_MODULE['<{hipay_enterprise}prestashop>alert_ef7bd68a02b6b5656554f7a27d1c7bdf'] = 'Error!';
 $_MODULE['<{hipay_enterprise}prestashop>alert_520f9b37af10a8807ddc4ccfa8a9ad23'] = 'Warning!';

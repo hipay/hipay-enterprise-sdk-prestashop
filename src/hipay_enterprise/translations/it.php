@@ -416,7 +416,7 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Sconto';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Rimborsa sconto';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Totale';
-$_MODULE['<{hipay_enterprise}prestashop>refund.partial_f3749fe31f99e3f9e6ed53660c0435e3'] = 'Rimborso senza carrello significa che, d\'ora in poi, i rimborsi saranno separati dai prodotti e le scorte non saranno più gestite. Non sarà più possibile effettuare rimborsi parziali classici.';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_4b9af9403c3d89b5b0182d8e3ea8369e'] = 'Il rimborso senza cesto significa che, d\'ora in poi, i rimborsi e le catture saranno accoppiati i prodotti e le scorte non saranno più gestite. Non sarai più in grado di effettuare rimborsi e catture parziali convenzionali.';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_870f622f6c6e122fe3991dcfdafaf7be'] = 'Già rimborsato';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_9db674f944c13e7c225cb8554fa456bb'] = 'Importo già rimborsato senza carrello';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f384c0d786949e14a0bd5b653abfec6c'] = 'Totale rimborsato';
@@ -454,7 +454,7 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Sconto';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Cattura sconto';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Totale';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_43708c5d8d43886323bda7dceb125133'] = 'Cattura senza carrello significa che, d\'ora in poi, le catture saranno disgiunte dai prodotti. Non sarà più possibile effettuare le classiche acquisizioni parziali.';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_955fb0517fbf3bf9c3adaf6a8d407b53'] = 'La cattura senza cestino significa che, da ora in poi, le catture saranno prodotti senza sosta. Non sarai più in grado di effettuare rimborsi e catture parziali convenzionali.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_cad98c39f52b7d1b63c0622980adb243'] = 'Già catturato';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Non catturato';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_051b4941686b0ea48d9fd19f5ee7ae19'] = 'Importo già acquisito senza canestro';
@@ -464,7 +464,6 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_44a50f07b4bdc57740901280
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_1216ce40106a95ed7b36d1e97b31599d'] = 'L\'importo da catturare deve essere superiore a zero.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c71d3ad9c88bcad768b88af9d7b31bd5'] = 'L\'importo da catturare deve essere inferiore a quanto deve essere ancora catturato.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_7c1231480954da0e29816ecc4bb5f90e'] = 'È necessario catturare lo sconto poiché l\'importo di cattura successivo sarà inferiore all\'importo dello sconto totale.';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8277e2277acde3ac16e6bae1711ba57d'] = 'L\'importo del rimborso deve essere inferiore all\'importo ancora da rimborsare.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_6ad3589c7c0207875a4193ccdc39a2bc'] = 'Sei sicuro di voler catturare quest\'ordine?';
 $_MODULE['<{hipay_enterprise}prestashop>alert_ef7bd68a02b6b5656554f7a27d1c7bdf'] = 'Errore!';
 $_MODULE['<{hipay_enterprise}prestashop>alert_520f9b37af10a8807ddc4ccfa8a9ad23'] = 'Warning!';

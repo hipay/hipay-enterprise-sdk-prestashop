@@ -204,7 +204,7 @@
         </div>
         <div id="block-capture-amount-without-basket" style="display:none;" class="form-group bloc-actions-hipay">
             <p id="warning-js" class="alert alert-warning">
-                {l s='Capture without basket means that, from now on, captures will be unbundled from products. You will no longer be able to make classic partial captures.'  mod='hipay_enterprise'}
+                {l s='Capture without basket means that, from now on, captures will be unbundled from products. You will no longer be able to make classic partial refunds and captures.'  mod='hipay_enterprise'}
             </p>
             <table class="table table-item-hipay">
                 <thead>

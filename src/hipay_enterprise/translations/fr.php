@@ -416,7 +416,7 @@ $_MODULE['<{hipay_enterprise}prestashop>refund.partial_b2e990dd78d9a8e30acbc9fe8
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_221de160fc25ce07f3140f3ab19f1c94'] = 'Rembourser le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
-$_MODULE['<{hipay_enterprise}prestashop>refund.partial_f3749fe31f99e3f9e6ed53660c0435e3'] = 'Remboursement sans panier signifie que, dorénavant, les remboursements seront dissociés des produits et que les stocks ne seront plus gérés. Vous ne pourrez plus effectuer de remboursements partiels classiques.';
+$_MODULE['<{hipay_enterprise}prestashop>refund.partial_4b9af9403c3d89b5b0182d8e3ea8369e'] = 'Le remboursement sans panier signifie que, à partir de maintenant, les remboursements et les captures seront dégroupés des produits et les stocks ne seront plus gérés. Vous ne pourrez plus effectuer de remboursements et captures partiels classiques.';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_870f622f6c6e122fe3991dcfdafaf7be'] = 'Déjà remboursé';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_9db674f944c13e7c225cb8554fa456bb'] = 'Montant déjà remboursé sans panier';
 $_MODULE['<{hipay_enterprise}prestashop>refund.partial_f384c0d786949e14a0bd5b653abfec6c'] = 'Total remboursé';
@@ -454,7 +454,7 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c703ef8b59774b5395382716
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_104d9898c04874d0fbac36e125fa1369'] = 'Bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_94a2558987611e77c307fcf485f0b77b'] = 'Capturer le bon de réduction';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_96b0141273eabab320119c467cdcaf17'] = 'Total';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_43708c5d8d43886323bda7dceb125133'] = 'Capture sans panier signifie que, dorénavant, les captures seront dissociées des produits. Vous ne pourrez plus effectuer de captures partielles classiques.';
+$_MODULE['<{hipay_enterprise}prestashop>capture.partial_955fb0517fbf3bf9c3adaf6a8d407b53'] = 'Capture sans panier signifie que, à partir de maintenant, les captures seront dégroupées des produits. Vous ne pourrez plus effectuer de remboursements et captures partiels classiques.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_cad98c39f52b7d1b63c0622980adb243'] = 'Déjà capturé';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_90a150a96b5eea70b5d9fbd092f9f9f2'] = 'Non capturé';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_051b4941686b0ea48d9fd19f5ee7ae19'] = 'Montant déjà capturé sans panier';
@@ -464,7 +464,6 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_44a50f07b4bdc57740901280
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_1216ce40106a95ed7b36d1e97b31599d'] = 'Le montant de la capture doit être supérieur à zéro.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_c71d3ad9c88bcad768b88af9d7b31bd5'] = 'Le montant de la capture doit être inférieur au montant restant à capturer.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_7c1231480954da0e29816ecc4bb5f90e'] = 'Vous devez capturer un bon de réduction, car le prochain montant de capture sera inférieur au montant total d\'escompte.';
-$_MODULE['<{hipay_enterprise}prestashop>capture.partial_8277e2277acde3ac16e6bae1711ba57d'] = 'Le montant du remboursement doit être inférieur au montant restant à rembourser.';
 $_MODULE['<{hipay_enterprise}prestashop>capture.partial_6ad3589c7c0207875a4193ccdc39a2bc'] = 'Êtes-vous sûr de vouloir capturer cette commande ? ';
 $_MODULE['<{hipay_enterprise}prestashop>alert_ef7bd68a02b6b5656554f7a27d1c7bdf'] = 'Erreur !';
 $_MODULE['<{hipay_enterprise}prestashop>alert_520f9b37af10a8807ddc4ccfa8a9ad23'] = 'Alerte !';
