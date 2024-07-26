@@ -89,6 +89,7 @@ function initHostedFields() {
     var config = {
       selector: 'hipayHF-container',
       multi_use: allowMultiUse('#saveTokenHipay'),
+      brand: activatedCreditCard,
       fields: {
         cardHolder: {
           selector: 'hipayHF-card-holder',
