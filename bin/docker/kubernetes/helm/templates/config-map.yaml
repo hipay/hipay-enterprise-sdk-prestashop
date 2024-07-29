@@ -47,3 +47,4 @@ data:
   HIPAY_TOKENJS_APPLE_PAY_PASSWORD_TEST: "{{ .Values.hipay_tokenjs_apple_pay_password_test }}"
   HIPAY_TOKENJS_APPLE_PAY_USERNAME_TEST: "{{ .Values.hipay_tokenjs_apple_pay_username_test }}"
   PI_DATA_URL: "{{ .Values.pi_data_url }}"
+  HIPAY_GITHUB_ACCESS_TOKEN: "{{ .Values.hipay_github_access_token }}"

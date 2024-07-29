@@ -64,7 +64,6 @@ class HipayMaintenanceBlock
             _PS_OS_ERROR_,
             _PS_OS_CANCELED_,
             Configuration::get('HIPAY_OS_EXPIRED', null, null, 1),
-            Configuration::get('HIPAY_OS_REFUND_REQUESTED', null, null, 1),
             Configuration::get('HIPAY_OS_REFUNDED', null, null, 1),
         ];
         $this->statusAvailableForRefund = [
@@ -212,11 +211,12 @@ class HipayMaintenanceBlock
                         'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_alreadyCaptured' => $this->dbMaintenance->alreadyCaptured($this->order->id),
-                        'HiPay_refundableAmount' => $this->order->total_paid_tax_incl - $refundedAmount,
+                        'HiPay_refundableAmount' => HipayHelper::getOrderPaymentAmount($this->order) - $refundedAmount,
                         'HiPay_refundedFees' => $refundedFees,
                         'HiPay_refundLink' => $this->context->link->getAdminLink('AdminHiPayRefund'),
                         'HiPay_basket' => $this->basket,
                         'HiPay_refundedItems' => $refundedItems,
+                        'HiPay_capturedAmountWithoutBasket' => $this->dbMaintenance->getAmountCapturedWithoutBasket($this->order->id),
                         'HiPay_tokenRefund' => Tools::getAdminTokenLite('AdminHiPayRefund'),
                         'HiPay_partiallyRefunded' => $this->isPartiallyRefunded(
                             $refundedItems,
@@ -292,6 +292,7 @@ class HipayMaintenanceBlock
                             HipayHelper::getOrderPaymentAmount($this->order),
                         'HiPay_manualCapture' => $this->isManualCapture(),
                         'HiPay_capturedAmount' => HipayHelper::getOrderPaymentAmount($this->order),
+                        'HiPay_capturedAmountWithoutBasket' => $this->dbMaintenance->getAmountCapturedWithoutBasket($this->order->id),
                         'HiPay_captureLink' => $this->context->link->getAdminLink('AdminHiPayCapture'),
                         'HiPay_tokenCapture' => Tools::getAdminTokenLite('AdminHiPayCapture'),
                         'HiPay_partiallyCaptured' => $this->isPartiallyCaptured(
@@ -311,6 +312,7 @@ class HipayMaintenanceBlock
                         'HiPay_orderId' => $this->order->id,
                         'HiPay_cartId' => $this->cart->id,
                         'HiPay_ajaxCalculatePrice' => $this->context->link->getAdminLink('AdminHiPayCalculatePrice'),
+                        'HiPay_refundedAmountWithoutBasket' => (float) $this->dbMaintenance->getAmountRefundedWithoutBasket($this->order->id),
                         'HiPay_wrappingGift' => (bool) $this->order->gift && $this->order->total_wrapping > 0,
                         'HiPay_canPartiallyCapture' => $this->paymentMethodCanRefundOrCapture('capturePartial')
                     ]

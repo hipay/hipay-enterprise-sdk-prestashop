@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Fix**: Fixed HiPay refund formular when no basket in order
+- **Fix**: Fixed HiPay capture system
 - **Fix** : Fixed exception on confirmation page when duplicate order is received
 
 ## 2.22.0
