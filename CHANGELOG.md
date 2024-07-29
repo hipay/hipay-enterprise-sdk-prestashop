@@ -8,6 +8,7 @@
 - **Fix**: Fixed HiPay capture system
 - **Fix**: Fixed exception on confirmation page when duplicate order is received
 - **Fix**: Fixed PHP 8 compatibility issues
+- **Fix**: Fixed issues with Prestashop OnePageCheckout module
 
 ## 2.22.0
 
