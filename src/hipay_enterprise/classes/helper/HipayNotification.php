@@ -452,7 +452,7 @@ class HipayNotification
     private function updateOrderStatus($transaction, $order, $newState)
     {
         if (
-            (int) $order->getCurrentState() != (int) $newState
+            (int) $order->getCurrentState() !== (int) $newState
             || ((int) $order->getCurrentState() === (int) $newState && $transaction->getStatus() == TransactionStatus::PARTIALLY_REFUNDED)
         ) {
             // If order status is OUTOFSTOCK_UNPAID then new state will be OUTOFSTOCK_PAID
@@ -720,7 +720,7 @@ class HipayNotification
         $fees = false;
         $discount = 0;
         $amountAlreadyRefunded = $this->dbMaintenance->getAmountRefunded($order->id);
-        $isCompleteRefund = ((float) $transaction->getRefundedAmount() == (float) $transaction->getAuthorizedAmount() ? true : false) && $amountAlreadyRefunded == 0;
+        $isCompleteRefund = ((float) $transaction->getRefundedAmount() === (float) $transaction->getAuthorizedAmount()) && $amountAlreadyRefunded == 0;
 
 
         if ($isCompleteRefund && count($transactionProducts)) { // complete refund with basket
