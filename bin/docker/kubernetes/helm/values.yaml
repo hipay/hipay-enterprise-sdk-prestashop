@@ -26,3 +26,5 @@ pi_data_url: ''
 ps_version: ''
 ps_domain: ''
 db_name: ''
+
+hipay_github_access_token: ''

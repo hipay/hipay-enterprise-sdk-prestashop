@@ -60,14 +60,7 @@
 </div>
 
 <script>
-    //Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
-    //--------------------------------
-    if (window.opc_dispatcher && window.opc_dispatcher.events) {
-        window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', setSelectedPaymentMethod);
-    } else {
-        document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
-    }
-    //--------------------------------
+    document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
     var activatedCreditCard = [];
     {foreach $HiPay_activatedCreditCard as $cc}

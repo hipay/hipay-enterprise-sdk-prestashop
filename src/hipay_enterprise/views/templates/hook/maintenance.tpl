@@ -47,33 +47,36 @@
                 {/if}
                 {if  !$HiPay_showMoto && !$HiPay_showChallenge && !$HiPay_showCapture && !$HiPay_showRefund}
                     <p class="alert alert-warning">{l s='No actions available' mod='hipay_enterprise'}</p>
-                    {if $HiPay_refundRequestedOS }
-                        <p class="alert alert-warning">{l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}</p>
-                    {/if}
-                    {if $HiPay_refundStartedFromBo }
-                        <p class="alert alert-warning">{l s='A refund or a capture has been validated from HiPay back-office, you must proceed refund from HiPay back-office.' mod='hipay_enterprise'}</p>
-                    {/if}
+                {/if}
+                {if $HiPay_refundRequestedOS }
+                    <p class="alert alert-warning">
+                        {l s='A refund has been requested, actions are disabled during validation process.' mod='hipay_enterprise'}
+                    </p>
+                {/if}
+                {if $HiPay_refundStartedFromBo }
+                    <p class="alert alert-warning">
+                        {l s='A refund or a capture has been validated from HiPay back-office, you must proceed refund from HiPay back-office.' mod='hipay_enterprise'}
+                    </p>
                 {/if}
             </div>
         </div>
     </div>
 
     <script>
-      $("#hipay_refund_type").change(function () {
-        if ($(this).val() == "complete") {
-          $("#block-refund-amount").hide();
-        } else {
-          $("#block-refund-amount").show();
-        }
-      });
+        $("#hipay_refund_type").change(function() {
+            if ($(this).val() == "complete") {
+                $("#block-refund-amount").hide();
+            } else {
+                $("#block-refund-amount").show();
+            }
+        });
 
-      $("#hipay_capture_type").change(function () {
-        if ($(this).val() == "complete") {
-          $("#block-capture-amount").hide();
-        } else {
-          $("#block-capture-amount").show();
-        }
-      });
-
+        $("#hipay_capture_type").change(function() {
+            if ($(this).val() == "complete") {
+                $("#block-capture-amount").hide();
+            } else {
+                $("#block-capture-amount").show();
+            }
+        });
     </script>
 </div>

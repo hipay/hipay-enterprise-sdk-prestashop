@@ -124,7 +124,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
             $refundedDiscounts = $this->dbMaintenance->discountsAreRefunded($this->order->id);
 
             //refund with basket
-            if (Tools::getValue('hipay_refund_type') == "partial" || Tools::getValue('hipay_refund_type') == "partialWithoutBasket") {
+            if (Tools::getValue('hipay_refund_type') == "partial") {
                 $refundItems = (!Tools::getValue('hipayrefund')) ? array() : Tools::getValue('hipayrefund');
                 if (array_sum($refundItems) == 0 &&
                     Tools::getValue('hipay_refund_fee') !== "on" &&

@@ -58,14 +58,7 @@
 </div>
 
 <script>
-    //Support module One Page Checkout PS - PresTeamShop - v4.1.1 - PrestaShop >= 1.7.6.X
-    //--------------------------------
-    if (window.opc_dispatcher && window.opc_dispatcher.events) {
-        window.opc_dispatcher.events.addEventListener('payment-getPaymentList-complete', setSelectedPaymentMethod);
-    } else {
-        document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
-    }
-    //--------------------------------
+    document.addEventListener('DOMContentLoaded', setSelectedPaymentMethod, false);
 
     {if $HiPay_confHipay.account.global.sandbox_mode}
         var api_tokenjs_mode = "stage";
@@ -77,8 +70,13 @@
         var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.production.api_tokenjs_password_publickey_production}";
     {/if}
 
-    var cardHolderFirstName = "{$HiPay_customerFirstName}";
-    var cardHolderLastName = "{$HiPay_customerLastName}";
+    var cardHolderFirstName = typeof PaymentOPC !== 'undefined'
+    ? (prestashop.customer.is_logged ? '{$HiPay_customerFirstName}' : '')
+    : '{$HiPay_customerFirstName}';
+
+    var cardHolderLastName = typeof PaymentOPC !== 'undefined'
+    ? (prestashop.customer.is_logged ? '{$HiPay_customerLastName}' : '')
+    : '{$HiPay_customerLastName}';
 
     var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
 
@@ -101,6 +99,18 @@
             myPaymentMethodSelected = $("#checkout-payment-step").find(
                 "input[data-module-name='credit_card']").is(
                 ":checked");
+        });
+    }
+
+    if (typeof OPC !== 'undefined') {
+        new Promise((resolve) => {
+            prestashop.on('opc-payment-getPaymentList-complete', resolve);
+        }).then(() => {
+            jQuery(document).ready(function($) {
+                updatePaymentMethodSelected();
+                initEventsHostedFields();
+                initHostedFields();
+            });
         });
     }
 </script>

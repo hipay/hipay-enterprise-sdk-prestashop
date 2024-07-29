@@ -405,14 +405,14 @@
   display: inline-grid;
 }
 
-#hipay_refund_type {
+#hipay_refund_type, #hipay_capture_type {
   padding: 4px 8px 4px 8px;
   border-radius: 6px;
 
   margin-left: 6px;
 }
 
-#hipay_refund_amount {
+#hipay_refund_amount, #hipay_capture_amount {
   padding: 4px 8px 4px 8px;
 
   margin-left: 6px;
@@ -421,7 +421,7 @@
   text-align: right;
 }
 
-.refund-amount {
+.refund-amount, .capture-amount {
   display: flex;
   justify-content: center;
   align-items: baseline;
@@ -437,7 +437,7 @@
   margin-left: 6px;
 }
 
-.good-selector-refund {
+.good-selector-refund, .good-selector-capture {
   padding: 4px 0px 4px 8px;
   border-radius: 6px;
 

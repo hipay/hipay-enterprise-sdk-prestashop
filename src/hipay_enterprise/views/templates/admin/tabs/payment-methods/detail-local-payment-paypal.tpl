@@ -242,8 +242,12 @@
                         <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId"
                             value="{$method.merchantId}" />
                         <br>
-                        <p class="alert alert-info">
-                            {l s='Enter your Merchant PayPal ID to activate PayPal V2 integration.' mod='hipay_enterprise'}
+                        <p class="alert alert-warning">
+                            <b>{l s='NEW' mod='hipay_enterprise'}</b><br/>
+                            {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br/><br/>
+                            {l s='Available by ' mod='hipay_enterprise'}
+                            <b>{l s='invitation only' mod='hipay_enterprise'}</b>
+                            {l s='at this time, please contact our support or your account manager for more information.' mod='hipay_enterprise'}
                         </p>
                     </div>
                 </div>
@@ -252,7 +256,7 @@
         {if "buttonShape"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
-                    <label class="control-label col-lg-2">Button Shape</label>
+                    <label class="control-label col-lg-2">{l s="Button Shape" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
                         <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>

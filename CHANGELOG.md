@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.22.1
+
+- **Fix**: Fixed issues with Pay button when ApplePay / PayPal v2 methods are enabled and Terms of Conditions are active
+- **Fix**: Fixed HiPay refund formular when no basket in order
+- **Fix**: Fixed Prestashop OrderSlip issues when making refund operations
+- **Fix**: Fixed HiPay capture system
+- **Fix**: Fixed exception on confirmation page when duplicate order is received
+- **Fix**: Fixed PHP 8 compatibility issues
+
 ## 2.22.0
 
 - **Add**: Add PayPal v2
