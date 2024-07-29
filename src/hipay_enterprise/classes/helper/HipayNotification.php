@@ -267,7 +267,8 @@ class HipayNotification
                         && $transaction->getTransactionReference() !== $orderInBase['transaction_ref']
                     ) {
                         $this->log->logInfos('Duplicate transaction for order ' . $order->id);
-
+                        $this->log->logInfos('Starting duplicate transaction refund for order with Hipay transaction =' . $transaction->getTransactionReference()
+                            . ' And order in base transaction =' . $orderInBase['transaction_ref']);
                         // Try refund operation firstly because often captured after authorized
                         $refundOp = $this->apiHandler->handleRefund([
                             'transaction_reference' => $transaction->getTransactionReference(),
