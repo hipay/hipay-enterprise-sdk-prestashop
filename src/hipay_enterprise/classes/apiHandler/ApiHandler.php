@@ -204,40 +204,65 @@ class Apihandler
     }
 
     /**
-     * handle maintenance request.
+     * Handle maintenance request.
      *
-     * @param $mode
+     * @param string $mode
      * @param array $params
-     * @param $eci
+     * @param string|null $eci
      *
      * @return bool
      */
     private function handleMaintenance($mode, $params = [], $eci = null)
     {
+        $this->module->getLogs()->logInfos("Starting {$mode} operation for order " . $params['order']);
         try {
+            $operationSuccess = false;
             switch ($mode) {
                 case Operation::CAPTURE:
                     $params['operation'] = Operation::CAPTURE;
-                    ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Initiating capture for order " . $params['order']);
+                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Capture result: " . json_encode($result));
+                    $operationSuccess = true;
                     break;
+
                 case Operation::REFUND:
                     $params['operation'] = Operation::REFUND;
-                    ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Initiating refund for order " . $params['order']);
+                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Refund result: " . json_encode($result));
+                    if ($result->getStatus() !== TransactionStatus::REFUNDED) {
+                        $this->module->getLogs()->logWarning("Refund not successful. Status: " . $result->getStatus());
+                        $operationSuccess = false;
+                    } else {
+                        $operationSuccess = true;
+                    }
                     break;
+
                 case Operation::ACCEPT_CHALLENGE:
                     $params['operation'] = Operation::ACCEPT_CHALLENGE;
-                    ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Initiating accept challenge for order " . $params['order']);
+                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Accept challenge result: " . json_encode($result));
+                    $operationSuccess = true;
                     break;
+
                 case Operation::DENY_CHALLENGE:
                     $params['operation'] = Operation::DENY_CHALLENGE;
-                    ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Initiating deny challenge for order " . $params['order']);
+                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $this->module->getLogs()->logInfos("Deny challenge result: " . json_encode($result));
+                    $operationSuccess = true;
                     break;
+
                 case Operation::CANCEL:
                     $params['operation'] = Operation::CANCEL;
+                    $this->module->getLogs()->logInfos("Initiating cancellation for order " . $params['order']);
+                    $operationSuccess = false;
                     $displayMsg = null;
                     $order = new Order($params['order']);
 
-                    $transactionRef = $params['transaction_reference'] || '';
+                    $transactionRef = $params['transaction_reference'] ?? '';
                     $status = '';
 
                     if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
@@ -245,17 +270,17 @@ class Apihandler
                         if (false !== $params['transaction_reference']) {
                             $hipayDbMaintenance = new HipayDBMaintenance($this->module);
 
-                            // If current transaction status is cancelled, it means we are currently handling the 115 notification from HiPay,
-                            // and the transaction is already cancelled
                             if (!$hipayDbMaintenance->isTransactionCancelled($order->id)) {
                                 try {
                                     $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                                    $this->module->getLogs()->logInfos("Cancellation result: " . json_encode($result));
 
                                     if (!in_array($result->getStatus(), [TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED, TransactionStatus::CANCELLED])) {
                                         $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
                                         $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
                                         $status = $result->getStatus();
                                         $transactionRef = $result->getTransactionReference();
+                                        $this->module->getLogs()->logWarning("Cancellation not successful. Status: " . $status);
                                     } else {
                                         HipayOrderMessage::orderMessage(
                                             $this->module,
@@ -263,6 +288,7 @@ class Apihandler
                                             $order->id_customer,
                                             HipayOrderMessage::formatOrderData($this->module, $result)
                                         );
+                                        $operationSuccess = true;
                                     }
                                 } catch (GatewayException $e) {
                                     $errorMsg = [];
@@ -277,15 +303,21 @@ class Apihandler
                                         $transactionRef = $transaction['transaction_ref'];
                                         $status = $transaction['status'];
                                     }
+                                    $this->module->getLogs()->logError("Cancellation failed. Error: " . $e->getMessage());
                                 }
+                            } else {
+                                $this->module->getLogs()->logInfos("Transaction already cancelled for order " . $order->id);
+                                $operationSuccess = true;
                             }
                         } else {
                             $displayMsg = $this->module->l("The HiPay transaction was not canceled because no transaction reference exists. You can see and cancel the transaction directly from HiPay's BackOffice");
                             $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
+                            $this->module->getLogs()->logWarning("Cancellation failed: No transaction reference");
                         }
                     } else {
                         $displayMsg = $this->module->l("The HiPay transaction was not canceled because it's status doesn't allow cancellation. You can see and cancel the transaction directly from HiPay's BackOffice");
                         $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
+                        $this->module->getLogs()->logWarning("Cancellation failed: Invalid order status");
                     }
 
                     if (!empty($displayMsg)) {
@@ -298,17 +330,23 @@ class Apihandler
                     }
 
                     break;
+
                 default:
-                    $this->module->getLogs()->logInfos('# Unknown maintenance operation');
+                    $this->module->getLogs()->logWarning('Unknown maintenance operation: ' . $mode);
+                    return false;
             }
 
-            return true;
-        } catch (GatewayException $e) {
-            $errorMessage = $this->module->l('An error occured during request Maintenance.', 'capture');
-            $this->context->cookie->__set('hipay_errors', $errorMessage);
+            $this->module->getLogs()->logInfos("{$mode} operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
+            return $operationSuccess;
 
+        } catch (GatewayException $e) {
+            $errorMessage = $this->module->l('An error occurred during request Maintenance.', 'capture');
+            $this->context->cookie->__set('hipay_errors', $errorMessage);
+            $this->module->getLogs()->logError("Gateway Exception during {$mode} operation: " . $e->getMessage());
             return false;
         } catch (PrestaShopDatabaseException $e) {
+            $this->module->getLogs()->logError("Database Exception during {$mode} operation: " . $e->getMessage());
+            return false;
         }
     }
 
