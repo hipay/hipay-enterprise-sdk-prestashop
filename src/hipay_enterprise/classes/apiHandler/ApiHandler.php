@@ -232,7 +232,7 @@ class Apihandler
                     $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
                     $this->module->getLogs()->logInfos("Refund result: " . json_encode($result));
                     if ($result->getStatus() !== TransactionStatus::REFUNDED) {
-                        $this->module->getLogs()->logWarning("Refund not successful. Status: " . $result->getStatus());
+                        $this->module->getLogs()->logInfos("Refund not successful. Status: " . $result->getStatus());
                         $operationSuccess = false;
                     } else {
                         $operationSuccess = true;
