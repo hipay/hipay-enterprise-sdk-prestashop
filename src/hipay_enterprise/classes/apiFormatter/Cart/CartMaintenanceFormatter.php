@@ -117,10 +117,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
                 "good",
                 "wrapping",
                 1,
-                $this->order->total_wrapping_tax_incl,
+                floatval($this->order->total_wrapping_tax_incl),
                 0,
                 0,
-                $total_wrapping_amount,
+                floatval($total_wrapping_amount),
                 "",
                 "gift wrapping",
                 null,
@@ -190,7 +190,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $discount = $discount_per_unit * $qty;
 
             $total_amount = $unit_price * $qty;
-            $tax_rate = $orderDetail['tax_rate'];
+            $tax_rate = floatval($orderDetail['tax_rate']);
+            $unit_price = Tools::ps_round(floatval(number_format($unit_price_without_reduction, 2, '.', '')),2);
         }
 
         $item->__constructItem(
@@ -199,10 +200,10 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             "good",
             $productFromCart["name"],
             $qty,
-            $unit_price_without_reduction, // Use the price before reduction
+            $unit_price, // Use the price before reduction
             $tax_rate,
             $discount,
-            $total_amount,
+            $unit_price,
             "", // discount_description
             "", // product_description
             null, // delivery_method
