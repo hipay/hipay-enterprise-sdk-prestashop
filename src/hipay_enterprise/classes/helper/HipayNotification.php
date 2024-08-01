@@ -266,9 +266,7 @@ class HipayNotification
                         && $orderInBase
                         && $transaction->getTransactionReference() !== $orderInBase['transaction_ref']
                     ) {
-                        $this->log->logInfos('Duplicate transaction for order ' . $order->id);
-
-                        $this->log->logInfos('Starting duplicate transaction refund for order with Hipay transaction => ' . $transaction->getTransactionReference()
+                        $this->log->logInfos('Starting duplicate transaction refund for order ' . $order->id . ' with Hipay transaction => ' . $transaction->getTransactionReference()
                             . ' and order in base transaction => ' . $orderInBase['transaction_ref']);
 
                         try {
@@ -289,7 +287,7 @@ class HipayNotification
                             $refundOp = $this->apiHandler->handleRefund([
                                 'transaction_reference' => $transaction->getTransactionReference(),
                                 'order' => $order->id,
-                                'amount' => $transaction->getAuthorizedAmount(),
+                                'amount' => $transaction->getAuthorizedAmount()
                             ], $transaction->getEci());
                         }
 
@@ -299,7 +297,8 @@ class HipayNotification
                             // If refund maintenance didn't worked, try cancel operation
                             if ($this->apiHandler->handleCancel([
                                 'order' => $order->id,
-                                'transaction_reference' => $transaction->getTransactionReference()
+                                'transaction_reference' => $transaction->getTransactionReference(),
+                                'duplicate_order' => 1
                             ], $transaction->getEci())) {
                                 $message = 'Found duplicate transaction which has been cancelled for order ' . $order->id;
                             } else {
