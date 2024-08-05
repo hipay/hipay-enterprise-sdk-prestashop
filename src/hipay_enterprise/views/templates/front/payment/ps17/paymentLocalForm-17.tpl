@@ -10,8 +10,13 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
-<form id="{$HiPay_localPaymentName}-hipay" action="{$HiPay_action}" enctype="application/x-www-form-urlencoded"
-    class="form-horizontal hipay-form-17" method="post" name="local" autocomplete="off">
+<form id="{$HiPay_localPaymentName}{if $HiPay_localPaymentName eq 'paypal' && !empty($HiPay_merchantId)}-v2{/if}-hipay"
+      action="{$HiPay_action}"
+      enctype="application/x-www-form-urlencoded"
+      class="form-horizontal hipay-form-17"
+      method="post"
+      name="local"
+      autocomplete="off">
     {assign "psVersion" "17"}
 
     {if !empty($HiPay_errorMsg)}
