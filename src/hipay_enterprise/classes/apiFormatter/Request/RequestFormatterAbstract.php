@@ -170,7 +170,9 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
                 $this->module->name,
                 'notify',
                 array(),
-                true
+                true,
+                null,
+                (int) $this->context->shop->id
             );
         }
 
