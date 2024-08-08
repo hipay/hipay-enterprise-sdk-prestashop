@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,9 +11,9 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/../../classes/exceptions/NotificationException.php';
-require_once dirname(__FILE__).'/../../classes/helper/HipayNotification.php';
-require_once dirname(__FILE__).'/../../classes/helper/HipayHelper.php';
+require_once dirname(__FILE__) . '/../../classes/exceptions/NotificationException.php';
+require_once dirname(__FILE__) . '/../../classes/helper/HipayNotification.php';
+require_once dirname(__FILE__) . '/../../classes/helper/HipayHelper.php';
 
 use HiPay\Fullservice\Enum\Transaction\ECI;
 use HiPay\Fullservice\Gateway\Mapper\TransactionMapper;
@@ -46,7 +47,7 @@ class Hipay_enterpriseNotifyModuleFrontController extends ModuleFrontController
             $params = $_POST;
             $transactionReference = (isset($params['transaction_reference'])) ? $params['transaction_reference'] : '';
             // Process log from notification
-            $this->module->getLogs()->logCallback($params);
+            $this->module->getLogs()->logInfos($params);
 
             // Check if status is present in Post Data
             if (!isset($params['state']) && !isset($params['status'])) {
