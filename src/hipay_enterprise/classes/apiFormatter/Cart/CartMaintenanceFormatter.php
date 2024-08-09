@@ -103,6 +103,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
                 $cart->addItem($item);
             }
         }
+
+        return $cart;
     }
 
     private
@@ -182,16 +184,16 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
 
         if ($orderDetail) {
             $reduction_percent = $orderDetail['reduction_percent'] / 100;
-            $unit_price = $orderDetail['unit_price'];
+            $unit_price = floatval($orderDetail['unit_price']);
             $unit_price_without_reduction = $reduction_percent > 0 ? $unit_price / (1 - $reduction_percent) : $unit_price;
 
             // Calculate discount
             $discount_per_unit = Tools::ps_round($unit_price_without_reduction - $unit_price, 2);
-            $discount = $discount_per_unit * $qty;
+            $discount = -1
+                * Tools::ps_round( $discount_per_unit * $qty, 2);
 
-            $total_amount = $unit_price * $qty;
             $tax_rate = floatval($orderDetail['tax_rate']);
-            $unit_price = Tools::ps_round(floatval(number_format($unit_price_without_reduction, 2, '.', '')),2);
+            $unit_price = Tools::ps_round( $unit_price * $qty, 2);
         }
 
         $item->__constructItem(
@@ -200,16 +202,16 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             "good",
             $productFromCart["name"],
             $qty,
-            $unit_price, // Use the price before reduction
+            $unit_price_without_reduction,
             $tax_rate,
             $discount,
             $unit_price,
             "", // discount_description
             "", // product_description
-            null, // delivery_method
-            null, // delivery_company
-            null, // delivery_delay
-            null, // delivery_number
+            "", // delivery_method
+            "", // delivery_company
+            "", // delivery_delay
+            "", // delivery_number
             $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']),
             null // shop_id
         );
