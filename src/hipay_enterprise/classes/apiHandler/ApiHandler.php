@@ -221,29 +221,21 @@ class Apihandler
                 case Operation::CAPTURE:
                     $params['operation'] = Operation::CAPTURE;
                     $this->module->getLogs()->logInfos("Initiating capture for order " . $params['order']);
-                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
-                    $this->module->getLogs()->logInfos("Capture result: " . json_encode($result));
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     $operationSuccess = true;
                     break;
 
                 case Operation::REFUND:
                     $params['operation'] = Operation::REFUND;
                     $this->module->getLogs()->logInfos("Initiating refund for order " . $params['order']);
-                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
-                    $this->module->getLogs()->logInfos("Refund result: " . json_encode($result));
-                    if ($result->getStatus() !== TransactionStatus::REFUNDED) {
-                        $this->module->getLogs()->logInfos("Refund not successful. Status: " . $result->getStatus());
-                        $operationSuccess = false;
-                    } else {
-                        $operationSuccess = true;
-                    }
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    $operationSuccess = true;
                     break;
 
                 case Operation::ACCEPT_CHALLENGE:
                     $params['operation'] = Operation::ACCEPT_CHALLENGE;
                     $this->module->getLogs()->logInfos("Initiating accept challenge for order " . $params['order']);
-                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
-                    $this->module->getLogs()->logInfos("Accept challenge result: " . json_encode($result));
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     $operationSuccess = true;
                     break;
 
@@ -251,7 +243,6 @@ class Apihandler
                     $params['operation'] = Operation::DENY_CHALLENGE;
                     $this->module->getLogs()->logInfos("Initiating deny challenge for order " . $params['order']);
                     $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
-                    $this->module->getLogs()->logInfos("Deny challenge result: " . json_encode($result));
                     $operationSuccess = true;
                     break;
 
@@ -259,7 +250,6 @@ class Apihandler
 
                     $params['operation'] = Operation::CANCEL;
                     $this->module->getLogs()->logInfos("Initiating cancellation for order " . $params['order']);
-                    $operationSuccess = false;
                     $displayMsg = null;
                     $order = new Order($params['order']);
 
@@ -276,7 +266,6 @@ class Apihandler
                             if (!$hipayDbMaintenance->isTransactionCancelled($order->id)) {
                                 try {
                                     $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
-                                    $this->module->getLogs()->logInfos("Cancellation result: " . json_encode($result));
 
                                     if (!in_array($result->getStatus(), [TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED, TransactionStatus::CANCELLED])) {
                                         $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
