@@ -528,10 +528,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
     }
 
     /**
-     * Check if Paypal instance is V2
+     * Check if PayPal instance is V2
      *
      * @param $hipayConfigTool
      * @return bool
+     * @throws Exception
      */
     public static function isPaypalV2($hipayConfigTool)
     {
@@ -544,7 +545,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 self::$paypalVersion = $paymentsProducts['options']['provider_architecture_version'] === 'v1' &&
                     !empty($paymentsProducts['options']['payer_id']);
             } else {
-                // Default to false if the required information is not available
                 self::$paypalVersion = false;
             }
         }
