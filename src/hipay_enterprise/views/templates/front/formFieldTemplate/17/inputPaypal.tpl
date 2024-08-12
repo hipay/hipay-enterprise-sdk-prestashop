@@ -83,7 +83,6 @@
       buttonColor: '{$HiPay_paypalFields.buttonColor[0]|default:"gold"}',
       buttonHeight: '{$HiPay_paypalFields.buttonHeight|default:"40"}',
       bnpl:{$HiPay_paypalFields.bnpl|default:1},
-      merchantId: '{$HiPay_paypalFields.merchantId}',
       totalAmount: '{$HiPay_cart.totalAmount}',
       shopName: '{Configuration::get('PS_SHOP_NAME')}'
     };
@@ -180,7 +179,6 @@
       request: request,
       paypalButtonStyle: paypalButtonStyle,
       selector: 'paypal-field',
-      merchantPaypalId: parameters.merchantId,
       canPayLater: Boolean(parameters.bnpl)
     };
 
