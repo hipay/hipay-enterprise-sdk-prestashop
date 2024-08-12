@@ -234,13 +234,10 @@
                 </div>
             </div>
         {/if}
-        {if "merchantId"|inArray:$method.displayConfigurationFields}
+        {if $HiPay_availablePayment.paypal != 'V2'}
             <div class="row">
                 <div class="form-group">
-                    <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
-                    <div class="col-lg-4">
-                        <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId"
-                            value="{$method.merchantId}" />
+                    <div class="col-lg-8">
                         <br>
                         <p class="alert alert-warning">
                             <b>{l s='NEW' mod='hipay_enterprise'}</b><br/>
@@ -258,7 +255,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Shape" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
+                        <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>
                                 {l s="Rectangular" mod='hipay_enterprise'}
                             </option>
@@ -276,7 +273,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Label" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel">
+                        <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
                             <option value="paypal" {if $method.buttonLabel[0] == "paypal"}selected{/if}>
                                 {l s="Paypal" mod='hipay_enterprise'}
                             </option>
@@ -302,7 +299,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Color" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor">
+                        <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
                             <option value="gold" {if $method.buttonColor[0] == "gold"}selected{/if}>
                                 {l s="Gold" mod='hipay_enterprise'}
                             </option>
@@ -328,7 +325,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55"
+                        <input type="number" id="buttonHeight" class="buttonHeight form-control{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}" min="25" max="55"
                             name="{$key}_buttonHeight" value="{$method.buttonHeight}" />
                     </div>
                 </div>
@@ -342,10 +339,10 @@
                     </label>
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1"
-                                {if $method.bnpl }checked="checked" {/if}>
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" class="{if $HiPay_availablePayment.paypal != 'V2'}readonly{/if}" value="1"
+                                {if $method.bnpl && $HiPay_availablePayment.paypal == 'V2' }checked="checked" {/if}>
                             <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_off" value="0"
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_off" class="{if $HiPay_availablePayment.paypal != 'V2'}readonly{/if}" value="0"
                                 {if $method.bnpl === false }checked="checked" {/if}>
                             <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
@@ -360,29 +357,3 @@
         {/if}
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function toggleFields(merchantId) {
-            ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(
-                function(fieldId) {
-                    var field = document.getElementById(fieldId);
-                    if (merchantId === '') {
-                        field.classList.add('readonly');
-                    } else {
-                        field.classList.remove('readonly');
-                    }
-                });
-        }
-
-        var merchantIdInput = document.getElementById('input-merchantId');
-        if (merchantIdInput !== null) {
-            // Call toggleFields initially to set the correct state on page load
-            toggleFields(merchantIdInput.value);
-
-            merchantIdInput.addEventListener('input', function() {
-                toggleFields(this.value);
-            });
-        }
-    });
-</script>

@@ -15,7 +15,7 @@ require_once dirname(__FILE__).'/classes/helper/HipayCCToken.php';
 require_once dirname(__FILE__).'/classes/helper/HipayHelper.php';
 require_once dirname(__FILE__).'/classes/apiHandler/ApiHandler.php';
 require_once dirname(__FILE__).'/classes/helper/enums/UXMode.php';
-require_once dirname(__FILE__).'/classes/helper/HipayAvailablePaymentProducts.php';
+
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
 /**
@@ -123,7 +123,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-        if ('applepay' === $name || self::isPaypalV2($this->hipayConfigTool)) {
+
+        if ('applepay' === $name || parent::isPaypalV2($this->hipayConfigTool)) {
             $this->context->smarty->assign(
                 [
                     'HiPay_action' => $this->context->link->getModuleLink(
@@ -134,7 +135,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ),
                     'HiPay_localPaymentName' => $name,
                     'HiPay_merchantId' => $paymentProduct['merchantId'] ?? null,
-                    'HiPay_PayPal_v2' => self::isPaypalV2($this->hipayConfigTool),
+                    'HiPay_PayPal_v2' => parent::isPaypalV2($this->hipayConfigTool),
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
@@ -277,14 +278,14 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'HiPay_iframe' => false,
                     ]
                 );
-            } elseif (self::isPaypalV2($this->hipayConfigTool)) {
+            } elseif (parent::isPaypalV2($this->hipayConfigTool)) {
                 $formFields = [
                     'buttonShape' => $paymentProduct['buttonShape'],
                     'buttonLabel' => $paymentProduct['buttonLabel'],
                     'buttonColor' => $paymentProduct['buttonColor'],
                     'buttonHeight' => $paymentProduct['buttonHeight'],
                     'bnpl' => $paymentProduct['bnpl'],
-                    'HiPay_PayPal_v2' => self::isPaypalV2($this->hipayConfigTool)
+                    'HiPay_PayPal_v2' => parent::isPaypalV2($this->hipayConfigTool)
                 ];
 
                 $currency = $this->getCurrency($this->context->cart->id_currency);
@@ -352,7 +353,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
 
-        if ('applepay' === $name || ('paypal' === $name && self::isPaypalV2($this->hipayConfigTool))) {
+        if ('applepay' === $name || ('paypal' === $name && parent::isPaypalV2($this->hipayConfigTool))) {
             $newOption->setAction(
                 $this->context->link->getModuleLink($this->name, 'redirect', [], true)
             );
@@ -527,28 +528,5 @@ class HipayEnterpriseNew extends Hipay_enterprise
         }
     }
 
-    /**
-     * Check if PayPal instance is V2
-     *
-     * @param $hipayConfigTool
-     * @return bool
-     * @throws Exception
-     */
-    public static function isPaypalV2($hipayConfigTool)
-    {
-        if (self::$paypalVersion === null) {
-            $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
-            $paymentsProducts = $hipayProducts->getAvailablePaymentProducts('paypal')[0];
 
-            if (isset($paymentsProducts['options']['provider_architecture_version']) &&
-                isset($paymentsProducts['options']['payer_id'])) {
-                self::$paypalVersion = $paymentsProducts['options']['provider_architecture_version'] === 'v1' &&
-                    !empty($paymentsProducts['options']['payer_id']);
-            } else {
-                self::$paypalVersion = false;
-            }
-        }
-
-        return self::$paypalVersion;
-    }
 }
