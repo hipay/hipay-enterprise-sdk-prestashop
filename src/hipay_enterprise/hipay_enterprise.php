@@ -35,6 +35,7 @@ class Hipay_enterprise extends PaymentModule
     public $currencies_titles = [];
     public $moduleCurrencies = [];
     public $_technicalErrors = '';
+    private static $paypalVersion = null;
 
     public function __construct()
     {
@@ -751,6 +752,7 @@ class Hipay_enterprise extends PaymentModule
                 'HiPay_syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
                 'HiPay_updateNotif' => $this->hipayUpdateNotif,
                 'HiPay_prestashopVersion' => _PS_VERSION_,
+                'HiPay_availablePayment' => $this->getAvailablePayment($this->hipayConfigTool),
             ]
         );
 
@@ -849,6 +851,47 @@ class Hipay_enterprise extends PaymentModule
 
         return true;
     }
+
+    /**
+     * Check if PayPal instance is V2
+     *
+     * @param $hipayConfigTool
+     * @return bool
+     * @throws Exception
+     */
+    public static function isPaypalV2($hipayConfigTool)
+    {
+        if (self::$paypalVersion === null) {
+            $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
+            $paymentsProducts = $hipayProducts->getAvailablePaymentProducts('paypal')[0];
+
+            if (isset($paymentsProducts['options']['provider_architecture_version']) &&
+                isset($paymentsProducts['options']['payer_id'])) {
+                self::$paypalVersion = $paymentsProducts['options']['provider_architecture_version'] === 'v1' &&
+                    !empty($paymentsProducts['options']['payer_id']);
+            } else {
+                self::$paypalVersion = false;
+            }
+        }
+
+        return self::$paypalVersion;
+    }
+
+    /**
+     * getAvailablePayment for specific product
+     *
+     * @param $hipayConfigTool
+     * @return array
+     * @throws Exception
+     */
+    private function getAvailablePayment($hipayConfigTool)
+    {
+        $availablePayments = [];
+
+        $availablePayments['paypal'] = $this->isPaypalV2($hipayConfigTool) ? 'V2' : '';
+
+        return $availablePayments;
+    }
 }
 
 if (_PS_VERSION_ >= '1.7') {
@@ -871,3 +914,4 @@ require_once dirname(__FILE__) . '/classes/helper/HipayFormControl.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php';
+require_once dirname(__FILE__) . '/classes/helper/HipayAvailablePaymentProducts.php';
