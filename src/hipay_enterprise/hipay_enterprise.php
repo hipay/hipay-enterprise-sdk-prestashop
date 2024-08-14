@@ -751,8 +751,7 @@ class Hipay_enterprise extends PaymentModule
                 'HiPay_syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
                 'HiPay_syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
                 'HiPay_updateNotif' => $this->hipayUpdateNotif,
-                'HiPay_prestashopVersion' => _PS_VERSION_,
-                'HiPay_availablePayment' => $this->getAvailablePayment($this->hipayConfigTool),
+                'HiPay_prestashopVersion' => _PS_VERSION_
             ]
         );
 
@@ -875,22 +874,6 @@ class Hipay_enterprise extends PaymentModule
         }
 
         return self::$paypalVersion;
-    }
-
-    /**
-     * getAvailablePayment for specific product
-     *
-     * @param $hipayConfigTool
-     * @return array
-     * @throws Exception
-     */
-    private function getAvailablePayment($hipayConfigTool)
-    {
-        $availablePayments = [];
-
-        $availablePayments['paypal'] = $this->isPaypalV2($hipayConfigTool) ? 'V2' : '';
-
-        return $availablePayments;
     }
 }
 

@@ -234,8 +234,8 @@
                 </div>
             </div>
         {/if}
-        {if $HiPay_availablePayment.paypal != 'V2'}
-            <div class="row">
+        <div id="paypal_v2_support">
+            <div class="row" >
                 <div class="form-group">
                     <div class="col-lg-8">
                         <br>
@@ -249,13 +249,13 @@
                     </div>
                 </div>
             </div>
-        {/if}
+        </div>
         {if "buttonShape"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Shape" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
+                        <select id="buttonShape" name="{$key}_buttonShape[]" class="select-buttonShape">
                             <option value="rect" {if $method.buttonShape[0] == "rect"}selected{/if}>
                                 {l s="Rectangular" mod='hipay_enterprise'}
                             </option>
@@ -273,7 +273,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Label" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
+                        <select id="buttonLabel" name="{$key}_buttonLabel[]" class="select-buttonLabel">
                             <option value="paypal" {if $method.buttonLabel[0] == "paypal"}selected{/if}>
                                 {l s="Paypal" mod='hipay_enterprise'}
                             </option>
@@ -299,7 +299,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Color" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}">
+                        <select id="buttonColor" name="{$key}_buttonColor[]" class="select-_buttonColor">
                             <option value="gold" {if $method.buttonColor[0] == "gold"}selected{/if}>
                                 {l s="Gold" mod='hipay_enterprise'}
                             </option>
@@ -325,7 +325,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s="Button Height" mod='hipay_enterprise'}</label>
                     <div class="col-lg-2">
-                        <input type="number" id="buttonHeight" class="buttonHeight form-control{if $HiPay_availablePayment.paypal != 'V2'} readonly{/if}" min="25" max="55"
+                        <input type="number" id="buttonHeight" class="buttonHeight form-control" min="25" max="55"
                             name="{$key}_buttonHeight" value="{$method.buttonHeight}" />
                     </div>
                 </div>
@@ -339,10 +339,10 @@
                     </label>
                     <div class="col-lg-9">
                         <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" class="{if $HiPay_availablePayment.paypal != 'V2'}readonly{/if}" value="1"
-                                {if $method.bnpl && $HiPay_availablePayment.paypal == 'V2' }checked="checked" {/if}>
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1"
+                                {if $method.bnpl}checked="checked" {/if}>
                             <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_off" class="{if $HiPay_availablePayment.paypal != 'V2'}readonly{/if}" value="0"
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_off" value="0"
                                 {if $method.bnpl === false }checked="checked" {/if}>
                             <label for="{$key}_bnpl_off">{l s='No' mod='hipay_enterprise'}</label>
                             <a class="slide-button btn"></a>
@@ -357,3 +357,118 @@
         {/if}
     </div>
 </div>
+
+<script>
+    {literal}
+  class HipayAvailablePaymentProducts {
+    constructor(hipayConfig) {
+      this.config = hipayConfig;
+      this.setCredentialsAndUrl();
+      this.generateAuthorizationHeader();
+    }
+
+    setCredentialsAndUrl() {
+      if (this.config.account.global.sandbox_mode) {
+        this.apiUsername = this.config.account.sandbox.api_username_sandbox;
+        this.apiPassword = this.config.account.sandbox.api_password_sandbox;
+        this.baseUrl = 'https://stage-secure-gateway.hipay-tpp.com/rest/v2/';
+      } else {
+        this.apiUsername = this.config.account.production.api_username_production;
+        this.apiPassword = this.config.account.production.api_password_production;
+        this.baseUrl = 'https://secure-gateway.hipay-tpp.com/rest/v2/';
+      }
+    }
+
+    generateAuthorizationHeader() {
+      const credentials = `${this.apiUsername}:${this.apiPassword}`;
+      const encodedCredentials = btoa(credentials);
+      this.authorizationHeader = `Basic ${encodedCredentials}`;
+    }
+
+    async getAvailablePaymentProducts(
+      paymentProduct = 'paypal',
+      eci = '7',
+      operation = '4',
+      customerCountry = '',
+      currency = '',
+      withOptions = 'true'
+    ) {
+      const url = new URL(`${this.baseUrl}available-payment-products.json`);
+      url.searchParams.append('eci', eci);
+      url.searchParams.append('operation', operation);
+      url.searchParams.append('customer_country', customerCountry);
+      url.searchParams.append('currency', currency);
+      url.searchParams.append('payment_product', paymentProduct);
+      url.searchParams.append('with_options', withOptions);
+
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': this.authorizationHeader,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        throw error;
+      }
+    }
+  }
+    {/literal}
+
+    $(document).ready(function() {
+      var initPaypalV2 = false;
+      $('#paypal_v2_support').hide();
+      function toggleFields(PayPalMerchantData) {
+        const options = PayPalMerchantData.options;
+        if (options &&
+          options.provider_architecture_version === 'v2' &&
+          options.payer_id &&
+          options.payer_id.length > 0) {
+          ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(function(fieldId) {
+            var field = document.getElementById(fieldId);
+            field.classList.remove('readonly');
+            $('#paypal_v2_support').hide();
+          });
+        } else {
+          ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(function(fieldId) {
+            var field = document.getElementById(fieldId);
+            field.classList.add('readonly');
+            $('#paypal_v2_support').show()
+          });
+        }
+      }
+
+      function fetchAndToggleFields() {
+        if (!initPaypalV2) {
+          initPaypalV2 = true; // Set this before making the AJAX call to avoid multiple calls
+          const hipayProducts = new HipayAvailablePaymentProducts({$HiPay_config_hipay|json_encode nofilter});
+
+          hipayProducts.getAvailablePaymentProducts()
+            .then(data => {
+              if (data && data.length > 0) {
+                toggleFields(data[0]);
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      }
+
+      if ($('#payment_form__paypal').hasClass('active')) {
+        fetchAndToggleFields();
+      }
+
+      $('a[href="#payment_form__paypal"]').on('shown.bs.tab', function (e) {
+        fetchAndToggleFields();
+      });
+    });
+
+
+</script>
