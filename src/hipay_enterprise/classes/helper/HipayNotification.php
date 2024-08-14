@@ -270,7 +270,7 @@ class HipayNotification
                             . ' and order in base transaction => ' . $orderInBase['transaction_ref']);
 
                         try {
-                            $this->log->logInfos('Trigger Full refund with basket');
+                            $this->log->logInfos('Trigger Full refund with basket for order ' . $order->id );
                             // Try refund operation firstly because often captured after authorized
                             $refundOp = $this->apiHandler->handleRefund([
                                 'transaction_reference' => $transaction->getTransactionReference(),
@@ -283,7 +283,7 @@ class HipayNotification
                             ], $transaction->getEci());
 
                         } catch (Exception $exception) {
-                            $this->log->logInfos('Forcing Trigger Full refund without basket');
+                            $this->log->logInfos('Forcing Trigger Full refund without basket for order ' . $order->id );
                             $refundOp = $this->apiHandler->handleRefund([
                                 'transaction_reference' => $transaction->getTransactionReference(),
                                 'order' => $order->id,
