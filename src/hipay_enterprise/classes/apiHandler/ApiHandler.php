@@ -309,7 +309,7 @@ class Apihandler
                     } else {
                         $displayMsg = $this->module->l("The HiPay transaction was not canceled because it's status doesn't allow cancellation. You can see and cancel the transaction directly from HiPay's BackOffice");
                         $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
-                        $error_order_status_msg = "Cancellation failed: Invalid order status ". $order->getCurrentState();
+                        $error_order_status_msg = "Cancellation failed: Invalid order status";
                         $this->module->getLogs()->logErrors($error_order_status_msg);
                     }
 
@@ -329,7 +329,7 @@ class Apihandler
                     return false;
             }
 
-            $this->module->getLogs()->logInfos($mode . " operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
+            $this->module->getLogs()->logInfos("{$mode} operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
             return $operationSuccess;
 
         } catch (GatewayException $e) {
