@@ -40,7 +40,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.22.1';
+        $this->version = '2.22.2';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -732,7 +732,7 @@ class Hipay_enterprise extends PaymentModule
                     [],
                     true,
                     null,
-                    (int) Configuration::get('PS_SHOP_DEFAULT')
+                    (int) $this->context->shop->id
                 ),
                 'HiPay_ipaddr' => $_SERVER['REMOTE_ADDR'],
                 'HiPay_psCategories' => $psCategories,

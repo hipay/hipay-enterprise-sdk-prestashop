@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.22.2
+
+- **Fix**: Fixed HiPay notify URL when multi store is enabled on Prestashop
+- **Fix**: Fixed issue when displaying Prestashop Pay button with PayPal payment method
+
 ## 2.22.1
 
 - **Fix**: Fixed issues with Pay button when ApplePay / PayPal v2 methods are enabled and Terms of Conditions are active
@@ -8,6 +13,7 @@
 - **Fix**: Fixed HiPay capture system
 - **Fix**: Fixed exception on confirmation page when duplicate order is received
 - **Fix**: Fixed PHP 8 compatibility issues
+- **Fix**: Fixed issues with Prestashop OnePageCheckout module
 
 ## 2.22.0
 

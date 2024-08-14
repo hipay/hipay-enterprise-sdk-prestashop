@@ -78,11 +78,11 @@
       password: api_tokenjs_password_publickey,
       environment: api_tokenjs_mode,
       language_iso_code: '{$HiPay_language_iso_code}',
-      buttonShape: '{$HiPay_paypalFields.buttonShape[0]}',
-      buttonLabel: '{$HiPay_paypalFields.buttonLabel[0]}',
-      buttonColor: '{$HiPay_paypalFields.buttonColor[0]}',
-      buttonHeight: '{$HiPay_paypalFields.buttonHeight}',
-      bnpl:{$HiPay_paypalFields.bnpl},
+      buttonShape: '{$HiPay_paypalFields.buttonShape[0]|default:"rect"}',
+      buttonLabel: '{$HiPay_paypalFields.buttonLabel[0]|default:"paypal"}',
+      buttonColor: '{$HiPay_paypalFields.buttonColor[0]|default:"gold"}',
+      buttonHeight: '{$HiPay_paypalFields.buttonHeight|default:"40"}',
+      bnpl:{$HiPay_paypalFields.bnpl|default:1},
       merchantId: '{$HiPay_paypalFields.merchantId}',
       totalAmount: '{$HiPay_cart.totalAmount}',
       shopName: '{Configuration::get('PS_SHOP_NAME')}'
@@ -133,7 +133,7 @@
     const paypalField = $('#paypal-field');
     const paypalErrorMessage = $('#paypal-error-message');
     const submitButton = $("#payment-confirmation button[type=submit]");
-    const paypalContainer= $('form[id=paypal-hipay]').parent();
+    const paypalContainer= $('form[id=paypal-v2-hipay]').parent();
 
 
     if(paypalContainer.is(':visible')){
@@ -195,7 +195,7 @@
    * @param instancePaypalButton
    */
   function handlePaypalEvents(instancePaypalButton) {
-    var form = $('#{$HiPay_localPaymentName}-hipay');
+    var form = $('#{$HiPay_localPaymentName}-v2-hipay');
     instancePaypalButton.on('paymentAuthorized', function(hipayToken) {
         $('#{$HiPay_localPaymentName}-orderId').val(hipayToken.orderID);
         $('#{$HiPay_localPaymentName}-payment-product').val('paypal');

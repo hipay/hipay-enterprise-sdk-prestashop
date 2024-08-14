@@ -20,7 +20,7 @@
             : $('#btn_place_order');
           handleSubmitButton(false);
           if (
-            getSelectedLocalPaymentMethod() === 'paypal-hipay' ||
+            getSelectedLocalPaymentMethod() === 'paypal-v2-hipay' ||
             getSelectedLocalPaymentMethod() === 'applepay-hipay'
           ) {
             handlePaymentOptionChange(false);
@@ -36,7 +36,7 @@
         }).then(() => {
           jQuery(document).ready(function ($) {
             if (
-                    getSelectedLocalPaymentMethod() === 'paypal-hipay' ||
+                    getSelectedLocalPaymentMethod() === 'paypal-v2-hipay' ||
                     getSelectedLocalPaymentMethod() === 'applepay-hipay'
             ) {
               handlePaymentOptionChange(false);
@@ -59,7 +59,7 @@
       function initButtonInstance(paymentFormId) {
         if (paymentFormId === 'applepay-hipay') {
           initApplePayInstance();
-        } else if (paymentFormId === 'paypal-hipay') {
+        } else if (paymentFormId === 'paypal-v2-hipay') {
           initPaypalInstance();
         }
       }
@@ -107,7 +107,7 @@
             .then(() => {
               if (
                 paymentFormId === 'applepay-hipay' ||
-                paymentFormId === 'paypal-hipay'
+                      (paymentFormId === 'paypal-v2-hipay')
               ) {
                 placeOrderButton = false;
                 // If the displayed payment method is Apple Pay or PayPal, remove the payment button
