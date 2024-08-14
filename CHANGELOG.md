@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.22.2
+
+- **Fix**: Fixed HiPay notify URL when multi store is enabled on Prestashop
+- **Fix**: Fixed issue when displaying Prestashop Pay button with PayPal payment method
+
 ## 2.22.1
 
 - **Fix**: Fixed issues with Pay button when ApplePay / PayPal v2 methods are enabled and Terms of Conditions are active
