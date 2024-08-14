@@ -214,7 +214,7 @@ class Apihandler
      */
     private function handleMaintenance($mode, $params = [], $eci = null)
     {
-        $this->module->getLogs()->logInfos("Starting {$mode} operation for order " . $params['order']);
+        $this->module->getLogs()->logInfos("Starting " . $mode . " operation for order " . $params['order']);
         try {
             $operationSuccess = false;
             switch ($mode) {
@@ -309,7 +309,7 @@ class Apihandler
                     } else {
                         $displayMsg = $this->module->l("The HiPay transaction was not canceled because it's status doesn't allow cancellation. You can see and cancel the transaction directly from HiPay's BackOffice");
                         $displayMsg .= ' (https://merchant.hipay-tpp.com/default/auth/login)';
-                        $error_order_status_msg = "Cancellation failed: Invalid order status";
+                        $error_order_status_msg = "Cancellation failed: Invalid order status:" . $order->getCurrentState();
                         $this->module->getLogs()->logErrors($error_order_status_msg);
                     }
 
@@ -329,16 +329,16 @@ class Apihandler
                     return false;
             }
 
-            $this->module->getLogs()->logInfos("{$mode} operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
+            $this->module->getLogs()->logInfos($mode . " operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
             return $operationSuccess;
 
         } catch (GatewayException $e) {
             $errorMessage = $this->module->l('An error occurred during request Maintenance.', 'capture');
             $this->context->cookie->__set('hipay_errors', $errorMessage);
-            $this->module->getLogs()->logErrors("Gateway Exception during {$mode} operation: " . $e->getMessage());
+            $this->module->getLogs()->logErrors("Gateway Exception during " . $mode . " operation: " . $e->getMessage());
             return false;
         } catch (PrestaShopDatabaseException $e) {
-            $this->module->getLogs()->logErrors("Database Exception during {$mode} operation: " . $e->getMessage());
+            $this->module->getLogs()->logErrors("Database Exception during " . $mode . " operation: " . $e->getMessage());
             return false;
         }
     }
