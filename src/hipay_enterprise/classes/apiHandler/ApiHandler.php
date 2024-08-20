@@ -214,7 +214,6 @@ class Apihandler
      */
     private function handleMaintenance($mode, $params = [], $eci = null)
     {
-        $this->module->getLogs()->logInfos("Starting " . $mode . " operation for order " . $params['order']);
         try {
             $operationSuccess = false;
             switch ($mode) {
@@ -242,7 +241,7 @@ class Apihandler
                 case Operation::DENY_CHALLENGE:
                     $params['operation'] = Operation::DENY_CHALLENGE;
                     $this->module->getLogs()->logInfos("Initiating deny challenge for order " . $params['order']);
-                    $result = ApiCaller::requestMaintenance($this->module, $params, $eci);
+                    ApiCaller::requestMaintenance($this->module, $params, $eci);
                     $operationSuccess = true;
                     break;
 
@@ -325,7 +324,7 @@ class Apihandler
                     break;
 
                 default:
-                    $this->module->getLogs()->logInfos('Unknown maintenance operation: ' . $mode);
+                    $this->module->getLogs()->logInfos('Unknown maintenance operation: ' . $mode . ' for order ' . $params['order']);
                     return false;
             }
 
