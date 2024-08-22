@@ -214,8 +214,8 @@ class Apihandler
      */
     private function handleMaintenance($mode, $params = [], $eci = null)
     {
+        $operationSuccess = false;
         try {
-            $operationSuccess = false;
             switch ($mode) {
                 case Operation::CAPTURE:
                     $params['operation'] = Operation::CAPTURE;
@@ -325,11 +325,10 @@ class Apihandler
 
                 default:
                     $this->module->getLogs()->logInfos('Unknown maintenance operation: ' . $mode . ' for order ' . $params['order']);
-                    return false;
             }
 
             $this->module->getLogs()->logInfos($mode . " operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
-            return $operationSuccess;
+
 
         } catch (GatewayException $e) {
             $errorMessage = $this->module->l('An error occurred during request Maintenance.', 'capture');
@@ -340,6 +339,8 @@ class Apihandler
             $this->module->getLogs()->logErrors("Database Exception during " . $mode . " operation: " . $e->getMessage());
             return false;
         }
+
+        return $operationSuccess;
     }
 
     /**

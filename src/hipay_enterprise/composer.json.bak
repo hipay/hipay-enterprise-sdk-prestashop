@@ -1,0 +1,21 @@
+{
+    "authors": [
+        {
+            "email": "support.tpp@hipay.com",
+            "homepage": "http://www.hipay.com",
+            "name": "HiPay"
+        }
+    ],
+    "config": {
+        "vendor-dir": "lib/vendor"
+    },
+    "description": "Hipay enterprise module for Prestashop",
+    "license": "Apache 2.0",
+    "name": "hipay/hipay-enterprise-sdk-prestashop",
+    "require": {
+        "giggsey/libphonenumber-for-php": "8.12.*",
+        "hipay/hipay-fullservice-sdk-php": "^2.15.1",
+        "symfony/polyfill-php80": "<=1.18.1"
+    },
+    "version": "2.22.0"
+}
