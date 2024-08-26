@@ -180,7 +180,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         $product_reference = HipayHelper::getProductRef($productFromCart);
-        $orderDetail = $this->getOrderDetailByReference((int)$product["product_id"]);
+        $orderDetail = $this->getOrderDetailByReference((int)$product["product_id"],
+            $productFromCart['id_product_attribute']);
 
         if ($orderDetail) {
             $reduction_percent = $orderDetail['reduction_percent'] / 100;
@@ -354,11 +355,12 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
      * @param string $productReference The unique reference of the product.
      * @return array|null Array of order detail information or null if not found.
      */
-    private function getOrderDetailByReference($productId)
+    private function getOrderDetailByReference($productId, $productAttributeId)
     {
         $orderItems = $this->order->getOrderDetailList();
         foreach ($orderItems as $item) {
-            if ($item['product_id'] == $productId) {
+            if ($item['product_id'] == $productId
+                && $item['product_attribute_id'] == $productAttributeId) {
                 return [
                     'unit_price' => $item['unit_price_tax_incl'],
                     'total_price' => $item['total_price_tax_incl'],
