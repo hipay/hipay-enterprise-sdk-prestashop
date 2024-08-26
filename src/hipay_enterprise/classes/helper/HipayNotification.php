@@ -1125,6 +1125,7 @@ class HipayNotification
             'transaction_ref' => $transaction->getTransactionReference(),
             'notification_code' => $transaction->getStatus(),
             'status' => $status,
+            'attempt_number' => $transaction->getAttemptId(),
             'updated_at' => (new DateTime())->format(HipayDBMaintenance::DATE_FORMAT)
         ];
 
