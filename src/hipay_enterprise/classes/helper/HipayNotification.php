@@ -279,14 +279,16 @@ class HipayNotification
                                 'capture_refund_discount' => true,
                                 'capture_refund_fee' => true,
                                 'capture_refund_wrapping' => true,
-                                'refundItems' => 'full'
+                                'refundItems' => 'full',
+                                'duplicate_order' => 1
                             ], $transaction->getEci());
                         } catch (Exception $exception) {
                             $this->log->logInfos('Forcing Trigger Full refund without basket for order ' . $order->id);
                             $refundOp = $this->apiHandler->handleRefund([
                                 'transaction_reference' => $transaction->getTransactionReference(),
                                 'order' => $order->id,
-                                'amount' => $transaction->getAuthorizedAmount()
+                                'amount' => $transaction->getAuthorizedAmount(),
+                                'duplicate_order' => 1
                             ], $transaction->getEci());
                         }
 

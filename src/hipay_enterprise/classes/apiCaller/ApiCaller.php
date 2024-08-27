@@ -205,7 +205,10 @@ class ApiCaller
             $moduleInstance->getLogs()->logCallback($operation, $params["operation"]);
 
             // save maintenance data in db
-            $maintenanceData->saveData();
+            if ( $params['duplicate_order'] != 1) {
+                $maintenanceData->saveData();
+            }
+
             return $operation;
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
