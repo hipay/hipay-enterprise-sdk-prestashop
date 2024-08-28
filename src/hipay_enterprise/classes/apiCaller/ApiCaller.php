@@ -163,12 +163,15 @@ class ApiCaller
      * @param $moduleInstance
      * @param $params
      * @param $eci
-     * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel
+     * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel | false
      * @throws GatewayException
      */
     public static function requestMaintenance($moduleInstance, $params, $eci = null)
     {
         try {
+            if ( isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
+                return false;
+            }
             $hipayDBMaintenance = new HipayDBMaintenance($moduleInstance);
             $transaction = $hipayDBMaintenance->getTransactionByRef($params["transaction_reference"]);
 
@@ -205,9 +208,7 @@ class ApiCaller
             $moduleInstance->getLogs()->logCallback($operation, $params["operation"]);
 
             // save maintenance data in db
-            if ( $params['duplicate_order'] != 1) {
-                $maintenanceData->saveData();
-            }
+            $maintenanceData->saveData();
 
             return $operation;
         } catch (Exception $e) {

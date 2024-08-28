@@ -255,10 +255,8 @@ class Apihandler
                     $transactionRef = $params['transaction_reference'] ?? '';
                     $status = '';
 
-                    if (($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
-                            $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING')) ||
-                        (isset($params['duplicate_order']) && $params['duplicate_order'] == 1)) {
-
+                    if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
+                            $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING')) {
                         if (false !== $params['transaction_reference']) {
                             $hipayDbMaintenance = new HipayDBMaintenance($this->module);
 
