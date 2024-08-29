@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.22.2
+
+- **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
+
 ## 2.22.1
 
 - **Fix**: Fixed issues with Pay button when ApplePay / PayPal v2 methods are enabled and Terms of Conditions are active
