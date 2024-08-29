@@ -1,8 +1,13 @@
 # Changelog
 
-## 2.22.2
+## 2.22.3
 
 - **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
+
+## 2.22.2
+
+- **Fix**: Fixed HiPay notify URL when multi store is enabled on Prestashop
+- **Fix**: Fixed issue when displaying Prestashop Pay button with PayPal payment method
 
 ## 2.22.1
 
