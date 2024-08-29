@@ -63,15 +63,11 @@ class HipayAvailablePaymentProducts
         $paymentProduct = 'paypal',
         $eci = '7',
         $operation = '4',
-        $customerCountry = '',
-        $currency = '',
         $withOptions = 'true'
     ) {
         $url = $this->baseUrl . 'available-payment-products.json';
         $url .= '?eci=' . urlencode($eci);
         $url .= '&operation=' . urlencode($operation);
-        $url .= '&customer_country=' . urlencode($customerCountry);
-        $url .= '&currency=' . urlencode($currency);
         $url .= '&payment_product=' . urlencode($paymentProduct);
         $url .= '&with_options=' . urlencode($withOptions);
 

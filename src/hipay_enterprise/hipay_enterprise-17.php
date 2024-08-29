@@ -123,8 +123,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-
-        if ('applepay' === $name || parent::isPaypalV2($this->hipayConfigTool)) {
+        $isPaypalV2 = parent::isPaypalV2($this->hipayConfigTool);
+        if ('applepay' === $name || $isPaypalV2) {
             $this->context->smarty->assign(
                 [
                     'HiPay_action' => $this->context->link->getModuleLink(
@@ -135,7 +135,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ),
                     'HiPay_localPaymentName' => $name,
                     'HiPay_merchantId' => $paymentProduct['merchantId'] ?? null,
-                    'HiPay_PayPal_v2' => parent::isPaypalV2($this->hipayConfigTool),
+                    'HiPay_PayPal_v2' => $isPaypalV2,
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
@@ -278,14 +278,14 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'HiPay_iframe' => false,
                     ]
                 );
-            } elseif (parent::isPaypalV2($this->hipayConfigTool)) {
+            } elseif ($isPaypalV2) {
                 $formFields = [
                     'buttonShape' => $paymentProduct['buttonShape'],
                     'buttonLabel' => $paymentProduct['buttonLabel'],
                     'buttonColor' => $paymentProduct['buttonColor'],
                     'buttonHeight' => $paymentProduct['buttonHeight'],
                     'bnpl' => $paymentProduct['bnpl'],
-                    'HiPay_PayPal_v2' => parent::isPaypalV2($this->hipayConfigTool)
+                    'HiPay_PayPal_v2' => $isPaypalV2
                 ];
 
                 $currency = $this->getCurrency($this->context->cart->id_currency);
@@ -353,7 +353,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
 
-        if ('applepay' === $name || ('paypal' === $name && parent::isPaypalV2($this->hipayConfigTool))) {
+        if ('applepay' === $name || ('paypal' === $name && $isPaypalV2)) {
             $newOption->setAction(
                 $this->context->link->getModuleLink($this->name, 'redirect', [], true)
             );

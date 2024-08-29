@@ -864,13 +864,9 @@ class Hipay_enterprise extends PaymentModule
             $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
             $paymentsProducts = $hipayProducts->getAvailablePaymentProducts('paypal')[0];
 
-            if (isset($paymentsProducts['options']['provider_architecture_version']) &&
-                isset($paymentsProducts['options']['payer_id'])) {
-                self::$paypalVersion = $paymentsProducts['options']['provider_architecture_version'] === 'v1' &&
-                    !empty($paymentsProducts['options']['payer_id']);
-            } else {
-                self::$paypalVersion = false;
-            }
+            self::$paypalVersion = isset($paymentsProducts['options']['provider_architecture_version'])
+                && $paymentsProducts['options']['provider_architecture_version'] === 'v1'
+                && !empty($paymentsProducts['options']['payer_id']);
         }
 
         return self::$paypalVersion;

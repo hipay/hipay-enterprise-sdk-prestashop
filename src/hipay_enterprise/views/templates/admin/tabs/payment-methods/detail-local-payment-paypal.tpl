@@ -234,7 +234,7 @@
                 </div>
             </div>
         {/if}
-        <div id="paypal_v2_support">
+        <div id="paypal_v2_support" style="display:none">
             <div class="row" >
                 <div class="form-group">
                     <div class="col-lg-8">
@@ -389,15 +389,11 @@
       paymentProduct = 'paypal',
       eci = '7',
       operation = '4',
-      customerCountry = '',
-      currency = '',
       withOptions = 'true'
     ) {
       const url = new URL(`${this.baseUrl}available-payment-products.json`);
       url.searchParams.append('eci', eci);
       url.searchParams.append('operation', operation);
-      url.searchParams.append('customer_country', customerCountry);
-      url.searchParams.append('currency', currency);
       url.searchParams.append('payment_product', paymentProduct);
       url.searchParams.append('with_options', withOptions);
 
@@ -425,13 +421,10 @@
 
     $(document).ready(function() {
       var initPaypalV2 = false;
-      $('#paypal_v2_support').hide();
       function toggleFields(PayPalMerchantData) {
         const options = PayPalMerchantData.options;
-        if (options &&
-          options.provider_architecture_version === 'v2' &&
-          options.payer_id &&
-          options.payer_id.length > 0) {
+        if (options?.provider_architecture_version === 'v1' &&
+          options?.payer_id.length > 0) {
           ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(function(fieldId) {
             var field = document.getElementById(fieldId);
             field.classList.remove('readonly');
@@ -453,7 +446,7 @@
 
           hipayProducts.getAvailablePaymentProducts()
             .then(data => {
-              if (data && data.length > 0) {
+              if (data?.length > 0) {
                 toggleFields(data[0]);
               }
             })
