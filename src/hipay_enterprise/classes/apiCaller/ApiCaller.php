@@ -169,9 +169,6 @@ class ApiCaller
     public static function requestMaintenance($moduleInstance, $params, $eci = null)
     {
         try {
-            if ( isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
-                return false;
-            }
             $hipayDBMaintenance = new HipayDBMaintenance($moduleInstance);
             $transaction = $hipayDBMaintenance->getTransactionByRef($params["transaction_reference"]);
 
@@ -208,6 +205,10 @@ class ApiCaller
             $moduleInstance->getLogs()->logCallback($operation, $params["operation"]);
 
             // save maintenance data in db
+            if ( isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
+                return $operation;
+            }
+
             $maintenanceData->saveData();
 
             return $operation;
