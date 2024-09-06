@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -43,11 +44,13 @@ class ApiCaller
         $isMoto = false;
         $isApplePay = false;
         try {
-            if ($plateform == HipayHelper::TEST_MOTO
+            if (
+                $plateform == HipayHelper::TEST_MOTO
                 || $plateform == HipayHelper::PRODUCTION_MOTO
             ) {
                 $isMoto = true;
-            } elseif ($plateform == HipayHelper::TEST_APPLE_PAY
+            } elseif (
+                $plateform == HipayHelper::TEST_APPLE_PAY
                 || $plateform == HipayHelper::PRODUCTION_APPLE_PAY
             ) {
                 $isApplePay = true;
@@ -67,8 +70,8 @@ class ApiCaller
                 Context::getContext(),
                 $moduleInstance,
                 'An error occured during request requestSecuritySettings. Please Retry later. Reason [' .
-                $e->getMessage() .
-                ']',
+                    $e->getMessage() .
+                    ']',
                 $e->getCode(),
                 null
             );
@@ -95,11 +98,11 @@ class ApiCaller
             $hostedPaymentFormatter = new HostedPaymentFormatter($moduleInstance, $params, $cart);
 
             $orderRequest = $hostedPaymentFormatter->generate();
-            $moduleInstance->getLogs()->logRequest($orderRequest);
+            $moduleInstance->getLogs()->logRequest($orderRequest, 'HostedPage');
             //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
             $transaction = $gatewayClient->requestHostedPaymentPage($orderRequest);
             $moduleInstance->getLogs()->logInfos("# RequestHostedPaymentPage " . $orderRequest->orderid);
-            $moduleInstance->getLogs()->logCallback($transaction);
+            $moduleInstance->getLogs()->logCallback($transaction, 'HostedPage', $orderRequest->orderid);
 
             return $transaction->getForwardUrl();
         } catch (Exception $e) {
@@ -108,8 +111,8 @@ class ApiCaller
                 Context::getContext(),
                 $moduleInstance,
                 'An error occured during request getHostedPaymentPage. Please Retry later. Reason [' .
-                $e->getMessage() .
-                ']',
+                    $e->getMessage() .
+                    ']',
                 $e->getCode(),
                 null
             );
@@ -133,7 +136,6 @@ class ApiCaller
 
             //Set data to send to the API
             $directPostFormatter = new DirectPostFormatter($moduleInstance, $params);
-            // @var \HiPay\Fullservice\Gateway\Request\Order\OrderRequest
             $orderRequest = $directPostFormatter->generate();
             $moduleInstance->getLogs()->logRequest($orderRequest);
 
@@ -143,13 +145,12 @@ class ApiCaller
 
             return $response;
         } catch (Exception $e) {
-            $dbUtils = new HipayDBUtils($moduleInstance);
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
                 Context::getContext(),
                 $moduleInstance,
                 'An error occured during request requestDirectPost. Please Retry later. Reason [' .
-                $e->getMessage() . ']',
+                    $e->getMessage() . ']',
                 $e->getCode(),
                 null
             );
@@ -162,7 +163,7 @@ class ApiCaller
      * @param $moduleInstance
      * @param $params
      * @param $eci
-     * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel
+     * @return \HiPay\Fullservice\Gateway\Model\Operation|\HiPay\Fullservice\Model\AbstractModel | false
      * @throws GatewayException
      */
     public static function requestMaintenance($moduleInstance, $params, $eci = null)
@@ -191,28 +192,33 @@ class ApiCaller
                 $maintenanceRequest->operation_id = $params['orderSlipId'];
             }
 
-            $moduleInstance->getLogs()->logRequest($maintenanceRequest);
+            $moduleInstance->getLogs()->logRequest($maintenanceRequest, $params["operation"], $params["transaction_reference"]);
 
-            //Make a request and return \HiPay\Fullservice\Gateway\Model\Transaction.php object
-            $transaction = $gatewayClient->requestMaintenanceOperation(
+            //Make a request and return \HiPay\Fullservice\Gateway\Model\OperationResponse.php object
+            $operation = $gatewayClient->requestMaintenanceOperation(
                 $params["operation"],
                 $params["transaction_reference"],
                 $maintenanceRequest->amount,
                 null,
                 $maintenanceRequest
             );
-            $moduleInstance->getLogs()->logCallback($transaction);
+            $moduleInstance->getLogs()->logCallback($operation, $params["operation"]);
 
             // save maintenance data in db
+            if ( isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
+                return $operation;
+            }
+
             $maintenanceData->saveData();
-            return $transaction;
+
+            return $operation;
         } catch (Exception $e) {
             $moduleInstance->getLogs()->logException($e);
             throw new GatewayException(
                 Context::getContext(),
                 $moduleInstance,
                 'An error occured during request Maintenance. Please Retry later. Reason [' .
-                $e->getMessage() . ']',
+                    $e->getMessage() . ']',
                 $e->getCode(),
                 null
             );
@@ -236,7 +242,8 @@ class ApiCaller
             $sandbox = $moduleInstance->hipayConfigTool->getAccountGlobal()["sandbox_mode"];
         } else {
             // Some calls do not take into account the general configuration (Security Settings)
-            if (is_string($forceConfig)
+            if (
+                is_string($forceConfig)
                 && $forceConfig == HipayHelper::TEST
                 || $forceConfig == HipayHelper::TEST_MOTO
                 || $forceConfig == HipayHelper::TEST_APPLE_PAY
@@ -254,7 +261,8 @@ class ApiCaller
             );
         }
 
-        if ($moto &&
+        if (
+            $moto &&
             (
                 (
                     $sandbox
@@ -266,12 +274,14 @@ class ApiCaller
                     && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"])
                     && !empty($moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"])
                 )
-            )) {
+            )
+        ) {
             $username = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_username_sandbox"]
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_username_production"];
             $password = ($sandbox) ? $moduleInstance->hipayConfigTool->getAccountSandbox()["api_moto_password_sandbox"]
                 : $moduleInstance->hipayConfigTool->getAccountProduction()["api_moto_password_production"];
-        } elseif ($isApplePay
+        } elseif (
+            $isApplePay
             && (
                 (
                     $sandbox

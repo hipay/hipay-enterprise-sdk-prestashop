@@ -266,30 +266,50 @@ class HipayNotification
                         && $orderInBase
                         && $transaction->getTransactionReference() !== $orderInBase['transaction_ref']
                     ) {
-                        $this->log->logInfos('Duplicate transaction for order ' . $order->id);
-
                         // Try refund operation firstly because often captured after authorized
-                        $refundOp = $this->apiHandler->handleRefund([
-                            'transaction_reference' => $transaction->getTransactionReference(),
-                            'order' => $order->id,
-                            'amount' => $transaction->getAuthorizedAmount(),
-                            'capture_refund_discount' => true,
-                            'capture_refund_fee' => true,
-                            'capture_refund_wrapping' => true,
-                            'refundItems' => 'full'
-                        ], $transaction->getEci());
+                        $this->log->logInfos('Starting duplicate transaction refund for order ' . $order->id . ' with Hipay transaction => ' . $transaction->getTransactionReference()
+                            . ' and order in base transaction => ' . $orderInBase['transaction_ref']);
+
+                        $refundOp = false;
+                        // Do not refund with basket if it has not been sent during Order request
+                        if ($this->dbMaintenance->getOrderBasket($order->id)) {
+                            $refundOp = $this->apiHandler->handleRefund([
+                                'transaction_reference' => $transaction->getTransactionReference(),
+                                'order' => $order->id,
+                                'amount' => $transaction->getAuthorizedAmount(),
+                                'capture_refund_discount' => true,
+                                'capture_refund_fee' => true,
+                                'capture_refund_wrapping' => true,
+                                'refundItems' => 'full',
+                                'duplicate_order' => 1
+                            ], $transaction->getEci());
+                        }
 
                         if ($refundOp) {
                             $message = 'Found duplicate transaction which has been refunded for order ' . $order->id;
                         } else {
-                            // If refund maintenance didn't worked, try cancel operation
-                            if ($this->apiHandler->handleCancel([
+                            // Refund without basket if no basket sent or if previous refund has failed
+                            $this->log->logInfos('Forcing Trigger Full refund without basket for order ' . $order->id);
+                            $refundOp = $this->apiHandler->handleRefund([
+                                'transaction_reference' => $transaction->getTransactionReference(),
                                 'order' => $order->id,
-                                'transaction_reference' => $transaction->getTransactionReference()
-                            ], $transaction->getEci())) {
-                                $message = 'Found duplicate transaction which has been cancelled for order ' . $order->id;
+                                'amount' => $transaction->getAuthorizedAmount(),
+                                'duplicate_order' => 1
+                            ], $transaction->getEci());
+
+                            if ($refundOp) {
+                                $message = 'Found duplicate transaction which has been refunded without basket for order ' . $order->id;
                             } else {
-                                throw new NotificationException('Failed to cancel or refund duplicate transaction for order ' . $order->id, Context::getContext(), $this->module, 'HTTP/1.0 500 Internal server error');
+                                // If refund maintenance didn't worked, try cancel operation
+                                if ($this->apiHandler->handleCancel([
+                                    'order' => $order->id,
+                                    'transaction_reference' => $transaction->getTransactionReference(),
+                                    'duplicate_order' => 1
+                                ], $transaction->getEci())) {
+                                    $message = 'Found duplicate transaction which has been cancelled for order ' . $order->id;
+                                } else {
+                                    throw new NotificationException('Failed to cancel or refund duplicate transaction for order ' . $order->id, Context::getContext(), $this->module, 'HTTP/1.0 500 Internal server error');
+                                }
                             }
                         }
 
@@ -1113,10 +1133,15 @@ class HipayNotification
             'transaction_ref' => $transaction->getTransactionReference(),
             'notification_code' => $transaction->getStatus(),
             'status' => $status,
+            'attempt_number' => $transaction->getAttemptId(),
             'updated_at' => (new DateTime())->format(HipayDBMaintenance::DATE_FORMAT)
         ];
 
-        $this->log->logInfos('# Notification ' . $data['notification_code'] . ' for cart ' . $data['cart_id'] . ' is on status ' . $status);
+        $this->log->logInfos('# Notification ' . $data['notification_code'] . ' for cart ' . $data['cart_id'] . ' is on status ' . $status . ' with ' . $data['attempt_number'] . ' attempts');
+
+        if ($status === NotificationStatus::ERROR) {
+            $data['attempt_number'] = $this->dbMaintenance->getNotificationAttempt($data) + 1;
+        }
 
         $this->dbMaintenance->saveHipayNotification($data);
     }
@@ -1227,13 +1252,68 @@ class HipayNotification
         }
 
         $chars = [
-            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C', 'È' => 'E', 'É' => 'E',
-            'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O',
-            'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'Th',
-            'ß' => 'ss', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c', 'è' => 'e',
-            'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'd', 'ñ' => 'n', 'ò' => 'o',
-            'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y',
-            'þ' => 'th', 'ÿ' => 'y'
+            'À' => 'A',
+            'Á' => 'A',
+            'Â' => 'A',
+            'Ã' => 'A',
+            'Ä' => 'A',
+            'Å' => 'A',
+            'Æ' => 'AE',
+            'Ç' => 'C',
+            'È' => 'E',
+            'É' => 'E',
+            'Ê' => 'E',
+            'Ë' => 'E',
+            'Ì' => 'I',
+            'Í' => 'I',
+            'Î' => 'I',
+            'Ï' => 'I',
+            'Ð' => 'D',
+            'Ñ' => 'N',
+            'Ò' => 'O',
+            'Ó' => 'O',
+            'Ô' => 'O',
+            'Õ' => 'O',
+            'Ö' => 'O',
+            'Ø' => 'O',
+            'Ù' => 'U',
+            'Ú' => 'U',
+            'Û' => 'U',
+            'Ü' => 'U',
+            'Ý' => 'Y',
+            'Þ' => 'Th',
+            'ß' => 'ss',
+            'à' => 'a',
+            'á' => 'a',
+            'â' => 'a',
+            'ã' => 'a',
+            'ä' => 'a',
+            'å' => 'a',
+            'æ' => 'ae',
+            'ç' => 'c',
+            'è' => 'e',
+            'é' => 'e',
+            'ê' => 'e',
+            'ë' => 'e',
+            'ì' => 'i',
+            'í' => 'i',
+            'î' => 'i',
+            'ï' => 'i',
+            'ð' => 'd',
+            'ñ' => 'n',
+            'ò' => 'o',
+            'ó' => 'o',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ö' => 'o',
+            'ø' => 'o',
+            'ù' => 'u',
+            'ú' => 'u',
+            'û' => 'u',
+            'ü' => 'u',
+            'ý' => 'y',
+            'þ' => 'th',
+            'ÿ' => 'y'
         ];
 
         return strtr($string, $chars);
