@@ -24,5 +24,7 @@ bin/tests/tests-cypress/.npmrc
 
 conf/sdk/*
 
+composer.json.bak
+
 ## Extra custom data
 */hipay_enterprise/classes/helper/HipayEnterpriseHelperCustomData.php
