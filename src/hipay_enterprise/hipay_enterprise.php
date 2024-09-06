@@ -14,7 +14,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-
+ini_set('serialize_precision', -1);
 /**
  * Hipay_enterprise.
  *

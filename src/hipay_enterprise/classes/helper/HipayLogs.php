@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -31,7 +32,8 @@ class HipayLogs
 
     public $enable = true;
     private $basePath;
-    private $privateDataKeys = ['token', 'cardtoken', 'card_number', 'cvc', 'iban', 'issuer_bank_id',
+    private $privateDataKeys = [
+        'token', 'cardtoken', 'card_number', 'cvc', 'iban', 'issuer_bank_id',
         'api_password_sandbox', 'api_tokenjs_username_sandbox', 'api_tokenjs_password_publickey_sandbox',
         'api_secret_passphrase_sandbox', 'api_password_production', 'api_tokenjs_username_production',
         'api_tokenjs_password_publickey_production', 'api_secret_passphrase_production', 'api_moto_username_production',
@@ -41,7 +43,8 @@ class HipayLogs
         'api_apple_pay_username_sandbox', 'api_apple_pay_password_sandbox', 'api_apple_pay_passphrase_sandbox',
         'api_tokenjs_apple_pay_username_sandbox', 'api_tokenjs_apple_pay_password_sandbox',
     ];
-    private $gdprKeys = ['email', 'firstname', 'lastname', 'gender', 'birthdate', 'phone', 'msisdn',
+    private $gdprKeys = [
+        'email', 'firstname', 'lastname', 'gender', 'birthdate', 'phone', 'msisdn',
         'streetaddress', 'streetaddress2', 'zipcode', 'city', 'state', 'country', 'recipientinfo',
         'shipto_firstname', 'shipto_lastname', 'shipto_gender', 'shipto_phone', 'shipto_msisdn',
         'shipto_streetaddress', 'shipto_streetaddress2', 'shipto_zipcode', 'shipto_city',
@@ -132,28 +135,43 @@ class HipayLogs
     /**
      * Logs Callback ( HiPay notification ).
      *
-     * @param array<string,mixed> $transaction
+     * @param array<string,mixed> $response
+     * @param string $operation
+     * @param string $orderId
      *
      * @return void
      */
-    public function logCallback($transaction)
+    public function logCallback($response, $operation = 'Order', $orderId = null)
     {
-        $this->writeLogs(
-            self::LOG_HIPAY_CALLBACK,
-            print_r($this->filterDebugData($this->toArray($transaction)), true)
-        );
+        $msg = '';
+        if (method_exists($response, 'getTransactionReference')) {
+            $msg = 'Response from ' . $operation . ' request for transaction ' . $response->getTransactionReference() . "\r\n";
+        } elseif ($orderId) {
+            $msg = 'Response from ' . $operation . ' request for order ' . $orderId . "\r\n";
+        }
+
+        $this->writeLogs(self::LOG_HIPAY_CALLBACK, $msg . print_r($this->filterDebugData($this->toArray($response)), true));
     }
 
     /**
      * Logs Request ( HiPay Request ).
      *
-     * @param array<string,mixed> $transaction
+     * @param array<string,mixed> $request
+     * @param string $operation
+     * @param string $trxRef
      *
      * @return void
      */
-    public function logRequest($request)
+    public function logRequest($request, $operation = 'Order', $trxRef = null)
     {
-        $this->writeLogs(self::LOG_HIPAY_REQUEST, print_r($this->filterDebugData($this->toArray($request)), true));
+        $msg = '';
+        if (isset($request->orderid)) {
+            $msg = $operation . ' request for order ' . $request->orderid . "\r\n";
+        } elseif ($trxRef) {
+            $msg = 'Maintenance request of type ' . $operation . ' for transaction ' . $trxRef . "\r\n";
+        }
+
+        $this->writeLogs(self::LOG_HIPAY_REQUEST, $msg . print_r($this->filterDebugData($this->toArray($request)), true));
     }
 
     /**
