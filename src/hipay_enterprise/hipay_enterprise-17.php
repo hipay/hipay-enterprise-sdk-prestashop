@@ -124,7 +124,11 @@ class HipayEnterpriseNew extends Hipay_enterprise
     {
         $newOption = new PaymentOption();
         $isPaypalV2 = parent::isPaypalV2($this->hipayConfigTool);
-        if ('applepay' === $name || $isPaypalV2) {
+        $paymentGlobal = $this->hipayConfigTool->getPaymentGlobal();
+        $apiMode = $paymentGlobal['operating_mode']['APIMode'] ?? null;
+        $isHostedFieldPaypalV2 = ($apiMode === ApiMode::DIRECT_POST) && $isPaypalV2;
+
+        if ('applepay' === $name || $isHostedFieldPaypalV2) {
             $this->context->smarty->assign(
                 [
                     'HiPay_action' => $this->context->link->getModuleLink(
@@ -279,60 +283,51 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ]
                 );
             } elseif ($isPaypalV2) {
-                $formFields = [
-                    'buttonShape' => $paymentProduct['buttonShape'],
-                    'buttonLabel' => $paymentProduct['buttonLabel'],
-                    'buttonColor' => $paymentProduct['buttonColor'],
-                    'buttonHeight' => $paymentProduct['buttonHeight'],
-                    'bnpl' => $paymentProduct['bnpl'],
-                    'HiPay_PayPal_v2' => $isPaypalV2
+                $commonAssignments = [
+                    'HiPay_language' => $this->context->language->language_code,
+                    'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+                    'HiPay_iframe' => false,
                 ];
 
-                $currency = $this->getCurrency($this->context->cart->id_currency);
+                if ($isHostedFieldPaypalV2) {
+                    $currency = $this->getCurrency($this->context->cart->id_currency);
+                    $idAddress = $this->context->cart->id_address_invoice ?: $this->context->cart->id_address_delivery;
+                    $address = new Address((int)$idAddress);
+                    $country = new Country((int)$address->id_country);
 
-                $idAddress = $this->context->cart->id_address_invoice
-                    ? $this->context->cart->id_address_invoice
-                    : $this->context->cart->id_address_delivery;
-
-                $address = new Address((int) $idAddress);
-                $country = new Country((int) $address->id_country);
-
-                $templateCart = [
-                    'totalAmount' => $this->context->cart->getCartTotalPrice(),
-                    'currencyCode' => $currency[0]['iso_code'],
-                    'countryCode' => $country->iso_code,
-                ];
-                $this->context->smarty->assign(
-                    [
-                        'HiPay_cart' => $templateCart,
-                        'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
-                            __PS_BASE_URI__.
-                            'modules/'.
-                            $this->name.
-                            '/',
+                    $this->context->smarty->assign(array_merge($commonAssignments, [
+                        'HiPay_cart' => [
+                            'totalAmount' => $this->context->cart->getCartTotalPrice(),
+                            'currencyCode' => $currency[0]['iso_code'],
+                            'countryCode' => $country->iso_code,
+                        ],
                         'HiPay_language_iso_code' => $this->context->language->language_code,
-                        'HiPay_paypalFields' => $formFields,
-                        'HiPay_language' => $this->context->language->language_code,
+                        'HiPay_paypalFields' => [
+                            'buttonShape' => $paymentProduct['buttonShape'],
+                            'buttonLabel' => $paymentProduct['buttonLabel'],
+                            'buttonColor' => $paymentProduct['buttonColor'],
+                            'buttonHeight' => $paymentProduct['buttonHeight'],
+                            'bnpl' => $paymentProduct['bnpl'],
+                            'HiPay_Hosted_PayPal_v2' => $isHostedFieldPaypalV2
+                        ],
                         'HiPay_forceHpayment' => false,
-                        'HiPay_iframe' => false,
-                    ]
-                );
-            } else {
-
-                $this->context->smarty->assign(
-                    [
-                        'HiPay_language' => $this->context->language->language_code,
-                        'HiPay_forceHpayment' => false,
-                        'HiPay_iframe' => false,
-                        'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
-                        __PS_BASE_URI__.
-                        'modules/'.
-                        $this->name.
-                        '/',
+                    ]));
+                } else {
+                    $this->context->smarty->assign(array_merge($commonAssignments, [
+                        'HiPay_forceHpayment' => true,
                         'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                         'HiPay_languageIsoCode' => $this->context->language->iso_code,
-                    ]
-                );
+                    ]));
+                }
+            } else {
+                $this->context->smarty->assign([
+                    'HiPay_language' => $this->context->language->language_code,
+                    'HiPay_forceHpayment' => false,
+                    'HiPay_iframe' => false,
+                    'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
+                    'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
+                    'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                ]);
             }
         }
 
@@ -353,7 +348,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
 
-        if ('applepay' === $name || ('paypal' === $name && $isPaypalV2)) {
+        if ('applepay' === $name || ('paypal' === $name && $isHostedFieldPaypalV2)) {
             $newOption->setAction(
                 $this->context->link->getModuleLink($this->name, 'redirect', [], true)
             );
