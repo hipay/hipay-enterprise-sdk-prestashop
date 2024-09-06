@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,15 +11,15 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/../../lib/vendor/autoload.php';
-require_once dirname(__FILE__).'/../apiCaller/ApiCaller.php';
-require_once dirname(__FILE__).'/../apiFormatter/PaymentMethod/CardTokenFormatter.php';
-require_once dirname(__FILE__).'/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php';
-require_once dirname(__FILE__).'/../apiFormatter/Info/DeliveryShippingInfoFormatter.php';
-require_once dirname(__FILE__).'/../apiFormatter/Cart/CartFormatter.php';
-require_once dirname(__FILE__).'/../helper/dbquery/HipayDBUtils.php';
-require_once dirname(__FILE__).'/../helper/HipayHelper.php';
-require_once dirname(__FILE__).'/../../classes/helper/enums/ApiMode.php';
+require_once dirname(__FILE__) . '/../../lib/vendor/autoload.php';
+require_once dirname(__FILE__) . '/../apiCaller/ApiCaller.php';
+require_once dirname(__FILE__) . '/../apiFormatter/PaymentMethod/CardTokenFormatter.php';
+require_once dirname(__FILE__) . '/../apiFormatter/PaymentMethod/GenericPaymentMethodFormatter.php';
+require_once dirname(__FILE__) . '/../apiFormatter/Info/DeliveryShippingInfoFormatter.php';
+require_once dirname(__FILE__) . '/../apiFormatter/Cart/CartFormatter.php';
+require_once dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php';
+require_once dirname(__FILE__) . '/../helper/HipayHelper.php';
+require_once dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php';
 
 use HiPay\Fullservice\Enum\Transaction\Operation;
 use HiPay\Fullservice\Enum\Transaction\TransactionState;
@@ -255,9 +256,13 @@ class Apihandler
                     $transactionRef = $params['transaction_reference'] ?? '';
                     $status = '';
 
-                    if ($order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
-                            $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING') ||
-                            $params['duplicate_order'] === 1) {
+                    $isDuplicateOrder = isset($params['duplicate_order']) && $params['duplicate_order'] === 1;
+
+                    if (
+                        $order->getCurrentState() == Configuration::get('HIPAY_OS_AUTHORIZED') ||
+                        $order->getCurrentState() == Configuration::get('HIPAY_OS_PENDING') ||
+                        $isDuplicateOrder
+                    ) {
 
                         if (false !== $params['transaction_reference']) {
                             $hipayDbMaintenance = new HipayDBMaintenance($this->module);
@@ -273,12 +278,14 @@ class Apihandler
                                         $transactionRef = $result->getTransactionReference();
                                         $this->module->getLogs()->logInfos("Cancellation not successful. Status: " . $status);
                                     } else {
-                                        HipayOrderMessage::orderMessage(
-                                            $this->module,
-                                            $order->id,
-                                            $order->id_customer,
-                                            HipayOrderMessage::formatOrderData($this->module, $result)
-                                        );
+                                        if (!$isDuplicateOrder) {
+                                            HipayOrderMessage::orderMessage(
+                                                $this->module,
+                                                $order->id,
+                                                $order->id_customer,
+                                                HipayOrderMessage::formatOrderData($this->module, $result)
+                                            );
+                                        }
                                         $operationSuccess = true;
                                     }
                                 } catch (GatewayException $e) {
@@ -288,7 +295,7 @@ class Apihandler
                                     preg_match('/\\[(.*)\\]/s', $e->getMessage(), $errorMsg);
                                     $displayMsg = $this->module->l("There was an error on the cancellation of the HiPay transaction. You can see and cancel the transaction directly from HiPay's BackOffice");
                                     $displayMsg .= " (https://merchant.hipay-tpp.com/default/auth/login)\n";
-                                    $displayMsg .= $this->module->l('Message was : ').preg_replace("/\r|\n/", '', $errorMsg[0]);
+                                    $displayMsg .= $this->module->l('Message was : ') . preg_replace("/\r|\n/", '', $errorMsg[0]);
 
                                     if ($transaction) {
                                         $transactionRef = $transaction['transaction_ref'];
@@ -312,7 +319,7 @@ class Apihandler
                         $this->module->getLogs()->logErrors($error_order_status_msg);
                     }
 
-                    if (!empty($displayMsg)) {
+                    if (!empty($displayMsg) && !$isDuplicateOrder) {
                         HipayOrderMessage::orderMessage(
                             $this->module,
                             $order->id,
@@ -328,8 +335,6 @@ class Apihandler
             }
 
             $this->module->getLogs()->logInfos($mode . " operation completed for order " . $params['order'] . ". Result: " . ($operationSuccess ? "Success" : "Failure"));
-
-
         } catch (GatewayException $e) {
             $errorMessage = $this->module->l('An error occurred during request Maintenance.', 'capture');
             $this->context->cookie->__set('hipay_errors', $errorMessage);
@@ -472,7 +477,7 @@ class Apihandler
                     );
 
                     Hook::exec('displayHiPayAccepted', ['cart' => $this->context->cart, 'order_id' => $redirectParams['id_order']]);
-                    $redirectUrl = 'index.php?controller=order-confirmation&'.http_build_query($redirectParams);
+                    $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);
                     break;
                 case TransactionState::PENDING:
                     HipayHelper::validateOrder(
@@ -499,7 +504,7 @@ class Apihandler
                             $pendingUrl .= '?';
                         }
 
-                        $redirectUrl = $pendingUrl.'&referenceToPay=1&method='.$params['method'].'&'.http_build_query(json_decode($response->getReferenceToPay()));
+                        $redirectUrl = $pendingUrl . '&referenceToPay=1&method=' . $params['method'] . '&' . http_build_query(json_decode($response->getReferenceToPay()));
                         break;
                     } else {
                         $redirectUrl = $forwardUrl;
@@ -508,14 +513,14 @@ class Apihandler
                 case TransactionState::DECLINED:
                     $reason = $response->getReason();
                     $this->module->getLogs()->logInfos(
-                        'There was an error request new transaction: '.$reason['message']
+                        'There was an error request new transaction: ' . $reason['message']
                     );
                     $redirectUrl = $failUrl;
                     break;
                 case TransactionState::ERROR:
                     $reason = $response->getReason();
                     $this->module->getLogs()->logInfos(
-                        'There was an error request new transaction: '.$reason['message']
+                        'There was an error request new transaction: ' . $reason['message']
                     );
                     $redirectUrl = $exceptionUrl;
                     break;
