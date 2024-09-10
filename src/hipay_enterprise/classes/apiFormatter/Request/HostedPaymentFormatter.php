@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -69,6 +70,6 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order->paypal_v2_shape = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonShape'][0] ?? null;
         $order->paypal_v2_color = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonColor'][0] ?? null;
         $order->paypal_v2_height = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['buttonHeight'] ?? null;
-        $order->paypal_v2_bnpl = $this->configHipay["payment"]["local_payment"]["paypal"]['bnpl'] ?? null;
+        $order->paypal_v2_bnpl = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['bnpl'] ?? null;
     }
 }
