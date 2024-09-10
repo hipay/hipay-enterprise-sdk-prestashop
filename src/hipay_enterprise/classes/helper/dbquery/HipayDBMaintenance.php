@@ -14,8 +14,8 @@
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
 
-require_once dirname(__FILE__).'/HipayDBQueryAbstract.php';
-require_once dirname(__FILE__).'/../enums/NotificationStatus.php';
+require_once dirname(__FILE__) . '/HipayDBQueryAbstract.php';
+require_once dirname(__FILE__) . '/../enums/NotificationStatus.php';
 
 /**
  * @author      HiPay <support.tpp@hipay.com>
@@ -102,10 +102,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getNbOperationAttempt($operation, $orderId)
     {
         $sql = 'SELECT `attempt_number`'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`'
-            .' WHERE `hp_ps_order_id` = '.(int) $orderId
-            .' AND `operation` = "'.pSQL($operation).'"'
-            .' ORDER BY `attempt_number` DESC';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`'
+            . ' WHERE `hp_ps_order_id` = ' . (int) $orderId
+            . ' AND `operation` = "' . pSQL($operation) . '"'
+            . ' ORDER BY `attempt_number` DESC';
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['attempt_number'])) {
@@ -215,8 +215,8 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function OrderCaptureTypeExist($orderId)
     {
         $sql = 'SELECT * '
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId;
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -231,10 +231,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function isManualCapture($orderId)
     {
         $sql = 'SELECT * '
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' AND type = "manual"'
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_CAPTURE_TYPE_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND type = "manual"'
+            . ' LIMIT 1';
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -249,9 +249,9 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function isTransactionExist($orderId)
     {
         $sql = 'SELECT * '
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' LIMIT 1';
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -268,9 +268,9 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function alreadyCaptured($orderId)
     {
         $sql = 'SELECT *'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' AND status = '.TransactionStatus::CAPTURED;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND status = ' . TransactionStatus::CAPTURED;
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -305,10 +305,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getTransactionReference($orderId)
     {
         $sql = 'SELECT *'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' AND status IN ('.TransactionStatus::AUTHORIZED.', '.TransactionStatus::AUTHORIZED_AND_PENDING.')'
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND status IN (' . TransactionStatus::AUTHORIZED . ', ' . TransactionStatus::AUTHORIZED_AND_PENDING . ')'
+            . ' LIMIT 1';
 
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return $result[0]['transaction_ref'];
@@ -329,10 +329,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function isTransactionCancelled($orderId)
     {
         $sql = 'SELECT *'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' AND status IN ('.TransactionStatus::CANCELLED.', '.TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED.')'
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND status IN (' . TransactionStatus::CANCELLED . ', ' . TransactionStatus::AUTHORIZATION_CANCELLATION_REQUESTED . ')'
+            . ' LIMIT 1';
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -345,9 +345,9 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getTransactionByRef($transaction_reference)
     {
         $sql = 'SELECT *'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE transaction_ref = "'.pSQL($transaction_reference).'"'
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE transaction_ref = "' . pSQL($transaction_reference) . '"'
+            . ' LIMIT 1';
 
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return $result[0];
@@ -368,10 +368,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getPaymentProductFromMessage($orderId)
     {
         $sql = 'SELECT *'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE order_id = '.(int) $orderId
-            .' AND status IN ('.TransactionStatus::AUTHORIZED.', '.TransactionStatus::AUTHORIZED_AND_PENDING.')'
-            .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND status IN (' . TransactionStatus::AUTHORIZED . ', ' . TransactionStatus::AUTHORIZED_AND_PENDING . ')'
+            . ' LIMIT 1';
 
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return $result[0]['payment_product'];
@@ -392,14 +392,14 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getAmountCapturedWithoutBasket($orderId)
     {
         $sql = 'SELECT `captured_amount`, `basket`'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-        .' WHERE `order_id` = '.(int) $orderId
-        .' AND `status` = '.TransactionStatus::CAPTURED;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE `order_id` = ' . (int) $orderId
+            . ' AND `status` = ' . TransactionStatus::CAPTURED;
 
         $result = Db::getInstance()->executeS($sql);
         $totalCaptured = 0;
-        foreach($result as $transaction){
-            if((empty($transaction["basket"]) || is_null($transaction["basket"]))){
+        foreach ($result as $transaction) {
+            if ((empty($transaction["basket"]) || is_null($transaction["basket"]))) {
                 $totalCaptured += $transaction['captured_amount'];
             }
         }
@@ -422,14 +422,14 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
 
         foreach ($statusArray as $status) {
             $sql = 'SELECT `captured_amount`'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE `order_id` = '.(int) $orderId
-            .' AND `status` = '.$status;
+                . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+                . ' WHERE `order_id` = ' . (int) $orderId
+                . ' AND `status` = ' . $status;
 
             $results = Db::getInstance()->executeS($sql);
 
-            if(count($results)){
-                foreach($results as $transaction){
+            if (count($results)) {
+                foreach ($results as $transaction) {
                     $totalCaptured += $transaction['captured_amount'];
                 }
                 break;
@@ -451,14 +451,14 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getAmountRefundedWithoutBasket($orderId)
     {
         $sql = 'SELECT `refunded_amount`, `basket`'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-        .' WHERE `order_id` = '.(int) $orderId
-        .' AND `status` = '.TransactionStatus::PARTIALLY_REFUNDED;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE `order_id` = ' . (int) $orderId
+            . ' AND `status` = ' . TransactionStatus::PARTIALLY_REFUNDED;
 
         $result = Db::getInstance()->executeS($sql);
         $totalRefunded = 0;
-        foreach($result as $transaction){
-            if(($transaction["basket"] === "" || $transaction["basket"] === null)){
+        foreach ($result as $transaction) {
+            if (($transaction["basket"] === "" || $transaction["basket"] === null)) {
                 $totalRefunded += $transaction['refunded_amount'];
             }
         }
@@ -481,14 +481,14 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
 
         foreach ($statusArray as $status) {
             $sql = 'SELECT `refunded_amount`'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE `order_id` = '.(int) $orderId
-            .' AND `status` = '.$status;
+                . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+                . ' WHERE `order_id` = ' . (int) $orderId
+                . ' AND `status` = ' . $status;
 
             $results = Db::getInstance()->executeS($sql);
 
-            if(count($results)){
-                foreach($results as $transaction){
+            if (count($results)) {
+                foreach ($results as $transaction) {
                     $totalRefunded += $transaction['refunded_amount'];
                 }
                 break;
@@ -510,10 +510,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getOrderBasket($orderId)
     {
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-        .' WHERE order_id = '.(int) $orderId
-        .' AND status ='.TransactionStatus::AUTHORIZED
-        .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE order_id = ' . (int) $orderId
+            . ' AND status =' . TransactionStatus::AUTHORIZED
+            . ' LIMIT 1';
 
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return json_decode($result[0]['basket'], true);
@@ -534,11 +534,11 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     private function getMaintainedItems($orderId, $operation, $type)
     {
         $sql = 'SELECT `hp_ps_product_id`, `operation`, `type`, SUM(`quantity`) as quantity, SUM(`amount`) as amount'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`'
-        .' WHERE `hp_ps_order_id` = '.(int) $orderId
-        .' AND `operation` = "'.pSQL($operation).'"'
-        .' AND `type` = "'.pSQL($type).'"'
-        .' GROUP BY `hp_ps_product_id`';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`'
+            . ' WHERE `hp_ps_order_id` = ' . (int) $orderId
+            . ' AND `operation` = "' . pSQL($operation) . '"'
+            . ' AND `type` = "' . pSQL($type) . '"'
+            . ' GROUP BY `hp_ps_product_id`';
 
         $result = Db::getInstance()->executeS($sql);
         $formattedResult = [];
@@ -561,10 +561,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     private function feesOrDiscountAreMaintained($orderId, $type, $operation)
     {
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE.'`'
-        .' WHERE `hp_ps_order_id` = '.(int) $orderId
-        .' AND `operation` = "'.pSQL($operation).'"'
-        .' AND `type` = "'.pSQL($type).'"';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_ORDER_REFUND_CAPTURE_TABLE . '`'
+            . ' WHERE `hp_ps_order_id` = ' . (int) $orderId
+            . ' AND `operation` = "' . pSQL($operation) . '"'
+            . ' AND `type` = "' . pSQL($type) . '"';
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -580,11 +580,11 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function getNotificationAttempt(array $data)
     {
         $sql = 'SELECT attempt_number'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
-        .' WHERE `cart_id` = '.(int) $data['cart_id']
-        .' AND `notification_code` = '.(int) $data['notification_code']
-        .' AND `transaction_ref` = "'.pSQL($data['transaction_ref']).'"'
-        .' AND `status` NOT IN ("'.NotificationStatus::SUCCESS.'", "'.NotificationStatus::NOT_HANDLED.'")';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`'
+            . ' WHERE `cart_id` = ' . (int) $data['cart_id']
+            . ' AND `notification_code` = ' . (int) $data['notification_code']
+            . ' AND `transaction_ref` = "' . pSQL($data['transaction_ref']) . '"'
+            . ' AND `status` NOT IN ("' . NotificationStatus::SUCCESS . '", "' . NotificationStatus::NOT_HANDLED . '")';
 
         if (empty($result = Db::getInstance()->executeS($sql))) {
             return 0;
@@ -611,10 +611,10 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
         if (isset($data['attempt_number']) && 1 === $data['attempt_number']) {
             return Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData);
         } else {
-            $where = '`cart_id` = '.(int) $data['cart_id']
-            .' AND `transaction_ref` = "'.pSQL($data['transaction_ref']).'"'
-            .' AND `notification_code` = '.(int) $data['notification_code']
-            .' AND `status` NOT IN("'.NotificationStatus::SUCCESS.'", "'.NotificationStatus::NOT_HANDLED.'")';
+            $where = '`cart_id` = ' . (int) $data['cart_id']
+                . ' AND `transaction_ref` = "' . pSQL($data['transaction_ref']) . '"'
+                . ' AND `notification_code` = ' . (int) $data['notification_code']
+                . ' AND `status` NOT IN("' . NotificationStatus::SUCCESS . '", "' . NotificationStatus::NOT_HANDLED . '")';
 
             return Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE, $safeData, $where);
         }
@@ -627,7 +627,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
      */
     public function updateNotificationStatusById($id, $status)
     {
-        $where = 'hp_id = "'.$id.'"';
+        $where = 'hp_id = "' . $id . '"';
         Db::getInstance()->update(
             HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
             ['status' => $status, 'updated_at' => (new DateTime())->format(self::DATE_FORMAT)],
@@ -642,12 +642,12 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function updateExpiredNotificationsInProgress()
     {
         $now = new DateTime();
-        $where = 'status = "'.NotificationStatus::IN_PROGRESS.'"'
-        .' AND updated_at < "'.date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())).'"';
+        $where = 'status = "' . NotificationStatus::IN_PROGRESS . '"'
+            . ' AND updated_at < "' . date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())) . '"';
 
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
-        .' WHERE '.$where;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`'
+            . ' WHERE ' . $where;
         $expiredNotifications = Db::getInstance()->executeS($sql);
 
         Db::getInstance()->update(
@@ -666,12 +666,12 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
     public function updateProcessingExpiredNotifications()
     {
         $now = new DateTime();
-        $where = 'status = "'.NotificationStatus::PROCESSING.'"'
-        .' AND updated_at < "'.date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())).'"';
+        $where = 'status = "' . NotificationStatus::PROCESSING . '"'
+            . ' AND updated_at < "' . date(self::DATE_FORMAT, strtotime('- 30 minute', $now->getTimestamp())) . '"';
 
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
-        .' WHERE '.$where;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`'
+            . ' WHERE ' . $where;
         $expiredNotifications = Db::getInstance()->executeS($sql);
 
         $data = [
@@ -682,7 +682,7 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
             Db::getInstance()->update(
                 HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE,
                 $data + ['attempt_number' => $notification['attempt_number'] + 1],
-                'hp_id = "'.$notification['hp_id'].'"'
+                'hp_id = "' . $notification['hp_id'] . '"'
             );
         }
 
@@ -748,17 +748,17 @@ class HipayDBMaintenance extends HipayDBQueryAbstract
             ],
         ];
 
-        $where = ' status = "'.NotificationStatus::WAIT.'"'
-        .' OR (status =  "'.NotificationStatus::ERROR.'" AND attempt_number <= '.(int) $maxAttempt.')';
+        $where = ' status = "' . NotificationStatus::WAIT . '"'
+            . ' OR (status =  "' . NotificationStatus::ERROR . '" AND attempt_number <= ' . (int) $maxAttempt . ')';
 
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE.'`'
-        .' WHERE '.$where
-        .' ORDER BY CASE';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`'
+            . ' WHERE ' . $where
+            . ' ORDER BY CASE';
         foreach ($notificationOrderGroups as $position => $group) {
-            $sql .= ' WHEN notification_code IN ('.implode(', ', $group).') THEN '.($position + 1);
+            $sql .= ' WHEN notification_code IN (' . implode(', ', $group) . ') THEN ' . ($position + 1);
         }
-        $sql .= ' ELSE '.(count($notificationOrderGroups) + 1).' END';
+        $sql .= ' ELSE ' . (count($notificationOrderGroups) + 1) . ' END';
 
         $selected = Db::getInstance()->executeS($sql);
 

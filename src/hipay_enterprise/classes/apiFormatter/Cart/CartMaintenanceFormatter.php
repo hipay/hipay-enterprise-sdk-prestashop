@@ -37,7 +37,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $this->products = $params["products"];
         $this->discounts = $params["discounts"];
         $this->order = $params["order"];
-        $this->originalHipayBasket = $this->dbMaintenance->getOrderBasket($this->order->id);
         $this->cart = $params["cart"];
         $this->operation = $params["operation"];
         $this->captureRefundFee = $params["captureRefundFee"];
@@ -92,7 +91,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         }
 
         // Discount items
-        if ($this->captureRefundDiscount && sizeof($this->discounts) > 0) {
+        if ($this->captureRefundDiscount && !empty($this->order->getCartRules())) {
             $item = $this->getDiscountItem();
             $cart->addItem($item);
         }
@@ -104,67 +103,63 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
                 $cart->addItem($item);
             }
         }
+
+        return $cart;
     }
 
     private
     function getWrappingGoodItem()
     {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
-
-        $originalWrapping = $this->getOriginalGood("wrapping");
-
-        if ($originalWrapping === null) {
-            return false;
-        }
-
-        $item->__constructItem(
-            null,
-            $originalWrapping["product_reference"],
-            "good",
-            $originalWrapping["name"],
-            1,
-            $originalWrapping["unit_price"],
-            0,
-            0,
-            $originalWrapping["total_amount"],
-            "",
-            "gift wrapping",
-            null,
-            null,
-            null,
-            null,
-            1,
-            null
-        );
-
-        //save capture items and quantity in prestashop
-        if ($this->maintenanceData) {
-            $captureData = array(
-                "hp_ps_order_id" => $this->order->id,
-                "hp_ps_product_id" => 0,
-                "operation" => $this->operation,
-                "type" => 'wrapping',
-                "attempt_number" => $this->transactionAttempt + 1,
-                "quantity" => 1,
-                "amount" => $originalWrapping["total_amount"]
+        $total_wrapping_amount = $this->order->total_wrapping;
+        if ($this->order->gift == 1 && $total_wrapping_amount > 0) {
+            $item->__constructItem(
+                null,
+                "wrapping",
+                "good",
+                "wrapping",
+                1,
+                floatval($this->order->total_wrapping_tax_incl),
+                0,
+                0,
+                floatval($total_wrapping_amount),
+                "",
+                "gift wrapping",
+                null,
+                null,
+                null,
+                null,
+                1,
+                null
             );
-            $this->maintenanceData->addItem($captureData);
+
+            //save capture items and quantity in prestashop
+            if ($this->maintenanceData) {
+                $captureData = array(
+                    "hp_ps_order_id" => $this->order->id,
+                    "hp_ps_product_id" => 0,
+                    "operation" => $this->operation,
+                    "type" => 'wrapping',
+                    "attempt_number" => $this->transactionAttempt + 1,
+                    "quantity" => 1,
+                    "amount" => $total_wrapping_amount
+                );
+                $this->maintenanceData->addItem($captureData);
+            }
+
+            return $item;
         }
 
-        return $item;
+        return false;
     }
-
 
     /**
      * create a good item from product line informations
      * @param type $good
      * @return \HiPay\Fullservice\Gateway\Model\Cart\Item
      */
-    private
-    function getGoodItem(
-        $product,
-        $qty
-    ) {
+    private function getGoodItem($product, $qty)
+    {
         $item = new HiPay\Fullservice\Gateway\Model\Cart\Item();
         $productsFromCartWithId = $this->cart->getProducts(true, (int)$product["product_id"]);
 
@@ -179,53 +174,47 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $productFromCart = $productsFromCartWithId[0];
         }
 
-
         $european_article_numbering = null;
         if (!empty($product["ean13"]) && $product["ean13"] != "0") {
             $european_article_numbering = $product["ean13"];
         }
 
         $product_reference = HipayHelper::getProductRef($productFromCart);
-        $originalGood = $this->getOriginalGood($product_reference);
+        $orderDetail = $this->getOrderDetailByReference((int)$product["product_id"],
+            $productFromCart['id_product_attribute']);
 
-        $type = "good";
-        $quantity = (int)$product["product_quantity"];
+        if ($orderDetail) {
+            $reduction_percent = $orderDetail['reduction_percent'] / 100;
+            $unit_price = floatval($orderDetail['unit_price']);
+            $unit_price_without_reduction = $reduction_percent > 0 ? $unit_price / (1 - $reduction_percent) : $unit_price;
 
-        $totalDiscount = $originalGood["discount"] ? $originalGood["discount"] : -0;
-        $total_amount = $originalGood["total_amount"];
-        $unit_price = $originalGood["unit_price"];
+            // Calculate discount
+            $discount_per_unit = Tools::ps_round($unit_price_without_reduction - $unit_price, 2);
+            $discount = -1
+                * Tools::ps_round( $discount_per_unit * $qty, 2);
 
-        $discount = Tools::ps_round(($totalDiscount * $qty) / $quantity, 3);
-        $total_amount = Tools::ps_round(($total_amount * $qty) / $quantity, 3);
-
-        $tax_rate = $product["tax_rate"];
-        $discount_description = "";
-        $product_description = "";
-        $delivery_method = "";
-        $delivery_company = "";
-        $delivery_delay = "";
-        $delivery_number = "";
-        $product_category = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
-        $shop_id = null;
+            $tax_rate = floatval($orderDetail['tax_rate']);
+            $unit_price = Tools::ps_round( $unit_price * $qty, 2);
+        }
 
         $item->__constructItem(
             $european_article_numbering,
             $product_reference,
-            $type,
+            "good",
             $productFromCart["name"],
             $qty,
-            $unit_price,
+            $unit_price_without_reduction,
             $tax_rate,
             $discount,
-            $total_amount,
-            $discount_description,
-            $product_description,
-            $delivery_method,
-            $delivery_company,
-            $delivery_delay,
-            $delivery_number,
-            $product_category,
-            $shop_id
+            $unit_price,
+            "", // discount_description
+            "", // product_description
+            "", // delivery_method
+            "", // delivery_company
+            "", // delivery_delay
+            "", // delivery_number
+            $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']),
+            null // shop_id
         );
 
         //save capture items and quantity in prestashop
@@ -246,45 +235,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
     }
 
     /**
-     *  Retrieve discount from original cart
-     *
-     * @param $name
-     * @param $index
-     * @return mixed
-     */
-    private
-    function getOriginalDiscount(
-        $name,
-        $index
-    ) {
-        foreach ($this->originalHipayBasket as $key => $value) {
-            if (
-                $value["type"] == 'discount'
-                && explode('/', $value["name"])[$index] == $name
-            ) {
-                return $value;
-            }
-        }
-    }
-
-    /**
-     *  Retrieve good from original cart
-     *
-     * @param $productReference
-     * @return mixed
-     */
-    private
-    function getOriginalGood(
-        $productReference
-    ) {
-        foreach ($this->originalHipayBasket as $key => $value) {
-            if ($value["product_reference"] == $productReference) {
-                return $value;
-            }
-        }
-    }
-
-    /**
      * create a discount item from discount line informations
      * @return HiPay\Fullservice\Gateway\Model\Cart\Item
      */
@@ -296,19 +246,17 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         $unit_price = 0;
         $discount_description = array();
         $total_amount = 0;
-
-        foreach ($this->discounts as $i => $disc) {
-            $productRef = $this->getOriginalDiscount($disc["name"], $i);
-            $cartRule = new CartRule($disc["id_cart_rule"]);
-            $name[] = $disc["name"];
-            $product_reference[] = explode('/', $productRef["product_reference"])[$i];
-            $unit_price += -1 * Tools::ps_round($disc["value"], 2);
+        $cartRules = $this->order->getCartRules();
+        foreach ($cartRules as $rule) {
+            $name[] = $rule['name'];
+            $cartRule = new CartRule($rule['id_cart_rule']);
+            $discount_description[] = $cartRule->description;
+            $product_reference[] = $cartRule->code;
             $tax_rate = 0.00;
             $discount = 0.00;
-            $discount_description[] = $cartRule->description;
-            $total_amount += -1 * Tools::ps_round($disc["value"], 2);
+            $unit_price += -1 * Tools::ps_round($rule["value"], 2);
+            $total_amount += -1 * Tools::ps_round($rule['value'], 2);
         }
-
         $product_reference = join("/", $product_reference);
         $name = join("/", $name);
         $discount_description = join("/", $discount_description);
@@ -368,7 +316,6 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
         // forced category
         $item->setProductCategory(1);
 
-
         //save capture items and quantity in prestashop
         if ($this->maintenanceData) {
             $captureData = array(
@@ -400,5 +347,29 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $amount += $item->getTotalAmount();
         }
         return Tools::ps_round($amount, 3);
+    }
+
+    /**
+     * Retrieves order detail information for a given product reference.
+     *
+     * @param string $productReference The unique reference of the product.
+     * @return array|null Array of order detail information or null if not found.
+     */
+    private function getOrderDetailByReference($productId, $productAttributeId)
+    {
+        $orderItems = $this->order->getOrderDetailList();
+        foreach ($orderItems as $item) {
+            if ($item['product_id'] == $productId
+                && $item['product_attribute_id'] == $productAttributeId) {
+                return [
+                    'unit_price' => $item['unit_price_tax_incl'],
+                    'total_price' => $item['total_price_tax_incl'],
+                    'quantity' => $item['product_quantity'],
+                    'reduction_percent' => $item['reduction_percent'],
+                    'tax_rate' => $item['tax_rate']
+                ];
+            }
+        }
+        return null;
     }
 }
