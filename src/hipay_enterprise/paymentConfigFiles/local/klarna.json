@@ -1,0 +1,29 @@
+{
+  "name": "klarna",
+  "config": {
+    "displayNameBO": "Klarna",
+    "displayName":  {
+      "fr": "Klarna",
+      "en": "Klarna"
+    },
+    "frontPosition": 12,
+    "activated": 0,
+    "displayConfigurationFields": [
+      "displayName",
+      "minAmount",
+      "maxAmount",
+      "countries"
+    ],
+    "countrySelectorReadOnly": 1,
+    "currencySelectorReadOnly": 1,
+    "forceBasket": 1,
+    "checkoutFieldsMandatory": [],
+    "minAmount": {
+      "EUR": 0
+    },
+    "maxAmount": {
+      "EUR": false
+    },
+    "logo": "klarna.png"
+  }
+}
