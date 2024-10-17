@@ -147,3 +147,77 @@
         {/if}
     {/foreach}
 </script>
+<script>
+  $(document).ready(function() {
+    function initializeHiPayAlma() {
+      if (window.hipayInitialized) return;
+      window.hipayInitialized = true;
+
+      var prestashopConfig = {$HiPay_config_hipay.account|json_encode nofilter};
+      const hipayAvailablePaymentProducts = availablePaymentProducts();
+
+      var apiUsername, apiPassword;
+      if (prestashopConfig.global.sandbox_mode) {
+        apiUsername = prestashopConfig.sandbox.api_username_sandbox;
+        apiPassword = prestashopConfig.sandbox.api_password_sandbox;
+      } else {
+        apiUsername = prestashopConfig.production.api_username_production;
+        apiPassword = prestashopConfig.production.api_password_production;
+      }
+
+      hipayAvailablePaymentProducts.setCredentials(
+        apiUsername,
+        apiPassword,
+        prestashopConfig.global.sandbox_mode
+      );
+
+      hipayAvailablePaymentProducts.updateConfig('payment_product', ['alma-3x','alma-4x']);
+      hipayAvailablePaymentProducts.updateConfig('currency', ['EUR']);
+      hipayAvailablePaymentProducts.updateConfig('with_options', true);
+
+      $('.alma-container').each(function() {
+        $(this).prepend('<div class="loader"></div>');
+        $(this).find('h4').hide();
+      });
+
+      hipayAvailablePaymentProducts.getAvailableProducts()
+        .then(result => {
+          result.forEach(product => {
+            if (product.code === 'alma-3x') {
+              const basketMax3x = product.options?.basketAmountMax3x;
+              const basketMin3x = product.options?.basketAmountMin3x;
+              $('#alma-3x_minAmount span').html(basketMin3x + ' &euro;');
+              $('#alma-3x_maxAmount span').html(basketMax3x + ' &euro;');
+            } else if (product.code === 'alma-4x') {
+              const basketMax4x = product.options?.basketAmountMax4x;
+              const basketMin4x = product.options?.basketAmountMin4x;
+              $('#alma-4x_minAmount span').html(basketMin4x + ' &euro;');
+              $('#alma-4x_maxAmount span').html(basketMax4x + ' &euro;');
+            }
+          });
+
+          $('.alma-container').each(function() {
+            $(this).find('.loader').remove();
+            $(this).find('h4').show();
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching available products:', error);
+          $('.alma-container').each(function() {
+            $(this).find('.loader').remove();
+            $(this).find('h4').html('Error loading data').show();
+          });
+        });
+    }
+
+    // Check on document ready
+    if ($('#payment_form__alma').hasClass('active')) {
+      initializeHiPayAlma();
+    }
+
+    // Check when Alma tab is shown
+    $('a[href="#payment_form__alma"]').on('shown.bs.tab', function (e) {
+      initializeHiPayAlma();
+    });
+  });
+</script>
