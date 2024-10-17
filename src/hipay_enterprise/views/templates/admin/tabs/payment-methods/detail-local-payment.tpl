@@ -114,13 +114,19 @@
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Minimum order amount' mod='hipay_enterprise'}</label>
-                    <div class="input-group col-lg-2">
-                        <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"
+                    <div class="input-group {if $key|strpos:'alma' !== false}col-lg-6{else}col-lg-2{/if}">
+                        {if $key|strpos:'alma' !== false}
+                            <div class="alma-container">
+                                <h4 id="{$key}_minAmount"><span></span></h4>
+                            </div>
+                        {else}
+                            <input type="text" class="money-type" name="{$key}_minAmount[EUR]" value="{$method.minAmount.EUR}"
                             {if $method.minAmount.fixed|default:false eq true } readonly {/if} />
+                            <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+                        {/if}
                         {if isset($method.minAmount.fixed)}
                             <input type="hidden" name="{$key}_minAmount[fixed]" value="{$method.minAmount.fixed}" />
                         {/if}
-                        <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                     </div>
                 </div>
             </div>
@@ -129,13 +135,23 @@
             <div class="row">
                 <div class="form-group">
                     <label class="control-label col-lg-2">{l s='Maximum order amount' mod='hipay_enterprise'}</label>
-                    <div class="input-group col-lg-2">
-                        <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"
+                    <div class="input-group {if $key|strpos:'alma' !== false}col-lg-6{else}col-lg-2{/if}">
+                        {if $key|strpos:'alma' !== false}
+                            <div class="alma-container">
+                                <h4 id="{$key}_maxAmount"><span></span></h4>
+                            </div>
+                            </br></br>
+                            <p class="alert alert-info">
+                                {l s='For any questions regarding minimum and maximum amounts, please contact support or your account manager.' mod='hipay_enterprise'}
+                            </p>
+                        {else}
+                            <input type="text" class="money-type" name="{$key}_maxAmount[EUR]" value="{$method.maxAmount.EUR}"
                             {if $method.maxAmount.fixed|default:false eq true } readonly {/if} />
+                            <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
+                        {/if}
                         {if isset($method.maxAmount.fixed)}
                             <input type="hidden" name="{$key}_maxAmount[fixed]" value="{$method.maxAmount.fixed}" />
                         {/if}
-                        <span class="input-group-addon">{Currency::getDefaultCurrency()->sign}</span>
                     </div>
                 </div>
             </div>
@@ -297,3 +313,77 @@
         {/if}
     </div>
 </div>
+<script>
+  $(document).ready(function() {
+    function initializeHiPayAlma() {
+      if (window.hipayInitialized) return;
+      window.hipayInitialized = true;
+
+      var prestashopConfig = {$HiPay_config_hipay|json_encode nofilter};
+      const hipayAvailablePaymentProducts = availablePaymentProducts();
+
+      var apiUsername, apiPassword;
+      if (prestashopConfig.account.global.sandbox_mode) {
+        apiUsername = prestashopConfig.account.sandbox.api_username_sandbox;
+        apiPassword = prestashopConfig.account.sandbox.api_password_sandbox;
+      } else {
+        apiUsername = prestashopConfig.account.production.api_username_production;
+        apiPassword = prestashopConfig.account.production.api_password_production;
+      }
+
+      hipayAvailablePaymentProducts.setCredentials(
+        apiUsername,
+        apiPassword,
+        prestashopConfig.account.global.sandbox_mode
+      );
+
+      hipayAvailablePaymentProducts.updateConfig('payment_product', ['alma-3x','alma-4x']);
+      hipayAvailablePaymentProducts.updateConfig('currency', ['EUR']);
+      hipayAvailablePaymentProducts.updateConfig('with_options', true);
+
+      $('.alma-container').each(function() {
+        $(this).prepend('<div class="loader"></div>');
+        $(this).find('h4').hide();
+      });
+
+      hipayAvailablePaymentProducts.getAvailableProducts()
+        .then(result => {
+          result.forEach(product => {
+            if (product.code === 'alma-3x') {
+              const basketMax3x = product.options?.basketAmountMax3x;
+              const basketMin3x = product.options?.basketAmountMin3x;
+              $('#alma-3x_minAmount span').html(basketMin3x + ' &euro;');
+              $('#alma-3x_maxAmount span').html(basketMax3x + ' &euro;');
+            } else if (product.code === 'alma-4x') {
+              const basketMax4x = product.options?.basketAmountMax4x;
+              const basketMin4x = product.options?.basketAmountMin4x;
+              $('#alma-4x_minAmount span').html(basketMin4x + ' &euro;');
+              $('#alma-4x_maxAmount span').html(basketMax4x + ' &euro;');
+            }
+          });
+
+          $('.alma-container').each(function() {
+            $(this).find('.loader').remove();
+            $(this).find('h4').show();
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching available products:', error);
+          $('.alma-container').each(function() {
+            $(this).find('.loader').remove();
+            $(this).find('h4').html('Error loading data').show();
+          });
+        });
+    }
+
+    // Check on document ready
+    if ($('#payment_form__alma').hasClass('active')) {
+      initializeHiPayAlma();
+    }
+
+    // Check when Alma tab is shown
+    $('a[href="#payment_form__alma"]').on('shown.bs.tab', function (e) {
+      initializeHiPayAlma();
+    });
+  });
+</script>

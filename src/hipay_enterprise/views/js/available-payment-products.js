@@ -58,8 +58,6 @@ const availablePaymentProducts = () => {
       config[key] = value;
     },
 
-    getQueryString: () => toQueryString(config),
-
     getAvailableProducts: async () => {
       if (!config.baseUrl || !config.authorizationHeader) {
         throw new Error('Credentials must be set before calling getAvailableProducts');

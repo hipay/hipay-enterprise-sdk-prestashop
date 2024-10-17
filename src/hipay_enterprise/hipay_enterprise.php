@@ -478,6 +478,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->context->controller->addJS($this->_path . '/views/js/form-input-control.js', 'all');
         $this->context->controller->addJS($this->_path . '/views/js/md5.js', 'all');
+        $this->context->controller->addJS($this->_path . '/views/js/available-payment-products.js', 'all');
     }
 
     public function hookDisplayOrderDetail($params)
