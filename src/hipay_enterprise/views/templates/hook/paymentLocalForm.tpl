@@ -33,8 +33,10 @@
             {/if}
 
             var container = "hipay-container-hosted-fields-{$HiPay_localPaymentName}";
+            var amount = "{$HiPay_cart.totalAmount}";
             var options = {
                 selector: container,
+                request: { amount: Number(amount)},
                 template: "auto",
                 isPaymentPageV2: true
             };

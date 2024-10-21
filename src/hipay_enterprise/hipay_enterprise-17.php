@@ -81,6 +81,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             );
 
             if (!empty($sortedPaymentProducts)) {
+                $currencyInstance = $this->getCurrency($this->context->cart->id_currency);
                 $this->context->smarty->assign(
                     [
                         'HiPay_module_dir' => $this->_path,
@@ -99,7 +100,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         $this->setLocalPaymentOptions(
                             $paymentOptions,
                             $key,
-                            $paymentProduct
+                            $paymentProduct,
+                            $currencyInstance,
+                            $address,
+                            $country
                         );
                     }
                 }
@@ -118,7 +122,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
      * @param type  $name
      * @param type  $paymentProduct
      */
-    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
+    private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct, $currency, $address, $country)
     {
         $newOption = new PaymentOption();
         if ('applepay' === $name || HipayHelper::isPaypalV2($paymentProduct)) {
@@ -188,10 +192,6 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 foreach ($formFields as $fieldName => $field) {
                     switch ($fieldName) {
                         case 'phone':
-                            $cart = $this->context->cart;
-                            $idAddress = $cart->id_address_invoice ? $cart->id_address_invoice : $cart->id_address_delivery;
-                            $address = new Address((int) $idAddress);
-
                             $phone = $address->phone_mobile ? $address->phone_mobile : $address->phone;
                             $formFields[$fieldName]['defaultValue'] = $phone;
 
@@ -241,24 +241,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ];
                 }
 
-                $currency = $this->getCurrency($this->context->cart->id_currency);
-
-                $idAddress = $this->context->cart->id_address_invoice
-                    ? $this->context->cart->id_address_invoice
-                    : $this->context->cart->id_address_delivery;
-
-                $address = new Address((int) $idAddress);
-                $country = new Country((int) $address->id_country);
-
-                $templateCart = [
-                    'totalAmount' => $this->context->cart->getCartTotalPrice(),
-                    'currencyCode' => $currency[0]['iso_code'],
-                    'countryCode' => $country->iso_code,
-                ];
-
                 $this->context->smarty->assign(
                     [
-                        'HiPay_cart' => $templateCart,
+                        'HiPay_cart' => $this->getTemplateCart($this->context, $currency, $country),
                         'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                         __PS_BASE_URI__.
                         'modules/'.
@@ -285,23 +270,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     'merchantId' => $paymentProduct['merchantId'],
                 ];
 
-                $currency = $this->getCurrency($this->context->cart->id_currency);
-
-                $idAddress = $this->context->cart->id_address_invoice
-                    ? $this->context->cart->id_address_invoice
-                    : $this->context->cart->id_address_delivery;
-
-                $address = new Address((int) $idAddress);
-                $country = new Country((int) $address->id_country);
-
-                $templateCart = [
-                    'totalAmount' => $this->context->cart->getCartTotalPrice(),
-                    'currencyCode' => $currency[0]['iso_code'],
-                    'countryCode' => $country->iso_code,
-                ];
                 $this->context->smarty->assign(
                     [
-                        'HiPay_cart' => $templateCart,
+                        'HiPay_cart' => $this->getTemplateCart($this->context, $currency, $country),
                         'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
                             __PS_BASE_URI__.
                             'modules/'.
@@ -318,6 +289,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                 $this->context->smarty->assign(
                     [
+                        'HiPay_cart' => $this->getTemplateCart($this->context, $currency, $country),
                         'HiPay_language' => $this->context->language->language_code,
                         'HiPay_forceHpayment' => false,
                         'HiPay_iframe' => false,
@@ -523,5 +495,17 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 ['server' => 'remote', 'position' => 'top', 'priority' => 1]
             );
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getTemplateCart($context, $currency, $country)
+    {
+        return [
+            'totalAmount' => $context->cart->getCartTotalPrice(),
+            'currencyCode' => $currency[0]['iso_code'],
+            'countryCode' => $country->iso_code,
+        ];
     }
 }
