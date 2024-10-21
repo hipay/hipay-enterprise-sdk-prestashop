@@ -375,7 +375,8 @@ class HipayHelper
     {
         if (_PS_VERSION_ < '1.7' && _PS_VERSION_ >= '1.6') {
             $admin = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
-            $adminFolder = array_pop(array_slice($admin, -1));
+            $lastElement = array_slice($admin, -1);
+            $adminFolder = array_pop($lastElement);
             $adminUrl = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder.'/';
         } else {
             $adminUrl = '';
