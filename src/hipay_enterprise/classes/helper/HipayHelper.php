@@ -552,8 +552,7 @@ class HipayHelper
             if ($settings['activated'] &&
                 (empty($settings['countries']) || in_array($country->iso_code, $settings['countries'])) &&
                 (empty($settings['currencies']) || in_array($currency->iso_code, $settings['currencies'])) &&
-                $orderTotal >= $settings['minAmount']['EUR'] &&
-                ($orderTotal <= $settings['maxAmount']['EUR'] || !$settings['maxAmount']['EUR']) &&
+                self::isOrderTotalWithinLimits($module, $orderTotal, $settings) &&
                 (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] <= _PS_VERSION_))
             ) {
                 if ('local_payment' == $paymentMethodType) {
@@ -896,5 +895,52 @@ class HipayHelper
         }
 
         return false;
+    }
+
+    /**
+     * Check if the order total is within the allowed limits for a payment method.
+     *
+     * @param Hipay_enterprise $module The HiPay module instance
+     * @param float $orderTotal The total amount of the order
+     * @param array $settings An array containing payment method settings
+     * @return bool True if the order total is within limits, false otherwise
+     * @throws Exception If there's an error in API communication for Alma products
+     */
+    public static function isOrderTotalWithinLimits($module, $orderTotal, $settings)
+    {
+        // Check for Alma products
+        if (isset($settings["productCode"]) && stripos($settings["productCode"], 'alma') !== false) {
+            try {
+                $availablePaymentProducts = ApiCaller::getAvailablePaymentProduct($module, [
+                    'payment_product' => $settings["productCode"],
+                    'with_options' => true
+                ]);
+
+                foreach ($availablePaymentProducts as $product) {
+                    if ($product->getCode() === $settings["productCode"]) {
+                        $options = $product->getOptions();
+                        $installments = substr($product->getCode(), -2, 1);
+                        $minKey = "basketAmountMin{$installments}x";
+                        $maxKey = "basketAmountMax{$installments}x";
+
+                        if (isset($options[$minKey], $options[$maxKey])) {
+                            return $orderTotal >= (float)$options[$minKey] && $orderTotal <= (float)$options[$maxKey];
+                        }
+                    }
+                }
+
+                return false;
+            } catch (Exception $e) {
+                $module->getLogs()->logError("Error fetching Alma payment product: " . $e->getMessage());
+                throw $e;
+            }
+        }
+
+        // For non-Alma products
+        $minAmount = $settings['minAmount']['EUR'] ?? 0;
+        $maxAmount = $settings['maxAmount']['EUR'] ?? false;
+
+        $hasUpperLimit = $maxAmount && $maxAmount > 0;
+        return $orderTotal >= $minAmount && (!$hasUpperLimit || $orderTotal <= $maxAmount);
     }
 }
