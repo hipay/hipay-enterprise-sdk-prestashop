@@ -444,12 +444,12 @@
 
         function fetchAndToggleFields() {
             if (!initPaypalV2) {
-                initPaypalV2 = true; // Set this before making the AJAX call to avoid multiple calls
                 const hipayProducts = new HipayAvailablePaymentProducts({$HiPay_config_hipay|json_encode nofilter});
 
                 hipayProducts.getAvailablePaymentProducts()
                     .then(data => {
                         if (data?.length > 0) {
+                            initPaypalV2 = true;
                             toggleFields(data[0]);
                         }
                     })
