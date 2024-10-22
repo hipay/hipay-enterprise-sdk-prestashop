@@ -104,132 +104,139 @@
 }
 
 /* Rebranding update start */
-#hipay-module .alert-info{
+#hipay-module .alert-info {
   background-color: #f6e6f2 !important;
-  border: 1px solid #A50979 !important;
+  border: 1px solid #a50979 !important;
 }
 
-#hipay-module .alert-info::before{
-  color: #A50979 !important;
+#hipay-module .alert-info::before {
+  color: #a50979 !important;
 }
 
-#hipay-module .switch input:first-of-type:checked~.slide-button{
-  background: #A50979!important;
+#hipay-module .switch input:first-of-type:checked ~ .slide-button {
+  background: #a50979 !important;
 }
 
-#hipay-module .btn.pull-right{
-  background-color: #A50979!important;
-  border-color: #A50979!important;
+#hipay-module .btn.pull-right {
+  background-color: #a50979 !important;
+  border-color: #a50979 !important;
 }
 
-#hipay-module .btn.pull-right:is(:hover, :focus, :active){
-  background-color: #740655!important;
-  border-color: 3px solid #740655!important;
+#hipay-module .btn.pull-right:is(:hover, :focus, :active) {
+  background-color: #740655 !important;
+  border-color: 3px solid #740655 !important;
 }
 
-#hipay-module a{
-  color: #A50979!important;
+#hipay-module a {
+  color: #a50979 !important;
 }
 
-#hipay-module ul>.active>a{
-  color: #fff!important;
+#hipay-module ul > .active > a {
+  color: #fff !important;
 }
 
-#hipay-module .nav-tabs>li>a{
-  color: #fff!important;
+#hipay-module .nav-tabs > li > a {
+  color: #fff !important;
 }
 
-#hipay-module .btn.btn-default:focus{
+#hipay-module .btn.btn-default:focus {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-#hipay-module .panel-heading{
-  background-color: transparent!important;
+#hipay-module .panel-heading {
+  background-color: transparent !important;
 }
 
-#hipay-module .panel-heading a{
-  color: #2C0A64!important;
+#hipay-module .panel-heading a {
+  color: #2c0a64 !important;
 }
 
 #hipay-module .btn-primary {
-  color: #fff!important;
-  background-color: #A50979!important;
-  border-color: #A50979!important;
+  color: #fff !important;
+  background-color: #a50979 !important;
+  border-color: #a50979 !important;
 }
 
 #hipay-module .btn-primary:is(:hover, :focus, :active) {
-  background-color: #740655!important;
-  border-color: 3px solid #740655!important;
+  background-color: #740655 !important;
+  border-color: 3px solid #740655 !important;
 }
 
-#hipay-module .dropdown-toggle:hover{
-  color: #fff!important;
-  background-color: #A50979!important;
+#hipay-module .dropdown-toggle:hover {
+  color: #fff !important;
+  background-color: #a50979 !important;
 }
 
-#hipay-module .dropdown-toggle:focus{
-  color: #fff!important;
-  background-color: #A50979!important;
+#hipay-module .dropdown-toggle:focus {
+  color: #fff !important;
+  background-color: #a50979 !important;
 }
 
-#hipay-module .dropdown-menu>.active>a{
-  color: #fff!important;
-  background-color: #A50979!important;
+#hipay-module .dropdown-menu > .active > a {
+  color: #fff !important;
+  background-color: #a50979 !important;
 }
 
-#hipay-module .dropdown-menu>li>a:hover{
-  color: #fff!important;
-  background-color: #A50979!important;
+#hipay-module .dropdown-menu > li > a:hover {
+  color: #fff !important;
+  background-color: #a50979 !important;
 }
 
-#hipay-module .dropdown-menu>a{
-  color: #20272B!important;
+#hipay-module .dropdown-menu > a {
+  color: #20272b !important;
 }
 
-#hipay-module .hipay-tabs .bootstrap-duallistbox-container .btn:is(:hover, :focus, :active) {
-  background-color: #A50979!important;
-  border-color: #A50979!important;
+#hipay-module
+  .hipay-tabs
+  .bootstrap-duallistbox-container
+  .btn:is(:hover, :focus, :active) {
+  background-color: #a50979 !important;
+  border-color: #a50979 !important;
 }
 
-#hipay-module input[type="text"]:focus{
-  border-color: #a5097958!important;
-  background-color: #fffbfd!important;
+#hipay-module input[type='text']:focus {
+  border-color: #a5097958 !important;
+  background-color: #fffbfd !important;
 }
 
-#hipay-module input[type="text"]:hover{
-  background-color: #fffbfd!important;
+#hipay-module input[type='text']:hover {
+  background-color: #fffbfd !important;
 }
 
-#hipay-module input[type="password"]:focus{
-  border-color: #a5097958!important;
-  background-color: #fffbfd!important;
+#hipay-module input[type='password']:focus {
+  border-color: #a5097958 !important;
+  background-color: #fffbfd !important;
 }
 
-#hipay-module input[type="password"]:hover{
-  background-color: #fffbfd!important;
+#hipay-module input[type='password']:hover {
+  background-color: #fffbfd !important;
 }
 
-#hipay-module select:focus{
-  border-color: #a509797e!important;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px #a509797e!important;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px #a509797e!important;
+#hipay-module select:focus {
+  border-color: #a509797e !important;
+  -webkit-box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px #a509797e !important;
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px #a509797e !important;
 }
 
-#hipay-module .positioning{
-  width: 75px!important;
+#hipay-module .positioning {
+  width: 75px !important;
 }
 
-#hipay-module .table tbody > tr:hover > td{
-  background-color: #f8f3f6!important;
+#hipay-module .table tbody > tr:hover > td {
+  background-color: #f8f3f6 !important;
 }
 
-#hipay-module .table thead > tr > th{
-  border-bottom: 1px solid #a509797e!important;
+#hipay-module .table thead > tr > th {
+  border-bottom: 1px solid #a509797e !important;
 }
 
-#hipay-module .list-group-item{
-  color: #20272B!important
+#hipay-module .list-group-item {
+  color: #20272b !important;
 }
 
 /* Rebranding update end */
@@ -239,14 +246,14 @@
 /***********************************/
 
 #panel-faq .panel-heading-question i {
-  color: #FF8C50;
+  color: #ff8c50;
 }
 
 #panel-faq .panel-heading-question {
-  background-color: #2C0A64;
+  background-color: #2c0a64;
 }
 
-#panel-faq .panel-heading-question i[class="icon-arrow-circle-o-down"] {
+#panel-faq .panel-heading-question i[class='icon-arrow-circle-o-down'] {
   float: right;
 }
 
@@ -257,8 +264,8 @@
 
 #panel-faq
   .panel-heading-question
-  [data-toggle="collapse"].collapsed
-  i[class="icon-arrow-circle-o-down"] {
+  [data-toggle='collapse'].collapsed
+  i[class='icon-arrow-circle-o-down'] {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
@@ -266,19 +273,19 @@
   transform: rotate(90deg);
 }
 
-#hipay-header{
+#hipay-header {
   margin-bottom: 16px;
 }
 
 #hipay-header .text-branded,
 #hipay-content .text-branded {
-  color: #2C0A64;
+  color: #2c0a64;
 }
 
 #hipay-header h4,
 #hipay-content h4 {
   margin: 2px 0;
-  color: #2C0A64;
+  color: #2c0a64;
   font-size: 1.8em;
 }
 
@@ -288,7 +295,7 @@
 
 #payment-logo {
   max-height: 150px;
-  max-width: 200px!important;
+  max-width: 200px !important;
 }
 
 #hipay-content h4 {
@@ -304,14 +311,14 @@
 }
 
 .production-switch {
-  border: solid 1px #A50979 !important;
-  background-color: #A50979 !important;
+  border: solid 1px #a50979 !important;
+  background-color: #a50979 !important;
 }
 
 .hipay-enterprise.nav-tabs {
   border: 0;
   padding: 0.4rem;
-  background-color: #2C0A64;
+  background-color: #2c0a64;
   z-index: 2;
   position: relative;
   border-radius: 5px;
@@ -366,7 +373,7 @@
 
 .bootstrap .nav-stacked li a {
   font-size: 1.1em;
-  font-family: "Ubuntu Condensed", Helvetica, Arial, sans-serif;
+  font-family: 'Ubuntu Condensed', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-weight: 300;
 }
@@ -374,7 +381,7 @@
 .bootstrap .nav-pills > li.active > a,
 .bootstrap .nav-pills > li.active > a:hover,
 .bootstrap .nav-pills > li.active > a:focus {
-  background-color: #A50979;
+  background-color: #a50979;
   color: #ffffff !important;
 }
 
@@ -405,14 +412,16 @@
   display: inline-grid;
 }
 
-#hipay_refund_type, #hipay_capture_type {
+#hipay_refund_type,
+#hipay_capture_type {
   padding: 4px 8px 4px 8px;
   border-radius: 6px;
 
   margin-left: 6px;
 }
 
-#hipay_refund_amount, #hipay_capture_amount {
+#hipay_refund_amount,
+#hipay_capture_amount {
   padding: 4px 8px 4px 8px;
 
   margin-left: 6px;
@@ -421,7 +430,8 @@
   text-align: right;
 }
 
-.refund-amount, .capture-amount {
+.refund-amount,
+.capture-amount {
   display: flex;
   justify-content: center;
   align-items: baseline;
@@ -437,7 +447,8 @@
   margin-left: 6px;
 }
 
-.good-selector-refund, .good-selector-capture {
+.good-selector-refund,
+.good-selector-capture {
   padding: 4px 0px 4px 8px;
   border-radius: 6px;
 
@@ -480,5 +491,8 @@
 .readonly {
   pointer-events: none;
   opacity: 0.5;
-  background-color: #e9ecef; /* Similar to default disabled background color */
+}
+
+:not(.switch).readonly {
+  background-color: #e9ecef !important; /* Similar to default disabled background color */
 }

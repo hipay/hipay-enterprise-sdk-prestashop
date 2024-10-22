@@ -234,17 +234,14 @@
                 </div>
             </div>
         {/if}
-        {if "merchantId"|inArray:$method.displayConfigurationFields}
+        <div id="paypal_v2_support" style="display:none">
             <div class="row">
                 <div class="form-group">
-                    <label class="control-label col-lg-2">{l s='Merchant ID' mod='hipay_enterprise'}</label>
-                    <div class="col-lg-4">
-                        <input type="text" id="input-merchantId" class="merchantId" name="{$key}_merchantId"
-                            value="{$method.merchantId}" />
+                    <div class="col-lg-8">
                         <br>
                         <p class="alert alert-warning">
-                            <b>{l s='NEW' mod='hipay_enterprise'}</b><br/>
-                            {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br/><br/>
+                            <b>{l s='NEW' mod='hipay_enterprise'}</b><br />
+                            {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br /><br />
                             {l s='Available by ' mod='hipay_enterprise'}
                             <b>{l s='invitation only' mod='hipay_enterprise'}</b>
                             {l s='at this time, please contact our support or your account manager for more information.' mod='hipay_enterprise'}
@@ -252,7 +249,7 @@
                     </div>
                 </div>
             </div>
-        {/if}
+        </div>
         {if "buttonShape"|inArray:$method.displayConfigurationFields}
             <div class="row">
                 <div class="form-group">
@@ -341,9 +338,9 @@
                         {l s='Pay Later Button' mod='hipay_enterprise'}
                     </label>
                     <div class="col-lg-9">
-                        <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1"
-                                {if $method.bnpl }checked="checked" {/if}>
+                        <span id="bnpl" class="switch prestashop-switch fixed-width-lg">
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1" {if $method.bnpl}checked="checked"
+                                {/if}>
                             <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="{$key}_bnpl" id="bnpl_off" value="0"
                                 {if $method.bnpl === false }checked="checked" {/if}>
@@ -362,27 +359,110 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function toggleFields(merchantId) {
-            ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(
-                function(fieldId) {
-                    var field = document.getElementById(fieldId);
-                    if (merchantId === '') {
-                        field.classList.add('readonly');
-                    } else {
-                        field.classList.remove('readonly');
+    {literal}
+        class HipayAvailablePaymentProducts {
+            constructor(hipayConfig) {
+                this.config = hipayConfig;
+                this.setCredentialsAndUrl();
+                this.generateAuthorizationHeader();
+            }
+
+            setCredentialsAndUrl() {
+                if (this.config.account.global.sandbox_mode) {
+                    this.apiUsername = this.config.account.sandbox.api_username_sandbox;
+                    this.apiPassword = this.config.account.sandbox.api_password_sandbox;
+                    this.baseUrl = 'https://stage-secure-gateway.hipay-tpp.com/rest/v2/';
+                } else {
+                    this.apiUsername = this.config.account.production.api_username_production;
+                    this.apiPassword = this.config.account.production.api_password_production;
+                    this.baseUrl = 'https://secure-gateway.hipay-tpp.com/rest/v2/';
+                }
+            }
+
+            generateAuthorizationHeader() {
+                const credentials = `${this.apiUsername}:${this.apiPassword}`;
+                const encodedCredentials = btoa(credentials);
+                this.authorizationHeader = `Basic ${encodedCredentials}`;
+            }
+
+            async getAvailablePaymentProducts(
+                paymentProduct = 'paypal',
+                eci = '7',
+                operation = '4',
+                withOptions = 'true'
+            ) {
+                const url = new URL(`${this.baseUrl}available-payment-products.json`);
+                url.searchParams.append('eci', eci);
+                url.searchParams.append('operation', operation);
+                url.searchParams.append('payment_product', paymentProduct);
+                url.searchParams.append('with_options', withOptions);
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': this.authorizationHeader,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    throw error;
+                }
+            }
+        }
+    {/literal}
+
+    $(document).ready(function() {
+        var initPaypalV2 = false;
+
+        function toggleFields(PayPalMerchantData) {
+            const options = PayPalMerchantData.options;
+            if (options?.provider_architecture_version === 'v1' &&
+                options?.payer_id.length > 0) {
+                ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function(
+                    fieldId) {
+                    var field = document.getElementById(fieldId);
+                    field.classList.remove('readonly');
+                    $('#paypal_v2_support').hide();
                 });
+            } else {
+                ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function(
+                    fieldId) {
+                    var field = document.getElementById(fieldId);
+                    field.classList.add('readonly');
+                    $('#paypal_v2_support').show()
+                });
+            }
         }
 
-        var merchantIdInput = document.getElementById('input-merchantId');
-        if (merchantIdInput !== null) {
-            // Call toggleFields initially to set the correct state on page load
-            toggleFields(merchantIdInput.value);
+        function fetchAndToggleFields() {
+            if (!initPaypalV2) {
+                const hipayProducts = new HipayAvailablePaymentProducts({$HiPay_config_hipay|json_encode nofilter});
 
-            merchantIdInput.addEventListener('input', function() {
-                toggleFields(this.value);
-            });
+                hipayProducts.getAvailablePaymentProducts()
+                    .then(data => {
+                        if (data?.length > 0) {
+                            initPaypalV2 = true;
+                            toggleFields(data[0]);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
         }
+
+        if ($('#payment_form__paypal').hasClass('active')) {
+            fetchAndToggleFields();
+        }
+
+        $('a[href="#payment_form__paypal"]').on('shown.bs.tab', function(e) {
+            fetchAndToggleFields();
+        });
     });
 </script>
