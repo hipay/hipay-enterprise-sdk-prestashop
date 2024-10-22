@@ -7,7 +7,7 @@
 
 ## 2.22.3
 
-- **Add**: Added the PHP directive [serialize_precision](https://www.php.net/manual/en/ini.core.php#ini.serialize-precision) to value `-1`
+- **Fix**: Fixed the PHP directive [serialize_precision](https://www.php.net/manual/en/ini.core.php#ini.serialize-precision) to value `-1`
 - **Fix**: Fixed issue about duplicate HiPay orders for a single Prestashop order by refunding or cancelling the duplicate ones
 - **Fix**: Fixed the notification `attempt_number` when its processing is in error when CRON mode is enabled
 
