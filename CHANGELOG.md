@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Add**: Added Klarna payment method
+
 ## 2.22.3
 
 - **Fix**: Fixed the PHP directive [serialize_precision](https://www.php.net/manual/en/ini.core.php#ini.serialize-precision) to value `-1`

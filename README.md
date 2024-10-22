@@ -57,6 +57,7 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 - GiroPay
 - Ideal
 - Illicado
+- Klarna
 - MBWay
 - Multibanco
 - MyBank
