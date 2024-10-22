@@ -75,6 +75,7 @@
                         $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
 
                         // Fill hidden fields to send to server
+                        $("#{$HiPay_localPaymentName}-paymentProductCode").val(response.payment_product);
                         $("#{$HiPay_localPaymentName}-browserInfo").val(JSON.stringify(response.browser_info));
                         extraFields.forEach(function(field) {
                             $("#{$HiPay_localPaymentName}-" + field).val(response[field]);
@@ -94,6 +95,7 @@
     </script>
     <input type="hidden" name="localSubmit" />
     <input class="ioBB" type="hidden" name="ioBB" />
+    <input id="{$HiPay_localPaymentName}-paymentProductCode" type="hidden" name="HF-paymentProductCode" />
     <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="HF-browserInfo" />
 {else}
     {if $HiPay_iframe}

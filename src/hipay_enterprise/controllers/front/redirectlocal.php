@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -100,7 +101,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
 
         switch ($mode) {
             case ApiMode::HOSTED_PAGE:
-                if (isset($this->module->hipayConfigTool->getLocalPayment()[$method]['iframe'])
+                if (
+                    isset($this->module->hipayConfigTool->getLocalPayment()[$method]['iframe'])
                     && $this->module->hipayConfigTool->getLocalPayment()[$method]['iframe']
                 ) {
                     $context->smarty->assign(
@@ -109,9 +111,9 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
-                            $this->module->name .
-                            '/views/templates/front/payment/ps17/paymentFormIframe-17'
-                            : 'payment/ps16/paymentFormIframe-16') . '.tpl';
+                        $this->module->name .
+                        '/views/templates/front/payment/ps17/paymentFormIframe-17'
+                        : 'payment/ps16/paymentFormIframe-16') . '.tpl';
                 } else {
                     $this->apiHandler->handleLocalPayment(ApiMode::HOSTED_PAGE, $params);
                 }
@@ -128,7 +130,8 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 } else {
                     $formFields = [];
                     // Check if any additional fields dans be filed using values already filled by the client
-                    if (isset($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"])
+                    if (
+                        isset($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"])
                         && isset($this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"])
                     ) {
                         $formFields = $this->module->hipayConfigTool->getLocalPayment()[$method]["additionalFields"]["formFields"];
@@ -162,9 +165,9 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
-                            $this->module->name .
-                            '/views/templates/front/payment/ps17/paymentLocalForm-17'
-                            : 'payment/ps16/paymentLocalForm-16') . '.tpl';
+                        $this->module->name .
+                        '/views/templates/front/payment/ps17/paymentLocalForm-17'
+                        : 'payment/ps16/paymentLocalForm-16') . '.tpl';
                 }
                 break;
             default:
