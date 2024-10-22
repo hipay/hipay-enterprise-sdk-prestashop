@@ -235,13 +235,13 @@
             </div>
         {/if}
         <div id="paypal_v2_support" style="display:none">
-            <div class="row" >
+            <div class="row">
                 <div class="form-group">
                     <div class="col-lg-8">
                         <br>
                         <p class="alert alert-warning">
-                            <b>{l s='NEW' mod='hipay_enterprise'}</b><br/>
-                            {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br/><br/>
+                            <b>{l s='NEW' mod='hipay_enterprise'}</b><br />
+                            {l s='The new PayPal integration allows you to pay with PayPal without redirection and to offer payment with installments.' mod='hipay_enterprise'}<br /><br />
                             {l s='Available by ' mod='hipay_enterprise'}
                             <b>{l s='invitation only' mod='hipay_enterprise'}</b>
                             {l s='at this time, please contact our support or your account manager for more information.' mod='hipay_enterprise'}
@@ -338,9 +338,9 @@
                         {l s='Pay Later Button' mod='hipay_enterprise'}
                     </label>
                     <div class="col-lg-9">
-                        <span class="switch prestashop-switch fixed-width-lg">
-                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1"
-                                {if $method.bnpl}checked="checked" {/if}>
+                        <span id="bnpl" class="switch prestashop-switch fixed-width-lg">
+                            <input type="radio" name="{$key}_bnpl" id="bnpl_on" value="1" {if $method.bnpl}checked="checked"
+                                {/if}>
                             <label for="{$key}_bnpl_on">{l s='Yes' mod='hipay_enterprise'}</label>
                             <input type="radio" name="{$key}_bnpl" id="bnpl_off" value="0"
                                 {if $method.bnpl === false }checked="checked" {/if}>
@@ -360,108 +360,109 @@
 
 <script>
     {literal}
-  class HipayAvailablePaymentProducts {
-    constructor(hipayConfig) {
-      this.config = hipayConfig;
-      this.setCredentialsAndUrl();
-      this.generateAuthorizationHeader();
-    }
+        class HipayAvailablePaymentProducts {
+            constructor(hipayConfig) {
+                this.config = hipayConfig;
+                this.setCredentialsAndUrl();
+                this.generateAuthorizationHeader();
+            }
 
-    setCredentialsAndUrl() {
-      if (this.config.account.global.sandbox_mode) {
-        this.apiUsername = this.config.account.sandbox.api_username_sandbox;
-        this.apiPassword = this.config.account.sandbox.api_password_sandbox;
-        this.baseUrl = 'https://stage-secure-gateway.hipay-tpp.com/rest/v2/';
-      } else {
-        this.apiUsername = this.config.account.production.api_username_production;
-        this.apiPassword = this.config.account.production.api_password_production;
-        this.baseUrl = 'https://secure-gateway.hipay-tpp.com/rest/v2/';
-      }
-    }
+            setCredentialsAndUrl() {
+                if (this.config.account.global.sandbox_mode) {
+                    this.apiUsername = this.config.account.sandbox.api_username_sandbox;
+                    this.apiPassword = this.config.account.sandbox.api_password_sandbox;
+                    this.baseUrl = 'https://stage-secure-gateway.hipay-tpp.com/rest/v2/';
+                } else {
+                    this.apiUsername = this.config.account.production.api_username_production;
+                    this.apiPassword = this.config.account.production.api_password_production;
+                    this.baseUrl = 'https://secure-gateway.hipay-tpp.com/rest/v2/';
+                }
+            }
 
-    generateAuthorizationHeader() {
-      const credentials = `${this.apiUsername}:${this.apiPassword}`;
-      const encodedCredentials = btoa(credentials);
-      this.authorizationHeader = `Basic ${encodedCredentials}`;
-    }
+            generateAuthorizationHeader() {
+                const credentials = `${this.apiUsername}:${this.apiPassword}`;
+                const encodedCredentials = btoa(credentials);
+                this.authorizationHeader = `Basic ${encodedCredentials}`;
+            }
 
-    async getAvailablePaymentProducts(
-      paymentProduct = 'paypal',
-      eci = '7',
-      operation = '4',
-      withOptions = 'true'
-    ) {
-      const url = new URL(`${this.baseUrl}available-payment-products.json`);
-      url.searchParams.append('eci', eci);
-      url.searchParams.append('operation', operation);
-      url.searchParams.append('payment_product', paymentProduct);
-      url.searchParams.append('with_options', withOptions);
+            async getAvailablePaymentProducts(
+                paymentProduct = 'paypal',
+                eci = '7',
+                operation = '4',
+                withOptions = 'true'
+            ) {
+                const url = new URL(`${this.baseUrl}available-payment-products.json`);
+                url.searchParams.append('eci', eci);
+                url.searchParams.append('operation', operation);
+                url.searchParams.append('payment_product', paymentProduct);
+                url.searchParams.append('with_options', withOptions);
 
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Authorization': this.authorizationHeader,
-            'Accept': 'application/json'
-          }
-        });
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': this.authorizationHeader,
+                            'Accept': 'application/json'
+                        }
+                    });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    throw error;
+                }
+            }
         }
-
-        return await response.json();
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        throw error;
-      }
-    }
-  }
     {/literal}
 
     $(document).ready(function() {
-      var initPaypalV2 = false;
-      function toggleFields(PayPalMerchantData) {
-        const options = PayPalMerchantData.options;
-        if (options?.provider_architecture_version === 'v1' &&
-          options?.payer_id.length > 0) {
-          ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(function(fieldId) {
-            var field = document.getElementById(fieldId);
-            field.classList.remove('readonly');
-            $('#paypal_v2_support').hide();
-          });
-        } else {
-          ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl_on', 'bnpl_off'].forEach(function(fieldId) {
-            var field = document.getElementById(fieldId);
-            field.classList.add('readonly');
-            $('#paypal_v2_support').show()
-          });
+        var initPaypalV2 = false;
+
+        function toggleFields(PayPalMerchantData) {
+            const options = PayPalMerchantData.options;
+            if (options?.provider_architecture_version === 'v1' &&
+                options?.payer_id.length > 0) {
+                ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function(
+                    fieldId) {
+                    var field = document.getElementById(fieldId);
+                    field.classList.remove('readonly');
+                    $('#paypal_v2_support').hide();
+                });
+            } else {
+                ['buttonColor', 'buttonShape', 'buttonLabel', 'buttonHeight', 'bnpl'].forEach(function(
+                    fieldId) {
+                    var field = document.getElementById(fieldId);
+                    field.classList.add('readonly');
+                    $('#paypal_v2_support').show()
+                });
+            }
         }
-      }
 
-      function fetchAndToggleFields() {
-        if (!initPaypalV2) {
-          initPaypalV2 = true; // Set this before making the AJAX call to avoid multiple calls
-          const hipayProducts = new HipayAvailablePaymentProducts({$HiPay_config_hipay|json_encode nofilter});
+        function fetchAndToggleFields() {
+            if (!initPaypalV2) {
+                initPaypalV2 = true; // Set this before making the AJAX call to avoid multiple calls
+                const hipayProducts = new HipayAvailablePaymentProducts({$HiPay_config_hipay|json_encode nofilter});
 
-          hipayProducts.getAvailablePaymentProducts()
-            .then(data => {
-              if (data?.length > 0) {
-                toggleFields(data[0]);
-              }
-            })
-            .catch(error => console.error('Error:', error));
+                hipayProducts.getAvailablePaymentProducts()
+                    .then(data => {
+                        if (data?.length > 0) {
+                            toggleFields(data[0]);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
         }
-      }
 
-      if ($('#payment_form__paypal').hasClass('active')) {
-        fetchAndToggleFields();
-      }
+        if ($('#payment_form__paypal').hasClass('active')) {
+            fetchAndToggleFields();
+        }
 
-      $('a[href="#payment_form__paypal"]').on('shown.bs.tab', function (e) {
-        fetchAndToggleFields();
-      });
+        $('a[href="#payment_form__paypal"]').on('shown.bs.tab', function(e) {
+            fetchAndToggleFields();
+        });
     });
-
-
 </script>
