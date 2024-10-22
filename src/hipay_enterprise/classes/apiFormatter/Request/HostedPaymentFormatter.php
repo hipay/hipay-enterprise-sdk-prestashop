@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -65,5 +66,10 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order->payment_product_category_list = '';
         $order->multi_use = isset($this->params["multi_use"]) ? $this->params["multi_use"] : null;
         $order->display_cancel_button = $this->configHipay["payment"]["global"]["display_cancel_button"];
+        $order->paypal_v2_label = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonLabel'][0] ?? null;
+        $order->paypal_v2_shape = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonShape'][0] ?? null;
+        $order->paypal_v2_color = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonColor'][0] ?? null;
+        $order->paypal_v2_height = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['buttonHeight'] ?? null;
+        $order->paypal_v2_bnpl = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['bnpl'] ?? null;
     }
 }
