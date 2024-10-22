@@ -41,9 +41,9 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.22.2';
+        $this->version = '2.22.3';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
-        $this->ps_versions_compliancy = ['min' => '1.7.5', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '1.7.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         $this->author = 'HiPay';

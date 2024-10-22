@@ -2,11 +2,14 @@
 
 ## Unreleased
 
-- **Add**: Changed minimum Prestashop version for this module to **1.7.5**
+- **Break**: Changed minimum Prestashop version for this module to **1.7.6**
+- **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
+
+## 2.22.3
+
 - **Add**: Added the PHP directive [serialize_precision](https://www.php.net/manual/en/ini.core.php#ini.serialize-precision) to value `-1`
 - **Fix**: Fixed issue about duplicate HiPay orders for a single Prestashop order by refunding or cancelling the duplicate ones
 - **Fix**: Fixed the notification `attempt_number` when its processing is in error when CRON mode is enabled
-- **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
 
 ## 2.22.2
 
