@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Break**: Changed minimum Prestashop version for this module to **1.7.6**
+- **Add**: Changed minimum Prestashop version for this module to **1.7.6**
 - **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
 
 ## 2.22.3
