@@ -124,10 +124,10 @@ class HipayEnterpriseNew extends Hipay_enterprise
     private function setLocalPaymentOptions(&$paymentOptions, $name, $paymentProduct)
     {
         $newOption = new PaymentOption();
-        $isPaypalV2 = parent::isPaypalV2($this->hipayConfigTool);
+        $isPaypalV2 = parent::isPaypalV2($name, $this->hipayConfigTool);
         $paymentGlobal = $this->hipayConfigTool->getPaymentGlobal();
         $apiMode = $paymentGlobal['operating_mode']['APIMode'] ?? null;
-        $isHostedFieldPaypalV2 = ($apiMode === ApiMode::DIRECT_POST) && $isPaypalV2;
+        $isHostedFieldPaypalV2 = $apiMode === ApiMode::DIRECT_POST && $isPaypalV2;
 
         if ('applepay' === $name || $isHostedFieldPaypalV2) {
             $this->context->smarty->assign(
@@ -285,7 +285,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'HiPay_iframe' => false,
                     ]
                 );
-            } elseif ($isPaypalV2) {
+            } elseif ('paypal' === $name && $isPaypalV2) {
                 $commonAssignments = [
                     'HiPay_language' => $this->context->language->language_code,
                     'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
@@ -351,7 +351,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
             ->setModuleName('local_payment_hipay')
             ->setForm($paymentForm);
 
-        if ('applepay' === $name || ('paypal' === $name && $isHostedFieldPaypalV2)) {
+        if ('applepay' === $name || $isHostedFieldPaypalV2) {
             $newOption->setAction(
                 $this->context->link->getModuleLink($this->name, 'redirect', [], true)
             );

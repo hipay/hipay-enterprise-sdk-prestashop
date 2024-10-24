@@ -95,7 +95,7 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                 && $this->module->hipayConfigTool->getLocalPayment()[$method]["handleHpayment"]
                 && $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'] === ApiMode::HOSTED_PAGE
             )
-            || ($this->module::isPaypalV2($this->module->hipayConfigTool))
+            || ($this->module::isPaypalV2($method, $this->module->hipayConfigTool))
         ) {
             $mode = ApiMode::HOSTED_PAGE;
         }
