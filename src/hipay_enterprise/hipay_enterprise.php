@@ -855,10 +855,11 @@ class Hipay_enterprise extends PaymentModule
      * Check if PayPal instance is V2
      *
      * @param $hipayConfigTool
+     * @param $paymentCode
      * @return bool
      * @throws Exception
      */
-    public static function isPaypalV2($hipayConfigTool)
+    public static function isPaypalV2($paymentCode, $hipayConfigTool)
     {
         if (self::$paypalVersion === null) {
             $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
@@ -869,7 +870,7 @@ class Hipay_enterprise extends PaymentModule
                 && !empty($paymentsProducts['options']['payer_id']);
         }
 
-        return self::$paypalVersion;
+        return 'paypal' === $paymentCode && self::$paypalVersion;
     }
 }
 
