@@ -252,7 +252,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     ];
                 }
 
-                $currency = $this->getCurrency($this->context->cart->id_currency);
+                $currency = new Currency($this->context->cart->id_currency);
 
                 $idAddress = $this->context->cart->id_address_invoice
                     ? $this->context->cart->id_address_invoice
@@ -263,7 +263,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
 
                 $templateCart = [
                     'totalAmount' => $this->context->cart->getCartTotalPrice(),
-                    'currencyCode' => $currency[0]['iso_code'],
+                    'currencyCode' => $currency->iso_code,
                     'countryCode' => $country->iso_code,
                 ];
 

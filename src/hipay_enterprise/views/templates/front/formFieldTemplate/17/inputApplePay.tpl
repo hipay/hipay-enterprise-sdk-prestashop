@@ -84,6 +84,8 @@
       buttonType: '{$HiPay_appleFields.buttonType[0]}',
       buttonStyle: '{$HiPay_appleFields.buttonStyle[0]}',
       totalAmount: '{$HiPay_cart.totalAmount}',
+      currencyCode: '{$HiPay_cart.currencyCode}',
+      countryCode: '{$HiPay_cart.countryCode}',
       shopName: '{Configuration::get('PS_SHOP_NAME')}'
     };
 
@@ -222,8 +224,8 @@
     }
 
     const request = {
-      countryCode: 'FR',
-      currencyCode: 'EUR',
+      countryCode: parameters.countryCode,
+      currencyCode: parameters.currencyCode,
       total: total,
       supportedNetworks: ['visa', 'masterCard']
     };
