@@ -381,7 +381,6 @@
         addEvents();
         $("#total-refund-loader").hide();
 
-        var currencySign = "€";
         var refundableAmount = {$HiPay_refundableAmount};
         {if $HiPay_refundedDiscounts}
             var refundedDiscount = true;
@@ -417,6 +416,7 @@
             function(response) {
                 if (response && typeof response === 'object' && 'amount' in response) {
                     amount = response.amount.toFixed(2);
+                    currencySign = response.currency ? response.currency.sign : "";
                     remain = refundableAmount - amount;
                     if (remain.toFixed(2) == -0.01) {
                         amount = amount - 0.01;

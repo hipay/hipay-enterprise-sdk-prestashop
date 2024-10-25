@@ -368,7 +368,6 @@
 
         $("#total-capture-loader").hide();
 
-        var currencySign = "€";
         {if $HiPay_capturedDiscounts}
             var capturedDiscount = true;
         {else}
@@ -405,6 +404,7 @@
                 if (response && typeof response === 'object' && 'amount' in response) {
                     amount = response.amount.toFixed(2);
                     remain = stillToCapture - amount;
+                    currencySign = response.currency ? response.currency.sign : "";
                     if (remain.toFixed(2) == -0.01) {
                         amount = amount - 0.01;
                     }

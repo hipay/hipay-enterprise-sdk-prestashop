@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -65,7 +66,7 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
 
             if (!empty($items)) {
                 foreach ($order->getProducts() as $product) {
-                    $productId = (int) $product["id_product"].$product["product_attribute_id"];
+                    $productId = (int) $product["id_product"] . $product["product_attribute_id"];
                     foreach ($items as $item) {
                         if ($item["id"] == $productId) {
                             $params["products"][] = array(
@@ -80,31 +81,29 @@ class AdminHiPayCalculatePriceController extends ModuleAdminController
 
             $cartFormatter = new CartMaintenanceFormatter($this->module, $params);
             $amount = $cartFormatter->getTotalAmount();
+            $currency = new Currency($order->id_currency);
 
             if (ob_get_length() > 0) {
                 ob_end_clean();
             }
             header('Content-Type: application/json');
-            die(
-                json_encode(
-                    array(
-                    "amount" => $amount
-                    )
+            die(json_encode(
+                array(
+                    "amount" => $amount,
+                    "currency" => $currency
                 )
-            );
+            ));
         } catch (Exception $e) {
             if (ob_get_length() > 0) {
                 ob_end_clean();
             }
             header('Content-Type: application/json');
-            die(
-                json_encode(
-                    array(
+            die(json_encode(
+                array(
                     "state" => "error",
                     "message" => $e->getTraceAsString()
-                    )
                 )
-            );
+            ));
         }
     }
 }
