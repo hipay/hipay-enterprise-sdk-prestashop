@@ -205,7 +205,7 @@ class ApiCaller
             $moduleInstance->getLogs()->logCallback($operation, $params["operation"]);
 
             // save maintenance data in db
-            if ( isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
+            if (isset($params['duplicate_order']) && $params['duplicate_order'] === 1) {
                 return $operation;
             }
 

@@ -33,7 +33,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6d
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8421ff4eedd1ef36b494adf1a5500c8b'] = 'Verrai reindirizzato a una pagina di pagamento esterna. Si prega di non aggiornare la pagina durante il processo.';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2c84752887477f3a1d1ac7e0b6a39105'] = 'È necessario un certificato SSL per poter elaborare pagamenti con carta di credito utilizzando HiPay. Si prega di consultare le FAQ.';
 $_MODULE['<{hipay_enterprise}prestashop>apihandler_e9a645f9920b7db55c62f023b89d34c5'] = 'Il messaggio era:';
-$_MODULE['<{hipay_enterprise}prestashop>apihandler_36d106fda0d4944b026a68b55e9a8807'] = 'Si è verificato un errore durante la richiesta di manutenzione.';
+$_MODULE['<{hipay_enterprise}prestashop>apihandler_9628326a4593c507d22c379fd927b2ba'] = 'Si è verificato un errore durante la richiesta di manutenzione.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7fe'] = 'Email pagamenti fraudolenti';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_2fb302ad440d0eade342f67f7cfcfb31'] = 'In copia a';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_077040cdb8d3c4db4bb50351a952ef44'] = 'Inserisci una e-mail valida e quando una transazione sarà contestata, verrà inviata un\'e-mail all\'indirizzo specificato.';
