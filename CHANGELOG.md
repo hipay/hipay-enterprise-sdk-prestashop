@@ -5,6 +5,7 @@
 - **Add**: Added Klarna payment method
 - **Add**: Changed minimum Prestashop version for this module to **1.7.6**
 - **Fix**: Removed the requirement to specify a PayPal Merchant ID to enable PayPal V2 functionalities
+- **Fix**: Fixed multi-currency display
 
 ## 2.22.3
 
