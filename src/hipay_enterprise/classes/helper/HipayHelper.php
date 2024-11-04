@@ -882,19 +882,4 @@ class HipayHelper
     {
         return $order->module === $module->name;
     }
-
-    /**
-     * Check if Paypal instance is V2
-     *
-     * @param $paymentProduct
-     * @return bool
-     */
-    public static function isPaypalV2($paymentProduct)
-    {
-        if($paymentProduct['productCode'] == 'paypal' && !empty($paymentProduct['merchantId'])) {
-            return true;
-        }
-
-        return false;
-    }
 }

@@ -1,10 +1,10 @@
-# HiPay Enterprise module for PrestaShop 1.7.x - 8.x
+# HiPay Enterprise module for PrestaShop 1.7.6 - 8.x
 
 <!-- [![Build Status](https://hook.hipay.org/badge-ci/build/pi-ecommerce/hipay-enterprise-sdk-prestashop/develop?service=github)]() -->
 
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/hipay/hipay-enterprise-sdk-prestashop/master/LICENSE.md)
 
-The **HiPay Enterprise module for PrestaShop 1.7.x - 8.x** is a PHP module which allows you to accept payments in your PrestaShop online store, offering innovative features to reduce shopping cart abandonment rates, optimize success rates and enhance the purchasing process on merchants’ sites to significantly increase business volumes without additional investments in the solution CMS e-commerce PrestaShop.
+The **HiPay Enterprise module for PrestaShop 1.7.6 - 8.x** is a PHP module which allows you to accept payments in your PrestaShop online store, offering innovative features to reduce shopping cart abandonment rates, optimize success rates and enhance the purchasing process on merchants’ sites to significantly increase business volumes without additional investments in the solution CMS e-commerce PrestaShop.
 
 ## Getting started
 
@@ -24,18 +24,18 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 
 ## Features
 
-- Compatibility Prestashop 1.7.x - 8.x
-- 35 payment methods
-- Hosted integration (hosted page and Iframe), API integration
-- Direct Post integration (tokenization javascript)
+- Compatibility Prestashop 1.7.6 - 8.x
+- Hosted integration (Hosted Page and Iframe), API integration
+- Direct Post integration (Hosted Fields)
 - Manual and automatic capture
-- Capture and partial refund
+- Complete and partial capture
+- Complete and partial refund
 - OneClick Payment
 - 3D-Secure
 - Risk management
 - And other options
 
-## 35 payment methods in the module HiPay Enterprise
+## Supported payment methods in the module HiPay Enterprise
 
 ### Credit cards
 
@@ -51,12 +51,14 @@ Download the package ZIP available in the folder "_package-ready-for-prestashop_
 - ONEY FacilyPay
 - ONEY Credit Long
 - ONEY Gift Card
+- Alma
 - ApplePay
 - Bancontact Credit Card / QR code
 - BNP Personal Finance
 - GiroPay
 - Ideal
 - Illicado
+- Klarna
 - MBWay
 - Multibanco
 - MyBank

@@ -9,12 +9,12 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
-{if ($HiPay_localPaymentName eq "paypal" && !empty($HiPay_merchantId)) OR $HiPay_localPaymentName eq "applepay"}
+{if ($HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)) OR $HiPay_localPaymentName eq "applepay"}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/paymentButtonForm.tpl"}
 {/if}
 {if $HiPay_localPaymentName eq "applepay"}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputApplePay.tpl"}
-{elseif $HiPay_localPaymentName eq "paypal" && !empty($HiPay_merchantId)}
+{elseif $HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
     <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
@@ -75,6 +75,7 @@
                         $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
 
                         // Fill hidden fields to send to server
+                        $("#{$HiPay_localPaymentName}-paymentProductCode").val(response.payment_product);
                         $("#{$HiPay_localPaymentName}-browserInfo").val(JSON.stringify(response.browser_info));
                         extraFields.forEach(function(field) {
                             $("#{$HiPay_localPaymentName}-" + field).val(response[field]);
@@ -94,6 +95,7 @@
     </script>
     <input type="hidden" name="localSubmit" />
     <input class="ioBB" type="hidden" name="ioBB" />
+    <input id="{$HiPay_localPaymentName}-paymentProductCode" type="hidden" name="HF-paymentProductCode" />
     <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="HF-browserInfo" />
 {else}
     {if $HiPay_iframe}

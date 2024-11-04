@@ -35,14 +35,15 @@ class Hipay_enterprise extends PaymentModule
     public $currencies_titles = [];
     public $moduleCurrencies = [];
     public $_technicalErrors = '';
+    private static $paypalVersion = null;
 
     public function __construct()
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.22.3';
+        $this->version = '2.23.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
-        $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '1.7.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
         $this->author = 'HiPay';
@@ -750,7 +751,7 @@ class Hipay_enterprise extends PaymentModule
                 'HiPay_syncLink' => $this->context->link->getAdminLink('AdminHiPaySynchronizeHashing'),
                 'HiPay_syncToken' => Tools::getAdminTokenLite('AdminHiPaySynchronizeHashing'),
                 'HiPay_updateNotif' => $this->hipayUpdateNotif,
-                'HiPay_prestashopVersion' => _PS_VERSION_,
+                'HiPay_prestashopVersion' => _PS_VERSION_
             ]
         );
 
@@ -849,6 +850,28 @@ class Hipay_enterprise extends PaymentModule
 
         return true;
     }
+
+    /**
+     * Check if PayPal instance is V2
+     *
+     * @param $hipayConfigTool
+     * @param $paymentCode
+     * @return bool
+     * @throws Exception
+     */
+    public static function isPaypalV2($paymentCode, $hipayConfigTool)
+    {
+        if (self::$paypalVersion === null) {
+            $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
+            $paymentsProducts = $hipayProducts->getAvailablePaymentProducts('paypal')[0];
+
+            self::$paypalVersion = isset($paymentsProducts['options']['provider_architecture_version'])
+                && $paymentsProducts['options']['provider_architecture_version'] === 'v1'
+                && !empty($paymentsProducts['options']['payer_id']);
+        }
+
+        return 'paypal' === $paymentCode && self::$paypalVersion;
+    }
 }
 
 if (_PS_VERSION_ >= '1.7') {
@@ -871,3 +894,4 @@ require_once dirname(__FILE__) . '/classes/helper/HipayFormControl.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php';
+require_once dirname(__FILE__) . '/classes/helper/HipayAvailablePaymentProducts.php';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -38,7 +39,7 @@ class DirectPostFormatter extends RequestFormatterAbstract
     public function __construct($moduleInstance, $params)
     {
         parent::__construct($moduleInstance, $params);
-        $this->paymentProduct = $params["productlist"];
+        $this->paymentProduct = $params["paymentProductCode"] ?? $params["productlist"];
         $this->deviceFingerprint = $params["deviceFingerprint"];
         $this->paymentMethod = $params["paymentmethod"];
         $this->provider_data = (isset($params["provider_data"])) ? $params["provider_data"] : '';

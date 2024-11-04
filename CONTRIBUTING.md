@@ -1,8 +1,8 @@
-# Contributing to the HiPay Enterprise module for PrestaShop - 1.7.x - 8.x
+# Contributing to the HiPay Enterprise module for PrestaShop - 1.7.6 - 8.x
 
 > :warning: This repository is a mirror of a private repository for this plugin, so we are not able to merge your PRs directly in GitHub. Any open PRs will be added to the main repository and closed in GitHub. Any contributor will be credited in the plugin's changelog.
 
-Contributions to the HiPay Enterprise module for PrestaShop - 1.7.x - 8.x should be made via GitHub [pull requests][pull-requests] and discussed using GitHub [issues][issues].
+Contributions to the HiPay Enterprise module for PrestaShop - 1.7.6 - 8.x should be made via GitHub [pull requests][pull-requests] and discussed using GitHub [issues][issues].
 
 ## Before you start
 
@@ -86,7 +86,7 @@ Development takes place against the `develop` branch of this repository and pull
 
 ## Licensing
 
-The HiPay Enterprise module for PrestaShop 1.7.x - 8.x is released under an [Apache 2.0][project-license] license. Any code you submit will be released under that license.
+The HiPay Enterprise module for PrestaShop 1.7.6 - 8.x is released under an [Apache 2.0][project-license] license. Any code you submit will be released under that license.
 
 [project-license]: LICENSE.md
 
