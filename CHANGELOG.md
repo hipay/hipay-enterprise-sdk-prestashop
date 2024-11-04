@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.23.0
 
 - **Add**: Added Klarna payment method
 - **Add**: Changed minimum Prestashop version for this module to **1.7.6**
