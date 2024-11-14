@@ -167,7 +167,7 @@ class HipayNotification
 
         $notifications = $this->dbMaintenance->getWaitingNotificationsAndUpdateStatus(
             NotificationStatus::IN_PROGRESS,
-            Configuration::get('HIPAY_NOTIFICATION_THRESHOLD')
+            $this->configHipay['account']['global']['notification_max_retry'] ?? '50'
         );
 
         $totalError = 0;
