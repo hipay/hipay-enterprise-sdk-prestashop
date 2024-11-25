@@ -823,7 +823,7 @@ class HipayNotification
 
             OrderSlip::create(
                 $order,
-                [$product],
+                [$product]
             );
         }
 

@@ -479,6 +479,7 @@ class Hipay_enterprise extends PaymentModule
 
         $this->context->controller->addJS($this->_path . '/views/js/form-input-control.js', 'all');
         $this->context->controller->addJS($this->_path . '/views/js/md5.js', 'all');
+        $this->context->controller->addJS($this->_path . '/views/js/available-payment-products.js', 'all');
     }
 
     public function hookDisplayOrderDetail($params)
@@ -854,20 +855,25 @@ class Hipay_enterprise extends PaymentModule
     /**
      * Check if PayPal instance is V2
      *
-     * @param $hipayConfigTool
      * @param $paymentCode
+     * @param $moduleInstance
      * @return bool
      * @throws Exception
      */
-    public static function isPaypalV2($paymentCode, $hipayConfigTool)
+    public static function isPaypalV2($paymentCode, $moduleInstance)
     {
-        if (self::$paypalVersion === null) {
-            $hipayProducts = HipayAvailablePaymentProducts::getInstance($hipayConfigTool);
-            $paymentsProducts = $hipayProducts->getAvailablePaymentProducts('paypal')[0];
+        if (self::$paypalVersion === null && 'paypal' === $paymentCode) {
+            $availablePaymentProducts = ApiCaller::getAvailablePaymentProduct($moduleInstance, [
+                'payment_product' => $paymentCode,
+                'with_options' => true
+            ]);
 
-            self::$paypalVersion = isset($paymentsProducts['options']['provider_architecture_version'])
-                && $paymentsProducts['options']['provider_architecture_version'] === 'v1'
-                && !empty($paymentsProducts['options']['payer_id']);
+            $paymentsProducts = $availablePaymentProducts[0];
+            $options = $paymentsProducts->getOptions();
+
+            self::$paypalVersion = isset($options['providerArchitectureVersion'])
+                && $options['providerArchitectureVersion'] === 'v1'
+                && !empty($options['payerId']);
         }
 
         return 'paypal' === $paymentCode && self::$paypalVersion;
@@ -894,4 +900,3 @@ require_once dirname(__FILE__) . '/classes/helper/HipayFormControl.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php';
-require_once dirname(__FILE__) . '/classes/helper/HipayAvailablePaymentProducts.php';
