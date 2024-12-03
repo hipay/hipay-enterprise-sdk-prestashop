@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -119,7 +120,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
     {
         $paymentInfo = new PaymentInfo();
 
-        if (!$this->customer->is_guest && isset($this->params["oneClick"]) && $this->params["oneClick"]) {
+        if (!$this->customer->is_guest && isset($this->params["isOneClick"]) && $this->params["isOneClick"]) {
             $dateCartFirstUsed = $this->dbToken->getToken(
                 $this->customer->id,
                 $this->params["cardtoken"]

@@ -12,42 +12,16 @@
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 <form id="tokenizerForm" action="{$HiPay_action}" enctype="application/x-www-form-urlencoded"
     class="form-horizontal hipay-form-17" method="post" name="tokenizerForm" autocomplete="off">
-    {if $HiPay_confHipay.payment.global.card_token}
-        {include file="$hipay_enterprise_tpl_dir/front/partial/ps17/oneclick.tpl"}
-    {/if}
     <div id="error-js" style="display:none" class="alert alert-danger">
         <ul>
             <li class="error"></li>
         </ul>
     </div>
-
-    {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}
-        <div class="option_payment">
-            <span class="custom-radio">
-                <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken" />
-                <span></span>
-            </span>
-            <label for="radio-no-token"><strong>{l s='Pay with a new credit card' mod='hipay_enterprise'}</strong></label>
-        </div>
-    {/if}
     <div id="credit-card-group"
-        class="form-group group-card  {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}collapse{/if}">
+        class="form-group group-card">
         <div class="row">
-            {if $HiPay_savedCC &&  $HiPay_confHipay.payment.global.card_token}
-                <div class="col-md-1"></div>
-            {/if}
             <div class="col-md-11">
                 {include file="$hipay_enterprise_tpl_dir/hook/paymentForm-hosted-fields.tpl"}
-                {if $HiPay_confHipay.payment.global.card_token && !$HiPay_is_guest }
-                    <div class="row">
-                        <span class="custom-checkbox" id="save-credit-card">
-                            <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
-                            <span><i class="material-icons checkbox-checked"></i></span>
-                            <label
-                                for="saveTokenHipay">{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
-                        </span>
-                    </div>
-                {/if}
             </div>
         </div>
     </div>
@@ -70,6 +44,11 @@
         var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.production.api_tokenjs_password_publickey_production}";
     {/if}
 
+    var isOneClickEnabled = typeof PaymentOPC !== 'undefined'
+    ? (prestashop.customer.is_logged ? '{$HiPay_confHipay.payment.global.card_token}' : '')
+    : '{$HiPay_confHipay.payment.global.card_token}';
+    isOneClickEnabled = Boolean(Number(isOneClickEnabled));
+
     var cardHolderFirstName = typeof PaymentOPC !== 'undefined'
     ? (prestashop.customer.is_logged ? '{$HiPay_customerFirstName}' : '')
     : '{$HiPay_customerFirstName}';
@@ -79,6 +58,8 @@
     : '{$HiPay_customerLastName}';
 
     var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
+
+    var savedCards = {$HiPay_savedCC|@json_encode nofilter};
 
     var activatedCreditCard = [];
     {foreach $HiPay_activatedCreditCard as $cc}
