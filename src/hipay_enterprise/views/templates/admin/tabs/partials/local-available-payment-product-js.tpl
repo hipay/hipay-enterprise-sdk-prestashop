@@ -68,6 +68,12 @@
           $(this).find('h4').hide();
         });
 
+        // Set default thresholds
+        $('#alma-3x_minAmount span').html('50 &euro;');
+        $('#alma-3x_maxAmount span').html('2000 &euro;');
+        $('#alma-4x_minAmount span').html('50 &euro;');
+        $('#alma-4x_maxAmount span').html('2000 &euro;');
+
         // Fetch and process products
         return paymentProducts.getAvailableProducts()
           .then(result => {
@@ -95,7 +101,7 @@
             console.error('Error fetching Alma products:', error);
             $('.alma-container').each(function() {
               $(this).find('.loader').remove();
-              $(this).find('h4').html('Error loading data').show();
+              $(this).find('h4').show();
             });
           });
       },
