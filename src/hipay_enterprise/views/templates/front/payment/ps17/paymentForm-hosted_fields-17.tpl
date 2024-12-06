@@ -49,6 +49,8 @@
     : '{$HiPay_confHipay.payment.global.card_token}';
     isOneClickEnabled = Boolean(Number(isOneClickEnabled));
 
+    var number_saved_cards_displayed = {$HiPay_confHipay.payment.global.number_saved_cards_displayed|@json_encode nofilter};
+
     var cardHolderFirstName = typeof PaymentOPC !== 'undefined'
     ? (prestashop.customer.is_logged ? '{$HiPay_customerFirstName}' : '')
     : '{$HiPay_customerFirstName}';
