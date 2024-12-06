@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.24.0
+
+- **Add**: Added dynamic Min/Max functionality for Alma payment method
+- **Fix**: Fixed max retry waiting notification using max retry custom field value
+
 ## 2.23.0
 
 - **Add**: Added Klarna payment method

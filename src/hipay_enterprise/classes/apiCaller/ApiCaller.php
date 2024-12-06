@@ -15,6 +15,7 @@
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/HostedPaymentFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/DirectPostFormatter.php');
 require_once(dirname(__FILE__) . '/../apiFormatter/Request/MaintenanceFormatter.php');
+require_once(dirname(__FILE__) . '/../apiFormatter/Request/AvailablePaymentProductFormatter.php');
 require_once(dirname(__FILE__) . '/../exceptions/GatewayException.php');
 require_once(dirname(__FILE__) . '/../helper/HipayMaintenanceData.php');
 require_once(dirname(__FILE__) . '/../helper/dbquery/HipayDBUtils.php');
@@ -219,6 +220,42 @@ class ApiCaller
                 $moduleInstance,
                 'An error occured during request Maintenance. Please Retry later. Reason [' .
                     $e->getMessage() . ']',
+                $e->getCode(),
+                null
+            );
+        }
+    }
+
+    /**
+     * return available Payment Product
+     *
+     * @param $moduleInstance
+     * @param $params
+     * @return array|\HiPay\Fullservice\Gateway\Model\AvailablePaymentProduct[]|string
+     * @throws GatewayException
+     */
+    public static function getAvailablePaymentProduct($moduleInstance, $params)
+    {
+        try {
+            // HiPay Gateway
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, false);
+
+            //Set data to send to the API
+            $availablePaymentProductFormatter = new AvailablePaymentProductFormatter($moduleInstance, $params);
+
+            $paymentProduct = $availablePaymentProductFormatter->generate();
+            $moduleInstance->getLogs()->logRequest($paymentProduct, 'AvailablePaymentProduct');
+            $availablePaymentProduct = $gatewayClient->requestAvailablePaymentProduct($paymentProduct);
+
+            return $availablePaymentProduct;
+        } catch (Exception $e) {
+            $moduleInstance->getLogs()->logException($e);
+            throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
+                'An error occured during request availablePaymentProduct. Please Retry later. Reason [' .
+                $e->getMessage() .
+                ']',
                 $e->getCode(),
                 null
             );

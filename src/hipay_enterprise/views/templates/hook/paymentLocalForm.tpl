@@ -33,11 +33,17 @@
             {/if}
 
             var container = "hipay-container-hosted-fields-{$HiPay_localPaymentName}";
+            var amount = "{$HiPay_cart.totalAmount}";
             var options = {
                 selector: container,
                 template: "auto",
                 isPaymentPageV2: true
             };
+
+            // Only add request property if container includes 'alma'
+            if (container.toLowerCase().includes('alma')) {
+                options.request = { amount: Number(amount) };
+            }
 
             var localHipay = new HiPay({
                 username: api_tokenjs_username,

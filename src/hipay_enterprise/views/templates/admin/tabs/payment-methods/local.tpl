@@ -147,3 +147,4 @@
         {/if}
     {/foreach}
 </script>
+{include file="../partials/local-available-payment-product-js.tpl"}
