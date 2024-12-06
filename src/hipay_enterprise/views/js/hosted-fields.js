@@ -87,13 +87,20 @@ function initHostedFields() {
       lang
     });
 
+    isCardsDisplayedAreLimited =
+      Number(number_saved_cards_displayed) > 0 &&
+      number_saved_cards_displayed != null &&
+      number_saved_cards_displayed != '';
+
     var config = {
       selector: 'hipayHF-container',
       multi_use: allowMultiUse('#saveTokenHipay'),
       brand: activatedCreditCard,
       one_click: {
         enabled: isOneClickEnabled,
-        cards_display_count: 2,
+        ...(isCardsDisplayedAreLimited && {
+          cards_display_count: Number(number_saved_cards_displayed)
+        }),
         cards: savedCards ? savedCards : []
       },
       fields: {
@@ -121,7 +128,8 @@ function initHostedFields() {
         }
       },
       styles: {
-        base: style.base
+        base: style.base,
+        components: style.components
       }
     };
 

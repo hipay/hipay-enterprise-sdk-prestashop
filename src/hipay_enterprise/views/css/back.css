@@ -215,12 +215,8 @@
 
 #hipay-module select:focus {
   border-color: #a509797e !important;
-  -webkit-box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.075),
-    0 0 8px #a509797e !important;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.075),
-    0 0 8px #a509797e !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #a509797e !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #a509797e !important;
 }
 
 #hipay-module .positioning {
@@ -498,7 +494,7 @@
 }
 .alma-container .loader {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #A50979;
+  border-top: 4px solid #a50979;
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -509,8 +505,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .alma-container {
@@ -521,5 +521,42 @@
 
 .alma-container h4 {
   margin: 0;
-  color: #A50979!important;
+  color: #a50979 !important;
+}
+
+.text-align-left {
+  text-align: left !important;
+}
+
+.one_click_params {
+  margin-bottom: 42px;
+}
+
+.one_click_params .label-tooltip {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.color_inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.color_picker {
+  padding: 0 !important;
+  width: 50px !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.color_picker::-webkit-color-swatch-wrapper {
+  padding: 0 !important;
+}
+
+.color_picker::-webkit-color-swatch {
+  padding: 0 !important;
+}
+.input-invalid {
+  border: 1px solid red !important;
 }
