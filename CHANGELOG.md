@@ -1,9 +1,9 @@
 # Changelog
 
-## UNRELEASE
+## 2.24.0
 
-- **Add**: Added dynamic Min/Max functionlaity for Alma payment method
-- **Fix**: Fixed max retry waiting notificationq using max retry custom field value
+- **Add**: Added dynamic Min/Max functionality for Alma payment method
+- **Fix**: Fixed max retry waiting notification using max retry custom field value
 
 ## 2.23.0
 
