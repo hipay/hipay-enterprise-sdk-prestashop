@@ -419,7 +419,7 @@ class Hipay_enterprise extends PaymentModule
     public function hookActionAdminDeleteBefore()
     {
         if (Tools::getValue('id_customer')) {
-            $this->token->deleteAllToken(Tools::getValue('id_customer'));
+            $this->token->deleteAllCCFromCustomer(Tools::getValue('id_customer'));
         }
     }
 
@@ -432,7 +432,7 @@ class Hipay_enterprise extends PaymentModule
     {
         if (Tools::getValue('customerBox')) {
             foreach (Tools::getValue('customerBox') as $customerId) {
-                $this->token->deleteAllToken($customerId);
+                $this->token->deleteAllCCFromCustomer($customerId);
             }
         }
     }

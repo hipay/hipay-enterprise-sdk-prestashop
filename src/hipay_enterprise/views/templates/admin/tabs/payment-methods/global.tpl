@@ -90,7 +90,7 @@
                 <label class="control-label col-lg-3">
                     <span class="label-tooltip" data-toggle="tooltip" data-html="true" title=""
                         data-original-title="{l s='Allow users to save their card and use saved cards.' mod='hipay_enterprise'}">
-                        {l s='Use Oneclick' mod='hipay_enterprise'}
+                        {l s='Use One-Click' mod='hipay_enterprise'}
                     </span>
                 </label>
                 <div class="col-lg-9">
@@ -130,6 +130,10 @@
                         </label>
                         <input id="number_saved_cards_displayed" class="form-control" type="text" name="number_saved_cards_displayed"
                             value="{$HiPay_config_hipay.payment.global.number_saved_cards_displayed}">
+                    <p class="help-block">
+                        <i class='icon icon-info'></i>
+                        {l s='Leaving the field empty will display all the customer\'s saved cards.' mod='hipay_enterprise'}
+                    </p>
                     </div>
                 </div>
                 <div id="one_click_save_card_switch_button" class="form-group">
@@ -139,7 +143,7 @@
                         <label class="control-label text-align-left">
                             <span class="label-tooltip" data-toggle="tooltip" data-html="true" title=""
                                 data-original-title="{l s='Color of card save button.' mod='hipay_enterprise'}">
-                                {l s='Card save button color' mod='hipay_enterprise'}
+                                {l s='Save button color' mod='hipay_enterprise'}
                             </span>
                         </label>
                         <div class="color_inputs">

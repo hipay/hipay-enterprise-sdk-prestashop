@@ -275,7 +275,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     private function apiSavedCC($token, $cart, $savedCC, $context)
     {
-        if ($tokenDetails = $this->ccToken->getTokenDetails($cart->id_customer, $token)) {
+        if ($tokenDetails = $this->ccToken->getCCDetails($cart->id_customer, $token)) {
             $params = [
                 'deviceFingerprint' => Tools::getValue('ioBB'),
                 'productlist' => $tokenDetails['brand'],
@@ -354,7 +354,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'card_expiry_year' => Tools::getValue('card-expiry-year'),
                 ];
                 if ($isCCSaveNeeded) {
-                    $this->ccToken->saveCCToken($customer->id, $ccToSave);
+                    $this->ccToken->saveCC($customer->id, $ccToSave);
                 }
 
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);

@@ -21,7 +21,12 @@ function upgrade_module_2_24_0($module)
 
     try {
 
-        $sql = 'ALTER TABLE ps_hipay_cc_token MODIFY card_expiry_month VARCHAR(2) NOT NULL, MODIFY card_expiry_year VARCHAR(4) NOT NULL;';
+        $sql = "
+            ALTER TABLE ps_hipay_cc_token ADD UNIQUE (hp_id);
+            ALTER TABLE ps_hipay_cc_token DROP PRIMARY KEY;
+            ALTER TABLE ps_hipay_cc_token ADD PRIMARY KEY (customer_id, pan);
+            ALTER TABLE ps_hipay_cc_token MODIFY card_expiry_month VARCHAR(2) NOT NULL, MODIFY card_expiry_year VARCHAR(4) NOT NULL;
+        ";
 
         if (!Db::getInstance()->execute($sql)) {
             throw  new Exception("Error during SQL request");

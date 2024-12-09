@@ -26,8 +26,8 @@
         </div>
     </div>
 </form>
-<div id="payment-loader-hp" style='text-align: center; display:none;'>
-    <div><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
+<div id="payment-loader-hp" style='text-align: center; display:none; margin-top: 32px; margin-bottom: 32px'>
+    <div style='margin-bottom: 12px'><strong>{l s='Your payment is being processed. Please wait.'  mod='hipay_enterprise'}</strong></div>
     <img src="{$HiPay_this_path_ssl}/views/img/loading.gif" alt="loading payment">
 </div>
 
@@ -68,7 +68,6 @@
         activatedCreditCard.push("{$cc}");
     {/foreach}
     var activatedCreditCardError = "{l s='This credit card type or the order currency is not supported. Please choose an other payment method.' mod='hipay_enterprise'}";
-    var oneClick = !!{$HiPay_confHipay.payment.global.card_token};
 
     var lang = "{$HiPay_languageIsoCode}";
 

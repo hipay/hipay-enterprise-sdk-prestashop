@@ -51,11 +51,11 @@ class HipayCCToken
      *
      * @return void
      */
-    public function saveCCToken($customerId, $card)
+    public function saveCC($customerId, $card)
     {
         $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
         if (!$this->isCCAlreadySaved($customerId, $card['pan'])) {
-            $this->logs->logInfos("# SaveCCToken for customer ID $customerId");
+            $this->logs->logInfos("# Save CC for customer ID $customerId");
 
             $this->dbTokenQuery->insertNewCC($card);
         } else {
@@ -64,7 +64,7 @@ class HipayCCToken
     }
 
     /**
-     * get all saved credit card from customer.
+     * Get all saved credit card from customer.
      *
      * @param int $customerId
      *
@@ -76,20 +76,7 @@ class HipayCCToken
     }
 
     /**
-     * check if customer credit card token exit.
-     *
-     * @param int    $customerId
-     * @param string $token
-     *
-     * @return bool
-     */
-    public function tokenExist($customerId, $token)
-    {
-        return $this->dbTokenQuery->ccTokenExist($customerId, $token);
-    }
-
-    /**
-     * check if customer credit card is already saved
+     * Check if customer credit card is already saved
      *
      * @param int    $customerId
      * @param string $pan
@@ -102,29 +89,29 @@ class HipayCCToken
     }
 
     /**
-     * get token informations.
+     * Get CC informations with token.
      *
      * @param int    $customerId
      * @param string $token
      *
      * @return array<string,mixed>|false
      */
-    public function getTokenDetails($customerId, $token)
+    public function getCCDetails($customerId, $token)
     {
-        return $this->dbTokenQuery->getToken($customerId, $token);
+        return $this->dbTokenQuery->getSavedCCWithToken($customerId, $token);
     }
 
     /**
-     * delete customer credit card token.
+     * Delete customer credit card token.
      *
      * @param int    $customerId
      * @param string $tokenId
      *
      * @return bool
      */
-    public function deleteToken($customerId, $tokenId)
+    public function deleteCC($customerId, $tokenId)
     {
-        return $this->dbTokenQuery->deleteToken($customerId, $tokenId);
+        return $this->dbTokenQuery->deleteCC($customerId, $tokenId);
     }
 
     /**
@@ -132,8 +119,8 @@ class HipayCCToken
      *
      * @return true
      */
-    public function deleteAllToken($customerId)
+    public function deleteAllCCFromCustomer($customerId)
     {
-        return $this->dbTokenQuery->deleteAllToken($customerId);
+        return $this->dbTokenQuery->deleteAllCCFromCustomer($customerId);
     }
 }

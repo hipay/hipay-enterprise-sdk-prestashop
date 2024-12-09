@@ -76,10 +76,6 @@ function displaySecureVaultErrors(errors) {
   }
 }
 
-function isOneClickSelected() {
-  return $('.radio-with-token:checked').length;
-}
-
 function oneClickSelected(form) {
   // at least one of the radio buttons was checked
   $('#tokenizerForm').hide();

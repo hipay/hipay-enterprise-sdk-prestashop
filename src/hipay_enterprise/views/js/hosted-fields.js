@@ -16,22 +16,6 @@ jQuery(document).ready(function ($) {
 });
 
 function initEventsHostedFields() {
-  $('#card-number').focus(function () {
-    $('#radio-no-token').prop('checked', true);
-  });
-
-  $('#radio-no-token').change(function () {
-    $('#credit-card-group').collapse('show');
-  });
-
-  $('.radio-with-token').change(function () {
-    $('#credit-card-group').collapse('hide');
-  });
-
-  $('#saveTokenHipay').change(function () {
-    hipayHF.setMultiUse(allowMultiUse(this));
-  });
-
   $('#tokenizerForm').submit(function (e) {
     var form = this;
     // prevent form from being submitted
@@ -39,11 +23,6 @@ function initEventsHostedFields() {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-      if (isOneClickSelected()) {
-        oneClickSelected(form);
-        return true; // allow whatever action that would normally happen to continue
-      }
-
       hipayHF.getPaymentData().then(
         function (response) {
           if (isCardTypeOk(response)) {
@@ -94,7 +73,6 @@ function initHostedFields() {
 
     var config = {
       selector: 'hipayHF-container',
-      multi_use: allowMultiUse('#saveTokenHipay'),
       brand: activatedCreditCard,
       one_click: {
         enabled: isOneClickEnabled,
@@ -149,6 +127,13 @@ function initHostedFields() {
         } else {
           document.getElementById('pay-other-card');
           cardForm.classList.toggle('hidden');
+        }
+
+        let savedCardsElements = document.getElementsByClassName('saved-card');
+        for (let i = 0; i < savedCardsElements.length; i++) {
+          savedCardsElements[i].onclick = function () {
+            cardForm.classList.add('hidden');
+          };
         }
       });
     } else {

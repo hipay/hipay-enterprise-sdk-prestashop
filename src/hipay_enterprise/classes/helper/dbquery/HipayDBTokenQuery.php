@@ -141,7 +141,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      *
      * @throws PrestaShopDatabaseException
      */
-    public function getToken($customerId, $token)
+    public function getSavedCCWithToken($customerId, $token)
     {
         $sql = 'SELECT *'
             . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
@@ -166,7 +166,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      *
      * @throws PrestaShopDatabaseException
      */
-    public function deleteToken($customerId, $tokenId)
+    public function deleteCC($customerId, $tokenId)
     {
         // check if tokenID exist for this user
         $sqlExist = 'SELECT *'
@@ -195,7 +195,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      * @throws PrestaShopException
      * @throws PrestaShopDatabaseException
      */
-    public function deleteAllToken($customerId)
+    public function deleteAllCCFromCustomer($customerId)
     {
         // delete
         $where = 'customer_id = ' . (int) $customerId;
@@ -213,7 +213,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      * @throws PrestaShopException
      * @throws PrestaShopDatabaseException
      */
-    public function nbAttemptCreateCard($customerId, $paymentStart)
+    public function nbAttemptCreateCC($customerId, $paymentStart)
     {
         $status = [
             TransactionStatus::AUTHORIZED,
