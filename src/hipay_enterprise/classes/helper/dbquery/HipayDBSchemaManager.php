@@ -95,8 +95,6 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
             `card_holder` VARCHAR(255) NOT NULL,
             `card_expiry_month` VARCHAR(2) NOT NULL,
             `card_expiry_year` VARCHAR(4) NOT NULL,
-            `issuer` VARCHAR(255) NOT NULL,
-            `country` VARCHAR(15) NOT NULL,
             `created_at` DATE,
             PRIMARY KEY (`customer_id`, `pan`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
