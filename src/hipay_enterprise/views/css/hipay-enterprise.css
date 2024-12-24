@@ -139,11 +139,11 @@
 }
 
 .HiPayField--focused + .hipayHF-label {
-  color: #A50979 !important;
+  color: #a50979 !important;
 }
 
 .HiPayField--focused + .hipayHF-baseline {
-  color: #A50979 !important;
+  color: #a50979 !important;
 }
 
 .HiPayField--invalid + .hipayHF-label {
@@ -164,7 +164,7 @@
 }
 
 .HiPayField--focused + .hipayHF-label + .hipayHF-baseline {
-  border-bottom: solid 1px #A50979;
+  border-bottom: solid 1px #a50979;
 }
 
 .HiPayField--invalid + .hipayHF-label + .hipayHF-baseline {
@@ -193,7 +193,7 @@
 .hipay-form-17 {
   margin-top: 15px;
   margin-bottom: 15px;
-  margin-left: 2.875rem;
+  margin-left: 1rem;
 }
 
 .hipay-form-17 input,
@@ -311,7 +311,7 @@ a:hover.tooltips span {
 
 .card-js input:focus,
 .card-js select:focus {
-  border-color: #A50979 !important;
+  border-color: #a50979 !important;
 }
 
 .card-js select option[hidden] {
@@ -363,4 +363,24 @@ a:hover.tooltips span {
 
 #paypal-field {
   padding-bottom: 70px;
+}
+
+.hipayHF-container {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.payment-options label {
+  display: flex !important;
+}
+
+.saved-card label:first-child {
+  margin-bottom: 0;
+}
+
+.lbl-saved-cards {
+  margin-bottom: 16px !important;
 }

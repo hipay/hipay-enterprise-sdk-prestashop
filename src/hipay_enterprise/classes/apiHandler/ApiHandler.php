@@ -101,8 +101,6 @@ class Apihandler
         $currency = new Currency((int) $cart->id_currency);
         $customer = new Customer((int) $cart->id_customer);
 
-        $params['multi_use'] = !$customer->is_guest && Tools::isSubmit('saveTokenHipay');
-
         switch ($mode) {
             case ApiMode::DIRECT_POST:
                 $params['paymentmethod'] = $this->getPaymentMethod($params);

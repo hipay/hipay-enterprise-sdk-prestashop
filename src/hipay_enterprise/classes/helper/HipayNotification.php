@@ -865,8 +865,6 @@ class HipayNotification
                         'issuer' => $transaction->getPaymentMethod()->getIssuer(),
                         'country' => $transaction->getPaymentMethod()->getCountry(),
                     ];
-
-                    $this->ccToken->saveCCToken($customerId, $card);
                 }
             }
         } catch (Exception $e) {

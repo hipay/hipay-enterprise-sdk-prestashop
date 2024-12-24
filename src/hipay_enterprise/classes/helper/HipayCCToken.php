@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,7 +11,7 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/dbquery/HipayDBTokenQuery.php';
+require_once dirname(__FILE__) . '/dbquery/HipayDBTokenQuery.php';
 
 /**
  * handle credit card token (OneClik payment).
@@ -43,25 +44,27 @@ class HipayCCToken
     }
 
     /**
-     * save credit card token and other informations.
+     * Save credit card token and other informations.
      *
      * @param int   $customerId
      * @param array $card
      *
      * @return void
      */
-    public function saveCCToken($customerId, $card)
+    public function saveCC($customerId, $card)
     {
-        if (!$this->tokenExist($customerId, $card['token'])) {
-            $this->logs->logInfos("# SaveCCToken for customer ID $customerId");
-            $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
+        $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
+        if (!$this->isCCAlreadySaved($customerId, $card['pan'])) {
+            $this->logs->logInfos("# Save CC for customer ID $customerId");
 
-            $this->dbTokenQuery->setCCToken($card);
+            $this->dbTokenQuery->insertNewCC($card);
+        } else {
+            $this->dbTokenQuery->updateSavedCC($card);
         }
     }
 
     /**
-     * get all saved credit card from customer.
+     * Get all saved credit card from customer.
      *
      * @param int $customerId
      *
@@ -73,42 +76,42 @@ class HipayCCToken
     }
 
     /**
-     * check if customer credit card token exit.
+     * Check if customer credit card is already saved
      *
      * @param int    $customerId
-     * @param string $token
+     * @param string $pan
      *
      * @return bool
      */
-    public function tokenExist($customerId, $token)
+    public function isCCAlreadySaved($customerId, $pan)
     {
-        return $this->dbTokenQuery->ccTokenExist($customerId, $token);
+        return $this->dbTokenQuery->isCCAlreadySaved($customerId, $pan);
     }
 
     /**
-     * get token informations.
+     * Get CC informations with token.
      *
      * @param int    $customerId
      * @param string $token
      *
      * @return array<string,mixed>|false
      */
-    public function getTokenDetails($customerId, $token)
+    public function getCCDetails($customerId, $token)
     {
-        return $this->dbTokenQuery->getToken($customerId, $token);
+        return $this->dbTokenQuery->getSavedCCWithToken($customerId, $token);
     }
 
     /**
-     * delete customer credit card token.
+     * Delete customer credit card token.
      *
      * @param int    $customerId
      * @param string $tokenId
      *
      * @return bool
      */
-    public function deleteToken($customerId, $tokenId)
+    public function deleteCC($customerId, $tokenId)
     {
-        return $this->dbTokenQuery->deleteToken($customerId, $tokenId);
+        return $this->dbTokenQuery->deleteCC($customerId, $tokenId);
     }
 
     /**
@@ -116,8 +119,8 @@ class HipayCCToken
      *
      * @return true
      */
-    public function deleteAllToken($customerId)
+    public function deleteAllCCFromCustomer($customerId)
     {
-        return $this->dbTokenQuery->deleteAllToken($customerId);
+        return $this->dbTokenQuery->deleteAllCCFromCustomer($customerId);
     }
 }

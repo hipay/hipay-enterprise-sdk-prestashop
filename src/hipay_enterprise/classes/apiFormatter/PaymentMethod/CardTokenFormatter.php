@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -35,8 +36,8 @@ class CardTokenFormatter extends ApiFormatterAbstract
     {
         parent::__construct($module);
         $this->cardToken = $params['cardtoken'];
+        $this->isOneClick = (isset($params['isOneClick']) && $params['isOneClick']) ? true : false;
         $this->authenticationIndicator = $params['authentication_indicator'];
-        $this->oneClick = (isset($params['oneClick']) && $params['oneClick']) ? true : false;
     }
 
     /**
@@ -59,7 +60,10 @@ class CardTokenFormatter extends ApiFormatterAbstract
     protected function mapRequest(&$cardTokenRequest)
     {
         $cardTokenRequest->cardtoken = $this->cardToken;
-        $cardTokenRequest->eci = ($this->oneClick) ? ECI::RECURRING_ECOMMERCE : ECI::SECURE_ECOMMERCE;
+        $cardTokenRequest->eci = ECI::SECURE_ECOMMERCE;
         $cardTokenRequest->authentication_indicator = $this->authenticationIndicator;
+        if ($this->isOneClick) {
+            $cardTokenRequest->one_click = 1;
+        }
     }
 }

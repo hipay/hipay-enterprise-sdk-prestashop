@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,14 +11,14 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/../../lib/vendor/autoload.php';
-require_once dirname(__FILE__).'/../../classes/apiHandler/ApiHandler.php';
-require_once dirname(__FILE__).'/../../classes/helper/HipayHelper.php';
-require_once dirname(__FILE__).'/../../classes/helper/HipayCCToken.php';
-require_once dirname(__FILE__).'/../../classes/helper/enums/ThreeDS.php';
-require_once dirname(__FILE__).'/../../classes/helper/enums/ApiMode.php';
-require_once dirname(__FILE__).'/../../classes/helper/enums/UXMode.php';
-require_once dirname(__FILE__).'/../../classes/helper/enums/CardPaymentProduct.php';
+require_once dirname(__FILE__) . '/../../lib/vendor/autoload.php';
+require_once dirname(__FILE__) . '/../../classes/apiHandler/ApiHandler.php';
+require_once dirname(__FILE__) . '/../../classes/helper/HipayHelper.php';
+require_once dirname(__FILE__) . '/../../classes/helper/HipayCCToken.php';
+require_once dirname(__FILE__) . '/../../classes/helper/enums/ThreeDS.php';
+require_once dirname(__FILE__) . '/../../classes/helper/enums/ApiMode.php';
+require_once dirname(__FILE__) . '/../../classes/helper/enums/UXMode.php';
+require_once dirname(__FILE__) . '/../../classes/helper/enums/CardPaymentProduct.php';
 
 /**
  * Class Hipay_enterprisePendingModuleFrontController.
@@ -89,6 +90,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         $apiMode = $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'];
         $isApplePay = false;
         $isPayPalV2 = false;
+        $isOneClick = false;
         // If it's an apple pay payment, force the api mode to direct post
         if ('true' === Tools::getValue('is-apple-pay')) {
             $apiMode = ApiMode::DIRECT_POST;
@@ -97,15 +99,22 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             $apiMode = ApiMode::DIRECT_POST;
             $isPayPalV2 = true;
         }
+
+        if (Tools::getValue('one-click')) {
+            $isOneClick = true;
+        }
+
         switch ($apiMode) {
             case ApiMode::HOSTED_PAGE:
                 if ('redirect' == $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']) {
                     $ccToken = Tools::getValue('ccTokenHipay', '');
-                    if ($this->module->hipayConfigTool->getPaymentGlobal()['card_token']
+                    if (
+                        $this->module->hipayConfigTool->getPaymentGlobal()['card_token']
                         && ((_PS_VERSION_ > '1.7' && !empty($ccToken) && 'noToken' != $ccToken)
                             ||
                             (_PS_VERSION_ < '1.7' &&
-                                (empty($ccToken) || (!empty($ccToken) && 'noToken' != $ccToken))))) {
+                                (empty($ccToken) || (!empty($ccToken) && 'noToken' != $ccToken))))
+                    ) {
                         $path = $this->apiSavedCC(
                             Tools::getValue('ccTokenHipay'),
                             $this->currentCart,
@@ -129,17 +138,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case ApiMode::DIRECT_POST:
                 if ($isPayPalV2) {
                     $this->apiPayPalOrderId($this->currentCart, $this->context);
-                } elseif (Tools::getValue('card-token') && Tools::getValue('card-brand') && Tools::getValue('card-pan')) {
-                    $this->apiNewCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay);
-                } elseif (Tools::getValue('ccTokenHipay')) {
-                    $path = $this->apiSavedCC(
-                        Tools::getValue('ccTokenHipay'),
-                        $this->currentCart,
-                        $this->savedCC,
-                        $this->context
-                    );
-
-                    return $this->setTemplate($path);
+                } elseif (Tools::getValue('card-token')) {
+                    $this->handleCC($this->currentCart, $this->context, $this->customer, $this->savedCC, $isApplePay, $isOneClick);
                 }
         }
     }
@@ -158,7 +158,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             Tools::redirect('index.php?controller=order');
         }
         $this->module->getLogs()->logInfos(
-            '# Redirect init context cart ID '.$this->context->cart->id.' - current cart ID '.$this->currentCart->id
+            '# Redirect init context cart ID ' . $this->context->cart->id . ' - current cart ID ' . $this->currentCart->id
         );
 
         $this->context->smarty->assign(
@@ -170,29 +170,31 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 'HiPay_total' => $this->currentCart->getOrderTotal(true, Cart::BOTH),
                 'HiPay_this_path' => $this->module->getPathUri(),
                 'HiPay_this_path_bw' => $this->module->getPathUri(),
-                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true).
-                    __PS_BASE_URI__.
-                    'modules/'.
-                    $this->module->name.
+                'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) .
+                    __PS_BASE_URI__ .
+                    'modules/' .
+                    $this->module->name .
                     '/',
-                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_.$this->module->name.'/views/templates',
+                'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates',
             ]
         );
 
         $uxMode = $this->module->hipayConfigTool->getPaymentGlobal()['operating_mode']['UXMode'];
 
         $path = (_PS_VERSION_ >= '1.7' ?
-            'module:'.$this->module->name.
-            '/views/templates/front/payment/ps17/paymentForm-'.$uxMode.'-17'
-            : 'payment/ps16/paymentForm-'.$uxMode.'-16').'.tpl';
+            'module:' . $this->module->name .
+            '/views/templates/front/payment/ps17/paymentForm-' . $uxMode . '-17'
+            : 'payment/ps16/paymentForm-' . $uxMode . '-16') . '.tpl';
 
         // Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
             case UXMode::HOSTED_PAGE:
-                if ('redirect' !== $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']
-                    && Tools::getValue('iframeCall')) {
+                if (
+                    'redirect' !== $this->module->hipayConfigTool->getPaymentGlobal()['display_hosted_page']
+                    && Tools::getValue('iframeCall')
+                ) {
                     $this->module->getLogs()->logInfos(
-                        '# UXMode: '.$uxMode.' (Iframe case) - Redirect to path '.$path
+                        '# UXMode: ' . $uxMode . ' (Iframe case) - Redirect to path ' . $path
                     );
                     $this->context->smarty->assign(
                         [
@@ -206,18 +208,18 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                         ]
                     );
                     $path = (_PS_VERSION_ >= '1.7' ?
-                            'module:'.$this->module->name.
-                            '/views/templates/front/payment/ps17/paymentFormIframe-17'
-                            : 'payment/ps16/paymentFormIframe-16').'.tpl';
+                        'module:' . $this->module->name .
+                        '/views/templates/front/payment/ps17/paymentFormIframe-17'
+                        : 'payment/ps16/paymentFormIframe-16') . '.tpl';
                 } elseif ($this->module->hipayConfigTool->getPaymentGlobal()['card_token'] && _PS_VERSION_ < '1.7') {
                     $this->module->getLogs()->logInfos(
-                        '# UXMode: '.$uxMode.' (PS_VERSION < 1.7) - Redirect to path '.$path
+                        '# UXMode: ' . $uxMode . ' (PS_VERSION < 1.7) - Redirect to path ' . $path
                     );
                     $this->assignTemplate();
-                    $path = 'payment/ps16/paymentForm-'.$uxMode.'-16.tpl';
+                    $path = 'payment/ps16/paymentForm-' . $uxMode . '-16.tpl';
                 } else {
                     // Impossible case but necessary
-                    $this->module->getLogs()->logInfos('# UXMode: '.$uxMode.' (Else case) - Redirect to path '.$path);
+                    $this->module->getLogs()->logInfos('# UXMode: ' . $uxMode . ' (Else case) - Redirect to path ' . $path);
                     $this->module->getLogs()->logInfos($this->currentCart);
                     $this->assignTemplate();
                     $this->context->smarty->assign(
@@ -235,7 +237,7 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 break;
             case UXMode::DIRECT_POST:
             case UXMode::HOSTED_FIELDS:
-                $this->module->getLogs()->logInfos('# UXMode: '.$uxMode.' - Redirect to path '.$path);
+                $this->module->getLogs()->logInfos('# UXMode: ' . $uxMode . ' - Redirect to path ' . $path);
                 $this->module->getLogs()->logInfos($this->currentCart);
                 $this->assignTemplate();
                 break;
@@ -273,16 +275,16 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
      */
     private function apiSavedCC($token, $cart, $savedCC, $context)
     {
-        if ($tokenDetails = $this->ccToken->getTokenDetails($cart->id_customer, $token)) {
+        if ($tokenDetails = $this->ccToken->getCCDetails($cart->id_customer, $token)) {
             $params = [
                 'deviceFingerprint' => Tools::getValue('ioBB'),
                 'productlist' => $tokenDetails['brand'],
                 'cardtoken' => $tokenDetails['token'],
                 'card_holder' => $tokenDetails['card_holder'],
                 'card_pan' => $tokenDetails['pan'],
-                'card_expiration_date' => '0'.
-                    $tokenDetails['card_expiry_month'].
-                    '/'.
+                'card_expiration_date' => '0' .
+                    $tokenDetails['card_expiry_month'] .
+                    '/' .
                     $tokenDetails['card_expiry_year'],
                 'oneClick' => true,
                 'method' => $tokenDetails['brand'],
@@ -311,18 +313,19 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 ]
             );
 
-            return 'payment/ps16/paymentForm-'.UXMode::DIRECT_POST.'-16.tpl';
+            return 'payment/ps16/paymentForm-' . UXMode::DIRECT_POST . '-16.tpl';
         }
     }
 
     /**
-     * Handle Credit card payment (not one click).
+     * Handle Credit card payment
      *
      * @return string
      */
-    private function apiNewCC($cart, $context, $customer, $savedCC, $isApplePay)
+    private function handleCC($cart, $context, $customer, $savedCC, $isApplePay, $isOneClick)
     {
         $selectedCC = Tools::getValue('card-brand');
+        $isCCSaveNeeded = (bool) Tools::getValue('multi-use');
 
         if (in_array($selectedCC, array_keys($this->creditCard))) {
             try {
@@ -332,14 +335,28 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'cardtoken' => Tools::getValue('card-token'),
                     'card_holder' => Tools::getValue('card-holder'),
                     'card_pan' => Tools::getValue('card-pan'),
-                    'card_expiration_date' => Tools::getValue('card-expiry-month').
-                        '/'.
+                    'card_expiration_date' => Tools::getValue('card-expiry-month') .
+                        '/' .
                         Tools::getValue('card-expiry-year'),
                     'method' => $selectedCC,
                     'authentication_indicator' => $this->setAuthenticationIndicator($cart),
                     'browser_info' => json_decode(Tools::getValue('browserInfo')),
                     'isApplePay' => $isApplePay,
+                    'isOneClick' => $isOneClick,
                 ];
+
+                $ccToSave = [
+                    'token' => Tools::getValue('card-token'),
+                    'brand' => Tools::getValue('card-brand'),
+                    'pan' => Tools::getValue('card-pan'),
+                    'card_holder' => Tools::getValue('card-holder'),
+                    'card_expiry_month' => Tools::getValue('card-expiry-month'),
+                    'card_expiry_year' => Tools::getValue('card-expiry-year'),
+                ];
+                if ($isCCSaveNeeded) {
+                    $this->ccToken->saveCC($customer->id, $ccToSave);
+                }
+
                 $this->apiHandler->handleCreditCard(ApiMode::DIRECT_POST, $params);
             } catch (Exception $e) {
                 $this->module->getLogs()->logException($e);
@@ -390,9 +407,9 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
     {
         parent::setMedia();
 
-        $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/cc.functions.js']);
-        $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/devicefingerprint.js']);
-        $this->addCSS([_MODULE_DIR_.'hipay_enterprise/views/css/hipay-enterprise.css']);
+        $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/cc.functions.js']);
+        $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js']);
+        $this->addCSS([_MODULE_DIR_ . 'hipay_enterprise/views/css/hipay-enterprise.css']);
         $this->context->controller->addJS(
             [
                 $this->module->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
@@ -403,13 +420,13 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
         // Displaying different forms depending of the operating mode chosen in the BO configuration
         switch ($uxMode) {
             case UXMode::DIRECT_POST:
-                $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/strings.js']);
-                $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/card-js.min.js']);
-                $this->addCSS([_MODULE_DIR_.'hipay_enterprise/views/css/card-js.min.css']);
-                $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/form-input-control.js']);
+                $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/strings.js']);
+                $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/card-js.min.js']);
+                $this->addCSS([_MODULE_DIR_ . 'hipay_enterprise/views/css/card-js.min.css']);
+                $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/form-input-control.js']);
                 break;
             case UXMode::HOSTED_FIELDS:
-                $this->addJS([_MODULE_DIR_.'hipay_enterprise/views/js/hosted-fields.js']);
+                $this->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/hosted-fields.js']);
                 break;
         }
     }
@@ -429,7 +446,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
             case ThreeDS::THREE_D_S_TRY_ENABLE_RULES:
                 $cartSummary = $cart->getSummaryDetails();
                 foreach ($this->module->hipayConfigTool->getPaymentGlobal()['3d_secure_rules'] as $rule) {
-                    if (isset($cartSummary[$rule['field']]) &&
+                    if (
+                        isset($cartSummary[$rule['field']]) &&
                         !$this->criteriaMet(
                             (int) $cartSummary[$rule['field']],
                             html_entity_decode($rule['operator']),
@@ -447,7 +465,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                 $cartSummary = $cart->getSummaryDetails();
 
                 foreach ($this->module->hipayConfigTool->getPaymentGlobal()['3d_secure_rules'] as $rule) {
-                    if (isset($cartSummary[$rule['field']]) &&
+                    if (
+                        isset($cartSummary[$rule['field']]) &&
                         !$this->criteriaMet(
                             (int) $cartSummary[$rule['field']],
                             html_entity_decode($rule['operator']),

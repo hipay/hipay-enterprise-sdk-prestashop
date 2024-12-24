@@ -14,23 +14,8 @@ jQuery(document).ready(function ($) {
     });
   }
 });
+
 function initEventsHostedFields() {
-  $('#card-number').focus(function () {
-    $('#radio-no-token').prop('checked', true);
-  });
-
-  $('#radio-no-token').change(function () {
-    $('#credit-card-group').collapse('show');
-  });
-
-  $('.radio-with-token').change(function () {
-    $('#credit-card-group').collapse('hide');
-  });
-
-  $('#saveTokenHipay').change(function () {
-    hipayHF.setMultiUse(allowMultiUse(this));
-  });
-
   $('#tokenizerForm').submit(function (e) {
     var form = this;
     // prevent form from being submitted
@@ -38,11 +23,6 @@ function initEventsHostedFields() {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-      if (isOneClickSelected()) {
-        oneClickSelected(form);
-        return true; // allow whatever action that would normally happen to continue
-      }
-
       hipayHF.getPaymentData().then(
         function (response) {
           if (isCardTypeOk(response)) {
@@ -86,11 +66,25 @@ function initHostedFields() {
       lang
     });
 
+    isCardsDisplayedAreLimited =
+      Number(number_saved_cards_displayed) > 0 &&
+      number_saved_cards_displayed != null &&
+      number_saved_cards_displayed != '';
+
     var config = {
       selector: 'hipayHF-container',
-      multi_use: allowMultiUse('#saveTokenHipay'),
       brand: activatedCreditCard,
+      one_click: {
+        enabled: isOneClickEnabled,
+        ...(isCardsDisplayedAreLimited && {
+          cards_display_count: Number(number_saved_cards_displayed)
+        }),
+        cards: savedCards ? savedCards : []
+      },
       fields: {
+        savedCards: {
+          selector: 'hipayHF-card-saved-cards'
+        },
         cardHolder: {
           selector: 'hipayHF-card-holder',
           defaultFirstname: cardHolderFirstName,
@@ -106,16 +100,46 @@ function initHostedFields() {
           selector: 'hipayHF-cvc',
           helpButton: true,
           helpSelector: 'hipayHF-help-cvc'
+        },
+        savedCardButton: {
+          selector: 'hipayHF-saved-card-btn'
         }
       },
       styles: {
-        base: style.base
+        base: style.base,
+        components: style.components
       }
     };
 
     hipayHF = hipay.create('card', config);
 
     hipay.injectBaseStylesheet();
+
+    if (isOneClickEnabled) {
+      hipayHF.on('ready', function () {
+        var cardForm = document.getElementById('hipayHF-card-form-container');
+        if (savedCards) {
+          document
+            .getElementById('pay-other-card')
+            .addEventListener('click', (e) => {
+              cardForm.classList.toggle('hidden');
+            });
+        } else {
+          document.getElementById('pay-other-card');
+          cardForm.classList.toggle('hidden');
+        }
+
+        let savedCardsElements = document.getElementsByClassName('saved-card');
+        for (let i = 0; i < savedCardsElements.length; i++) {
+          savedCardsElements[i].onclick = function () {
+            cardForm.classList.add('hidden');
+          };
+        }
+      });
+    } else {
+      var cardForm = document.getElementById('hipayHF-card-form-container');
+      cardForm.classList.toggle('hidden');
+    }
 
     hipayHF.on('blur', function (data) {
       // Get error container
