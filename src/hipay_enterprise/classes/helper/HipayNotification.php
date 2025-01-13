@@ -249,7 +249,7 @@ class HipayNotification
 
             //when empty $order maybe we got multiple order for multiple carrier
             if (empty($order)) {
-                $duplicateOrder = true;
+                $multipleCarrierOrder = true;
             }
 
             $this->dbUtils->setSQLLockForCart(
@@ -453,7 +453,7 @@ class HipayNotification
 
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
 
-            if (isset($duplicateOrder) && $duplicateOrder === true) {
+            if (isset($multipleCarrierOrder) && $multipleCarrierOrder === true) {
                 //trigger notification error for the next order
                 throw new NotificationException(
                     'Multiple Vendor/Carrier duplicate order',
