@@ -456,7 +456,7 @@ class HipayNotification
             if (isset($multipleCarrierOrder) && $multipleCarrierOrder === true) {
                 //trigger notification error for the next order
                 throw new NotificationException(
-                    'Multiple Vendor/Carrier duplicate order',
+                    'Multiple Vendor/Carrier order',
                     Context::getContext(),
                     $this->module, 'HTTP/1.0 404 Not found'
                 );
