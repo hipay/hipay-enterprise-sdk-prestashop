@@ -529,6 +529,7 @@ class HipayNotification
 
             // init context
             Context::getContext()->cart = new Cart((int) $cart->id);
+            Context::getContext()->cart->getProducts();
             $address = new Address((int) Context::getContext()->cart->id_address_invoice);
             Context::getContext()->country = new Country((int) $address->id_country);
             Context::getContext()->customer = new Customer((int) Context::getContext()->cart->id_customer);
