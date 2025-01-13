@@ -247,6 +247,11 @@ class HipayNotification
                 }
             }
 
+            //when empty $order maybe we got multiple order for multiple carrier
+            if (empty($order)) {
+                $duplicateOrder = true;
+            }
+
             $this->dbUtils->setSQLLockForCart(
                 $order->id,
                 '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
@@ -447,6 +452,15 @@ class HipayNotification
             }
 
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
+
+            if (isset($duplicateOrder) && $duplicateOrder === true) {
+                //trigger notification error for the next order
+                throw new NotificationException(
+                    'Multiple Vendor/Carrier duplicate order',
+                    Context::getContext(),
+                    $this->module, 'HTTP/1.0 404 Not found'
+                );
+            }
         } catch (Exception $e) {
             $this->dbUtils->releaseSQLLock(
                 get_class($e) . ' # processTransaction ' . $transaction->getStatus() . ' for cart ID : ' . $cart->id
