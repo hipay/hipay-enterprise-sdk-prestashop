@@ -247,15 +247,15 @@ class HipayNotification
                 }
             }
 
-            //when empty $order maybe we got multiple order for multiple carrier
+            // When empty $order maybe we've got multiple orders from multiple carriers or vendors
             if (empty($order)) {
                 $multipleCarrierOrder = true;
+            } else {
+                $this->dbUtils->setSQLLockForCart(
+                    $order->id,
+                    '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
+                );
             }
-
-            $this->dbUtils->setSQLLockForCart(
-                $order->id,
-                '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
-            );
 
             foreach ($orders as $order) {
                 $orderInBase = $this->dbUtils->getTransactionByOrderId($order->id);
@@ -454,11 +454,12 @@ class HipayNotification
             $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
 
             if (isset($multipleCarrierOrder) && $multipleCarrierOrder === true) {
-                //trigger notification error for the next order
+                // Trigger notification error for the next order
                 throw new NotificationException(
                     'Multiple Vendor/Carrier order',
                     Context::getContext(),
-                    $this->module, 'HTTP/1.0 404 Not found'
+                    $this->module,
+                    'HTTP/1.0 404 Not found'
                 );
             }
         } catch (Exception $e) {
