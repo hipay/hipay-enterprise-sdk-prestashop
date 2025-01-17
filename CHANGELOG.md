@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix** : Fixed updates of orders based on multiple carriers or vendors
+
 ## 2.24.0
 
 - **Add**: Added dynamic Min/Max functionality for Alma payment method
