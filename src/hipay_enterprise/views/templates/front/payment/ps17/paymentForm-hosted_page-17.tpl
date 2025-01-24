@@ -57,12 +57,6 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                if (isOneClickSelected()) {
-                    $("#hpaymentForm").hide();
-                    $("#payment-loader-hp").show();
-                    $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
-                }
-
                 form.submit();
                 return true;
             });
