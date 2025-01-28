@@ -71,6 +71,10 @@ function initHostedFields() {
       number_saved_cards_displayed != null &&
       number_saved_cards_displayed != '';
 
+    isCustomerHasCards =
+      savedCards.length > 0 &&
+      savedCards.some((card) => paymentProductsActivated.includes(card.brand));
+
     var config = {
       selector: 'hipayHF-container',
       brand: activatedCreditCard,
@@ -79,7 +83,7 @@ function initHostedFields() {
         ...(isCardsDisplayedAreLimited && {
           cards_display_count: Number(number_saved_cards_displayed)
         }),
-        cards: savedCards ? savedCards : []
+        cards: isCustomerHasCards ? savedCards : []
       },
       fields: {
         savedCards: {
@@ -118,7 +122,7 @@ function initHostedFields() {
     if (isOneClickEnabled) {
       hipayHF.on('ready', function () {
         var cardForm = document.getElementById('hipayHF-card-form-container');
-        if (savedCards) {
+        if (isCustomerHasCards) {
           document
             .getElementById('pay-other-card')
             .addEventListener('click', (e) => {

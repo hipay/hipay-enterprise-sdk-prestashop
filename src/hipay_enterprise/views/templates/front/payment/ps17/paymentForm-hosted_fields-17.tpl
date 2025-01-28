@@ -59,6 +59,9 @@
     ? (prestashop.customer.is_logged ? '{$HiPay_customerLastName}' : '')
     : '{$HiPay_customerLastName}';
 
+    var paymentProducts = {$HiPay_confHipay.payment.credit_card|@json_encode nofilter}
+    var paymentProductsActivated = Object.keys(paymentProducts).filter(key => paymentProducts[key].activated === "1");
+
     var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
 
     var savedCards = {$HiPay_savedCC|@json_encode nofilter};
