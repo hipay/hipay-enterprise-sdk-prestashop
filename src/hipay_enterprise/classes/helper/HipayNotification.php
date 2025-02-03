@@ -451,8 +451,6 @@ class HipayNotification
                 }
             }
 
-            $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
-
             if (isset($multipleCarrierOrder) && $multipleCarrierOrder === true) {
                 // Trigger notification error for the next order
                 throw new NotificationException(
@@ -461,6 +459,8 @@ class HipayNotification
                     $this->module,
                     'HTTP/1.0 404 Not found'
                 );
+            } else {
+                $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
             }
         } catch (Exception $e) {
             $this->dbUtils->releaseSQLLock(
