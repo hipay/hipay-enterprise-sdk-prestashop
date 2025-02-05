@@ -73,7 +73,10 @@ function initHostedFields() {
 
     isCustomerHasCards =
       savedCards.length > 0 &&
-      savedCards.some((card) => paymentProductsActivated.includes(card.brand));
+      (paymentProductsActivated.length == 0 ||
+        savedCards.some((card) =>
+          paymentProductsActivated.includes(card.brand)
+        ));
 
     var config = {
       selector: 'hipayHF-container',
