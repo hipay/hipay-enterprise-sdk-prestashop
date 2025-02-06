@@ -132,7 +132,7 @@ class HipayNotification
             $result = $this->processTransaction(
                 $transaction,
                 $cart,
-                $this->saveNotificationAttempt($transaction, $cart)
+                $this->getNotificationAttemptCount($transaction, $cart)
             );
 
             // Show result in response
@@ -1250,6 +1250,27 @@ class HipayNotification
         }
 
         return $orders;
+    }
+
+    /**
+     * @param $transaction
+     * @param string $status
+     * @param $cart
+     * @return int
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    private function getNotificationAttemptCount($transaction, $cart,  $status = NotificationStatus::IN_PROGRESS)
+    {
+        $data = [
+            'cart_id' => $cart->id,
+            'transaction_ref' => $transaction->getTransactionReference(),
+            'notification_code' => $transaction->getStatus(),
+            'status' => $status,
+        ];
+
+        return $this->dbMaintenance->getNotificationAttempt($data);
     }
 
     /**
