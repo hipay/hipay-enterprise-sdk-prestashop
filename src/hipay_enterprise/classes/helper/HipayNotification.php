@@ -1253,9 +1253,9 @@ class HipayNotification
     }
 
     /**
-     * @param $transaction
+     * @param Transaction $transaction
+     * @param Cart $cart
      * @param string $status
-     * @param $cart
      * @return int
      *
      * @throws PrestaShopDatabaseException
