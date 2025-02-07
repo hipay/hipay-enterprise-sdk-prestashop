@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,6 +11,8 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
+
+use PrestaShop\PrestaShop\Core\Domain\CartRule\ValueObject\GiftProduct;
 
 /**
  * Helper class.
@@ -106,7 +109,7 @@ class HipayHelper
      */
     public static function generateOperationId($order, $operation, $transactionAttempt)
     {
-        return $order->id.'-'.$operation.'-'.($transactionAttempt + 1);
+        return $order->id . '-' . $operation . '-' . ($transactionAttempt + 1);
     }
 
     /**
@@ -176,7 +179,8 @@ class HipayHelper
         $hashAlgorithm = $config['account']['hash_algorithm'][$environment];
 
         $isValidSignature = HiPay\Fullservice\Helper\Signature::isValidHttpSignature($passphrase, $hashAlgorithm);
-        if (!$isValidSignature
+        if (
+            !$isValidSignature
             && !HiPay\Fullservice\Helper\Signature::isSameHashAlgorithm($passphrase, $hashAlgorithm)
         ) {
             $module->getLogs()->logInfos(
@@ -284,19 +288,19 @@ class HipayHelper
         if (!empty($product['reference'])) {
             if (isset($product['attributes_small'])) {
                 // Product with declinaison
-                $reference = $product['reference'].'-'.HipayHelper::slugify($product['attributes_small']);
+                $reference = $product['reference'] . '-' . HipayHelper::slugify($product['attributes_small']);
             } else {
                 // Product simple or virtual
                 $reference = $product['reference'];
             }
         } else {
-            $reference = $product['id_product'].
-                '-'.
-                $product['id_product_attribute'].
-                '-'.
+            $reference = $product['id_product'] .
+                '-' .
+                $product['id_product_attribute'] .
+                '-' .
                 HipayHelper::slugify($product['name']);
             if (isset($product['attributes_small'])) {
-                $reference .= '-'.HipayHelper::slugify($product['attributes_small']);
+                $reference .= '-' . HipayHelper::slugify($product['attributes_small']);
             }
         }
 
@@ -312,7 +316,7 @@ class HipayHelper
      */
     public static function getCarrierRef($carrier)
     {
-        $reference = $carrier->id.'-'.HipayHelper::slugify($carrier->name);
+        $reference = $carrier->id . '-' . HipayHelper::slugify($carrier->name);
 
         return $reference;
     }
@@ -329,7 +333,7 @@ class HipayHelper
         if (!empty($discount['code'])) {
             $reference = $discount['code'];
         } else {
-            $reference = $discount['id_cart_rule'].'-'.HipayHelper::slugify($discount['name']);
+            $reference = $discount['id_cart_rule'] . '-' . HipayHelper::slugify($discount['name']);
         }
 
         return $reference;
@@ -377,7 +381,7 @@ class HipayHelper
             $admin = explode(DIRECTORY_SEPARATOR, _PS_ADMIN_DIR_);
             $lastElement = array_slice($admin, -1);
             $adminFolder = array_pop($lastElement);
-            $adminUrl = _PS_BASE_URL_.__PS_BASE_URI__.$adminFolder.'/';
+            $adminUrl = _PS_BASE_URL_ . __PS_BASE_URI__ . $adminFolder . '/';
         } else {
             $adminUrl = '';
         }
@@ -395,7 +399,7 @@ class HipayHelper
      */
     public static function getHipayToken($cartId, $page = 'validation.php')
     {
-        return md5(Tools::getToken($page).$cartId);
+        return md5(Tools::getToken($page) . $cartId);
     }
 
     /**
@@ -408,7 +412,7 @@ class HipayHelper
      */
     public static function getHipayAdminToken($tab, $orderID)
     {
-        return md5(Tools::getAdminTokenLite($tab).$orderID);
+        return md5(Tools::getAdminTokenLite($tab) . $orderID);
     }
 
     public static function redirectToExceptionPage($context, $moduleInstance)
@@ -550,14 +554,16 @@ class HipayHelper
             // - has no specific currency or is active in the active currency
             // - Has the right amount
             // Accepts this version of prestashop
-            if ($settings['activated'] &&
+            if (
+                $settings['activated'] &&
                 (empty($settings['countries']) || in_array($country->iso_code, $settings['countries'])) &&
                 (empty($settings['currencies']) || in_array($currency->iso_code, $settings['currencies'])) &&
                 self::isOrderTotalWithinLimits($module, $orderTotal, $settings) &&
                 (empty($settings['minPrestashopVersion']) || ($settings['minPrestashopVersion'] <= _PS_VERSION_))
             ) {
                 if ('local_payment' == $paymentMethodType) {
-                    if (Order::ROUND_LINE == Configuration::get('PS_ROUND_TYPE') ||
+                    if (
+                        Order::ROUND_LINE == Configuration::get('PS_ROUND_TYPE') ||
                         Order::ROUND_ITEM == Configuration::get('PS_ROUND_TYPE') ||
                         !$settings['basketRequired']
                     ) {
@@ -569,8 +575,8 @@ class HipayHelper
                             true
                         );
 
-                        $activatedPayment[$name]['payment_button'] = $module->getPath().
-                            'views/img/'.
+                        $activatedPayment[$name]['payment_button'] = $module->getPath() .
+                            'views/img/' .
                             (isset($settings['logo']) ? $settings['logo'] : 'logo.png');
 
                         $checkoutFieldsMandatory = isset(
@@ -658,7 +664,7 @@ class HipayHelper
             $shop = new Shop($shopId);
             // forced shop
             Shop::setContext(Shop::CONTEXT_SHOP, $cart->id_shop);
-            if(!self::orderExists((int) $cart->id)) {
+            if (!self::orderExists((int) $cart->id)) {
                 $module->validateOrder(
                     (int) $cart->id,
                     $status,
@@ -672,10 +678,10 @@ class HipayHelper
                     $shop
                 );
             } else {
-                $module->getLogs()->logInfos('## Validate order ( cart '.$cart->id.' exist but order '.$orderId.' too )');
+                $module->getLogs()->logInfos('## Validate order ( cart ' . $cart->id . ' exist but order ' . $orderId . ' too )');
             }
         } else {
-            $module->getLogs()->logInfos('## Validate order ( order '.$orderId.' already exist )');
+            $module->getLogs()->logInfos('## Validate order ( order ' . $orderId . ' already exist )');
         }
 
         if ($customer) {
@@ -695,13 +701,23 @@ class HipayHelper
      *
      * @return bool
      */
-    public static function duplicateCart($cart)
+    public static function duplicateCart($currentCart)
     {
         $context = Context::getContext();
-        $duplication = $cart->duplicate();
+        $cart = new Cart($currentCart->id);
+        $cartRules = $cart->getCartRules();
+        $duplicationCart = $cart->duplicate();
 
-        if ($duplication['success']) {
-            $context->cookie->id_cart = $duplication['cart']->id;
+        foreach ($cartRules as $rule) {
+            $duplicationCart['cart']->addCartRule($rule['id_cart_rule']);
+            // If the discount is a gift, you don't want to re-apply the discount to add another quantity.
+            if (!empty($rule['gift_product']) && (int) $rule['gift_product'] > 0) {
+                $duplicationCart['cart']->updateQty(-1, $rule['gift_product'], $rule['gift_product_attribute']);
+            }
+        }
+
+        if ($duplicationCart['success']) {
+            $context->cookie->id_cart = $duplicationCart['cart']->id;
             $context->cookie->write();
             $context->cookie->update();
 
@@ -739,7 +755,7 @@ class HipayHelper
     {
         if ($cart_id) {
             $result = (bool) Db::getInstance()->getValue(
-                'SELECT COUNT(*) FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int) $cart_id
+                'SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'orders` WHERE `id_cart` = ' . (int) $cart_id
             );
 
             return $result;
@@ -858,13 +874,13 @@ class HipayHelper
         // Delete all the details of the slip
         $result &= Db::getInstance()->delete(
             'order_slip_detail',
-            'id_order_slip = '.$orderSlip->id
+            'id_order_slip = ' . $orderSlip->id
         );
 
         // Delete de slip
         $result &= Db::getInstance()->delete(
             'order_slip',
-            'id_order_slip = '.$orderSlip->id
+            'id_order_slip = ' . $orderSlip->id
         );
 
         return $result;

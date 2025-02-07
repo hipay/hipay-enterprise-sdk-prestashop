@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Fix** : Fixed updates of orders based on multiple carriers or vendors
+- **Fix** : Fixed disappearance of basket discounts when payment failed
 
 ## 2.24.0
 
