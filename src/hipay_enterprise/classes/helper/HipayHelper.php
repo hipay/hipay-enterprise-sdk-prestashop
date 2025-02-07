@@ -711,7 +711,7 @@ class HipayHelper
         foreach ($cartRules as $rule) {
             $duplicationCart['cart']->addCartRule($rule['id_cart_rule']);
             // If the discount is a gift, you don't want to re-apply the discount to add another quantity.
-            if ($rule['gift_product'] !== "0") {
+            if (!empty($rule['gift_product']) && (int) $rule['gift_product'] > 0) {
                 $duplicationCart['cart']->updateQty(-1, $rule['gift_product'], $rule['gift_product_attribute']);
             }
         }
