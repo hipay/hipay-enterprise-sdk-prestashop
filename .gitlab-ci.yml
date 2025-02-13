@@ -81,6 +81,7 @@ variables:
   rules:
     - if: $ONLY_DEPLOY
       when: never
+    - when: on_success
 
 .login_to_registry: &login-to-registry
   before_script:
@@ -249,6 +250,7 @@ package:
   rules:
     - if: $ONLY_DEPLOY
       when: never
+    - when: on_success
 
 # Job to get JIRA tickets of the release
 get-jira-tickets:
