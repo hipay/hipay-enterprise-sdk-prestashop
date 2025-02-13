@@ -132,7 +132,7 @@ class HipayNotification
             $result = $this->processTransaction(
                 $transaction,
                 $cart,
-                $this->saveNotificationAttempt($transaction, $cart)
+                $this->getNotificationAttemptCount($transaction, $cart)
             );
 
             // Show result in response
@@ -247,10 +247,15 @@ class HipayNotification
                 }
             }
 
-            $this->dbUtils->setSQLLockForCart(
-                $order->id,
-                '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
-            );
+            // When empty $order maybe we've got multiple orders from multiple carriers or vendors
+            if (empty($order)) {
+                $multipleCarrierOrder = true;
+            } else {
+                $this->dbUtils->setSQLLockForCart(
+                    $order->id,
+                    '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
+                );
+            }
 
             foreach ($orders as $order) {
                 $orderInBase = $this->dbUtils->getTransactionByOrderId($order->id);
@@ -446,7 +451,17 @@ class HipayNotification
                 }
             }
 
-            $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
+            if (isset($multipleCarrierOrder) && $multipleCarrierOrder === true) {
+                // Trigger notification error for the next order
+                throw new NotificationException(
+                    'Multiple Vendor/Carrier order',
+                    Context::getContext(),
+                    $this->module,
+                    'HTTP/1.0 404 Not found'
+                );
+            } else {
+                $this->updateNotificationState($transaction, NotificationStatus::SUCCESS);
+            }
         } catch (Exception $e) {
             $this->dbUtils->releaseSQLLock(
                 get_class($e) . ' # processTransaction ' . $transaction->getStatus() . ' for cart ID : ' . $cart->id
@@ -529,6 +544,7 @@ class HipayNotification
 
             // init context
             Context::getContext()->cart = new Cart((int) $cart->id);
+            Context::getContext()->cart->getProducts();
             $address = new Address((int) Context::getContext()->cart->id_address_invoice);
             Context::getContext()->country = new Country((int) $address->id_country);
             Context::getContext()->customer = new Customer((int) Context::getContext()->cart->id_customer);
@@ -865,8 +881,6 @@ class HipayNotification
                         'issuer' => $transaction->getPaymentMethod()->getIssuer(),
                         'country' => $transaction->getPaymentMethod()->getCountry(),
                     ];
-
-                    $this->ccToken->saveCCToken($customerId, $card);
                 }
             }
         } catch (Exception $e) {
@@ -1236,6 +1250,27 @@ class HipayNotification
         }
 
         return $orders;
+    }
+
+    /**
+     * @param Transaction $transaction
+     * @param Cart $cart
+     * @param string $status
+     * @return int
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    private function getNotificationAttemptCount($transaction, $cart,  $status = NotificationStatus::IN_PROGRESS)
+    {
+        $data = [
+            'cart_id' => $cart->id,
+            'transaction_ref' => $transaction->getTransactionReference(),
+            'notification_code' => $transaction->getStatus(),
+            'status' => $status,
+        ];
+
+        return $this->dbMaintenance->getNotificationAttempt($data);
     }
 
     /**

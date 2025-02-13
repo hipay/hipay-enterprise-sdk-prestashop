@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.0
+
+- **Add** : Update OneClick payment
+- **Fix** : Fixed updates of orders based on multiple carriers or vendors
+- **Fix** : Fixed disappearance of basket discounts when payment failed
+- **Fix** : Fixed issue when requesting a HostedPage when PayPal is enabled
+
 ## 2.24.0
 
 - **Add**: Added dynamic Min/Max functionality for Alma payment method

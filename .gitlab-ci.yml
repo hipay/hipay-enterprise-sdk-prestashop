@@ -1,5 +1,11 @@
 image: $REGISTRY_CI/gitlab-ci-base:buster
 
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - when: always
+
 stages:
   - build-test
   - test
@@ -72,9 +78,9 @@ variables:
       - bin/tests/tests-cypress/cypress/videos
       - bin/tests/tests-cypress/cypress/screenshots
     when: always
-  except:
-    variables:
-      - $ONLY_DEPLOY
+  rules:
+    - if: $ONLY_DEPLOY
+      when: never
 
 .login_to_registry: &login-to-registry
   before_script:
@@ -190,9 +196,10 @@ build-test:
       --context "dir://${CI_PROJECT_DIR}"
       --dockerfile "./bin/docker/images/prestashop/Dockerfile17"
       --destination "$REGISTRY_CI/test-jobs-${DOCKER_STACK}-${DOCKER_SERVICE}_web17:${CI_COMMIT_REF_SLUG}"
-  except:
-    variables:
-      - $ONLY_DEPLOY
+  rules:
+    - if: $ONLY_DEPLOY
+      when: never
+    - when: on_success
   tags:
     - small
 
@@ -239,15 +246,17 @@ package:
       - ./package-ready-for-prestashop
   tags:
     - small
-  except:
-    variables:
-      - $ONLY_DEPLOY
+  rules:
+    - if: $ONLY_DEPLOY
+      when: never
 
 # Job to get JIRA tickets of the release
 get-jira-tickets:
   stage: release
   image: node:latest
   rules:
+    - if: $ONLY_DEPLOY
+      when: never
     - if: $CI_COMMIT_TAG
   script:
     - |
@@ -318,6 +327,8 @@ release-job:
   variables:
     TEMP_CHANGELOG_FILE: 'release_changelog.txt'
   rules:
+    - if: $ONLY_DEPLOY
+      when: never
     - if: $CI_COMMIT_TAG
   script:
     - |

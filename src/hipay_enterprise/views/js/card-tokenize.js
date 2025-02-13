@@ -41,11 +41,6 @@ function initDirectPost() {
     e.stopPropagation();
 
     if (myPaymentMethodSelected) {
-      if (isOneClickSelected()) {
-        oneClickSelected(form);
-        return true; // allow whatever action that would normally happen to continue
-      }
-
       var formErrors = !hiPayInputControl.HiPay_checkControl('cc');
       formErrors = !checkPaymentDate() || formErrors;
 

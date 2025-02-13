@@ -66,10 +66,16 @@ class HostedPaymentFormatter extends RequestFormatterAbstract
         $order->payment_product_category_list = '';
         $order->multi_use = isset($this->params["multi_use"]) ? $this->params["multi_use"] : null;
         $order->display_cancel_button = $this->configHipay["payment"]["global"]["display_cancel_button"];
-        $order->paypal_v2_label = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonLabel'][0] ?? null;
-        $order->paypal_v2_shape = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonShape'][0] ?? null;
-        $order->paypal_v2_color = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonColor'][0] ?? null;
-        $order->paypal_v2_height = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['buttonHeight'] ?? null;
-        $order->paypal_v2_bnpl = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['bnpl'] ?? null;
+        if ((bool) $this->configHipay["payment"]["local_payment"]["paypal"]['activated']) {
+            $buttonLabel = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonLabel'] ?? null;
+            $buttonShape = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonShape'] ?? null;
+            $buttonColor = $this->configHipay["payment"]["local_payment"]["paypal"]['buttonColor'] ?? null;
+
+            $order->paypal_v2_label = is_array($buttonLabel) ? ($buttonLabel[0] ?? null) : $buttonLabel;
+            $order->paypal_v2_shape = is_array($buttonShape) ? ($buttonShape[0] ?? null) : $buttonShape;
+            $order->paypal_v2_color = is_array($buttonColor) ? ($buttonColor[0] ?? null) : $buttonColor;
+            $order->paypal_v2_height = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['buttonHeight'] ?? null;
+            $order->paypal_v2_bnpl = (int) $this->configHipay["payment"]["local_payment"]["paypal"]['bnpl'] ?? null;
+        }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -96,7 +97,7 @@ class AccountInfoFormatter extends ApiFormatterAbstract
 
 
             $purchaseInfo->count = count(Order::getOrdersIdByDate($sixMonthAgo, $now, $this->customer->id));
-            $purchaseInfo->card_stored_24h = (int)($this->dbToken->nbAttemptCreateCard(
+            $purchaseInfo->card_stored_24h = (int)($this->dbToken->nbAttemptCreateCC(
                 $this->customer->id,
                 $twentyFourHoursAgo
             ));
@@ -119,8 +120,8 @@ class AccountInfoFormatter extends ApiFormatterAbstract
     {
         $paymentInfo = new PaymentInfo();
 
-        if (!$this->customer->is_guest && isset($this->params["oneClick"]) && $this->params["oneClick"]) {
-            $dateCartFirstUsed = $this->dbToken->getToken(
+        if (!$this->customer->is_guest && isset($this->params["isOneClick"]) && $this->params["isOneClick"]) {
+            $dateCartFirstUsed = $this->dbToken->getSavedCCWithToken(
                 $this->customer->id,
                 $this->params["cardtoken"]
             );

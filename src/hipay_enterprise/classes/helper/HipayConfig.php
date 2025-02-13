@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,10 +11,10 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/enums/OperatingMode.php';
-require_once dirname(__FILE__).'/enums/UXMode.php';
-require_once dirname(__FILE__).'/enums/ThreeDS.php';
-require_once dirname(__FILE__).'/../exceptions/PaymentProductNotFoundException.php';
+require_once dirname(__FILE__) . '/enums/OperatingMode.php';
+require_once dirname(__FILE__) . '/enums/UXMode.php';
+require_once dirname(__FILE__) . '/enums/ThreeDS.php';
+require_once dirname(__FILE__) . '/../exceptions/PaymentProductNotFoundException.php';
 
 use HiPay\Fullservice\Enum\Helper\HashAlgorithm;
 
@@ -43,7 +44,7 @@ class HipayConfig
     {
         $this->context = Context::getContext();
         $this->module = $module_instance;
-        $this->jsonFilesPath = dirname(__FILE__).'/../../paymentConfigFiles/';
+        $this->jsonFilesPath = dirname(__FILE__) . '/../../paymentConfigFiles/';
     }
 
     /**
@@ -211,7 +212,7 @@ class HipayConfig
         $shops = Shop::getShops(false);
         foreach ($shops as $id => $shop) {
             $this->module->getLogs()->logInfos(
-                'get HIPAY_CONFIG for shop '.$id.' and id shop group '.$shop['id_shop_group']
+                'get HIPAY_CONFIG for shop ' . $id . ' and id shop group ' . $shop['id_shop_group']
             );
 
             $configHipay = $this->getConfigurationFromDB($shop['id_shop_group'], $id);
@@ -365,9 +366,18 @@ class HipayConfig
                             'caretColor' => '#A50979',
                             'iconColor' => '#A50979',
                         ],
+                        'components' => [
+                            'switch' => [
+                                'mainColor' => '#02A17B',
+                            ],
+                            'checkbox' => [
+                                'mainColor' => '#02A17B',
+                            ]
+                        ]
                     ],
                     'capture_mode' => 'automatic',
                     'card_token' => 0,
+                    'number_saved_cards_displayed' => '',
                     'activate_basket' => 1,
                     'log_infos' => 1,
                     'log_debug' => 0,
@@ -489,7 +499,7 @@ class HipayConfig
                 $paymentMeans[$methodGroup][] = $methodId;
 
                 Configuration::updateValue(
-                    'HIPAY_PAYMENT_'.strtoupper($methodId),
+                    'HIPAY_PAYMENT_' . strtoupper($methodId),
                     json_encode($methodConfig),
                     false,
                     $id_shop_group,
@@ -512,8 +522,7 @@ class HipayConfig
             false,
             $id_shop_group,
             $id_shop
-        )
-        ) {
+        )) {
             $this->configHipay = $this->getConfigurationFromDB($id_shop_group, $id_shop);
             $this->module->getLogs()->logInfos($this->configHipay);
 
@@ -532,7 +541,7 @@ class HipayConfig
     {
         $paymentMethod = [];
 
-        $files = scandir($this->jsonFilesPath.$folderName);
+        $files = scandir($this->jsonFilesPath . $folderName);
 
         foreach ($files as $file) {
             $paymentMethod = array_merge($paymentMethod, $this->addPaymentConfig($file, $folderName));
@@ -551,7 +560,7 @@ class HipayConfig
         $paymentMethod = [];
 
         if (1 == preg_match('/(.*)\.json/', $file)) {
-            $json = json_decode(Tools::file_get_contents($this->jsonFilesPath.$folderName.$file), true);
+            $json = json_decode(Tools::file_get_contents($this->jsonFilesPath . $folderName . $file), true);
             if (!in_array($json['name'], static::$_deprecatedMethods)) {
                 $paymentMethod[$json['name']] = $json['config'];
 
@@ -561,13 +570,15 @@ class HipayConfig
                     $paymentMethod[$json['name']] = array_merge($sdkConfig->toArray(), $paymentMethod[$json['name']]);
                 }
 
-                if (isset($paymentMethod[$json['name']]['currencies']) &&
+                if (
+                    isset($paymentMethod[$json['name']]['currencies']) &&
                     empty($paymentMethod[$json['name']]['currencies'])
                 ) {
                     $paymentMethod[$json['name']]['currencies'] = $this->getActiveCurrencies();
                 }
 
-                if (isset($paymentMethod[$json['name']]['countries']) &&
+                if (
+                    isset($paymentMethod[$json['name']]['countries']) &&
                     empty($paymentMethod[$json['name']]['countries'])
                 ) {
                     $paymentMethod[$json['name']]['countries'] = $this->getActiveCountries();
@@ -624,7 +635,7 @@ class HipayConfig
                     foreach ($methods as $key => $methodId) {
                         $methodConfig = json_decode(
                             Configuration::get(
-                                'HIPAY_PAYMENT_'.strtoupper($methodId),
+                                'HIPAY_PAYMENT_' . strtoupper($methodId),
                                 false,
                                 $id_shop_group,
                                 $id_shop

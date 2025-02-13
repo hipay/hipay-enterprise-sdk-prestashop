@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -74,7 +75,7 @@ class Hipay_enterpriseUserTokenModuleFrontController extends ModuleFrontControll
         $context = Context::getContext();
 
         if (Tools::isSubmit('hipayCCTokenId')) {
-            if ($this->ccToken->deleteToken($context->customer->id, Tools::getValue('hipayCCTokenId'))) {
+            if ($this->ccToken->deleteCC($context->customer->id, Tools::getValue('hipayCCTokenId'))) {
                 $this->success[] = $this->module->l('Credit card successfully deleted.');
             } else {
                 $this->errors[] = $this->module->l('This credit card doesn\'t exist.');

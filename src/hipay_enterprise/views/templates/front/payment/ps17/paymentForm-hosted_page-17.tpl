@@ -10,16 +10,6 @@
 * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
 *}
 <form action="{$HiPay_action}" id="hpaymentForm" class="form-horizontal hipay-form-17" method="post">
-    {if $HiPay_savedCC && $HiPay_confHipay.payment.global.card_token}
-        {include file="$hipay_enterprise_tpl_dir/front/partial/ps17/oneclick.tpl"}
-        <div class="option_payment">
-            <span class="custom-radio">
-                <input type="radio" id="radio-no-token" name="ccTokenHipay" value="noToken" />
-                <span></span>
-            </span>
-            <label for="radio-no-token"><strong>{l s='Pay with a new credit card' mod='hipay_enterprise'}</strong></label>
-        </div>
-    {/if}
     <div class="row" id="group-without-token"
         style="{if $HiPay_savedCC && $HiPay_confHipay.payment.global.card_token}display:none;{/if}">
         {if $HiPay_confHipay.payment.global.display_hosted_page != 'iframe'}
@@ -29,16 +19,6 @@
         {else}
             <p class="col-md-12">{l s='Confirm your order to go to the payment page' mod='hipay_enterprise'}</p>
             <input type="hidden" id="iframe-generate" name="iframeCall" value="1" />
-        {/if}
-
-        {if $HiPay_confHipay.payment.global.card_token && !$HiPay_is_guest }
-            <div class="col-md-12">
-                <span class="custom-checkbox" id="save-credit-card">
-                    <input id="saveTokenHipay" type="checkbox" name="saveTokenHipay">
-                    <span><i class="material-icons checkbox-checked"></i></span>
-                    <label for="saveTokenHipay">{l s='Save credit card (One click payment)' mod='hipay_enterprise'}</label>
-                </span>
-            </div>
         {/if}
     </div>
     <input id="ioBB" type="hidden" name="ioBB">
@@ -77,23 +57,8 @@
                 e.preventDefault();
                 e.stopPropagation();
 
-                if (isOneClickSelected()) {
-                    $("#hpaymentForm").hide();
-                    $("#payment-loader-hp").show();
-                    $("#payment-confirmation > .ps-shown-by-js > button").prop("disabled", true);
-                }
-
                 form.submit();
                 return true;
-            });
-
-            $('#radio-no-token').change(function() {
-                if ($('#radio-no-token').is(":checked")) {
-                    $('#group-without-token').show();
-                } else {
-                    $('#group-without-token').hide();
-                }
-
             });
         },
         false

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop.
  *
@@ -10,10 +11,11 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  */
-require_once dirname(__FILE__).'/HipayDBQueryAbstract.php';
-require_once dirname(__FILE__).'/../../../lib/vendor/autoload.php';
+require_once dirname(__FILE__) . '/HipayDBQueryAbstract.php';
+require_once dirname(__FILE__) . '/../../../lib/vendor/autoload.php';
 
 use HiPay\Fullservice\Enum\Transaction\TransactionStatus;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 
 /**
  * @author      HiPay <support.tpp@hipay.com>
@@ -28,19 +30,19 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      * check if token exist for this customer.
      *
      * @param int    $customerId
-     * @param string $token
+     * @param string $pan
      *
      * @return bool
      *
      * @throws PrestaShopDatabaseException
      */
-    public function ccTokenExist($customerId, $token)
+    public function isCCAlreadySaved($customerId, $pan)
     {
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`'
-        .' WHERE customer_id = '.(int) $customerId
-        .' AND token = "'.pSQL($token).'"'
-        .'LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND pan = "' . pSQL($pan) . '"'
+            . 'LIMIT 1';
 
         return !empty(Db::getInstance()->executeS($sql));
     }
@@ -64,6 +66,44 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     }
 
     /**
+     * Save new credit card
+     *
+     * @param array<string,mixed> $values
+     *
+     * @return bool
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function insertNewCC($values)
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = pSQL($value);
+        }
+
+        return Db::getInstance()->insert(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $values);
+    }
+
+    /**
+     * Update credit card
+     *
+     * @param array<string,mixed> $values
+     *
+     * @return bool
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function updateSavedCC($values)
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = pSQL($value);
+        }
+        $where = 'customer_id = "' . $values['customer_id'] . '"'
+            . ' AND pan = "' . $values['pan'] . '"';
+
+        return Db::getInstance()->update(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $values, $where);
+    }
+
+    /**
      * get all credit card saved for this customer.
      *
      * @param int $customerId
@@ -73,8 +113,8 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     public function getSavedCC($customerId)
     {
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`'
-        .' WHERE customer_id = '.(int) $customerId;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId;
 
         try {
             $result = Db::getInstance()->executeS($sql);
@@ -101,13 +141,13 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      *
      * @throws PrestaShopDatabaseException
      */
-    public function getToken($customerId, $token)
+    public function getSavedCCWithToken($customerId, $token)
     {
         $sql = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`'
-        .' WHERE customer_id = '.(int) $customerId
-        .' AND token = "'.pSQL($token).'"'
-        .' LIMIT 1';
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND token = "' . pSQL($token) . '"'
+            . ' LIMIT 1';
 
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return $result[0];
@@ -126,19 +166,19 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      *
      * @throws PrestaShopDatabaseException
      */
-    public function deleteToken($customerId, $tokenId)
+    public function deleteCC($customerId, $tokenId)
     {
         // check if tokenID exist for this user
         $sqlExist = 'SELECT *'
-        .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE.'`'
-        .' WHERE customer_id = '.(int) $customerId
-        .' AND hp_id = '.(int) $tokenId;
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND hp_id = ' . (int) $tokenId;
 
         $result = Db::getInstance()->executeS($sqlExist);
 
         if (!empty($result)) {
             // delete
-            $where = 'customer_id = '.(int) $customerId.' AND hp_id = '.(int) $tokenId;
+            $where = 'customer_id = ' . (int) $customerId . ' AND hp_id = ' . (int) $tokenId;
             Db::getInstance()->delete(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $where);
 
             return true;
@@ -155,10 +195,10 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      * @throws PrestaShopException
      * @throws PrestaShopDatabaseException
      */
-    public function deleteAllToken($customerId)
+    public function deleteAllCCFromCustomer($customerId)
     {
         // delete
-        $where = 'customer_id = '.(int) $customerId;
+        $where = 'customer_id = ' . (int) $customerId;
         Db::getInstance()->delete(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $where);
 
         return true;
@@ -173,7 +213,7 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
      * @throws PrestaShopException
      * @throws PrestaShopDatabaseException
      */
-    public function nbAttemptCreateCard($customerId, $paymentStart)
+    public function nbAttemptCreateCC($customerId, $paymentStart)
     {
         $status = [
             TransactionStatus::AUTHORIZED,
@@ -184,15 +224,15 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
         ];
 
         $sql = 'SELECT COUNT(*) as sum'
-        .' FROM ('
-            .'SELECT order_id'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE customer_id = '.(int) $customerId
-            .' AND payment_start >= "'.pSQL($paymentStart).'"'
-            .' AND status IN ('.implode(',', $status).')'
-            .' AND attempt_create_multi_use = 1'
-            .' GROUP BY customer_id, order_id'
-        .') TMP';
+            . ' FROM ('
+            . 'SELECT order_id'
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND payment_start >= "' . pSQL($paymentStart) . '"'
+            . ' AND status IN (' . implode(',', $status) . ')'
+            . ' AND attempt_create_multi_use = 1'
+            . ' GROUP BY customer_id, order_id'
+            . ') TMP';
 
         $result = Db::getInstance()->getRow($sql);
         if (isset($result['sum'])) {

@@ -23,6 +23,8 @@ function afterTokenization(result) {
   var card_holder = result.card_holder;
   var issuer = result.issuer;
   var country = result.country;
+  var one_click = result.one_click;
+  var multi_use = result.multi_use;
 
   // set tokenization response
   $('#card-token').val(token);
@@ -33,6 +35,8 @@ function afterTokenization(result) {
   $('#card-expiry-year').val(card_expiry_year);
   $('#card-issuer').val(issuer);
   $('#card-country').val(country);
+  $('#card-one-click').val(one_click);
+  $('#card-multi-use').val(multi_use);
 
   return true;
 }
@@ -70,10 +74,6 @@ function displaySecureVaultErrors(errors) {
   } else {
     $('.error').text(i18nBadRequest);
   }
-}
-
-function isOneClickSelected() {
-  return $('.radio-with-token:checked').length;
 }
 
 function oneClickSelected(form) {
