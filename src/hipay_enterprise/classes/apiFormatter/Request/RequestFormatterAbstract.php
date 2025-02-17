@@ -64,7 +64,8 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
             Hook::exec('actionHipayApiRequest', array("OrderRequest" => &$order, "Cart" => $this->cart));
         }
 
-        $order->orderid = $this->cart->id . "(" . time() . ")";
+        $userToken = HipayHelper::getMerchantEnvId($this->configHipay, true);
+        $order->orderid = $this->cart->id . "(" . $userToken . ")";
         if ($this->moto) {
             $order->eci = ECI::MOTO;
         }

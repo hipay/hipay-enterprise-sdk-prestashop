@@ -945,4 +945,29 @@ class HipayHelper
         $hasUpperLimit = $maxAmount && $maxAmount > 0;
         return $orderTotal >= $minAmount && (!$hasUpperLimit || $orderTotal <= $maxAmount);
     }
+
+    public static function getMerchantEnvId($config, $hashed = false)
+    {
+        $isSandboxMode = $config['account']['global']['sandbox_mode'] ?? false;
+        $merchantId = $config['account']['global']['merchant_id'] ?? '';
+        $sandboxUsername = $config['account']['sandbox']['api_username_sandbox'] ?? '';
+        $productionUsername = $config['account']['production']['api_username_production'] ?? '';
+        $sandboxPassword = $config['account']['sandbox']['api_password_sandbox'] ?? '';
+        $productionPassword = $config['account']['production']['api_password_production'] ?? '';
+
+        if ($isSandboxMode) {
+            return $hashed ? self::hashedMerchantEnvId($merchantId, $sandboxPassword) : $sandboxUsername;
+        }
+
+        return $hashed ? self::hashedMerchantEnvId($productionUsername, $productionPassword) : $productionUsername;
+    }
+
+    private static function hashedMerchantEnvId($merchantEnvId, $key)
+    {
+        $hash = hash_hmac('sha256', $merchantEnvId, $key, true);
+        $base64 = base64_encode($hash);
+
+        return substr(str_replace(['+', '/', '='], '', $base64), 0, 20);
+    }
+
 }
