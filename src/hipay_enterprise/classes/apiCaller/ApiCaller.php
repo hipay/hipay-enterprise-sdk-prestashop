@@ -262,6 +262,14 @@ class ApiCaller
         }
     }
 
+    /**
+     * return transaction information
+     *
+     * @param $moduleInstance
+     * @param $orderId
+     * @return array|null
+     * @throws GatewayException
+     */
     public static function requestOrderTransactionInformation($moduleInstance, $orderId)
     {
         try {
