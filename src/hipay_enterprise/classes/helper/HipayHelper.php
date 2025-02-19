@@ -959,6 +959,16 @@ class HipayHelper
         return $orderTotal >= $minAmount && (!$hasUpperLimit || $orderTotal <= $maxAmount);
     }
 
+    /**
+     * Saves a processed HiPay order in the database
+     *
+     * @param Hipay_enterprise $module
+     * @param Cart $cart
+     * @param string $hipayOrderId
+     * @return bool
+     *
+     * @throws Exception
+     */
     public static function saveHipayProcessedOrder($module, $cart, $hipayOrderId)
     {
         try {
@@ -975,6 +985,15 @@ class HipayHelper
         return false;
     }
 
+    /**
+     * Retrieves the HiPay order ID associated with a cart
+     *
+     * @param Hipay_enterprise $module
+     * @param Cart $cart
+     * @return string|null
+     *
+     * @throws Exception
+     */
     public static function getHipayProcessedOrderByCartId($module, $cart)
     {
         try {
@@ -987,11 +1006,27 @@ class HipayHelper
         }
     }
 
+    /**
+     * Requests transaction information for a specific order from the HiPay API
+     *
+     * @param Hipay_enterprise $module
+     * @param string $orderId
+     * @return array|null
+     *
+     * @throws Exception
+     */
     public static function requestOrderTransactionInformation($module, $orderId)
     {
         return ApiCaller::requestOrderTransactionInformation($module, $orderId) ?? null;
     }
 
+    /**
+     * Retrieves the transaction reference for a given order ID
+     *
+     * @param Hipay_enterprise $module
+     * @param string $orderId
+     * @return string|null
+     */
     public static function getTransactionReference($module, $orderId)
     {
         return ($transactions = self::requestOrderTransactionInformation($module, $orderId))
@@ -999,6 +1034,13 @@ class HipayHelper
             : null;
     }
 
+    /**
+     * Creates a new cart for the current customer and assigns it to the context
+     *
+     * @param Context $context
+     * @return void
+     * @throws PrestaShopException
+     */
     public static function assignNewCart($context)
     {
         $newCart = new Cart();
