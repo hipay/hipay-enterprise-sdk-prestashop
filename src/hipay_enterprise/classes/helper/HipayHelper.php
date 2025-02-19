@@ -427,6 +427,19 @@ class HipayHelper
         Tools::redirect($redirectUrl404);
     }
 
+    public static function transactionAlreadyProcessed($context, $moduleInstance)
+    {
+        self::assignNewCart($context);
+        $redirectUrl404 = $context->link->getModuleLink(
+            $moduleInstance->name,
+            'exception',
+            ['status_error' => 501],
+            true
+        );
+
+        Tools::redirect($redirectUrl404);
+    }
+
     /**
      *  Redirect customer in Error page.
      *
@@ -946,28 +959,55 @@ class HipayHelper
         return $orderTotal >= $minAmount && (!$hasUpperLimit || $orderTotal <= $maxAmount);
     }
 
-    public static function getMerchantEnvId($config, $hashed = false)
+    public static function saveHipayProcessedOrder($module, $cart, $hipayOrderId)
     {
-        $isSandboxMode = $config['account']['global']['sandbox_mode'] ?? false;
-        $merchantId = $config['account']['global']['merchant_id'] ?? '';
-        $sandboxUsername = $config['account']['sandbox']['api_username_sandbox'] ?? '';
-        $productionUsername = $config['account']['production']['api_username_production'] ?? '';
-        $sandboxPassword = $config['account']['sandbox']['api_password_sandbox'] ?? '';
-        $productionPassword = $config['account']['production']['api_password_production'] ?? '';
+        try {
+            $hipayDBUtils = new HipayDBUtils($module);
 
-        if ($isSandboxMode) {
-            return $hashed ? self::hashedMerchantEnvId($merchantId, $sandboxPassword) : $sandboxUsername;
+            if ($hipayDBUtils->insertProcessedOrder($cart->id, $hipayOrderId, $cart->getOrderTotal(true, Cart::BOTH) )) {
+                return true;
+            }
+        } catch (Exception $e) {
+            $module->getLogs()->logError("Error insert new order item in Hipay order process table" . $e->getMessage());
+            throw $e;
         }
 
-        return $hashed ? self::hashedMerchantEnvId($productionUsername, $productionPassword) : $productionUsername;
+        return false;
     }
 
-    private static function hashedMerchantEnvId($merchantEnvId, $key)
+    public static function getHipayProcessedOrderByCartId($module, $cart)
     {
-        $hash = hash_hmac('sha256', $merchantEnvId, $key, true);
-        $base64 = base64_encode($hash);
+        try {
+            $hipayDBUtils = new HipayDBUtils($module);
 
-        return substr(str_replace(['+', '/', '='], '', $base64), 0, 20);
+            return $hipayDBUtils->getHipayOrderIdByCartId($cart->id)["hipay_order_id"] ?? null;
+        } catch (Exception $e) {
+            $module->getLogs()->logError("Error insert new order item in Hipay order process table" . $e->getMessage());
+            throw $e;
+        }
     }
 
+    public static function requestOrderTransactionInformation($module, $orderId)
+    {
+        return ApiCaller::requestOrderTransactionInformation($module, $orderId) ?? null;
+    }
+
+    public static function getTransactionReference($module, $orderId)
+    {
+        return ($transactions = self::requestOrderTransactionInformation($module, $orderId))
+            ? $transactions[0]->getTransactionReference()
+            : null;
+    }
+
+    public static function assignNewCart($context)
+    {
+        $newCart = new Cart();
+        $newCart->id_customer = (int) $context->customer->id;
+        $newCart->id_currency = (int) $context->currency->id;
+        $newCart->id_lang = (int) $context->language->id;
+        $newCart->save();
+
+        $context->cookie->id_cart = (int) $newCart->id;
+        $context->cart = $newCart;
+    }
 }

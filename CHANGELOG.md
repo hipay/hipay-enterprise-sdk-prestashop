@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASE
+
+- **Fix** : Prevent duplicate cart ID from causing multiple order payments
+
 ## 2.25.0
 
 - **Add** : Update OneClick payment

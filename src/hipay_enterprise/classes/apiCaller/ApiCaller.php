@@ -262,6 +262,30 @@ class ApiCaller
         }
     }
 
+    public static function requestOrderTransactionInformation($moduleInstance, $orderId)
+    {
+        try {
+            // HiPay Gateway
+            $gatewayClient = ApiCaller::createGatewayClient($moduleInstance, false);
+
+            //Set data to send to the API
+            $transId = $gatewayClient->requestOrderTransactionInformation($orderId);
+
+            return $transId ?? null;
+        } catch (Exception $e) {
+            $moduleInstance->getLogs()->logException($e);
+            throw new GatewayException(
+                Context::getContext(),
+                $moduleInstance,
+                'An error occured during request requestOrderTransactionInformation. Please Retry later. Reason [' .
+                $e->getMessage() .
+                ']',
+                $e->getCode(),
+                null
+            );
+        }
+    }
+
     /**
      * create gateway client from config and client provider
      * @param type $moduleInstance

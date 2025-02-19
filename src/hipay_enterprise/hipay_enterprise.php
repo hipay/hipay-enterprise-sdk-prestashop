@@ -41,7 +41,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.25.0';
+        $this->version = '2.27.0';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.7.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -194,6 +194,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionOrderSlipAdd');
         $return &= $this->registerHook('actionDispatcher');
         $return &= $this->registerHook('displayOrderDetail');
+        $return &= $this->registerHook('actionValidateOrder');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -680,6 +681,19 @@ class Hipay_enterprise extends PaymentModule
     }
 
     /**
+     * Triggered right after validateOrder() is executed and the order is created.
+     */
+    public function hookActionValidateOrder($params)
+    {
+        try {
+            $cart = $params['cart'];
+            HipayDBUtils::deleteProcessedOrderByCartId($cart->id);
+        } catch (Exception $e) {
+            $this->getLogs()->logErrors("Validate order exception: {$e->getMessage()}");
+        }
+    }
+
+    /**
      * We register the plugin everytime a controller is instantiated
      */
     public function hookActionDispatcher()
@@ -838,6 +852,7 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->createHipayTransactionTable();
         $this->dbSchemaManager->createHipayOrderCaptureType();
         $this->dbSchemaManager->createHipayNotificationTable();
+        $this->dbSchemaManager->createHipayProcessedOrderTable();
 
         return true;
     }
@@ -847,6 +862,7 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper->deleteTable();
         $this->dbSchemaManager->deleteCCTokenTable();
         $this->dbSchemaManager->deleteHipayNotificationTable();
+        $this->dbSchemaManager->deleteHipayProcessedOrderTable();
         $this->dbSchemaManager->deleteHipayPaymentConfigTable();
 
         return true;
