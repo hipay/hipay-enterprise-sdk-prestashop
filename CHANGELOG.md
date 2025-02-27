@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED
+
+- **Fix** : Remove "file_get_contents" for external URLs
+
 ## 2.25.0
 
 - **Add** : Update OneClick payment
