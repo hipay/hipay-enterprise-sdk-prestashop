@@ -1,4 +1,5 @@
 <?php
+
 /**
  * HiPay Enterprise SDK Prestashop
  *
@@ -82,25 +83,28 @@ class HipayUpdateNotif
          * PT1H => Interval of 1 hour
          * https://www.php.net/manual/en/dateinterval.construct.php
          */
-        if(!$lastCall || $lastCall->add(new DateInterval("PT1H")) < $curdate ) {
-            // Headers to avoid 403 error from GitHub
-            $opts = [
-                'http' => [
-                    'method' => 'GET',
-                    'header' => [
-                        'User-Agent: PHP'
-                    ]
-                ]
-            ];
+        if (!$lastCall || $lastCall->add(new DateInterval("PT1H")) < $curdate) {
 
             $HIPAY_GITHUB_ACCESS_TOKEN = getenv('HIPAY_GITHUB_ACCESS_TOKEN');
+            $url = self::HIPAY_GITHUB_PRESTASHOP_LATEST;
 
+            $ch = curl_init($url);
+
+            // Headers to avoid 403 error from GitHub
+            $headers = ['User-agent: PHP'];
             if ($HIPAY_GITHUB_ACCESS_TOKEN) {
-                $opts['http']['header'][] = 'Authorization: token ' . $HIPAY_GITHUB_ACCESS_TOKEN;
+                $headers[] = 'Authorization: token ' . $HIPAY_GITHUB_ACCESS_TOKEN;
             }
 
-            $context = stream_context_create($opts);
-            $gitHubInfo = json_decode(file_get_contents(self::HIPAY_GITHUB_PRESTASHOP_LATEST, false, $context));
+            curl_setopt_array($ch, [
+                CURLOPT_HTTPHEADER => $headers,
+                CURLOPT_RETURNTRANSFER => true
+            ]);
+
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $gitHubInfo = json_decode($response);
+
             // If call is successful, reading from call
             if ($gitHubInfo) {
                 $this->newVersion = $gitHubInfo->tag_name;
@@ -121,15 +125,16 @@ class HipayUpdateNotif
     /**
      * Reads the update info from saved configuration data
      */
-    public function readFromConf(){
+    public function readFromConf()
+    {
         $lastResult = json_decode(Configuration::get('HIPAY_UPDATE_NOTIF_LAST_RESULT'));
 
         // If conf exists, reading from it
-        if($lastResult) {
+        if ($lastResult) {
             $this->newVersion = $lastResult->newVersion;
             $this->readMeUrl = $lastResult->readMeUrl;
             $this->downloadUrl = $lastResult->downloadUrl;
-        // If not, setting default data with values not showing the block
+            // If not, setting default data with values not showing the block
         } else {
             $this->newVersion = $this->version;
             $this->readMeUrl = "#";
