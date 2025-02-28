@@ -3,6 +3,7 @@
 ## UNRELEASED
 
 - **Fix** : Remove "file_get_contents" for external URLs
+- **Fix** : Fixed upgrade script from previous version `2.25.0`, thanks to [geoffrey-bedle](https://github.com/geoffrey-bedle) for issue [#90](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/90)
 
 ## 2.25.0
 
