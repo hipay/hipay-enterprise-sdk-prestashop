@@ -202,7 +202,7 @@ EOF
     if [[ $PS_DOMAIN != "localhost"* ]]; then
         crontab -l | {
             cat
-            echo "*/5 * * * * php /var/www/html/modules/hipay_enterprise/cron/handle-hipay-notifs.php > /var/log/cron.log"
+            echo "*/5 * * * * /usr/local/bin/php /var/www/html/modules/hipay_enterprise/cron/handle-hipay-notifs.php >> /var/log/cron.log 2>&1"
         } | crontab -
         service cron start
     fi

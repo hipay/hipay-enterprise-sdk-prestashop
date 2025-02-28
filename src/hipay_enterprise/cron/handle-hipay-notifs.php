@@ -33,3 +33,5 @@ if ($error) {
 } else {
     error_log("Requête envoyée avec succès ! Réponse ($httpCode) : $response");
 }
+
+echo date('[Y-m-d H:i:s]') . " - CRON job completed\n";
