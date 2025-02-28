@@ -22,7 +22,7 @@ function upgrade_module_2_25_0($module)
     try {
 
         $sql = "
-            ALTER TABLE ps_hipay_cc_token
+            ALTER TABLE " . _DB_PREFIX_ . "hipay_cc_token
                 ADD UNIQUE (hp_id),
                 DROP PRIMARY KEY,
                 ADD PRIMARY KEY (customer_id, pan),
