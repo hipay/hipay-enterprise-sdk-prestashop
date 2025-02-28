@@ -199,8 +199,13 @@ EOF
     #===================================#
     #            ADD CRON
     #===================================#
-    #crontab -l | { cat; echo "*/5 * * * *  php /var/www/html/modules/hipay_enterprise/cron.php > /var/log/cron.log"; } | crontab -
-    #service cron start
+    if [[ $PS_DOMAIN != "localhost"* ]]; then
+        crontab -l | {
+            cat
+            echo "*/5 * * * * php /var/www/html/modules/hipay_enterprise/cron/handle-hipay-notifs.php > /var/log/cron.log"
+        } | crontab -
+        service cron start
+    fi
 fi
 
 if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ]; then
