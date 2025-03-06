@@ -17,5 +17,5 @@
         "hipay/hipay-fullservice-sdk-php": "^2.19.1",
         "symfony/polyfill-php80": "<=1.18.1"
     },
-    "version": "2.25.0"
+    "version": "2.25.1"
 }
