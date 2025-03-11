@@ -265,7 +265,7 @@ build-prestashop8:
   variables:
     PS_VERSION: 8
   rules:
-    - if: $ONLY_DEPLOY && $VERSION == ""
+    - if: $ONLY_DEPLOY && $VERSION == null
       when: on_success
     - !reference [.build-prestashop, rules]
   extends: .build-prestashop
@@ -299,7 +299,7 @@ deploy2recette-prestashop8:
     PS_VERSION: 8
     PS_FULL_VERSION: 8.0.3
   rules:
-    - if: $ONLY_DEPLOY && $VERSION == ""
+    - if: $ONLY_DEPLOY && $VERSION == null
       when: on_success
     - !reference [.deploy2recette-prestashop, rules]
   extends: .deploy2recette-prestashop
@@ -328,7 +328,7 @@ stop_review-prestashop8:
   variables:
     PS_VERSION: 8
   rules:
-    - if: $ONLY_DEPLOY && $VERSION == ""
+    - if: $ONLY_DEPLOY && $VERSION == null
       when: on_success
     - !reference [.stop_review-prestashop, rules]
   needs:
