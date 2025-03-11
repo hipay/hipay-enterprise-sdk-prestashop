@@ -107,7 +107,7 @@ include:
     name: gcr.io/kaniko-project/executor:v1.6.0-debug
   needs: []
   rules:
-    - if: $ONLY_DEPLOY
+    - if: $ONLY_DEPLOY && $VERSION == $PS_VERSION
       when: on_success
     - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
@@ -124,7 +124,7 @@ include:
   <<: *login-to-cd
   stage: deploy
   rules:
-    - if: $ONLY_DEPLOY
+    - if: $ONLY_DEPLOY && $VERSION == $PS_VERSION
       when: on_success
     - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
@@ -172,7 +172,7 @@ include:
   script:
     - helm uninstall $RELEASE_NAME --namespace=default
   rules:
-    - if: $ONLY_DEPLOY
+    - if: $ONLY_DEPLOY && $VERSION == $PS_VERSION
       when: manual
     - if: $CI_PIPELINE_SOURCE == "push"
       when: manual
@@ -264,6 +264,10 @@ build-prestashop17:
 build-prestashop8:
   variables:
     PS_VERSION: 8
+  rules:
+    - if: $ONLY_DEPLOY && $VERSION != $PS_VERSION
+      when: on_success
+    - !reference [.build-prestashop, rules]
   extends: .build-prestashop
 
 deploy2recette-prestashop16:
@@ -294,6 +298,10 @@ deploy2recette-prestashop8:
   variables:
     PS_VERSION: 8
     PS_FULL_VERSION: 8.0.3
+  rules:
+    - if: $ONLY_DEPLOY && $VERSION != $PS_VERSION
+      when: on_success
+    - !reference [.deploy2recette-prestashop, rules]
   extends: .deploy2recette-prestashop
   needs:
     - build-prestashop8
@@ -319,6 +327,10 @@ stop_review-prestashop17:
 stop_review-prestashop8:
   variables:
     PS_VERSION: 8
+  rules:
+    - if: $ONLY_DEPLOY && $VERSION != $PS_VERSION
+      when: on_success
+    - !reference [.stop_review-prestashop, rules]
   needs:
     - deploy2recette-prestashop8
   extends: .stop_review-prestashop
