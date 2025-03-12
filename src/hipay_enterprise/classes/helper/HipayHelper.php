@@ -1052,4 +1052,5 @@ class HipayHelper
         $context->cookie->id_cart = (int) $newCart->id;
         $context->cart = $newCart;
     }
+
 }

@@ -68,8 +68,9 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         $hipayOrderId = HipayHelper::getHipayProcessedOrderByCartId($this->module, $this->cart);
 
-        if ($hipayOrderId && HipayHelper::getTransactionReference($this->module, $hipayOrderId) !== null) {
-            if (Validate::isLoadedObject($this->cart)) {
+        if ($hipayOrderId) {
+            $order->orderid = $hipayOrderId;
+            if (HipayHelper::getTransactionReference($this->module, $hipayOrderId) !== null) {
                 HipayHelper::transactionAlreadyProcessed($this->context, $this->module);
             }
         } else {

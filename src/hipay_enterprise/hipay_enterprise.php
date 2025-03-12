@@ -195,6 +195,9 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionDispatcher');
         $return &= $this->registerHook('displayOrderDetail');
         $return &= $this->registerHook('actionValidateOrder');
+        $return &= $this->registerHook('actionCartSave');
+        $return &= $this->registerHook('actionCartUpdateQuantityBefore');
+        $return &= $this->registerHook('actionObjectProductInCartDeleteAfter');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -866,6 +869,40 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->deleteHipayPaymentConfigTable();
 
         return true;
+    }
+
+    public function hookActionCartSave($params)
+    {
+        $this->processCartChange($params['cart']);
+    }
+
+    public function hookActionCartUpdateQuantityBefore($params)
+    {
+        $this->processCartChange($params['cart']);
+    }
+
+    public function hookActionObjectProductInCartDeleteAfter($params)
+    {
+        $cart = $this->context->cart;
+        if ($cart) {
+            $this->processCartChange($cart);
+        }
+    }
+
+    /**
+     * Process Cart Change
+     *
+     * @param $cart
+     * @throws Exception
+     */
+    private function processCartChange($cart)
+    {
+        $hipayOrderId = HipayHelper::getHipayProcessedOrderByCartId($this, $cart);
+        if ($hipayOrderId) {
+            if (HipayHelper::getTransactionReference($this, $hipayOrderId) !== null) {
+                HipayHelper::duplicateCart($cart);
+            }
+        }
     }
 
     /**
