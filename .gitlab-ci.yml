@@ -329,7 +329,7 @@ stop_review-prestashop8:
     PS_VERSION: 8
   rules:
     - if: $ONLY_DEPLOY && $VERSION == null
-      when: on_success
+      when: manual
     - !reference [.stop_review-prestashop, rules]
   needs:
     - deploy2recette-prestashop8
