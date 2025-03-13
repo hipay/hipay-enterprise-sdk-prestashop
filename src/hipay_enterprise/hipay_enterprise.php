@@ -870,7 +870,7 @@ class Hipay_enterprise extends PaymentModule
     {
         try {
             $cart = $params['cart'];
-            $newCart = HipayDBUtils::getHipayNewCartIdByCartId($cart->id);
+            $newCart = HipayDBUtils::getHipayNewCartIdByCartId($cart->id) ?? null;
             if( $newCart && HipayDBUtils::deleteProcessedOrderByCartId($cart->id)) {
                 $newCart = new Cart((int)$newCart);
                 if (Validate::isLoadedObject($newCart)) {

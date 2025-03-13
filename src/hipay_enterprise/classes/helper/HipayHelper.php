@@ -427,19 +427,6 @@ class HipayHelper
         Tools::redirect($redirectUrl404);
     }
 
-    public static function transactionAlreadyProcessed($context, $moduleInstance)
-    {
-        self::regenerateCart($context, $context->cart);
-        $redirectUrl404 = $context->link->getModuleLink(
-            $moduleInstance->name,
-            'exception',
-            ['status_error' => 501],
-            true
-        );
-
-        Tools::redirect($redirectUrl404);
-    }
-
     /**
      *  Redirect customer in Error page.
      *
@@ -1038,27 +1025,6 @@ class HipayHelper
     }
 
     /**
-     * Creates a new cart for the current customer and assigns it to the context
-     *
-     * @param Context $context
-     * @return bool
-     * @throws PrestaShopException
-     */
-    public static function assignNewCart($context)
-    {
-        $newCart = new Cart();
-        $newCart->id_customer = (int) $context->customer->id;
-        $newCart->id_currency = (int) $context->currency->id;
-        $newCart->id_lang = (int) $context->language->id;
-        $newCart->save();
-
-        $context->cookie->id_cart = (int) $newCart->id;
-        $context->cart = $newCart;
-
-        return true;
-    }
-
-    /**
      * Regenerates a new cart and transfers products from the old cart
      *
      * @param Context $context
@@ -1137,148 +1103,6 @@ class HipayHelper
                 'Cart',
                 (int)$oldCart->id
             );
-            return false;
-        }
-    }
-
-    /**
-     * Handles cart protection and regeneration for HiPay transactions
-     *
-     * @param Hipay_enterprise $module
-     * @param Context $context
-     * @param array $params
-     * @return bool
-     */
-    public static function handleCartProtection($module, $context, $params)
-    {
-        try {
-            if (!isset($params['controller_class'])) {
-                return true;
-            }
-
-            $controller = $params['controller_class'];
-            if (!in_array($controller, ['CartController', 'OrderController'])) {
-                return true;
-            }
-
-            if (!isset($context->currency) || $context->currency === null) {
-                $idCurrency = (int)Configuration::get('PS_CURRENCY_DEFAULT');
-                $context->currency = new Currency($idCurrency);
-
-                if (!Validate::isLoadedObject($context->currency)) {
-                    $module->getLogs()->logErrors("Could not load default currency");
-                    return false;
-                }
-            }
-            else if (!isset($context->currency->precision)) {
-                $context->currency = new Currency((int)$context->currency->id);
-            }
-
-            if (!$context->cart || !Validate::isLoadedObject($context->cart)) {
-                if (isset($context->cookie->id_cart) && $context->cookie->id_cart) {
-                    $cart = new Cart((int)$context->cookie->id_cart);
-                    if (Validate::isLoadedObject($cart) &&
-                        (!isset($context->customer) || $cart->id_customer == $context->customer->id)) {
-                        $context->cart = $cart;
-                    }
-                }
-            }
-            if (isset($context->cart) && Validate::isLoadedObject($context->cart)) {
-                $hipayOrderId = self::getHipayProcessedOrderByCartId($module, $context->cart);
-                if ($hipayOrderId) {
-                    $transactionReference = self::getTransactionReference($module, $hipayOrderId);
-                    if ($transactionReference !== null) {
-                        $action = Tools::getValue('action', '');
-
-                        // Detect cart modification attempts
-                        $isCartModification = (
-                            $controller === 'CartController' &&
-                            in_array($action, ['update', 'add', 'delete']) ||
-                            Tools::isSubmit('add') ||
-                            Tools::isSubmit('update') ||
-                            Tools::isSubmit('delete')
-                        );
-
-                        if ($isCartModification) {
-                            // Duplicate the cart before modifications apply
-                            if (self::regenerateCart($context, $context->cart)) {
-                                $errorMessage = $module->l(
-                                    'This cart cannot be modified because it has a pending payment transaction. 
-                                    Please refresh the page and try again.'
-                                );
-
-                                // Check if this is an AJAX request
-                                $isAjax = Tools::getValue('ajax') ||
-                                    (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-                                        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
-
-                                if ($isAjax) {
-                                    header('Content-Type: application/json');
-                                    die(json_encode([
-                                        'hasError' => true,
-                                        'errors' => [$errorMessage],
-                                        'success' => false
-                                    ]));
-                                } else {
-                                    $context->controller->errors[] = $errorMessage;
-                                    Tools::redirect($context->link->getPageLink('cart'));
-                                }
-                            } else {
-                                $module->getLogs()->logErrors("Failed to duplicate cart #{$context->cart->id}");
-                                try {
-                                    $newCart = new Cart();
-                                    $newCart->id_shop = $context->shop->id;
-                                    $newCart->id_shop_group = $context->shop->id_shop_group;
-                                    $newCart->id_currency = $context->currency->id;
-                                    $newCart->id_lang = $context->language->id;
-                                    if (isset($context->customer) && $context->customer->id) {
-                                        $newCart->id_customer = $context->customer->id;
-                                    }
-
-                                    if ($newCart->save()) {
-                                        $context->cart = $newCart;
-                                        $context->cookie->id_cart = (int)$newCart->id;
-                                        $context->cookie->write();
-                                        Tools::redirect($context->link->getPageLink('cart'));
-                                    }
-                                } catch (Exception $e) {
-                                    $module->getLogs()->logErrors("Failed to create fallback cart: " . $e->getMessage());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        } catch (Exception $e) {
-            $module->getLogs()->logErrors("Error in handleCartProtection: " . $e->getMessage());
-            if (!isset($context->cart) || !Validate::isLoadedObject($context->cart)) {
-                try {
-                    if (!isset($context->currency) || !Validate::isLoadedObject($context->currency)) {
-                        $idCurrency = (int)Configuration::get('PS_CURRENCY_DEFAULT');
-                        $context->currency = new Currency($idCurrency);
-                    }
-                    if (Validate::isLoadedObject($context->currency)) {
-                        $newCart = new Cart();
-                        $newCart->id_shop = $context->shop->id;
-                        $newCart->id_shop_group = $context->shop->id_shop_group;
-                        $newCart->id_currency = $context->currency->id;
-                        $newCart->id_lang = $context->language->id;
-                        if (isset($context->customer) && $context->customer->id) {
-                            $newCart->id_customer = $context->customer->id;
-                        }
-                        $newCart->save();
-
-                        $context->cart = $newCart;
-                        $context->cookie->id_cart = (int)$newCart->id;
-                        $context->cookie->write();
-                    }
-                } catch (Exception $cartException) {
-                    $module->getLogs()->logErrors("Critical error creating recovery cart: " . $cartException->getMessage());
-                }
-            }
-
             return false;
         }
     }

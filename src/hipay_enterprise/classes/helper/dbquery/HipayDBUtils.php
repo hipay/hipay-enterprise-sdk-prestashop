@@ -306,23 +306,6 @@ class HipayDBUtils extends HipayDBQueryAbstract
     }
 
     /**
-     * Update status and updated_at for a processed order
-     *
-     * @param int $cartId
-     * @param int $status
-     * @return bool
-     */
-    public function updateProcessedOrderStatus($cartId, $status)
-    {
-        $sql = 'UPDATE `'._DB_PREFIX_.'hipay_processed_orders`
-            SET `status` = '.(int)$status.',
-                `updated_at` = NOW()
-            WHERE `cart_id` = '.(int)$cartId;
-
-        return (bool)Db::getInstance()->execute($sql);
-    }
-
-    /**
      * Delete processed order by cart ID
      *
      * @param int $cartId

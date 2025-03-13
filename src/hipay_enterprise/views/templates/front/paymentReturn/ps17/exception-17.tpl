@@ -17,10 +17,6 @@
         <div class="alert alert-danger">
             {l s='This credit card type or the order currency is not supported. Please choose a other payment method.' mod='hipay_enterprise'}
         </div>
-    {elseif $HiPay_status_error == 501}
-        <div class="alert alert-danger">
-            {l s='This cart has already been used for a completed order. Please create a new cart to proceed with payment.' mod='hipay_enterprise'}
-        </div>
     {else}
         <div class="alert alert-danger">
             {l s='An error occured, process has been cancelled.' mod='hipay_enterprise'}
