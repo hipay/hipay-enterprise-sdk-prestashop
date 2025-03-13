@@ -288,12 +288,13 @@ class HipayDBUtils extends HipayDBQueryAbstract
      * @param int $status
      * @return bool
      */
-    public function insertProcessedOrder($cartId, $hipayOrderId, $totalAmount, $status = 0)
+    public function insertProcessedOrder($cartId, $newCartId, $hipayOrderId, $totalAmount, $status = 0)
     {
         $sql = 'INSERT INTO `'._DB_PREFIX_.'hipay_processed_orders`
-            (`cart_id`, `hipay_order_id`, `total_amount`, `status`, `created_at`, `updated_at`)
+            (`cart_id`, `new_cart_id` ,`hipay_order_id`, `total_amount`, `status`, `created_at`, `updated_at`)
             VALUES (
                 '.(int)$cartId.',
+                '.(int)$newCartId.',
                 "'.pSQL($hipayOrderId).'",
                 '.(float)$totalAmount.',
                 '.(int)$status.',
@@ -349,6 +350,26 @@ class HipayDBUtils extends HipayDBQueryAbstract
             LIMIT 1';
         if (!empty($result = Db::getInstance()->executeS($sql))) {
             return $result[0];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get hipay New Cart by current Card id
+     *
+     * @param int $cartId
+     * @return string|false
+     * @throws PrestaShopDatabaseException
+     */
+    public static function getHipayNewCartIdByCartId($cartId)
+    {
+        $sql = 'SELECT `new_cart_id`
+            FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `cart_id` = '.(int)$cartId.'
+            LIMIT 1';
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0]["new_cart_id"];
         }
 
         return false;

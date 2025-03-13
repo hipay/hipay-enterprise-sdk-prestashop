@@ -37,6 +37,11 @@ class Hipay_enterprise extends PaymentModule
     public $_technicalErrors = '';
     private static $paypalVersion = null;
 
+    /**
+     * Flag to prevent recursive processing
+     */
+    private $isRegeneratingCart = false;
+
     public function __construct()
     {
         $this->name = 'hipay_enterprise';
@@ -194,6 +199,11 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionOrderSlipAdd');
         $return &= $this->registerHook('actionDispatcher');
         $return &= $this->registerHook('displayOrderDetail');
+        $return &= $this->registerHook('actionValidateOrder');
+        $return &= $this->registerHook('actionObjectAddBefore');
+        $return &= $this->registerHook('actionObjectUpdateBefore');
+        $return &= $this->registerHook('actionObjectCartAddBefore');
+        $return &= $this->registerHook('actionCartUpdateQuantityBefore');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -682,11 +692,13 @@ class Hipay_enterprise extends PaymentModule
     /**
      * We register the plugin everytime a controller is instantiated
      */
-    public function hookActionDispatcher()
+    public function hookActionDispatcher($params)
     {
         $this->context->smarty->registerPlugin('modifier', 'htmlEntityDecode', 'html_entity_decode');
         $this->context->smarty->registerPlugin('modifier', 'inArray', 'in_array');
         $this->context->smarty->registerPlugin('modifier', 'arrayKeyExists', 'array_key_exists');
+
+        //HipayHelper::handleCartProtection($this, Context::getContext(), $params);
     }
 
     /**
@@ -838,6 +850,7 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->createHipayTransactionTable();
         $this->dbSchemaManager->createHipayOrderCaptureType();
         $this->dbSchemaManager->createHipayNotificationTable();
+        $this->dbSchemaManager->createHipayProcessedOrderTable();
 
         return true;
     }
@@ -847,9 +860,34 @@ class Hipay_enterprise extends PaymentModule
         $this->mapper->deleteTable();
         $this->dbSchemaManager->deleteCCTokenTable();
         $this->dbSchemaManager->deleteHipayNotificationTable();
+        $this->dbSchemaManager->deleteHipayProcessedOrderTable();
         $this->dbSchemaManager->deleteHipayPaymentConfigTable();
 
         return true;
+    }
+
+    public function hookActionValidateOrder($params)
+    {
+        try {
+            $cart = $params['cart'];
+            $newCart = HipayDBUtils::getHipayNewCartIdByCartId($cart->id);
+            if( $newCart && HipayDBUtils::deleteProcessedOrderByCartId($cart->id)) {
+                $newCart = new Cart((int)$newCart);
+                if (Validate::isLoadedObject($newCart)) {
+                    $products = $newCart->getProducts();
+                    foreach ($products as $product) {
+                        $newCart->deleteProduct(
+                            $product['id_product'],
+                            $product['id_product_attribute'],
+                            $product['id_customization'] ?? 0
+                        );
+                    }
+                    $newCart->update();
+                }
+            }
+        } catch (Exception $e) {
+            $this->getLogs()->logErrors("Validate order exception: {$e->getMessage()}");
+        }
     }
 
     /**

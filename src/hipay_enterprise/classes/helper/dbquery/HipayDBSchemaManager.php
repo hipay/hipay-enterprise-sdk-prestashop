@@ -174,6 +174,7 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PROCESSED_ORDER_TABLE . '`(
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `cart_id` int(11) NOT NULL,
+                `new_cart_id` int(11) NOT NULL,
                 `hipay_order_id` varchar(255) NOT NULL,
                 `total_amount` decimal(20,6) NOT NULL,
                 `status` SMALLINT NOT NULL DEFAULT "0" CHECK (status IN (0,1)),

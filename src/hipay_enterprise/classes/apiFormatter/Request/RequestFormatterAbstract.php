@@ -66,16 +66,7 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
 
         $order->orderid = $this->cart->id . "(" . time() . ")";
 
-        $hipayOrderId = HipayHelper::getHipayProcessedOrderByCartId($this->module, $this->cart);
-
-        if ($hipayOrderId) {
-            $order->orderid = $hipayOrderId;
-            if (HipayHelper::getTransactionReference($this->module, $hipayOrderId) !== null) {
-                HipayHelper::transactionAlreadyProcessed($this->context, $this->module);
-            }
-        } else {
-            HipayHelper::saveHipayProcessedOrder($this->module, $this->cart, $order->orderid);
-        }
+        HipayHelper::saveHipayProcessedOrder($this->module, $this->context, $this->cart, $order->orderid);
 
         if ($this->moto) {
             $order->eci = ECI::MOTO;

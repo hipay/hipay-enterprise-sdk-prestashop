@@ -13,11 +13,11 @@
  */
 require_once dirname(__FILE__) . '/../classes/helper/dbquery/HipayDBSchemaManager.php';
 
-function upgrade_module_2_26_0($module)
+function upgrade_module_2_25_2($module)
 {
     $log = $module->getLogs();
 
-    $log->logInfos('Upgrade to 2.26.0');
+    $log->logInfos('Upgrade to 2.25.2');
 
     try {
 
