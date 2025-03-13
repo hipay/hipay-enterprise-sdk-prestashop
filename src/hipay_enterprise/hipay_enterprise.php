@@ -200,10 +200,7 @@ class Hipay_enterprise extends PaymentModule
         $return &= $this->registerHook('actionDispatcher');
         $return &= $this->registerHook('displayOrderDetail');
         $return &= $this->registerHook('actionValidateOrder');
-        $return &= $this->registerHook('actionObjectAddBefore');
-        $return &= $this->registerHook('actionObjectUpdateBefore');
-        $return &= $this->registerHook('actionObjectCartAddBefore');
-        $return &= $this->registerHook('actionCartUpdateQuantityBefore');
+        $return &= $this->registerHook('actionObjectDeleteAfter');
         if (_PS_VERSION_ >= '1.7') {
             $return17 = $this->registerHook('paymentOptions') &&
                 $this->registerHook('header') &&
@@ -887,6 +884,18 @@ class Hipay_enterprise extends PaymentModule
             }
         } catch (Exception $e) {
             $this->getLogs()->logErrors("Validate order exception: {$e->getMessage()}");
+        }
+    }
+
+    public function hookActionObjectDeleteAfter($params)
+    {
+        try {
+            if ($params['object'] instanceof Cart) {
+                $id_cart = $params['object']->id;
+                HipayDBUtils::deleteProcessedOrderByCartId($id_cart);
+            }
+        } catch (Exception $e) {
+            $this->getLogs()->logErrors("Delete hipay processed order item: {$e->getMessage()}");
         }
     }
 
