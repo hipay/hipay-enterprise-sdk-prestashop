@@ -339,7 +339,27 @@ class HipayDBUtils extends HipayDBQueryAbstract
     }
 
     /**
-     * Get hipay New Cart by current Card id
+     * Get hipay Current cart by new cart id
+     *
+     * @param int $cartId
+     * @return string|false
+     * @throws PrestaShopDatabaseException
+     */
+    public static function getAssociatedCartId($newCartId)
+    {
+        $sql = 'SELECT `cart_id`
+            FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `new_cart_id` = '.(int)$newCartId.'
+            LIMIT 1';
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0]["cart_id"];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get hipay New Cart by current Cart id
      *
      * @param int $cartId
      * @return string|false

@@ -643,6 +643,12 @@ class HipayHelper
     public static function validateOrder($module, $context, $cart, $productName, $status = null)
     {
         $params = [];
+
+        $associatedCartId = HipayDBUtils::getAssociatedCartId($cart->id) ?? null;
+        if (!empty($associatedCartId)) {
+            $cart = new Cart((int)$associatedCartId);
+        }
+
         if (_PS_VERSION_ >= '1.7.1.0') {
             $orderId = Order::getIdByCartId($cart->id);
         } else {
