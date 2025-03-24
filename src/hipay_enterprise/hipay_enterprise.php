@@ -694,8 +694,6 @@ class Hipay_enterprise extends PaymentModule
         $this->context->smarty->registerPlugin('modifier', 'htmlEntityDecode', 'html_entity_decode');
         $this->context->smarty->registerPlugin('modifier', 'inArray', 'in_array');
         $this->context->smarty->registerPlugin('modifier', 'arrayKeyExists', 'array_key_exists');
-
-        //HipayHelper::handleCartProtection($this, Context::getContext(), $params);
     }
 
     /**
