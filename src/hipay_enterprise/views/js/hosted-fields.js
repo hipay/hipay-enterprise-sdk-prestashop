@@ -49,10 +49,6 @@ var hipayHF;
 
 document.addEventListener('DOMContentLoaded', initHostedFields, false);
 
-function allowMultiUse(saveTokenEl) {
-  return oneClick && $(saveTokenEl).is(':checked');
-}
-
 function initHostedFields() {
   if (
     typeof api_tokenjs_username !== 'undefined' &&
