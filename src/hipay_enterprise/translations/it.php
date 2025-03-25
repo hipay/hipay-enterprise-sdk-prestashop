@@ -626,7 +626,6 @@ $_MODULE['<{hipay_enterprise}prestashop>cancel-17_4e37eee382169d81a8613302503e7b
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_0ca2b5535330f021917c16883385ed15'] = 'Riepilogo pagamento';
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_cddcf1bdadaa3a50e049409f5addb89b'] = 'Questo tipo di carta di credito o valuta dell\'ordine non sono supportati. Si prega di scegliere un altro metodo di pagamento.';
-$_MODULE['<{hipay_enterprise}prestashop>exception-17_52e1e20cfa6b863cc92cd2b36545c010'] = 'Questo carrello è già stato utilizzato per un ordine completato. Per favore crea un nuovo carrello per procedere con il pagamento.';
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_291558103a4553ea6d985a6645e3d65b'] = 'Si è verificato un errore, il pagamento è stato cancellato.';
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_abd7da5d669688ffadf2ee23046eb1ca'] = 'Abbiamo verificato un problema col tuo ordine. Si prega di contattare il nostro';
 $_MODULE['<{hipay_enterprise}prestashop>exception-17_64430ad2835be8ad60c59e7d44e4b0b1'] = 'Supporto Clienti';

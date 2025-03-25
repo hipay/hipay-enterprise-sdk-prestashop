@@ -37,11 +37,6 @@ class Hipay_enterprise extends PaymentModule
     public $_technicalErrors = '';
     private static $paypalVersion = null;
 
-    /**
-     * Flag to prevent recursive processing
-     */
-    private $isRegeneratingCart = false;
-
     public function __construct()
     {
         $this->name = 'hipay_enterprise';
