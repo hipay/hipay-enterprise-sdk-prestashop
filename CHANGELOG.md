@@ -3,6 +3,7 @@
 ## UNRELEASE
 
 - **Fix** : Prevent duplicate cart ID from causing multiple order payments
+- **Fix** : Remove oneClick legacy code
 
 ## 2.25.1
 
