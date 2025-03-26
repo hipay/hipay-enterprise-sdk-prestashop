@@ -98,7 +98,6 @@
         var api_tokenjs_username = "{$HiPay_confHipay.account.production.api_tokenjs_username_production}";
         var api_tokenjs_password_publickey = "{$HiPay_confHipay.account.production.api_tokenjs_password_publickey_production}";
         {/if}
-        var oneClick = !!{$HiPay_confHipay.payment.global.card_token};
         var style = {$HiPay_confHipay.payment.global.hosted_fields_style|@json_encode nofilter};
     </script>
 {/if}

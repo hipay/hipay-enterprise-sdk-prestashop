@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASE
+
+- **Fix** : Remove oneClick legacy code
+
 ## 2.25.1
 
 - **Fix** : Remove "file_get_contents" for external URLs
