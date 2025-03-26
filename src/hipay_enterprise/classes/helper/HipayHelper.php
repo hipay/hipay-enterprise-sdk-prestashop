@@ -956,6 +956,7 @@ class HipayHelper
      * Saves a processed HiPay order in the database
      *
      * @param Hipay_enterprise $module
+     * @param Context $context
      * @param Cart $cart
      * @param string $hipayOrderId
      * @return bool

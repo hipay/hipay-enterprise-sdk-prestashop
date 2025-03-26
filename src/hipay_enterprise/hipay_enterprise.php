@@ -876,7 +876,7 @@ class Hipay_enterprise extends PaymentModule
                 }
             }
         } catch (Exception $e) {
-            $this->getLogs()->logErrors("Validate order exception: {$e->getMessage()}");
+            $this->getLogs()->logErrors("Validate order exception: " . $e->getMessage());
         }
     }
 
@@ -888,7 +888,7 @@ class Hipay_enterprise extends PaymentModule
                 HipayDBUtils::deleteProcessedOrderByCartId($id_cart);
             }
         } catch (Exception $e) {
-            $this->getLogs()->logErrors("Delete hipay processed order item: {$e->getMessage()}");
+            $this->getLogs()->logErrors("Delete hipay processed order item: " . $e->getMessage());
         }
     }
 

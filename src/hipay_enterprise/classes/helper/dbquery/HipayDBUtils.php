@@ -283,6 +283,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
      * Insert new processed order into hipay_processed_orders table
      *
      * @param int $cartId
+     * @param int $newCartId
      * @param string $hipayOrderId
      * @param float $totalAmount
      * @param int $status
@@ -341,7 +342,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     /**
      * Get hipay Current cart by new cart id
      *
-     * @param int $cartId
+     * @param int $newCartId
      * @return string|false
      * @throws PrestaShopDatabaseException
      */
