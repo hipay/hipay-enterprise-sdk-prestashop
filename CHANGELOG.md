@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.25.2
+
+- **Fix** : Prevent duplicate cart ID from causing multiple order payments
+- **Fix** : Remove oneClick legacy code
+
 ## 2.25.1
 
 - **Fix** : Remove "file_get_contents" for external URLs

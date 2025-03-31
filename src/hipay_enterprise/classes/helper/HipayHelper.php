@@ -643,6 +643,12 @@ class HipayHelper
     public static function validateOrder($module, $context, $cart, $productName, $status = null)
     {
         $params = [];
+
+        $associatedCartId = HipayDBUtils::getAssociatedCartId($cart->id) ?? null;
+        if (!empty($associatedCartId)) {
+            $cart = new Cart((int)$associatedCartId);
+        }
+
         if (_PS_VERSION_ >= '1.7.1.0') {
             $orderId = Order::getIdByCartId($cart->id);
         } else {
@@ -944,5 +950,167 @@ class HipayHelper
 
         $hasUpperLimit = $maxAmount && $maxAmount > 0;
         return $orderTotal >= $minAmount && (!$hasUpperLimit || $orderTotal <= $maxAmount);
+    }
+
+    /**
+     * Saves a processed HiPay order in the database
+     *
+     * @param Hipay_enterprise $module
+     * @param Context $context
+     * @param Cart $cart
+     * @param string $hipayOrderId
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public static function saveHipayProcessedOrder($module, $context, $cart, $hipayOrderId)
+    {
+        try {
+            $hipayDBUtils = new HipayDBUtils($module);
+            $newCartId = self::regenerateCart($context, $cart) ?? null;
+            if($newCartId) {
+                if ($hipayDBUtils->insertProcessedOrder($cart->id, $newCartId->id, $hipayOrderId, $cart->getOrderTotal(true, Cart::BOTH) )) {
+                    return true;
+                }
+            }
+
+        } catch (Exception $e) {
+            $module->getLogs()->logErrors("Error insert new order item in Hipay order process table" . $e->getMessage());
+            throw $e;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieves the HiPay order ID associated with a cart
+     *
+     * @param Hipay_enterprise $module
+     * @param Cart $cart
+     * @return string|null
+     *
+     * @throws Exception
+     */
+    public static function getHipayProcessedOrderByCartId($module, $cart)
+    {
+        try {
+            $hipayDBUtils = new HipayDBUtils($module);
+
+            return $hipayDBUtils->getHipayOrderIdByCartId($cart->id)["hipay_order_id"] ?? null;
+        } catch (Exception $e) {
+            $module->getLogs()->logErrors("Error insert new order item in Hipay order process table" . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Requests transaction information for a specific order from the HiPay API
+     *
+     * @param Hipay_enterprise $module
+     * @param string $orderId
+     * @return array|null
+     *
+     * @throws Exception
+     */
+    public static function requestOrderTransactionInformation($module, $orderId)
+    {
+        return ApiCaller::requestOrderTransactionInformation($module, $orderId) ?? null;
+    }
+
+    /**
+     * Retrieves the transaction reference for a given order ID
+     *
+     * @param Hipay_enterprise $module
+     * @param string $orderId
+     * @return string|null
+     */
+    public static function getTransactionReference($module, $orderId)
+    {
+        return ($transactions = self::requestOrderTransactionInformation($module, $orderId))
+            ? $transactions[0]->getTransactionReference()
+            : null;
+    }
+
+    /**
+     * Regenerates a new cart and transfers products from the old cart
+     *
+     * @param Context $context
+     * @param Cart $oldCart
+     * @return Cart|false
+     */
+    public static function regenerateCart($context, $oldCart)
+    {
+        try {
+            if (!isset($context->currency->precision) || $context->currency->precision === null) {
+                $context->currency = new Currency((int)$context->currency->id);
+            }
+
+            $newCart = new Cart();
+            $newCart->id_shop = $oldCart->id_shop;
+            $newCart->id_shop_group = $oldCart->id_shop_group;
+            $newCart->id_currency = $oldCart->id_currency;
+            $newCart->id_lang = $oldCart->id_lang;
+            $newCart->id_customer = $oldCart->id_customer;
+            $newCart->id_guest = $oldCart->id_guest;
+            $newCart->id_carrier = $oldCart->id_carrier;
+            $newCart->recyclable = $oldCart->recyclable;
+            $newCart->gift = $oldCart->gift;
+            $newCart->gift_message = $oldCart->gift_message;
+            $newCart->mobile_theme = $oldCart->mobile_theme;
+
+            if (!$newCart->save()) {
+                return false;
+            }
+
+            try {
+                $oldProducts = $oldCart->getProducts();
+
+                if (is_array($oldProducts)) {
+                    foreach ($oldProducts as $product) {
+                        $newCart->updateQty(
+                            $product['quantity'],
+                            $product['id_product'],
+                            $product['id_product_attribute'],
+                            isset($product['id_customization']) ? $product['id_customization'] : null,
+                            'up',
+                            0,
+                            null,
+                            false
+                        );
+                    }
+                }
+
+                $cartRules = $oldCart->getCartRules();
+                if (is_array($cartRules)) {
+                    foreach ($cartRules as $rule) {
+                        $newCart->addCartRule($rule['id_cart_rule']);
+                    }
+                }
+            } catch (Exception $e) {
+
+                PrestaShopLogger::addLog(
+                    'HiPay cart duplication error: ' . $e->getMessage(),
+                    3,
+                    null,
+                    'Cart',
+                    (int)$newCart->id
+                );
+            }
+
+            $context->cart = $newCart;
+            $context->cookie->id_cart = (int)$newCart->id;
+            $context->cookie->write();
+
+            return $newCart;
+        } catch (Exception $e) {
+            PrestaShopLogger::addLog(
+                'HiPay cart regeneration failed: ' . $e->getMessage(),
+                3,
+                null,
+                'Cart',
+                (int)$oldCart->id
+            );
+            return false;
+        }
     }
 }

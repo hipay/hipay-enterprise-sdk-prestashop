@@ -167,6 +167,27 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         return Db::getInstance()->execute($sql);
     }
 
+    public function createHipayProcessedOrderTable()
+    {
+        $this->logs->logInfos('Create Hipay processed order table');
+
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PROCESSED_ORDER_TABLE . '`(
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `cart_id` int(11) NOT NULL,
+                `new_cart_id` int(11) NOT NULL,
+                `hipay_order_id` varchar(255) NOT NULL,
+                `total_amount` decimal(20,6) NOT NULL,
+                `status` SMALLINT NOT NULL DEFAULT "0" CHECK (status IN (0,1)),
+                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` datetime NOT NULL,
+                PRIMARY KEY (`id`),
+                KEY `cart_id` (`cart_id`),
+                KEY `hipay_order_id` (`hipay_order_id`)
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
+
+        return Db::getInstance()->execute($sql);
+    }
+
     /**
      * Delete Hipay mapping table.
      *
@@ -218,6 +239,15 @@ class HipayDBSchemaManager extends HipayDBQueryAbstract
         $this->logs->logInfos('Delete Hipay Notification table');
 
         $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_NOTIFICATION_TABLE . '`';
+
+        return Db::getInstance()->execute($sql);
+    }
+
+    public function deleteHipayProcessedOrderTable()
+    {
+        $this->logs->logInfos('Delete Hipay processed order table');
+
+        $sql = 'DROP TABLE `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_PROCESSED_ORDER_TABLE . '`';
 
         return Db::getInstance()->execute($sql);
     }

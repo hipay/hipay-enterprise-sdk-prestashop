@@ -65,6 +65,9 @@ abstract class RequestFormatterAbstract extends CommonRequestFormatterAbstract
         }
 
         $order->orderid = $this->cart->id . "(" . time() . ")";
+
+        HipayHelper::saveHipayProcessedOrder($this->module, $this->context, $this->cart, $order->orderid);
+
         if ($this->moto) {
             $order->eci = ECI::MOTO;
         }

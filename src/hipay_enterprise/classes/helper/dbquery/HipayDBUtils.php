@@ -278,4 +278,104 @@ class HipayDBUtils extends HipayDBQueryAbstract
 
         return false;
     }
+
+    /**
+     * Insert new processed order into hipay_processed_orders table
+     *
+     * @param int $cartId
+     * @param int $newCartId
+     * @param string $hipayOrderId
+     * @param float $totalAmount
+     * @param int $status
+     * @return bool
+     */
+    public function insertProcessedOrder($cartId, $newCartId, $hipayOrderId, $totalAmount, $status = 0)
+    {
+        $sql = 'INSERT INTO `'._DB_PREFIX_.'hipay_processed_orders`
+            (`cart_id`, `new_cart_id` ,`hipay_order_id`, `total_amount`, `status`, `created_at`, `updated_at`)
+            VALUES (
+                '.(int)$cartId.',
+                '.(int)$newCartId.',
+                "'.pSQL($hipayOrderId).'",
+                '.(float)$totalAmount.',
+                '.(int)$status.',
+                NOW(),
+                NOW()
+            )';
+
+        return (bool)Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Delete processed order by cart ID
+     *
+     * @param int $cartId
+     * @return bool
+     */
+    public static function deleteProcessedOrderByCartId($cartId)
+    {
+        $sql = 'DELETE FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `cart_id` = '.(int)$cartId;
+
+        return (bool)Db::getInstance()->execute($sql);
+    }
+
+    /**
+     * Get hipay order ID by cart ID
+     *
+     * @param int $cartId
+     * @return string|false
+     */
+    public function getHipayOrderIdByCartId($cartId)
+    {
+        $sql = 'SELECT `hipay_order_id`
+            FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `cart_id` = '.(int)$cartId.'
+            LIMIT 1';
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get hipay Current cart by new cart id
+     *
+     * @param int $newCartId
+     * @return string|false
+     * @throws PrestaShopDatabaseException
+     */
+    public static function getAssociatedCartId($newCartId)
+    {
+        $sql = 'SELECT `cart_id`
+            FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `new_cart_id` = '.(int)$newCartId.'
+            LIMIT 1';
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0]["cart_id"];
+        }
+
+        return false;
+    }
+
+    /**
+     * Get hipay New Cart by current Cart id
+     *
+     * @param int $cartId
+     * @return string|false
+     * @throws PrestaShopDatabaseException
+     */
+    public static function getHipayNewCartIdByCartId($cartId)
+    {
+        $sql = 'SELECT `new_cart_id`
+            FROM `'._DB_PREFIX_.'hipay_processed_orders`
+            WHERE `cart_id` = '.(int)$cartId.'
+            LIMIT 1';
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0]["new_cart_id"];
+        }
+
+        return false;
+    }
 }

@@ -33,6 +33,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_27266fe4d37bf06589c7c6d
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_8421ff4eedd1ef36b494adf1a5500c8b'] = 'You will be redirected to an external payment page. Please do not refresh the page during the process	';
 $_MODULE['<{hipay_enterprise}prestashop>hipay_enterprise_2c84752887477f3a1d1ac7e0b6a39105'] = 'A SSL certificate is required to process credit card payments using HiPay. Please consult the FAQ.	';
 $_MODULE['<{hipay_enterprise}prestashop>apihandler_e9a645f9920b7db55c62f023b89d34c5'] = 'Message was :';
+$_MODULE['<{hipay_enterprise}prestashop>apihandler_9628326a4593c507d22c379fd927b2ba'] = 'An error occurred during request Maintenance.';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_36688d4ca7089c01d51eb950788bc7fe'] = 'Fraudulent payment email';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_2fb302ad440d0eade342f67f7cfcfb31'] = 'Copy to';
 $_MODULE['<{hipay_enterprise}prestashop>hipayform_077040cdb8d3c4db4bb50351a952ef44'] = 'Enter a valid email, during a transaction challenged an email will be sent to this address	';
@@ -373,6 +374,7 @@ $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_cb5feb1b7314
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_690d173134d2ab64aa541154d9e14a8c'] = 'Placeholder color';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_ab56ff36d96a7d03525c2b2d772055ad'] = 'Caret color';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_fields.forms.partial_534b7c706186028f1b4f51344bbca176'] = 'Icon color';
+$_MODULE['<{hipay_enterprise}prestashop>alma_container.partial_61f1150670a59a56f91169fd72668b69'] = 'For any questions regarding minimum and maximum amounts, please contact support or your account manager.';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_f3689b7c15897c74cd0f02cde4d5551b'] = 'Enable API V2';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_93cba07454f06a4a960172bbd6e2a435'] = 'Yes';
 $_MODULE['<{hipay_enterprise}prestashop>hosted_page.forms.partial_bafd7322c6e97d25b6299b5d6fe8920b'] = 'No';
