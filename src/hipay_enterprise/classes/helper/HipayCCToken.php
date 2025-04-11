@@ -81,6 +81,26 @@ class HipayCCToken
     }
 
     /**
+     * Replace asterisk masking with 'x' in card PAN fields.
+     *
+     * @param bool|array $cards
+     *
+     * @return bool|array
+     */
+    private function cleanCardPanMasking($cards)
+    {
+        if ($cards && is_array($cards)) {
+            foreach ($cards as &$card) {
+                if (isset($card['pan'])) {
+                    $card['pan'] = str_replace('*', 'x', $card['pan']);
+                }
+            }
+        }
+
+        return $cards;
+    }
+
+    /**
      * Get all saved credit card from customer.
      *
      * @param int $customerId
@@ -89,7 +109,7 @@ class HipayCCToken
      */
     public function getSavedCC($customerId)
     {
-        return $this->dbTokenQuery->getSavedCC($customerId);
+        return $this->cleanCardPanMasking($this->dbTokenQuery->getSavedCC($customerId));
     }
 
     /**
