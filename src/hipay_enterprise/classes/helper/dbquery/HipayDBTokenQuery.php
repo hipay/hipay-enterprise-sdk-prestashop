@@ -157,6 +157,30 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     }
 
     /**
+     * get credit card information with PAN.
+     *
+     * @param int $customerId
+     * @param string $pan
+     *
+     * @return array<string,mixed>|false
+     * @throws PrestaShopDatabaseException
+     */
+    public function getSavedCCWithPan(int $customerId, string $pan)
+    {
+        $sql = 'SELECT *'
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND pan = "' . pSQL($pan) . '"'
+            . ' LIMIT 1';
+
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0];
+        }
+
+        return false;
+    }
+
+    /**
      * delete credit card token.
      *
      * @param int $customerId
