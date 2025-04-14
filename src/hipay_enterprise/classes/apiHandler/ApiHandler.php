@@ -476,6 +476,7 @@ class Apihandler
                         $this->context->cart,
                         $params['methodDisplayName']
                     );
+
                     if ($this->module->hipayConfigTool->getPaymentGlobal()['card_token']) {
                         $cardData = [
                             'customer_id' => $this->context->customer->id,
