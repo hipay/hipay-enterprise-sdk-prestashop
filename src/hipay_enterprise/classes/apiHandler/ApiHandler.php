@@ -476,15 +476,16 @@ class Apihandler
                         $this->context->cart,
                         $params['methodDisplayName']
                     );
-
-                    $cardData = [
-                        'customer_id' => $this->context->customer->id,
-                        'pan' => $response->getPaymentMethod()->getPan(),
-                        'authorized' => 1
-                    ];
-                    $card = $this->dbTokenQuery->getSavedCCWithPan($cardData['customer_id'], $cardData['pan']);
-                    if ($card) {
-                        $this->dbTokenQuery->updateSavedCC($cardData);
+                    if ($this->module->hipayConfigTool->getPaymentGlobal()['card_token']) {
+                        $cardData = [
+                            'customer_id' => $this->context->customer->id,
+                            'pan' => $response->getPaymentMethod()->getPan(),
+                            'authorized' => 1
+                        ];
+                        $card = $this->dbTokenQuery->getSavedCCWithPan($cardData['customer_id'], $cardData['pan']);
+                        if ($card) {
+                            $this->dbTokenQuery->updateSavedCC($cardData);
+                        }
                     }
 
                     Hook::exec('displayHiPayAccepted', ['cart' => $this->context->cart, 'order_id' => $redirectParams['id_order']]);
