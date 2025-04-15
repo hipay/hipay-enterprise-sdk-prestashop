@@ -114,7 +114,8 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     {
         $sql = 'SELECT *'
             . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
-            . ' WHERE customer_id = ' . (int) $customerId;
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND authorized = 1';
 
         try {
             $result = Db::getInstance()->executeS($sql);
