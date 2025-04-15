@@ -509,7 +509,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
     protected function getTemplateCart($context, $currency, $country)
     {
         return [
-            'totalAmount' => $context->cart->getCartTotalPrice(),
+            'totalAmount' => $context->cart->getOrderTotal(true, Cart::BOTH),
             'currencyCode' => $currency->iso_code,
             'countryCode' => $country->iso_code,
         ];
