@@ -1115,17 +1115,21 @@ class HipayHelper
     }
 
     /**
-     * Removes sensitive fields from card data.
+     * Sanitizes card data by keeping only essential fields.
      *
      * @param array $cards
      * @return array
      */
     public static function sanitizeCardData($cards)
     {
-        $fieldsToRemove = ['hp_id', 'customer_id', 'authorized', 'created_at'];
+        if (empty($cards)) {
+            return [];
+        }
 
-        return array_map(function($card) use ($fieldsToRemove) {
-            return array_diff_key($card, array_flip($fieldsToRemove));
+        $fieldsToKeep = ['token', 'brand', 'pan', 'card_holder', 'card_expiry_month', 'card_expiry_year'];
+
+        return array_map(function($card) use ($fieldsToKeep) {
+            return array_intersect_key($card, array_flip($fieldsToKeep));
         }, $cards);
     }
 
