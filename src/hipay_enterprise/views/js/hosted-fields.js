@@ -82,7 +82,7 @@ function initHostedFields() {
         ...(isCardsDisplayedAreLimited && {
           cards_display_count: Number(number_saved_cards_displayed)
         }),
-        cards: isCustomerHasCards ? savedCards : []
+        cards: (isOneClickEnabled && isCustomerHasCards) ? savedCards : []
       },
       fields: {
         savedCards: {

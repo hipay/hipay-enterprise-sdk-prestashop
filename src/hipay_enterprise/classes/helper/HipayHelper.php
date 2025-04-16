@@ -1113,4 +1113,20 @@ class HipayHelper
             return false;
         }
     }
+
+    /**
+     * Removes sensitive fields from card data.
+     *
+     * @param array $cards
+     * @return array
+     */
+    public static function sanitizeCardData($cards)
+    {
+        $fieldsToRemove = ['hp_id', 'customer_id', 'authorized', 'created_at'];
+
+        return array_map(function($card) use ($fieldsToRemove) {
+            return array_diff_key($card, array_flip($fieldsToRemove));
+        }, $cards);
+    }
+
 }
