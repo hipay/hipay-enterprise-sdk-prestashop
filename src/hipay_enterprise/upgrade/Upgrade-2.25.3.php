@@ -29,6 +29,16 @@ function upgrade_module_2_25_3($module)
             throw new Exception("Error during SQL request");
         }
 
+        $sql = "
+            UPDATE " . _DB_PREFIX_ . "hipay_cc_token 
+            SET card_expiry_month = LPAD(card_expiry_month, 2, '0') 
+            WHERE LENGTH(card_expiry_month) = 1;
+            ";
+
+        if (!Db::getInstance()->execute($sql)) {
+            throw new Exception("Error during month padding SQL request");
+        }
+
         $keepParameters = [
             'visa' => [
                 'currencies' => '',
