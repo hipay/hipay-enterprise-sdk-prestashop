@@ -54,13 +54,50 @@ class HipayCCToken
     public function saveCC($customerId, $card)
     {
         $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
-        if (!$this->isCCAlreadySaved($customerId, $card['pan'])) {
-            $this->logs->logInfos("# Save CC for customer ID $customerId");
 
+        $originalPan = $card['pan'];
+        $asteriskPan = str_replace('x', '*', $originalPan);
+
+        if (strpos($originalPan, 'x') !== false && $this->isCCAlreadySaved($customerId, $originalPan)) {
+            $this->logs->logInfos("# Migrating CC masking format for customer ID " . $customerId);
+
+            $this->dbTokenQuery->deleteCCbyPan($customerId, $originalPan);
+
+            $card['pan'] = $asteriskPan;
+            $card['authorized'] = 0;
             $this->dbTokenQuery->insertNewCC($card);
         } else {
-            $this->dbTokenQuery->updateSavedCC($card);
+            $card['pan'] = $asteriskPan;
+
+            if ($this->isCCAlreadySaved($customerId, $asteriskPan)) {
+                $this->dbTokenQuery->updateSavedCC($card);
+            } else {
+
+                $this->logs->logInfos("# Save CC for customer ID " . $customerId);
+                $card['authorized'] = 0;
+                $this->dbTokenQuery->insertNewCC($card);
+            }
         }
+    }
+
+    /**
+     * Replace asterisk masking with 'x' in card PAN fields.
+     *
+     * @param bool|array $cards
+     *
+     * @return bool|array
+     */
+    private function cleanCardPanMasking($cards)
+    {
+        if ($cards && is_array($cards)) {
+            foreach ($cards as &$card) {
+                if (isset($card['pan'])) {
+                    $card['pan'] = str_replace('*', 'x', $card['pan']);
+                }
+            }
+        }
+
+        return $cards;
     }
 
     /**
@@ -72,7 +109,7 @@ class HipayCCToken
      */
     public function getSavedCC($customerId)
     {
-        return $this->dbTokenQuery->getSavedCC($customerId);
+        return $this->cleanCardPanMasking($this->dbTokenQuery->getSavedCC($customerId));
     }
 
     /**

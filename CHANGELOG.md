@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASE
+
+- **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
+
 ## 2.25.2
 
 - **Fix** : Prevent duplicate cart ID from causing multiple order payments
