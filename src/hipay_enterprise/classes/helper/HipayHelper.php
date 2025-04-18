@@ -1113,4 +1113,24 @@ class HipayHelper
             return false;
         }
     }
+
+    /**
+     * Sanitizes card data by keeping only essential fields.
+     *
+     * @param array $cards
+     * @return array
+     */
+    public static function sanitizeCardData($cards)
+    {
+        if (empty($cards)) {
+            return [];
+        }
+
+        $fieldsToKeep = ['token', 'brand', 'pan', 'card_holder', 'card_expiry_month', 'card_expiry_year'];
+
+        return array_map(function($card) use ($fieldsToKeep) {
+            return array_intersect_key($card, array_flip($fieldsToKeep));
+        }, $cards);
+    }
+
 }

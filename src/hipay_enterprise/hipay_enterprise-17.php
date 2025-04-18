@@ -395,7 +395,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 'modules/' .
                                 $this->name .
                                 '/',
-                            'HiPay_savedCC' => $savedCC,
+                            'HiPay_savedCC' => HipayHelper::sanitizeCardData($savedCC),
                             'HiPay_activatedCreditCard' => array_keys($paymentProduct['products']),
                             'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'HiPay_is_guest' => $this->customer->is_guest,

@@ -114,7 +114,8 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     {
         $sql = 'SELECT *'
             . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
-            . ' WHERE customer_id = ' . (int) $customerId;
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND authorized = 1';
 
         try {
             $result = Db::getInstance()->executeS($sql);
@@ -157,6 +158,30 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
     }
 
     /**
+     * get credit card information with PAN.
+     *
+     * @param int $customerId
+     * @param string $pan
+     *
+     * @return array<string,mixed>|false
+     * @throws PrestaShopDatabaseException
+     */
+    public function getSavedCCWithPan(int $customerId, string $pan)
+    {
+        $sql = 'SELECT *'
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND pan = "' . pSQL($pan) . '"'
+            . ' LIMIT 1';
+
+        if (!empty($result = Db::getInstance()->executeS($sql))) {
+            return $result[0];
+        }
+
+        return false;
+    }
+
+    /**
      * delete credit card token.
      *
      * @param int $customerId
@@ -179,6 +204,36 @@ class HipayDBTokenQuery extends HipayDBQueryAbstract
         if (!empty($result)) {
             // delete
             $where = 'customer_id = ' . (int) $customerId . ' AND hp_id = ' . (int) $tokenId;
+            Db::getInstance()->delete(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $where);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete credit card by PAN.
+     *
+     * @param int    $customerId
+     * @param string $pan
+     *
+     * @return bool
+     *
+     * @throws PrestaShopDatabaseException
+     */
+    public function deleteCCbyPan($customerId, $pan)
+    {
+        // Check if the PAN exists for this user
+        $sqlExist = 'SELECT *'
+            . ' FROM `' . _DB_PREFIX_ . HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE . '`'
+            . ' WHERE customer_id = ' . (int) $customerId
+            . ' AND pan = "' . pSQL($pan) . '"';
+
+        $result = Db::getInstance()->executeS($sqlExist);
+
+        if (!empty($result)) {
+            $where = 'customer_id = ' . (int) $customerId . ' AND pan = "' . pSQL($pan) . '"';
             Db::getInstance()->delete(HipayDBQueryAbstract::HIPAY_CC_TOKEN_TABLE, $where);
 
             return true;

@@ -44,6 +44,8 @@ class Apihandler
     private $configHipay;
     /** @var HipayDBUtils */
     private $dbUtils;
+    /** @var HipayDBTokenQuery */
+    private $dbTokenQuery;
 
     public function __construct($moduleInstance, $contextInstance)
     {
@@ -51,6 +53,7 @@ class Apihandler
         $this->context = $contextInstance;
         $this->configHipay = $this->module->hipayConfigTool->getConfigHipay();
         $this->dbUtils = new HipayDBUtils($this->module);
+        $this->dbTokenQuery = new HipayDBTokenQuery($this->module);
     }
 
     /**
@@ -473,6 +476,18 @@ class Apihandler
                         $this->context->cart,
                         $params['methodDisplayName']
                     );
+
+                    if ($this->module->hipayConfigTool->getPaymentGlobal()['card_token']) {
+                        $cardData = [
+                            'customer_id' => $this->context->customer->id,
+                            'pan' => $response->getPaymentMethod()->getPan(),
+                            'authorized' => 1
+                        ];
+                        $card = $this->dbTokenQuery->getSavedCCWithPan($cardData['customer_id'], $cardData['pan']);
+                        if ($card) {
+                            $this->dbTokenQuery->updateSavedCC($cardData);
+                        }
+                    }
 
                     Hook::exec('displayHiPayAccepted', ['cart' => $this->context->cart, 'order_id' => $redirectParams['id_order']]);
                     $redirectUrl = 'index.php?controller=order-confirmation&' . http_build_query($redirectParams);

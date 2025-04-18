@@ -92,7 +92,7 @@ abstract class CommonRequestFormatterAbstract extends ApiFormatterAbstract
         );
 
         // Handling one-click data
-        if (isset($this->params["multi_use"]) && $this->params["multi_use"]) {
+        if (isset($this->params["isOneClick"]) && $this->params["isOneClick"]) {
             $customDataHipay["multi_use"] = true;
         }
 
