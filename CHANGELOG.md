@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASE
+
+- **Fix** : Fixed usage of method `getCartTotalPrice` in favor of method `getOrderTotal`
+
 ## 2.25.2
 
 - **Fix** : Prevent duplicate cart ID from causing multiple order payments
