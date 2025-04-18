@@ -3,6 +3,7 @@
 ## UNRELEASE
 
 - **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
+- **Fix** : Fixed usage of method `getCartTotalPrice` in favor of method `getOrderTotal`
 
 ## 2.25.2
 
