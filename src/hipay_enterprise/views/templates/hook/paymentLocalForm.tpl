@@ -52,7 +52,7 @@
                 lang: "{$HiPay_languageIsoCode}"
             });
 
-            var localHF = localHipay.create("{$HiPay_localPaymentName}", options);
+            var localHF = localHipay.create("{$HiPay_localPaymentCode}", options);
             var extraFields = [];
 
             // Create input for each additionnal Hosted Field

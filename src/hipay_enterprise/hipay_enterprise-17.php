@@ -158,6 +158,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         true
                     ),
                     'HiPay_localPaymentName' => $name,
+                    'HiPay_localPaymentCode' => $paymentProduct['productCode'] ?? $name,
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
