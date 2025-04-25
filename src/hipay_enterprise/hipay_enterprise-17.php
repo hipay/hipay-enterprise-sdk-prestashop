@@ -158,6 +158,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         true
                     ),
                     'HiPay_localPaymentName' => $name,
+                    'HiPay_localPaymentCode' => $paymentProduct['productCode'] ?? $name,
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
                 ]
             );
@@ -395,7 +396,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
                                 'modules/' .
                                 $this->name .
                                 '/',
-                            'HiPay_savedCC' => $savedCC,
+                            'HiPay_savedCC' => HipayHelper::sanitizeCardData($savedCC),
                             'HiPay_activatedCreditCard' => array_keys($paymentProduct['products']),
                             'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                             'HiPay_is_guest' => $this->customer->is_guest,
@@ -509,7 +510,7 @@ class HipayEnterpriseNew extends Hipay_enterprise
     protected function getTemplateCart($context, $currency, $country)
     {
         return [
-            'totalAmount' => $context->cart->getCartTotalPrice(),
+            'totalAmount' => $context->cart->getOrderTotal(true, Cart::BOTH),
             'currencyCode' => $currency->iso_code,
             'countryCode' => $country->iso_code,
         ];

@@ -331,7 +331,7 @@ class HipayNotification
                     $this->controleIfStatusHistoryExist($order->id, _PS_OS_PAYMENT_);
 
                 switch ($transaction->getStatus()) {
-                        // Do nothing - Just log the status and skip further processing
+                    // Do nothing - Just log the status and skip further processing
                     default:
                     case TransactionStatus::CREATED:
                     case TransactionStatus::CARD_HOLDER_ENROLLED:
@@ -428,7 +428,7 @@ class HipayNotification
                         break;
                     case TransactionStatus::CAPTURE_REFUSED:
                         if (!$orderHasBeenPaid) {
-                            $this->updateOrderStatus($transaction, $order, Configuration::get('HIPAY_OS_CAPTURE_REFUSED'));
+                            $this->updateOrderStatus($transaction, $order, Configuration::get('HIPAY_OS_DENIED'));
                         }
                         break;
                 }
@@ -867,21 +867,13 @@ class HipayNotification
     {
         try {
             if (null != $transaction->getPaymentMethod()) {
-                $configCC = $this->module->hipayConfigTool->getPaymentCreditCard()[strtolower(
-                    $transaction->getPaymentProduct()
-                )];
-                if (isset($configCC['canRecurring']) && $configCC['canRecurring']) {
-                    $card = [
-                        'token' => $transaction->getPaymentMethod()->getToken(),
-                        'brand' => $transaction->getPaymentProduct(),
-                        'pan' => $transaction->getPaymentMethod()->getPan(),
-                        'card_holder' => $transaction->getPaymentMethod()->getCardHolder(),
-                        'card_expiry_month' => $transaction->getPaymentMethod()->getCardExpiryMonth(),
-                        'card_expiry_year' => $transaction->getPaymentMethod()->getCardExpiryYear(),
-                        'issuer' => $transaction->getPaymentMethod()->getIssuer(),
-                        'country' => $transaction->getPaymentMethod()->getCountry(),
-                    ];
-                }
+                $card = [
+                    'pan' => $transaction->getPaymentMethod()->getPan(),
+                    'card_holder' => $transaction->getPaymentMethod()->getCardHolder(),
+                    'authorized' => 1
+                ];
+
+                $this->ccToken->saveCC($customerId, $card);
             }
         } catch (Exception $e) {
             $this->log->logException($e);

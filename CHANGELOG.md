@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.3
+
+- **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
+- **Fix** : Fixed usage of method `getCartTotalPrice` in favor of method `getOrderTotal`
+- **Fix** : Fixed payment method **Credit Long Secondary - Oney**
+- **Fix** : Fixed notification 173 (Capture Refused) by using Prestashop state `HIPAY_OS_DENIED`
+
 ## 2.25.2
 
 - **Fix** : Prevent duplicate cart ID from causing multiple order payments
