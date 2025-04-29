@@ -226,8 +226,7 @@
     const request = {
       countryCode: parameters.countryCode,
       currencyCode: parameters.currencyCode,
-      total: total,
-      supportedNetworks: ['visa', 'masterCard']
+      total: total
     };
 
     const applePayStyle = {
