@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASE
+
+- **Fix** : Removed network card restriction for Apple Pay
+
 ## 2.25.3
 
 - **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
@@ -10,11 +14,11 @@
 ## 2.25.2
 
 - **Fix** : Prevent duplicate cart ID from causing multiple order payments
-- **Fix** : Remove oneClick legacy code
+- **Fix** : Removed oneClick legacy code
 
 ## 2.25.1
 
-- **Fix** : Remove "file_get_contents" for external URLs
+- **Fix** : Removed "file_get_contents" for external URLs
 - **Fix** : Fixed upgrade script from previous version `2.25.0`, thanks to [geoffrey-bedle](https://github.com/geoffrey-bedle) for issue [#90](https://github.com/hipay/hipay-enterprise-sdk-prestashop/issues/90)
 
 ## 2.25.0
