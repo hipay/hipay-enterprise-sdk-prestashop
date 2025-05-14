@@ -823,27 +823,69 @@ class HipayNotification
                 }
             }
         } else { // complete or partial refund without basket
-            $product = array_pop($orderProducts);
 
-            $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
+            if ($isCompleteRefund) {
+                foreach ($orderProducts as $product) {
+                    $order_detail = new OrderDetail((int) $product['id_order_detail']);
 
-            $order_detail = new OrderDetail((int) $product['id_order_detail']);
-            $order_detail->product_quantity += 1;
-            $order_detail->update();
-            $tax_calculator = $order_detail->getTaxCalculator();
-            $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+                    $order_detail->total_refunded_tax_excl = (float) $order_detail->total_price_tax_excl;
+                    $order_detail->total_refunded_tax_incl = (float) $order_detail->total_price_tax_incl;
+                    $order_detail->product_quantity_refunded = $order_detail->product_quantity;
+                    $order_detail->update();
 
-            $product['unit_price'] = $amountToRefund;
-            $product['product_quantity_refunded'] = $product['product_quantity'];
-            $product['quantity'] = 1;
+                    // Prepare the product for OrderSlip creation
+                    $product['quantity'] = $order_detail->product_quantity;
+                    $product['unit_price'] = $order_detail->unit_price_tax_excl;
+                    $refundedProducts[] = $product;
 
-            OrderSlip::create(
-                $order,
-                [$product]
-            );
+                    // Update stock if needed
+                    $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($product['product_id'], $product['product_attribute_id']));
+                    if (Validate::isLoadedObject($stock_available)) {
+                        $stockAvailable = (int) StockAvailable::getQuantityAvailableByProduct($order_detail->product_id, $order_detail->product_attribute_id);
+                        $quantityToAdd = (int) $order_detail->product_quantity;
+                        $newQuantity = $stockAvailable + $quantityToAdd;
+                        $stock_available->quantity = $newQuantity;
+                        $stock_available->update();
+                    }
+                }
+
+                // Create the order slip with all products
+                $_POST['cancelProduct'] = true;
+                OrderSlip::create(
+                    $order,
+                    $refundedProducts,
+                    (float) $order->total_shipping_tax_excl, // Include shipping in complete refund
+                    (float) $order->total_discounts_tax_incl // Include discounts in complete refund
+                );
+            } else {
+                $product = array_pop($orderProducts);
+                $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
+
+                $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                $_POST['cancelProduct'] = true;
+                $tax_calculator = $order_detail->getTaxCalculator();
+                $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+
+                $product['unit_price'] = $amountToRefund;
+                $product['product_quantity_refunded'] = $product['product_quantity'];
+                $product['quantity'] = 1;
+
+                OrderSlip::create(
+                    $order,
+                    [$product]
+                );
+
+                $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                $order_detail->product_quantity_refunded += 1;
+                $order_detail->total_refunded_tax_excl = $order_detail->product_quantity_refunded * $order_detail->unit_price_tax_excl;
+                $order_detail->total_refunded_tax_incl = $order_detail->product_quantity_refunded * $order_detail->unit_price_tax_incl;
+                $order_detail->update();
+            }
+
         }
 
         if ((count($refundedProducts) && count($transactionProducts)) || $fees > 0) {
+            $_POST['cancelProduct'] = true;
             OrderSlip::create(
                 $order,
                 $refundedProducts,
