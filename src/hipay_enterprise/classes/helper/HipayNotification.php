@@ -837,16 +837,6 @@ class HipayNotification
                     $product['quantity'] = $order_detail->product_quantity;
                     $product['unit_price'] = $order_detail->unit_price_tax_excl;
                     $refundedProducts[] = $product;
-
-                    // Update stock if needed
-                    $stock_available = new StockAvailable(StockAvailable::getStockAvailableIdByProductId($product['product_id'], $product['product_attribute_id']));
-                    if (Validate::isLoadedObject($stock_available)) {
-                        $stockAvailable = (int) StockAvailable::getQuantityAvailableByProduct($order_detail->product_id, $order_detail->product_attribute_id);
-                        $quantityToAdd = (int) $order_detail->product_quantity;
-                        $newQuantity = $stockAvailable + $quantityToAdd;
-                        $stock_available->quantity = $newQuantity;
-                        $stock_available->update();
-                    }
                 }
 
                 // Create the order slip with all products
