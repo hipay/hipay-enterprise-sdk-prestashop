@@ -848,7 +848,8 @@ class HipayNotification
                     (float) $order->total_discounts_tax_incl // Include discounts in complete refund
                 );
             } else {
-                $product = array_pop($orderProducts);
+                $orderProducts = $order->getProducts();
+                $product = end($orderProducts);
                 $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
 
                 $order_detail = new OrderDetail((int) $product['id_order_detail']);
@@ -857,19 +858,24 @@ class HipayNotification
                 $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
 
                 $product['unit_price'] = $amountToRefund;
-                $product['product_quantity_refunded'] = $product['product_quantity'];
+                $product['product_quantity_refunded'] = $order_detail->product_quantity_refunded;
                 $product['quantity'] = 1;
 
-                OrderSlip::create(
-                    $order,
-                    [$product]
-                );
+                if (($order_detail->product_quantity_refunded + 1) <= $order_detail->product_quantity) {
+                    $this->completeRefundProcess($order, $product);
+                } else {
+                    foreach ($orderProducts as $availableProduct) {
+                        $available_order_detail = new OrderDetail((int) $availableProduct['id_order_detail']);
+                        if (($available_order_detail->product_quantity_refunded + 1) <= $available_order_detail->product_quantity) {
+                            $availableProduct['unit_price'] = $amountToRefund;
+                            $availableProduct['product_quantity_refunded'] = $available_order_detail->product_quantity_refunded;
+                            $availableProduct['quantity'] = 1;
 
-                $order_detail = new OrderDetail((int) $product['id_order_detail']);
-                $order_detail->product_quantity_refunded += 1;
-                $order_detail->total_refunded_tax_excl = $order_detail->product_quantity_refunded * $order_detail->unit_price_tax_excl;
-                $order_detail->total_refunded_tax_incl = $order_detail->product_quantity_refunded * $order_detail->unit_price_tax_incl;
-                $order_detail->update();
+                            $this->completeRefundProcess($order, $availableProduct);
+                            break;
+                        }
+                    }
+                }
             }
 
         }
@@ -1391,5 +1397,25 @@ class HipayNotification
         $string = $this->remove_accents($string);
 
         return $string;
+    }
+
+    /**
+     * Complete the process of refund and create order slip
+     *
+     * @param Order $order
+     * @param $availableProduct
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    protected function completeRefundProcess($order, $availableProduct)
+    {
+        OrderSlip::create($order, [$availableProduct]);
+
+        $available_order_detail = new OrderDetail((int)$availableProduct['id_order_detail']);
+        $available_order_detail->product_quantity_refunded += 1;
+        $available_order_detail->total_refunded_tax_excl = $available_order_detail->product_quantity_refunded * $available_order_detail->unit_price_tax_excl;
+        $available_order_detail->total_refunded_tax_incl = $available_order_detail->product_quantity_refunded * $available_order_detail->unit_price_tax_incl;
+        $available_order_detail->update();
     }
 }
