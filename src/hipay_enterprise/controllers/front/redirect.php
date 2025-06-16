@@ -386,6 +386,8 @@ class Hipay_enterpriseRedirectModuleFrontController extends ModuleFrontControlle
                     'deviceFingerprint' => Tools::getValue('ioBB'),
                     'productlist' => $selectedCC,
                     'method' => $selectedCC,
+                    // [PRES-1] Ensure amount is present and includes discountsAdd commentMore actions
+                    'amount' => $cart->getOrderTotal(true, Cart::BOTH),
                     'browser_info' => json_decode(Tools::getValue('browserInfo')),
                     'provider_data' => (string) json_encode($providerData)
                 ];

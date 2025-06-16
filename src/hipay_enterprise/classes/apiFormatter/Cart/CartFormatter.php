@@ -66,8 +66,14 @@ class CartFormatter extends ApiFormatterAbstract
             $cart->addItem($item);
         }
 
-        // Discount items
-        if (!empty($this->cart->getCartRules())) {
+        // [PRES-1] Discount items
+        $cartRules = $this->cart->getCartRules();
+        $totalDiscount = 0.00;
+        foreach ($cartRules as $rule) {
+            $totalDiscount += Tools::ps_round($rule['value_real'], 2);
+        }
+
+        if ($totalDiscount > 0) {
             $item = $this->getDiscountItem();
             $cart->addItem($item);
         }
@@ -129,24 +135,16 @@ class CartFormatter extends ApiFormatterAbstract
     {
         $item = new Item();
 
-        $european_article_numbering = null;
-        if (isset($product['ean13']) && '0' != $product['ean13']) {
-            $european_article_numbering = $product['ean13'];
-        }
-
+        $european_article_numbering = isset($product['ean13']) && $product['ean13'] !== '0' ? $product['ean13'] : null;
         $product_reference = HipayHelper::getProductRef($product);
         $type = 'good';
         $name = $product['name'];
         $quantity = (int) $product['cart_quantity'];
 
-        $discount = -1 *
-            Tools::ps_round(
-                ($product['price_without_reduction'] * $product['cart_quantity']) -
-                ($product['price_with_reduction'] * $product['cart_quantity']),
-                2
-            );
-        $total_amount = Tools::ps_round($product['total_wt'], 2);
-        $unit_price = Tools::ps_round(($total_amount - $discount) / $quantity, 3);
+        // [PRES-1] product-level discounts
+        $unit_price = Tools::ps_round($product['price_wt'], 2);
+        $total_amount = Tools::ps_round($unit_price * $quantity, 2);
+        $discount = 0.00;
 
         $tax_rate = $product['rate'];
         $discount_description = '';
