@@ -77,15 +77,16 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('# Start LockSQL for id_order = '.$orderId.'in :'.$origin);
 
-        $sql = 'SELECT `hp_id`, `order_id`'
-            .' FROM `'._DB_PREFIX_.HipayDBQueryAbstract::HIPAY_TRANSACTION_TABLE.'`'
-            .' WHERE `order_id` = '.(int) $orderId.' FOR UPDATE';
+        $lockName = 'hipay_order_' . (int)$orderId;Add commentMore actions
+        $sqlLock = 'SELECT GET_LOCK("' . pSQL($lockName) . '", 10)'; // 10 second timeout
 
-        if (!Db::getInstance()->execute('START TRANSACTION;') || !Db::getInstance()->execute($sql)) {
-            $this->logs->logInfos('Bad LockSQL initiated, Lock could not be initiated for id_order = '.$orderId);
-            exit('Lock not initiated');
+        $locked = (bool) Db::getInstance()->getValue($sqlLock);Add commentMore actions
+        if (!$locked) {
+            $this->logs->logInfos('Failed to acquire lock for id_order = ' . $orderId);
+            throw new Exception('Could not acquire lock for order: ' . $orderId);
         }
-        $this->logs->logInfos('# LockSQL for id_order = '.$orderId.'in :'.$origin.' is now free');
+
+        $this->logs->logInfos('# LockSQL acquired for id_order = ' . $orderId . ' in: ' . $origin);
     }
 
     /**
@@ -93,14 +94,13 @@ class HipayDBUtils extends HipayDBQueryAbstract
      *
      * @param string $origin
      */
-    public function releaseSQLLock($origin)
+    public function releaseSQLLock($orderId, $origin)
     {
-        $this->logs->logInfos('# Commit LockSQL for '.$origin);
+        $this->logs->logInfos('# Release LockSQL for id_order = ' . $orderId . ' from: ' . $origin);
 
-        $sql = 'COMMIT';
-        if (!Db::getInstance()->execute($sql)) {
-            $this->logs->logInfos('Bad LockSQL initiated ');
-        }
+        $lockName = 'hipay_order_' . (int)$orderId;Add commentMore actions
+        $this->logs->logInfos('# Releasing advisory lock for ' . $origin);
+        Db::getInstance()->getValue("SELECT RELEASE_LOCK('" . pSQL($lockName) . "')");
     }
 
     /**
