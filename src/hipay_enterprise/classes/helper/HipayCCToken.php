@@ -53,30 +53,36 @@ class HipayCCToken
      */
     public function saveCC($customerId, $card)
     {
-        $card = array_merge(['customer_id' => $customerId, 'created_at' => (new DateTime())->format('Y-m-d')], $card);
+        $card = array_merge([
+            'customer_id' => $customerId,
+            'created_at' => (new DateTime())->format('Y-m-d')
+        ], $card);
 
         $originalPan = $card['pan'];
         $asteriskPan = str_replace('x', '*', $originalPan);
 
+        // Normalize PAN masking
+        $card['pan'] = $asteriskPan;
+
         if (strpos($originalPan, 'x') !== false && $this->isCCAlreadySaved($customerId, $originalPan)) {
             $this->logs->logInfos("# Migrating CC masking format for customer ID " . $customerId);
-
             $this->dbTokenQuery->deleteCCbyPan($customerId, $originalPan);
-
-            $card['pan'] = $asteriskPan;
-            $card['authorized'] = 0;
+            $card['authorized'] = 0; // Reasonable default for migrated legacy format
             $this->dbTokenQuery->insertNewCC($card);
+            return;
+        }
+
+        // New or existing card insert/update
+        if ($this->isCCAlreadySaved($customerId, $asteriskPan)) {
+            $this->logs->logInfos("# Update existing CC for customer ID " . $customerId);
+            $this->dbTokenQuery->updateSavedCC($card);
         } else {
-            $card['pan'] = $asteriskPan;
-
-            if ($this->isCCAlreadySaved($customerId, $asteriskPan)) {
-                $this->dbTokenQuery->updateSavedCC($card);
-            } else {
-
-                $this->logs->logInfos("# Save CC for customer ID " . $customerId);
+            $this->logs->logInfos("# Save new CC for customer ID " . $customerId);
+            // Do not override authorized flag if already passed
+            if (!isset($card['authorized'])) {
                 $card['authorized'] = 0;
-                $this->dbTokenQuery->insertNewCC($card);
             }
+            $this->dbTokenQuery->insertNewCC($card);
         }
     }
 
