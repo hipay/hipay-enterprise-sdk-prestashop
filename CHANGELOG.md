@@ -3,6 +3,7 @@
 ## 2.25.4
 
 - **Fix** : Fixed invoice generation
+- **Fix** : One click - Problem showing saved cards
 
 ## UNRELEASE
 
