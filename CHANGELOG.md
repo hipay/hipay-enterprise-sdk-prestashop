@@ -1,18 +1,12 @@
 # Changelog
 
-## 2.25.4
-
-- **Fix** : One click - Problem showing saved cards
-
 ## UNRELEASE
 
 - **Fix** : Removed network card restriction for Apple Pay
 
 ## 2.25.4
 
-- **Fix** : Fixed invoice generation
 - **Fix** : One click - Problem showing saved cards
-- **Fix** : Fixed Products with discounts on PayPal V2
 
 ## 2.25.3
 
