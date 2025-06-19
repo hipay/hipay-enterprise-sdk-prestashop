@@ -77,10 +77,10 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('# Start LockSQL for id_order = '.$orderId.'in :'.$origin);
 
-        $lockName = 'hipay_order_' . (int)$orderId;Add commentMore actions
+        $lockName = 'hipay_order_' . (int)$orderId;
         $sqlLock = 'SELECT GET_LOCK("' . pSQL($lockName) . '", 10)'; // 10 second timeout
 
-        $locked = (bool) Db::getInstance()->getValue($sqlLock);Add commentMore actions
+        $locked = (bool) Db::getInstance()->getValue($sqlLock);
         if (!$locked) {
             $this->logs->logInfos('Failed to acquire lock for id_order = ' . $orderId);
             throw new Exception('Could not acquire lock for order: ' . $orderId);
@@ -98,7 +98,7 @@ class HipayDBUtils extends HipayDBQueryAbstract
     {
         $this->logs->logInfos('# Release LockSQL for id_order = ' . $orderId . ' from: ' . $origin);
 
-        $lockName = 'hipay_order_' . (int)$orderId;Add commentMore actions
+        $lockName = 'hipay_order_' . (int)$orderId;
         $this->logs->logInfos('# Releasing advisory lock for ' . $origin);
         Db::getInstance()->getValue("SELECT RELEASE_LOCK('" . pSQL($lockName) . "')");
     }
