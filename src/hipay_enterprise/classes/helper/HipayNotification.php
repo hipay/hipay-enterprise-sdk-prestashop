@@ -866,11 +866,11 @@ class HipayNotification
     private function saveCardToken($transaction, $customerId)
     {
         try {
-            $paymentMethod = $transaction->getPaymentMethod();Add commentMore actions
+            $paymentMethod = $transaction->getPaymentMethod();
 
             if ($paymentMethod !== null) {
                 $card = [
-                    'pan'               => $paymentMethod->getPan(),Add commentMore actions
+                    'pan'               => $paymentMethod->getPan(),
                     'card_holder'       => $paymentMethod->getCardHolder(),
                     'token'             => $paymentMethod->getToken(),
                     'brand'             => strtolower($paymentMethod->getBrand()),

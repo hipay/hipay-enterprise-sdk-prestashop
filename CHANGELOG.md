@@ -1,12 +1,12 @@
 # Changelog
 
-## 2.25.4
-
-- **Fix** : One click - Problem showing saved cards
-
 ## UNRELEASE
 
 - **Fix** : Removed network card restriction for Apple Pay
+
+## 2.25.4
+
+- **Fix** : One click - Problem showing saved cards
 
 ## 2.25.3
 
