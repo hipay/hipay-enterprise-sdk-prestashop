@@ -17,8 +17,6 @@
 - **Fix** : Fixed invoice generation
 - **Fix** : One click - Problem showing saved cards
 - **Fix** : Fixed Products with discounts on PayPal V2
-- **Fix** : One click - Problem showing saved cards
-- **Fix** : Fixed invoice generation
 
 ## 2.25.3
 
