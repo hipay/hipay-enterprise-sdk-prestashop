@@ -823,7 +823,6 @@ class HipayNotification
                 }
             }
         } else { // complete or partial refund without basket
-
             if ($isCompleteRefund) {
                 foreach ($orderProducts as $product) {
                     $order_detail = new OrderDetail((int) $product['id_order_detail']);
@@ -881,7 +880,6 @@ class HipayNotification
         }
 
         if ((count($refundedProducts) && count($transactionProducts)) || $fees > 0) {
-            $_POST['cancelProduct'] = true;
             OrderSlip::create(
                 $order,
                 $refundedProducts,
