@@ -4,6 +4,10 @@
 
 - **Fix** : Removed network card restriction for Apple Pay
 
+## 2.25.4
+
+- **Fix** : Fixed Products with discounts on PayPal V2
+
 ## 2.25.3
 
 - **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
