@@ -218,8 +218,10 @@ class HipayNotification
      */
     private function processTransaction($transaction, $cart, $currentAttempt)
     {
+        $firstOrder = null;
         try {
             if (!empty($orders = $this->getOrdersByCartId($cart->id))) {
+                $firstOrder = reset($orders);
                 foreach ($orders as $order) {
                     $this->log->logInfos('# Order ' . $order->id . ' with cart ID ' . $cart->id);
 
@@ -238,6 +240,7 @@ class HipayNotification
                         'Received ' . $currentAttempt . ' of ' . $transaction->getStatus() . ' notifications for cart : ' . $cart->id . ', creating order now'
                     );
                     $orders = $this->registerOrder($transaction, $cart, Configuration::get('HIPAY_OS_PENDING'));
+                    $firstOrder = reset($orders);
                 } else {
                     if (in_array($transaction->getStatus(), self::NO_ORDER_NEEDED_NOTIFICATIONS)) {
                         return null;
@@ -248,12 +251,12 @@ class HipayNotification
             }
 
             // When empty $order maybe we've got multiple orders from multiple carriers or vendors
-            if (empty($order)) {
+            if (!$firstOrder) {
                 $multipleCarrierOrder = true;
             } else {
                 $this->dbUtils->setSQLLockForCart(
-                    $order->id,
-                    '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $order->id
+                    $firstOrder->id,
+                    '# processTransaction ' . $transaction->getStatus() . ' for order ID : ' . $firstOrder->id
                 );
             }
 
@@ -322,6 +325,7 @@ class HipayNotification
                     }
 
                     $this->dbUtils->releaseSQLLock(
+                        $order->id,
                         $message . ' # processTransaction ' . $transaction->getStatus() . ' for cart ID : ' . $cart->id
                     );
                     return $message;
@@ -435,6 +439,7 @@ class HipayNotification
             }
 
             $this->dbUtils->releaseSQLLock(
+                $firstOrder->id,
                 '# processTransaction ' . $transaction->getStatus() . ' for cart ID : ' . $cart->id
             );
 
@@ -464,6 +469,7 @@ class HipayNotification
             }
         } catch (Exception $e) {
             $this->dbUtils->releaseSQLLock(
+                $firstOrder->id,
                 get_class($e) . ' # processTransaction ' . $transaction->getStatus() . ' for cart ID : ' . $cart->id
             );
             $this->log->logException($e);
