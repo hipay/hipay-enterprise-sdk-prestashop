@@ -7,6 +7,7 @@
 ## 2.25.4
 
 - **Fix** : One click - Problem showing saved cards
+- **Fix** : Fixed invoice generation
 
 ## 2.25.3
 
