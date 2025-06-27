@@ -872,11 +872,17 @@ class HipayNotification
     private function saveCardToken($transaction, $customerId)
     {
         try {
-            if (null != $transaction->getPaymentMethod()) {
+            $paymentMethod = $transaction->getPaymentMethod();
+
+            if ($paymentMethod !== null) {
                 $card = [
-                    'pan' => $transaction->getPaymentMethod()->getPan(),
-                    'card_holder' => $transaction->getPaymentMethod()->getCardHolder(),
-                    'authorized' => 1
+                    'pan'               => $paymentMethod->getPan(),
+                    'card_holder'       => $paymentMethod->getCardHolder(),
+                    'token'             => $paymentMethod->getToken(),
+                    'brand'             => strtolower($paymentMethod->getBrand()),
+                    'card_expiry_month' => $paymentMethod->getCardExpiryMonth(),
+                    'card_expiry_year'  => $paymentMethod->getCardExpiryYear(),
+                    'authorized'        => 1
                 ];
 
                 $this->ccToken->saveCC($customerId, $card);
