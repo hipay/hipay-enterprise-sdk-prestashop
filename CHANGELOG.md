@@ -1,9 +1,5 @@
 # Changelog
 
-## 2.25.4
-
-- **Fix** : Fixed invoice generation
-
 ## UNRELEASE
 
 - **Fix** : Removed network card restriction for Apple Pay
