@@ -345,6 +345,10 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_999009378d302fc9172
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_45fe0d3293152fa29cf10ef8a3c1871d'] = '3 jours';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_947d8520f04473da621f2718138f3bc6'] = '30 jours';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_ed0c9b5fb2f44a77915d0ce45d0c501c'] = '90 jours';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_72ab9d0304d3e84c6aa2dd15eda282f2'] = '1 heure';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_6e9461ab087b8bcd886e3061ee588e83'] = '3 heures';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_88f1efb29dc20c4b7c6ae2653b3f778c'] = '6 heures';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_a32d6f77b4cd387776263c94eaaa52ff'] = '12 heures';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_43959bd28527bfcb99b75841af6e5f69'] = 'Promotion marchand';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_fa31b6e88cdc95eab570d83db23e2c3d'] = 'Devises activées';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_4107daf5746a644e08bca169bf6eba65'] = 'Cette devise n\'est pas activée dans votre boutique PrestaShop .';

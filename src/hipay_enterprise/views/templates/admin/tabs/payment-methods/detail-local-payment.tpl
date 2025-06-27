@@ -163,6 +163,18 @@
                             <option value="90"
                                 {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "90"}selected="selected"
                                 {/if}>{l s='90 days' mod='hipay_enterprise'}</option>
+                            <option value="H1"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H1"}selected="selected"
+                                {/if}>{l s='1 hour' mod='hipay_enterprise'}</option>
+                            <option value="H3"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H3"}selected="selected"
+                                {/if}>{l s='3 hours' mod='hipay_enterprise'}</option>
+                            <option value="H6"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H6"}selected="selected"
+                                {/if}>{l s='6 hours' mod='hipay_enterprise'}</option>
+                            <option value="H12"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H12"}selected="selected"
+                                {/if}>{l s='12 hours' mod='hipay_enterprise'}</option>    
                         </select>
                     </div>
                 </div>
