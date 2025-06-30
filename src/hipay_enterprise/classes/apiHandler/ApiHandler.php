@@ -143,6 +143,13 @@ class Apihandler
      */
     public function handleLocalPayment($mode = ApiMode::HOSTED_PAGE, $params = [])
     {
+        $cart = $this->context->cart;
+
+        // Ensure amount is present and includes discounts
+        if (!isset($params['amount'])) {
+            $params['amount'] = $cart->getOrderTotal(true, Cart::BOTH);
+        }
+        
         $params = $this->baseParamsInit($params, false);
 
         $params['paymentmethod'] = $this->getPaymentMethod($params, false);

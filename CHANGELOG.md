@@ -6,6 +6,12 @@
 - **Fix** : Fix order detail quantity in case of refund without basket
 - **Fix** : Fix duplicate cart rules in case of decline payment,  thanks to [clotairer](https://github.com/clotairer) for issue [#91](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/91)
 
+## 2.25.4
+
+- **Fix** : Fixed Products with discounts on PayPal V2
+- **Fix** : One click - Problem showing saved cards
+- **Fix** : Fixed invoice generation
+
 ## 2.25.3
 
 - **Fix** : (OneClick) Prevent saving payment card details without proper authorization.
