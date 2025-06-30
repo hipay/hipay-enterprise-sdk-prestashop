@@ -829,24 +829,60 @@ class HipayNotification
                 }
             }
         } else { // complete or partial refund without basket
-            $product = array_pop($orderProducts);
+            if ($isCompleteRefund) {
+                foreach ($orderProducts as $product) {
+                    $order_detail = new OrderDetail((int) $product['id_order_detail']);
 
-            $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
+                    $order_detail->total_refunded_tax_excl = (float) $order_detail->total_price_tax_excl;
+                    $order_detail->total_refunded_tax_incl = (float) $order_detail->total_price_tax_incl;
+                    $order_detail->product_quantity_refunded = $order_detail->product_quantity;
+                    $order_detail->update();
 
-            $order_detail = new OrderDetail((int) $product['id_order_detail']);
-            $order_detail->product_quantity += 1;
-            $order_detail->update();
-            $tax_calculator = $order_detail->getTaxCalculator();
-            $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+                    // Prepare the product for OrderSlip creation
+                    $product['quantity'] = $order_detail->product_quantity;
+                    $product['unit_price'] = $order_detail->unit_price_tax_excl;
+                    $refundedProducts[] = $product;
+                }
 
-            $product['unit_price'] = $amountToRefund;
-            $product['product_quantity_refunded'] = $product['product_quantity'];
-            $product['quantity'] = 1;
+                // Create the order slip with all products
+                $_POST['cancelProduct'] = true;
+                OrderSlip::create(
+                    $order,
+                    $refundedProducts,
+                    (float) $order->total_shipping_tax_excl, // Include shipping in complete refund
+                    (float) $order->total_discounts_tax_incl // Include discounts in complete refund
+                );
+            } else {
+                $orderProducts = $order->getProducts();
+                $product = end($orderProducts);
+                $amountToRefund = (float) $transaction->getRefundedAmount() - (float) $this->dbMaintenance->getAmountRefunded($order->id);
 
-            OrderSlip::create(
-                $order,
-                [$product]
-            );
+                $order_detail = new OrderDetail((int) $product['id_order_detail']);
+                $_POST['cancelProduct'] = true;
+                $tax_calculator = $order_detail->getTaxCalculator();
+                $amountToRefund = $tax_calculator->removeTaxes($amountToRefund);
+
+                $product['unit_price'] = $amountToRefund;
+                $product['product_quantity_refunded'] = $order_detail->product_quantity_refunded;
+                $product['quantity'] = 1;
+
+                if (($order_detail->product_quantity_refunded + 1) <= $order_detail->product_quantity) {
+                    $this->completeRefundProcess($order, $product);
+                } else {
+                    foreach ($orderProducts as $availableProduct) {
+                        $available_order_detail = new OrderDetail((int) $availableProduct['id_order_detail']);
+                        if (($available_order_detail->product_quantity_refunded + 1) <= $available_order_detail->product_quantity) {
+                            $availableProduct['unit_price'] = $amountToRefund;
+                            $availableProduct['product_quantity_refunded'] = $available_order_detail->product_quantity_refunded;
+                            $availableProduct['quantity'] = 1;
+
+                            $this->completeRefundProcess($order, $availableProduct);
+                            break;
+                        }
+                    }
+                }
+            }
+
         }
 
         if ((count($refundedProducts) && count($transactionProducts)) || $fees > 0) {
@@ -1371,5 +1407,25 @@ class HipayNotification
         $string = $this->remove_accents($string);
 
         return $string;
+    }
+
+    /**
+     * Complete the process of refund and create order slip
+     *
+     * @param Order $order
+     * @param $availableProduct
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    protected function completeRefundProcess($order, $availableProduct)
+    {
+        OrderSlip::create($order, [$availableProduct]);
+
+        $available_order_detail = new OrderDetail((int)$availableProduct['id_order_detail']);
+        $available_order_detail->product_quantity_refunded += 1;
+        $available_order_detail->total_refunded_tax_excl = $available_order_detail->product_quantity_refunded * $available_order_detail->unit_price_tax_excl;
+        $available_order_detail->total_refunded_tax_incl = $available_order_detail->product_quantity_refunded * $available_order_detail->unit_price_tax_incl;
+        $available_order_detail->update();
     }
 }

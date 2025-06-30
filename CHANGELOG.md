@@ -3,6 +3,8 @@
 ## UNRELEASE
 
 - **Fix** : Removed network card restriction for Apple Pay
+- **Fix** : Fix order detail quantity in case of refund without basket
+- **Fix** : Fix duplicate cart rules in case of decline payment,  thanks to [clotairer](https://github.com/clotairer) for issue [#91](https://github.com/hipay/hipay-enterprise-sdk-prestashop/pull/91)
 
 ## 2.25.4
 
