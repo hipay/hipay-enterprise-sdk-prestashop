@@ -154,6 +154,12 @@
                     <label class="control-label col-lg-2">{l s='Order expiration date' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <select name="{$key}_orderExpirationTime">
+                            <option value="0"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "0"}selected="selected"
+                                {/if}>{l s='0 day' mod='hipay_enterprise'}</option>
+                            <option value="1"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "1"}selected="selected"
+                                {/if}>{l s='1 day' mod='hipay_enterprise'}</option>    
                             <option value="3"
                                 {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "3"}selected="selected"
                                 {/if}>{l s='3 days' mod='hipay_enterprise'}</option>

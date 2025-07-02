@@ -342,6 +342,8 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_a025e05161bb17cbab8
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b16854ceee6fb9499c2ad3aac40d539e'] = 'Montant de commande minimum';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_abcac9aebb2505b3cf76c42e1bfbe8f7'] = 'Montant de commande maximum';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_999009378d302fc9172934a0f50c26cc'] = 'Délai d\'expiration de la commande';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_3d512d2d3813d4368ecf9b01ce591fb6'] = 'Jour courant';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_e3b481d5297f475abc283227bedbd9b9'] = '1 jour';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_45fe0d3293152fa29cf10ef8a3c1871d'] = '3 jours';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_947d8520f04473da621f2718138f3bc6'] = '30 jours';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_ed0c9b5fb2f44a77915d0ce45d0c501c'] = '90 jours';
