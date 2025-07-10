@@ -527,7 +527,7 @@ class Apihandler
                         $redirectUrl = $pendingUrl . '&referenceToPay=1&method=' . $params['method'] . '&' . http_build_query(json_decode($response->getReferenceToPay()));
                         break;
                     } else {
-                        $redirectUrl = $forwardUrl;
+                        $redirectUrl = $pendingUrl;
                     }
                     break;
                 case TransactionState::FORWARDING:

@@ -2,6 +2,9 @@
 
 ## UNRELEASE
 
+## 2.25.5
+- **Fix** : Multibanco SIBS SPG integration -> Order API
+
 ## 2.25.4
 
 - **Fix** : Fixed Products with discounts on PayPal V2
