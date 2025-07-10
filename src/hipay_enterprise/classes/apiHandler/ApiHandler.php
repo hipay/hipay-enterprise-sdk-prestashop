@@ -143,6 +143,13 @@ class Apihandler
      */
     public function handleLocalPayment($mode = ApiMode::HOSTED_PAGE, $params = [])
     {
+        $cart = $this->context->cart;
+
+        // Ensure amount is present and includes discounts
+        if (!isset($params['amount'])) {
+            $params['amount'] = $cart->getOrderTotal(true, Cart::BOTH);
+        }
+        
         $params = $this->baseParamsInit($params, false);
 
         $params['paymentmethod'] = $this->getPaymentMethod($params, false);
@@ -478,14 +485,17 @@ class Apihandler
                     );
 
                     if ($this->module->hipayConfigTool->getPaymentGlobal()['card_token']) {
-                        $cardData = [
-                            'customer_id' => $this->context->customer->id,
-                            'pan' => $response->getPaymentMethod()->getPan(),
-                            'authorized' => 1
-                        ];
-                        $card = $this->dbTokenQuery->getSavedCCWithPan($cardData['customer_id'], $cardData['pan']);
-                        if ($card) {
-                            $this->dbTokenQuery->updateSavedCC($cardData);
+                        $paymentMethod = $response->getPaymentMethod();
+                        if ($paymentMethod && method_exists($paymentMethod, 'getPan')) {
+                            $cardData = [
+                                'customer_id' => $this->context->customer->id,
+                                'pan' => $paymentMethod->getPan(),
+                                'authorized' => 1
+                            ];
+                            $card = $this->dbTokenQuery->getSavedCCWithPan($cardData['customer_id'], $cardData['pan']);
+                            if ($card) {
+                                $this->dbTokenQuery->updateSavedCC($cardData);
+                            }
                         }
                     }
 
