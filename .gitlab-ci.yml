@@ -232,6 +232,7 @@ build-test:
 package:
   stage: package
   before_script:
+    - apt-get update
     - apt-get install -y zip sshpass
   script:
     - echo "Package module $CI_COMMIT_REF_SLUG"
