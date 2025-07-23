@@ -39,19 +39,15 @@ class CartFormatter extends ApiFormatterAbstract
     public function generate()
     {
         $cart = new Cart();
-
         $this->mapRequest($cart);
 
-        return $cart->toJson();
+        // Log the final cart payload before sending to HiPay
+        $json = $cart->toJson();
+        $this->module->getLogs()->logInfos("HipayPayload: " . $json);
+
+        return $json;
     }
 
-    /**
-     * map prestashop cart informations to request fields.
-     *
-     * @param Cart &$cart
-     *
-     * @return void
-     */
     protected function mapRequest(&$cart)
     {
         $cartSummary = $this->cart->getSummaryDetails();
@@ -84,22 +80,99 @@ class CartFormatter extends ApiFormatterAbstract
         }
     }
 
-    /**
-     * @return Item
-     *
-     * @throws Exception
-     */
+    private function getGoodItem($product)
+    {
+        $item = new Item();
+
+        $ean = isset($product['ean13']) && $product['ean13'] !== '0' ? $product['ean13'] : null;
+        $product_reference = HipayHelper::getProductRef($product);
+        $type = 'good';
+        $name = $product['name'];
+        $quantity = (int) $product['cart_quantity'];
+
+        $raw_unit_price = $product['price_wt'];
+        $unit_price = number_format(Tools::ps_round($raw_unit_price, 2), 2, '.', '');
+        $total_amount = number_format(Tools::ps_round($unit_price * $quantity, 2), 2, '.', '');
+        $discount = 0.00;
+
+        $this->module->getLogs()->logInfos("Product: {$name} | unit: {$unit_price} | qty: {$quantity} | total: {$total_amount}");
+
+        $tax_rate = $product['rate'];
+        $desc = $product['description_short'];
+        $cat = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
+
+        $item->__constructItem(
+            $ean,
+            $product_reference,
+            $type,
+            $name,
+            $quantity,
+            $unit_price,
+            $tax_rate,
+            $discount,
+            $total_amount,
+            '',
+            $desc,
+            null,
+            null,
+            null,
+            null,
+            $cat,
+            null
+        );
+
+        return $item;
+    }
+
+    private function getDiscountItem()
+    {
+        $product_reference = [];
+        $name = [];
+        $discount_description = [];
+        $unit_price = 0.00;
+        $total_amount = 0.00;
+
+        foreach ($this->cart->getCartRules() as $disc) {
+            $product_reference[] = HipayHelper::getDiscountRef($disc);
+            $name[] = $disc['name'];
+            $desc = $disc['description'];
+            $discount_description[] = $desc;
+
+            $discAmount = number_format(Tools::ps_round($disc['value_real'], 2), 2, '.', '');
+            $unit_price += -1 * $discAmount;
+            $total_amount += -1 * $discAmount;
+        }
+
+        $ref = join('/', $product_reference);
+        $label = join('/', $name);
+        $desc = join('/', $discount_description);
+        $tax_rate = 0.00;
+        $discount = 0.00;
+
+        $item = Item::buildItemTypeDiscount(
+            $ref,
+            $label,
+            number_format($unit_price, 2, '.', ''),
+            $tax_rate,
+            $discount,
+            $desc,
+            number_format($total_amount, 2, '.', '')
+        );
+        $item->setProductCategory(1);
+
+        return $item;
+    }
+
     private function getWrappingGoodItem()
     {
         $item = new Item();
 
         $product_reference = 'wrapping';
         $type = 'good';
-
         $name = 'wrapping';
         $quantity = 1;
 
-        $unit_price = $total_amount = $this->cart->getOrderTotal(true, GlobalCart::ONLY_WRAPPING);
+        $amount = number_format($this->cart->getOrderTotal(true, GlobalCart::ONLY_WRAPPING), 2, '.', '');
 
         $item->__constructItem(
             null,
@@ -107,10 +180,10 @@ class CartFormatter extends ApiFormatterAbstract
             $type,
             $name,
             $quantity,
-            $unit_price,
+            $amount,
             0,
             0,
-            $total_amount,
+            $amount,
             '',
             'gift wrapping',
             null,
@@ -124,136 +197,33 @@ class CartFormatter extends ApiFormatterAbstract
         return $item;
     }
 
-    /**
-     * create a good item from product line informations.
-     *
-     * @param array<string,mixed> $product
-     *
-     * @return Item
-     */
-    private function getGoodItem($product)
-    {
-        $item = new Item();
-
-        $european_article_numbering = isset($product['ean13']) && $product['ean13'] !== '0' ? $product['ean13'] : null;
-        $product_reference = HipayHelper::getProductRef($product);
-        $type = 'good';
-        $name = $product['name'];
-        $quantity = (int) $product['cart_quantity'];
-
-        // product-level discounts
-        $unit_price = Tools::ps_round($product['price_wt'], 2);
-        $total_amount = Tools::ps_round($unit_price * $quantity, 2);
-        $discount = 0.00;
-
-        $tax_rate = $product['rate'];
-        $discount_description = '';
-        $product_description = $product['description_short'];
-        $delivery_method = null;
-        $delivery_company = null;
-        $delivery_delay = null;
-        $delivery_number = null;
-        $product_category = $this->mapper->getMappedHipayCatFromPSId($product['id_category_default']);
-        $shop_id = null;
-
-        $item->__constructItem(
-            $european_article_numbering,
-            $product_reference,
-            $type,
-            $name,
-            $quantity,
-            $unit_price,
-            $tax_rate,
-            $discount,
-            $total_amount,
-            $discount_description,
-            $product_description,
-            $delivery_method,
-            $delivery_company,
-            $delivery_delay,
-            $delivery_number,
-            $product_category,
-            $shop_id
-        );
-
-        return $item;
-    }
-
-    /**
-     * create a discount item from discount line informations.
-     *
-     * @return Item
-     */
-    private function getDiscountItem()
-    {
-        $product_reference = [];
-        $name = [];
-        $unit_price = 0;
-        $discount_description = [];
-        $total_amount = 0;
-
-        foreach ($this->cart->getCartRules() as $disc) {
-            $product_reference[] = HipayHelper::getDiscountRef($disc);
-            $name[] = $disc['name'];
-            $unit_price += -1 * Tools::ps_round($disc['value_real'], 2);
-            $tax_rate = 0.00;
-            $discount = 0.00;
-            $discount_description[] = $disc['description'];
-            $total_amount += -1 * Tools::ps_round($disc['value_real'], 2);
-        }
-        $product_reference = join('/', $product_reference);
-        $name = join('/', $name);
-        $discount_description = join('/', $discount_description);
-
-        $item = Item::buildItemTypeDiscount(
-            $product_reference,
-            $name,
-            $unit_price,
-            $tax_rate,
-            $discount,
-            $discount_description,
-            $total_amount
-        );
-        // forced category
-        $item->setProductCategory(1);
-
-        return $item;
-    }
-
-    /**
-     * create a Fees item from cart informations.
-     *
-     * @param array<string,mixed> $cartSummary
-     *
-     * @return Item|null
-     */
     private function getFeesItem($cartSummary)
     {
-        if ($totalAmount = $this->cart->getTotalShippingCost()) {
+        $totalAmount = $this->cart->getTotalShippingCost();
+
+        if ($totalAmount > 0) {
+            $name = 'Multiple carriers';
+            $productReference = 0;
+
             if ($cartSummary['carrier']->id) {
-                // One carier
                 $carrier = new Carrier($cartSummary['carrier']->id);
                 $productReference = HipayHelper::getCarrierRef($carrier);
                 $name = $cartSummary['carrier']->name;
-            } else {
-                // multiples carriers
-                $productReference = 0;
-                $name = 'Multiple carriers';
             }
 
             $taxRate = $cartSummary['total_shipping_tax_exc'] === 0 ? 0.00 :
                 round(($totalAmount / $cartSummary['total_shipping_tax_exc'] - 1), 2);
             $discount = 0.00;
+            $amountFormatted = number_format($totalAmount, 2, '.', '');
 
             $item = Item::buildItemTypeFees(
                 $productReference,
                 $name,
-                $totalAmount,
+                $amountFormatted,
                 $taxRate,
                 $discount,
-                $totalAmount
+                $amountFormatted
             );
-            // forced category
             $item->setProductCategory(11);
 
             return $item;
