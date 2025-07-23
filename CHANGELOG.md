@@ -4,6 +4,7 @@
 
 ## 2.25.5
 - **Fix** : Multibanco SIBS SPG integration -> Order API
+- **Fix** : fixed the issue when adding many discounted products to the cart
 
 ## 2.25.4
 
