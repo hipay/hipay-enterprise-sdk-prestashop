@@ -277,9 +277,6 @@
                         value="{$HiPay_config_hipay.payment.global.sdk_js_url}">
                 </div>
             </div>
-
-
-
             {* 3DS Form *}
             {include file='../partials/3ds.forms.partial.tpl'}
             
