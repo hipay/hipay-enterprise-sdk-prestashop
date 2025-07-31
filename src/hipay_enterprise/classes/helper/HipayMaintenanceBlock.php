@@ -258,7 +258,8 @@ class HipayMaintenanceBlock
             }
         }
 
-        $this->context->smarty->assign(['HiPay_showRefund' => false]);
+        // HiPay_refundableAmount is needed in a view to check its value
+        $this->context->smarty->assign(['HiPay_showRefund' => false, 'HiPay_refundableAmount' => 0]);
 
         return false;
     }
