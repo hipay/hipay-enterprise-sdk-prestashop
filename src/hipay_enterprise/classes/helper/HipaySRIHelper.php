@@ -58,23 +58,34 @@ class HipaySRIHelper
         $integrityUrl = str_replace('.js', '.integrity', $sdkUrl);
 
         try {
-            $context = stream_context_create([
-                'http' => [
-                    'timeout' => 10,
-                    'user_agent' => 'HiPay-PrestaShop-SRI/1.0'
+            $ch = curl_init();
+            
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $integrityUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_USERAGENT => 'HiPay-PrestaShop-SRI/1.0',
+                CURLOPT_HTTPHEADER => [
+                    'Accept: text/plain'
                 ]
             ]);
 
-            $integrityHash = file_get_contents($integrityUrl, false, $context);
+            $integrityHash = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            
+            curl_close($ch);
 
-            if ($integrityHash === false) {
-                $this->logs->logInfos('Failed to fetch integrity hash from: ' . $integrityUrl);
+            if ($error || $httpCode !== 200) {
+                $this->logs->logInfos('Failed to fetch integrity hash from: ' . $integrityUrl . 
+                    ' (HTTP: ' . $httpCode . ', Error: ' . $error . ')');
                 return null;
             }
 
             // Clean the hash (remove whitespace, newlines, etc.)
             $integrityHash = trim($integrityHash);
-
+            
             // Validate that it looks like a hash (starts with sha256-, sha384-, or sha512-)
             if (!preg_match('/^sha(256|384|512)-[a-zA-Z0-9+\/=]+$/', $integrityHash)) {
                 $this->logs->logInfos('Invalid integrity hash format: ' . $integrityHash);
