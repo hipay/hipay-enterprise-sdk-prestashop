@@ -92,6 +92,9 @@ class Hipay_enterprise extends PaymentModule
         // configuration is handle by an helper class
         $this->hipayConfigTool = new HipayConfig($this);
 
+        // init SRI helper
+        $this->hipaySRIHelper = new HipaySRIHelper($this->hipayConfigTool, $this->logs);
+
         // Checking new versions of the module
         $this->hipayUpdateNotif = new HipayUpdateNotif($this);
     }
@@ -138,6 +141,22 @@ class Hipay_enterprise extends PaymentModule
     public function getPath()
     {
         return $this->_path;
+    }
+
+    /**
+     * Get the SDK script tag with SRI support
+     *
+     * @return array
+     */
+    public function getSDKScriptData()
+    {
+        $sdkUrl = $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'];
+        $scriptTag = $this->hipaySRIHelper->generateScriptTag($sdkUrl);
+
+        return [
+            'sdk_url' => $sdkUrl,
+            'sdk_script_tag' => $scriptTag
+        ];
     }
 
     /**
@@ -491,17 +510,16 @@ class Hipay_enterprise extends PaymentModule
         if (isset($transaction['reference_to_pay'])) {
             $referenceToPay = $transaction['reference_to_pay'];
 
-            $this->context->controller->registerJavascript(
-                'hipay-sdk-js',
-                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
-                ['server' => 'remote', 'position' => 'top', 'priority' => 1]
-            );
+            // Get SDK script data with SRI support
+            $sdkData = $this->getSDKScriptData();
 
             $this->smarty->assign(
                 [
                     'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
                     'HiPay_referenceToPay' => $referenceToPay,
                     'HiPay_method' => $transaction['payment_product'],
+                    'HiPay_sdk_url' => $sdkData['sdk_url'],
+                    'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
                 ]
             );
 
@@ -531,6 +549,9 @@ class Hipay_enterprise extends PaymentModule
         $this->context->controller->addJS([_MODULE_DIR_ . 'hipay_enterprise/views/js/devicefingerprint.js']);
         $customer = new Customer((int) $params['cart']->id_customer);
 
+        // Get SDK script data with SRI support
+        $sdkData = $this->getSDKScriptData();
+
         $this->smarty->assign(
             [
                 'HiPay_domain' => Tools::getShopDomainSSL(true),
@@ -548,6 +569,8 @@ class Hipay_enterprise extends PaymentModule
                 ),
                 'HiPay_lang' => Tools::strtolower($this->context->language->iso_code),
                 'HiPay_isOperatingModeHostedPage' => ApiMode::HOSTED_PAGE === $this->hipayConfigTool->getPaymentGlobal()['operating_mode']['APIMode'],
+                'HiPay_sdk_url' => $sdkData['sdk_url'],
+                'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
             ]
         );
         $this->smarty->assign('hipay_prod', !(bool) $this->hipayConfigTool->getAccountGlobal()['sandbox_mode']);
@@ -940,3 +963,4 @@ require_once dirname(__FILE__) . '/classes/helper/HipayFormControl.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayConfigFormHandler.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayMaintenanceBlock.php';
 require_once dirname(__FILE__) . '/classes/helper/HipayUpdateNotif.php';
+require_once dirname(__FILE__) . '/classes/helper/HipaySRIHelper.php';

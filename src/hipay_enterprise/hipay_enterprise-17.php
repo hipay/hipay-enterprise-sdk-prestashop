@@ -388,6 +388,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     $this->ccToken = new HipayCCToken($this);
                     $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
 
+                    // Get SDK script data with SRI support
+                    $sdkData = $this->getSDKScriptData();
+
                     $this->context->smarty->assign(
                         [
                             'HiPay_module_dir' => $this->_path,
@@ -403,6 +406,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'HiPay_customerFirstName' => $this->customer->firstname,
                             'HiPay_customerLastName' => $this->customer->lastname,
                             'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                            'HiPay_sdk_url' => $sdkData['sdk_url'],
+                            'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
                         ]
                     );
 

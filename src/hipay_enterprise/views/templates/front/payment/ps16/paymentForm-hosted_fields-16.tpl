@@ -11,6 +11,9 @@
  *}
 
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+
+{* Include SDK script with SRI support *}
+{include file="$hipay_enterprise_tpl_dir/front/partial/sdk-script.tpl"}
 {capture name=path}{l s='Payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
 

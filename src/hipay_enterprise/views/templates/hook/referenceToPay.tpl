@@ -9,6 +9,9 @@
  * @copyright 2019 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
+
+{* Include SDK script with SRI support *}
+{include file="$hipay_enterprise_tpl_dir/front/partial/sdk-script.tpl"}
 <section id="hipay-order-details" class="box">
     <h3>{l s='HIPAY DETAILS' mod='hipay_enterprise'}</h3>
     <div class="referenceContainer">
