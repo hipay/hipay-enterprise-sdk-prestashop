@@ -578,7 +578,7 @@ class HipayNotification
                     $message,
                     [],
                     Context::getContext()->cart->id_currency,
-                    false,
+                    true,
                     $customer->secure_key,
                     $shop
                 );

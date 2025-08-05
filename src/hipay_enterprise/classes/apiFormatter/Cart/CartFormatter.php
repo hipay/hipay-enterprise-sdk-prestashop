@@ -66,7 +66,7 @@ class CartFormatter extends ApiFormatterAbstract
         $cartRules = $this->cart->getCartRules();
         $totalDiscount = 0.00;
         foreach ($cartRules as $rule) {
-            $totalDiscount += Tools::ps_round($rule['value_real'], 2);
+            $totalDiscount += Tools::ps_round($rule['value_real'], 3);
         }
 
         if ($totalDiscount > 0) {
@@ -91,8 +91,8 @@ class CartFormatter extends ApiFormatterAbstract
         $quantity = (int) $product['cart_quantity'];
 
         $raw_unit_price = $product['price_wt'];
-        $unit_price = number_format(Tools::ps_round($raw_unit_price, 2), 2, '.', '');
-        $total_amount = number_format(Tools::ps_round($unit_price * $quantity, 2), 2, '.', '');
+        $unit_price = number_format(Tools::ps_round($raw_unit_price, 3), 3, '.', '');
+        $total_amount = number_format(Tools::ps_round($unit_price * $quantity, 3), 3, '.', '');
         $discount = 0.00;
 
         $this->module->getLogs()->logInfos("Product: {$name} | unit: {$unit_price} | qty: {$quantity} | total: {$total_amount}");
@@ -138,7 +138,7 @@ class CartFormatter extends ApiFormatterAbstract
             $desc = $disc['description'];
             $discount_description[] = $desc;
 
-            $discAmount = number_format(Tools::ps_round($disc['value_real'], 2), 2, '.', '');
+            $discAmount = number_format(Tools::ps_round($disc['value_real'], 3), 3, '.', '');
             $unit_price += -1 * $discAmount;
             $total_amount += -1 * $discAmount;
         }

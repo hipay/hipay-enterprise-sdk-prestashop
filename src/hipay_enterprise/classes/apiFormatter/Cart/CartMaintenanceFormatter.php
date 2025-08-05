@@ -189,12 +189,12 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $unit_price_without_reduction = $reduction_percent > 0 ? $unit_price / (1 - $reduction_percent) : $unit_price;
 
             // Calculate discount
-            $discount_per_unit = Tools::ps_round($unit_price_without_reduction - $unit_price, 2);
+            $discount_per_unit = Tools::ps_round($unit_price_without_reduction - $unit_price, 3);
             $discount = -1
-                * Tools::ps_round( $discount_per_unit * $qty, 2);
+                * Tools::ps_round( $discount_per_unit * $qty, 3);
 
             $tax_rate = floatval($orderDetail['tax_rate']);
-            $unit_price = Tools::ps_round( $unit_price * $qty, 2);
+            $unit_price = Tools::ps_round( $unit_price * $qty, 3);
         }
 
         $item->__constructItem(
@@ -226,7 +226,7 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
                 "type" => 'good',
                 "attempt_number" => $this->transactionAttempt + 1,
                 "quantity" => $qty,
-                "amount" => Tools::ps_round($item->getTotalAmount(), 2)
+                "amount" => Tools::ps_round($item->getTotalAmount(), 3)
             );
             $this->maintenanceData->addItem($captureData);
         }
@@ -254,8 +254,8 @@ class CartMaintenanceFormatter implements ApiFormatterInterface
             $product_reference[] = $cartRule->code;
             $tax_rate = 0.00;
             $discount = 0.00;
-            $unit_price += -1 * Tools::ps_round($rule["value"], 2);
-            $total_amount += -1 * Tools::ps_round($rule['value'], 2);
+            $unit_price += -1 * Tools::ps_round($rule["value"], 3);
+            $total_amount += -1 * Tools::ps_round($rule['value'], 3);
         }
         $product_reference = join("/", $product_reference);
         $name = join("/", $name);
