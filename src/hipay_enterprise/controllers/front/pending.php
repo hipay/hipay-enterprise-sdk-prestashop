@@ -45,8 +45,6 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         // Get SDK script data with SRI support
         $sdkData = $this->module->getSDKScriptData();
 
-
-
         // Pass SDK data to template
         $this->context->smarty->assign([
             'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
