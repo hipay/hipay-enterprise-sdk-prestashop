@@ -23,6 +23,9 @@ require_once(dirname(__FILE__) . '/../../classes/helper/HipayHelper.php');
  */
 class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
 {
+    /** @var Hipay_entreprise */
+    public $module;
+
     const PATH_TEMPLATE_PS_17 = '/views/templates/front/paymentReturn/ps17/pending-17.tpl';
     const PATH_TEMPLATE_PS_16 = 'paymentReturn/ps16/pending-16.tpl';
 
@@ -38,6 +41,17 @@ class Hipay_enterprisePendingModuleFrontController extends ModuleFrontController
         $cart = HipayHelper::getCustomerCart($this->module);
 
         HipayHelper::unsetCart($cart);
+
+        // Get SDK script data with SRI support
+        $sdkData = $this->module->getSDKScriptData();
+
+
+
+        // Pass SDK data to template
+        $this->context->smarty->assign([
+            'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+            'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->module->name . '/views/templates',
+        ]);
 
         $path = (_PS_VERSION_ >= '1.7' ? 'module:' .
             $this->module->name .

@@ -9,6 +9,10 @@
  * @copyright 2017 HiPay
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
+
+{* Include SDK script with SRI support *}
+{$HiPay_sdk_script_tag nofilter}
+
 {if ($HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)) OR $HiPay_localPaymentName eq "applepay"}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/paymentButtonForm.tpl"}
 {/if}
