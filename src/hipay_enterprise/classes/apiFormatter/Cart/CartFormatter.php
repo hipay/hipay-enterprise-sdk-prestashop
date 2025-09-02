@@ -41,10 +41,6 @@ class CartFormatter extends ApiFormatterAbstract
         $cart = new Cart();
         $this->mapRequest($cart);
 
-        // Log the final cart payload before sending to HiPay
-        $json = $cart->toJson();
-        $this->module->getLogs()->logInfos("HipayPayload: " . $json);
-
         return $json;
     }
 
@@ -94,8 +90,6 @@ class CartFormatter extends ApiFormatterAbstract
         $unit_price = number_format(Tools::ps_round($raw_unit_price, 3), 3, '.', '');
         $total_amount = number_format(Tools::ps_round($unit_price * $quantity, 3), 3, '.', '');
         $discount = 0.00;
-
-        $this->module->getLogs()->logInfos("Product: {$name} | unit: {$unit_price} | qty: {$quantity} | total: {$total_amount}");
 
         $tax_rate = $product['rate'];
         $desc = $product['description_short'];
