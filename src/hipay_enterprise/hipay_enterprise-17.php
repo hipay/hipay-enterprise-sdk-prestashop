@@ -133,6 +133,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
         $apiMode = $paymentGlobal['operating_mode']['APIMode'] ?? null;
         $isHostedFieldPaypalV2 = $apiMode === ApiMode::DIRECT_POST && $isPaypalV2;
 
+        // Get SDK script data with SRI support
+        $sdkData = $this->getSDKScriptData();
+
         if ('applepay' === $name || $isHostedFieldPaypalV2) {
             $this->context->smarty->assign(
                 [
@@ -146,6 +149,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     'HiPay_merchantId' => $paymentProduct['merchantId'] ?? null,
                     'HiPay_PayPal_v2' => $isPaypalV2,
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                    'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                 ]
             );
         } else {
@@ -160,6 +165,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     'HiPay_localPaymentName' => $name,
                     'HiPay_localPaymentCode' => $paymentProduct['productCode'] ?? $name,
                     'HiPay_errorMsg' => isset($paymentProduct['errorMsg']) ? $paymentProduct['errorMsg'] : null,
+                    'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                 ]
             );
         }
@@ -187,11 +194,13 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 $iframe = true;
             }
 
-            $this->context->smarty->assign([
-                'HiPay_language' => $this->context->language->language_code,
-                'HiPay_forceHpayment' => true,
-                'HiPay_iframe' => $iframe,
-            ]);
+                            $this->context->smarty->assign([
+                    'HiPay_language' => $this->context->language->language_code,
+                    'HiPay_forceHpayment' => true,
+                    'HiPay_iframe' => $iframe,
+                    'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
+                ]);
         } else {
 
             $formFields = [];
@@ -269,6 +278,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         'HiPay_language' => $this->context->language->language_code,
                         'HiPay_forceHpayment' => false,
                         'HiPay_iframe' => false,
+                        'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                     ]
                 );
             } elseif ($isPaypalV2) {
@@ -291,12 +302,16 @@ class HipayEnterpriseNew extends Hipay_enterprise
                         ],
                         'HiPay_Hosted_PayPal_v2' => $isHostedFieldPaypalV2,
                         'HiPay_forceHpayment' => false,
+                        'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                     ]));
                 } else {
                     $this->context->smarty->assign(array_merge($commonAssignments, [
                         'HiPay_forceHpayment' => true,
                         'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                         'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                        'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                        'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                     ]));
                 }
             } else {
@@ -308,6 +323,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     'HiPay_this_path_ssl' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
                     'HiPay_confHipay' => $this->hipayConfigTool->getConfigHipay(),
                     'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                    'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                 ]);
             }
         }
@@ -388,6 +405,9 @@ class HipayEnterpriseNew extends Hipay_enterprise
                     $this->ccToken = new HipayCCToken($this);
                     $savedCC = $this->ccToken->getSavedCC($params['cart']->id_customer);
 
+                    // Get SDK script data with SRI support
+                    $sdkData = $this->getSDKScriptData();
+
                     $this->context->smarty->assign(
                         [
                             'HiPay_module_dir' => $this->_path,
@@ -403,6 +423,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                             'HiPay_customerFirstName' => $this->customer->firstname,
                             'HiPay_customerLastName' => $this->customer->lastname,
                             'HiPay_languageIsoCode' => $this->context->language->iso_code,
+                            'HiPay_sdk_url' => $sdkData['sdk_url'],
+                            'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
                         ]
                     );
 
@@ -489,18 +511,8 @@ class HipayEnterpriseNew extends Hipay_enterprise
                 'cc-functions',
                 'modules/' . $this->name . '/views/js/cc.functions.js'
             );
-            $this->context->controller->registerJavascript(
-                'hipay-sdk-js',
-                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
-                ['server' => 'remote', 'position' => 'bottom', 'priority' => 20]
-            );
         } elseif ("module-hipay_enterprise-pending" === $this->context->controller->page_name) {
             $this->context->controller->addCSS(_MODULE_DIR_ . $this->name . '/views/css/hipay-enterprise.css', 'all');
-            $this->context->controller->registerJavascript(
-                'hipay-sdk-js',
-                $this->hipayConfigTool->getPaymentGlobal()['sdk_js_url'],
-                ['server' => 'remote', 'position' => 'top', 'priority' => 1]
-            );
         }
     }
 

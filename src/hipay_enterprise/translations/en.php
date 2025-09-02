@@ -343,9 +343,16 @@ $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_a025e05161bb17cbab8
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_b16854ceee6fb9499c2ad3aac40d539e'] = 'Minimum order amount';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_abcac9aebb2505b3cf76c42e1bfbe8f7'] = 'Maximum order amount';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_999009378d302fc9172934a0f50c26cc'] = 'Order expiration date';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_3d512d2d3813d4368ecf9b01ce591fb6'] = 'Current day';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_e3b481d5297f475abc283227bedbd9b9'] = '1 day';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_45fe0d3293152fa29cf10ef8a3c1871d'] = '3 days';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_947d8520f04473da621f2718138f3bc6'] = '30 days';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_ed0c9b5fb2f44a77915d0ce45d0c501c'] = '90 days';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_72ab9d0304d3e84c6aa2dd15eda282f2'] = '1 hour';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_6e9461ab087b8bcd886e3061ee588e83'] = '3 hours';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_88f1efb29dc20c4b7c6ae2653b3f778c'] = '6 hours';
+$_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_a32d6f77b4cd387776263c94eaaa52ff'] = '12 hours';
+
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_43959bd28527bfcb99b75841af6e5f69'] = 'Merchant Promotion';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_fa31b6e88cdc95eab570d83db23e2c3d'] = 'Activated currencies';
 $_MODULE['<{hipay_enterprise}prestashop>detail-local-payment_4107daf5746a644e08bca169bf6eba65'] = 'This currency is not activated in your PrestaShop shop.';

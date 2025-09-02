@@ -11,6 +11,9 @@
  *}
 {capture name=path}{l s='HiPay payment.' mod='hipay_enterprise'}{/capture}
 
+{* Include SDK script with SRI support *}
+{$HiPay_sdk_script_tag nofilter}
+
 <h2>{l s='Payment Summary' mod='hipay_enterprise'}</h2>
 <h3>{l s='HiPay payment.' mod='hipay_enterprise'}</h3>
 

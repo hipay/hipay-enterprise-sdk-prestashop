@@ -154,6 +154,24 @@
                     <label class="control-label col-lg-2">{l s='Order expiration date' mod='hipay_enterprise'}</label>
                     <div class="input-group col-lg-2">
                         <select name="{$key}_orderExpirationTime">
+                            <option value="H1"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H1"}selected="selected"
+                                {/if}>{l s='1 hour' mod='hipay_enterprise'}</option>
+                            <option value="H3"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H3"}selected="selected"
+                                {/if}>{l s='3 hours' mod='hipay_enterprise'}</option>
+                            <option value="H6"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H6"}selected="selected"
+                                {/if}>{l s='6 hours' mod='hipay_enterprise'}</option>
+                            <option value="H12"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "H12"}selected="selected"
+                                {/if}>{l s='12 hours' mod='hipay_enterprise'}</option>
+                            <option value="0"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "0"}selected="selected"
+                                {/if}>{l s='0 day' mod='hipay_enterprise'}</option>
+                            <option value="1"
+                                {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "1"}selected="selected"
+                                {/if}>{l s='1 day' mod='hipay_enterprise'}</option>    
                             <option value="3"
                                 {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "3"}selected="selected"
                                 {/if}>{l s='3 days' mod='hipay_enterprise'}</option>
@@ -162,7 +180,7 @@
                                 {/if}>{l s='30 days' mod='hipay_enterprise'}</option>
                             <option value="90"
                                 {if isset($method.orderExpirationTime) && $method.orderExpirationTime == "90"}selected="selected"
-                                {/if}>{l s='90 days' mod='hipay_enterprise'}</option>
+                                {/if}>{l s='90 days' mod='hipay_enterprise'}</option>    
                         </select>
                     </div>
                 </div>
