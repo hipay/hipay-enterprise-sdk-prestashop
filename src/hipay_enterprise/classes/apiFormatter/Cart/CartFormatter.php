@@ -41,7 +41,7 @@ class CartFormatter extends ApiFormatterAbstract
         $cart = new Cart();
         $this->mapRequest($cart);
 
-        return $json;
+        return $cart;
     }
 
     protected function mapRequest(&$cart)
