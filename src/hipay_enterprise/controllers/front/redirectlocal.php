@@ -152,17 +152,20 @@ class Hipay_enterpriseRedirectlocalModuleFrontController extends ModuleFrontCont
                     }
 
                     // display form
+                    $sdkData = $this->module->getSDKScriptData();
                     $context->smarty->assign(
                         array(
                             'HiPay_status_error' => '200', // Force to ok for first call
                             'HiPay_cart_id' => $cart->id,
                             'HiPay_amount' => $cart->getOrderTotal(true, Cart::BOTH),
+                            'HiPay_cart' => array('totalAmount' => $cart->getOrderTotal(true, Cart::BOTH)),
                             'HiPay_confHipay' => $this->module->hipayConfigTool->getConfigHipay(),
                             'HiPay_methodName' => $this->module->hipayConfigTool->getLocalPayment()[$method]["displayName"],
                             'HiPay_localPaymentName' => $method,
                             'HiPay_language' => $context->language->iso_code,
                             'HiPay_methodFields' => $formFields,
-                            'HiPay_forceHpayment' => false
+                            'HiPay_forceHpayment' => false,
+                            'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag']
                         )
                     );
                     $path = (_PS_VERSION_ >= '1.7' ? 'module:' .

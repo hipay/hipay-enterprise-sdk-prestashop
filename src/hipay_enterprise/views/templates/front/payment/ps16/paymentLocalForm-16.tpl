@@ -67,6 +67,9 @@
 
     </form>
     {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+    {if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
+    <script type="text/javascript" src="{$HiPay_this_path_ssl}views/js/front/oney-common.js"></script>
+    {/if}
     <script>
         $("#{$HiPay_localPaymentName}").submit(function (e) {
             // prevent form from being submitted 

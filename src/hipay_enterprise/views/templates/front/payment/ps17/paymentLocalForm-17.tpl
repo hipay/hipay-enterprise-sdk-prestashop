@@ -10,6 +10,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+{if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
+<script type="text/javascript" src="{$HiPay_this_path_ssl}views/js/front/oney-common.js"></script>
+{/if}
 <form id="{$HiPay_localPaymentName}{if $HiPay_localPaymentName eq 'paypal' && (isset($HiPay_PayPal_v2) && $HiPay_PayPal_v2)}-v2{/if}-hipay"
       action="{$HiPay_action}"
       enctype="application/x-www-form-urlencoded"

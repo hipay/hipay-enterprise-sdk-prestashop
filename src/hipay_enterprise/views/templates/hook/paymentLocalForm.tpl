@@ -21,8 +21,16 @@
 {elseif $HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
-    <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
-
+    {if $HiPay_localPaymentName eq "3xcb"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input3xcb.tpl"}
+    {elseif $HiPay_localPaymentName eq "3xcb-no-fees"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input3xcb-no-fees.tpl"}
+    {elseif $HiPay_localPaymentName eq "4xcb"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input4xcb.tpl"}
+    {elseif $HiPay_localPaymentName eq "4xcb-no-fees"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input4xcb-no-fees.tpl"}
+    {else}
+        <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var activatedLocalError = "{l s="This payment mean is unavailable or the order currency is not supported. Please choose an other payment method." mod="hipay_enterprise"}";
@@ -107,6 +115,7 @@
     <input class="ioBB" type="hidden" name="ioBB" />
     <input id="{$HiPay_localPaymentName}-paymentProductCode" type="hidden" name="HF-paymentProductCode" />
     <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="HF-browserInfo" />
+    {/if}
 {else}
     {if $HiPay_iframe}
         <p>{l s="Confirm your order to go to the payment page" mod="hipay_enterprise"}</p>
