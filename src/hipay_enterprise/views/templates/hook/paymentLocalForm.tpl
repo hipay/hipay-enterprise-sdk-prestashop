@@ -21,14 +21,8 @@
 {elseif $HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
-    {if $HiPay_localPaymentName eq "3xcb"}
-        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input3xcb.tpl"}
-    {elseif $HiPay_localPaymentName eq "3xcb-no-fees"}
-        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input3xcb-no-fees.tpl"}
-    {elseif $HiPay_localPaymentName eq "4xcb"}
-        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input4xcb.tpl"}
-    {elseif $HiPay_localPaymentName eq "4xcb-no-fees"}
-        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/input4xcb-no-fees.tpl"}
+    {if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
+        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputOney.tpl"}
     {else}
         <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
     <script>
