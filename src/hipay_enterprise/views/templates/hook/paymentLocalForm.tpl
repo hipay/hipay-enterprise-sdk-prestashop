@@ -21,9 +21,6 @@
 {elseif $HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
-    {if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
-        {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputOney.tpl"}
-    {else}
         <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -43,13 +40,11 @@
             var options = {
                 selector: container,
                 template: "auto",
+                request: { 
+                    amount: Number(amount)
+                },
                 isPaymentPageV2: true
             };
-
-            // Only add request property if container includes 'alma'
-            if (container.toLowerCase().includes('alma')) {
-                options.request = { amount: Number(amount) };
-            }
 
             var localHipay = new HiPay({
                 username: api_tokenjs_username,
@@ -57,7 +52,7 @@
                 environment: api_tokenjs_mode,
                 lang: "{$HiPay_languageIsoCode}"
             });
-
+            
             var localHF = localHipay.create("{$HiPay_localPaymentCode}", options);
             var extraFields = [];
 
@@ -104,12 +99,18 @@
                 );
             });
         });
+        {if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
+                try {
+                     oneyInstance.create("{$HiPay_localPaymentName}", config);  
+                } catch (error) {
+                    console.warn('Error creating Oney widget for {$HiPay_localPaymentName}:', error);
+                }
+        {/if}
     </script>
     <input type="hidden" name="localSubmit" />
     <input class="ioBB" type="hidden" name="ioBB" />
     <input id="{$HiPay_localPaymentName}-paymentProductCode" type="hidden" name="HF-paymentProductCode" />
     <input id="{$HiPay_localPaymentName}-browserInfo" type="hidden" name="HF-browserInfo" />
-    {/if}
 {else}
     {if $HiPay_iframe}
         <p>{l s="Confirm your order to go to the payment page" mod="hipay_enterprise"}</p>
