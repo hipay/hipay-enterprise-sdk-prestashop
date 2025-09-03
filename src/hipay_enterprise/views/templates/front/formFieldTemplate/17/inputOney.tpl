@@ -43,7 +43,7 @@
 
             if (oneyWidget && typeof oneyWidget.on === 'function') {
                 oneyWidget.on('error', function(error) {
-                    console.error('Oney widget error for {$HiPay_localPaymentName}:', error);
+                    console.warn('Oney widget error for {$HiPay_localPaymentName}:', error);
                 });
             } else {
                 console.warn('Oney widget creation failed for {$HiPay_localPaymentName}');
