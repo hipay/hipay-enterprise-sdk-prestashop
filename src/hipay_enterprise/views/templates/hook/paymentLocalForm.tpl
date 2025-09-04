@@ -99,13 +99,6 @@
                 );
             });
         });
-        {if $HiPay_localPaymentName eq "3xcb" || $HiPay_localPaymentName eq "3xcb-no-fees" || $HiPay_localPaymentName eq "4xcb" || $HiPay_localPaymentName eq "4xcb-no-fees"}
-                try {
-                     oneyInstance.create("{$HiPay_localPaymentName}", config);  
-                } catch (error) {
-                    console.warn('Error creating Oney widget for {$HiPay_localPaymentName}:', error);
-                }
-        {/if}
     </script>
     <input type="hidden" name="localSubmit" />
     <input class="ioBB" type="hidden" name="ioBB" />
