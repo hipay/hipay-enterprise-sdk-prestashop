@@ -2,6 +2,8 @@
 
 ## UNRELEASE
 
+- **Add** : Added Oney widget checkout
+
 ## 2.26.0
 
 - **Add** : Enhanced SDK JavaScript security by implementing Subresource Integrity (SRI) with automatic integrity hash fetching

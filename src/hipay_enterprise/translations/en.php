@@ -615,6 +615,8 @@ $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_688000bea2f79c9ca3d2d17554
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_9ff3ff10ff73b9833a1503d0b5058c18'] = 'This browser does not handle Apple Pay.';
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_558ecf65da519058d0e9984943435eb4'] = 'Please use another payment method.';
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_4fd795afe939870512d9fa4ca489e906'] = 'Please select a card to complete the Apple Pay payment.';
+$_MODULE['<{hipay_enterprise}prestashop>inputoney_688000bea2f79c9ca3d2d1755456024f'] = 'Please accept the terms of service.';
+
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0ca2b5535330f021917c16883385ed15'] = 'Payment summary';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'HiPay payment';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_f96eee4e48ee90430f17fb3a8388507b'] = 'PRINT';
