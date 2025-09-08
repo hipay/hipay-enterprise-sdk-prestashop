@@ -8,6 +8,7 @@
 
 - **Add** : Enhanced SDK JavaScript security by implementing Subresource Integrity (SRI) with automatic integrity hash fetching
 - **Fix** : Multibanco SIBS SPG integration -> Order API
+- **Fix** : fixed the refund form when a full refund is executed
 
 ## 2.25.4
 

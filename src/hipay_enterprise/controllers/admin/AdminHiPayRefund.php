@@ -108,7 +108,7 @@ class AdminHiPayRefundController extends AdminHiPayActionsController
                 $this->params["amount"] = $refundableAmount;
                 if ($this->apiHandler->handleRefund($this->params)) {
                     $this->module->getLogs()->logInfos('# Complete refund Capture success');
-                    $this->context->cookie->__set('hipay_success', $this->module->l('The refund has been validated'));
+                    $this->context->cookie->__set('hipay_success_order_' . (int)$this->order->id, $this->module->l('The refund has been validated'));
                 }
             } elseif ($refund_type == 'partialWithoutBasket') {
                 $this->params["amount"] = $refund_amount;
