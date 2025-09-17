@@ -2,6 +2,8 @@
 
 ## UNRELEASE
 
+## 2.27.0
+
 - **Add** : Added Oney widget checkout
 - **Fix** : Fixed the refund form when a full refund is executed
 
