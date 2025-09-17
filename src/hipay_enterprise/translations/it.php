@@ -614,6 +614,8 @@ $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_688000bea2f79c9ca3d2d17554
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_9ff3ff10ff73b9833a1503d0b5058c18'] = 'Questo browser non gestisce Apple Pay.';
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_558ecf65da519058d0e9984943435eb4'] = 'Si prega di utilizzare un altro metodo di pagamento.';
 $_MODULE['<{hipay_enterprise}prestashop>inputapplepay_4fd795afe939870512d9fa4ca489e906'] = 'Seleziona una carta per completare il pagamento Apple Pay.';
+$_MODULE['<{hipay_enterprise}prestashop>inputoney_688000bea2f79c9ca3d2d1755456024f'] = 'Si prega di accettare i termini del servizio.';
+
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_0ca2b5535330f021917c16883385ed15'] = 'Riepilogo pagamento';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_c15aa73e3fc896d9e1365e5065bcd22b'] = 'Pagamento HiPay';
 $_MODULE['<{hipay_enterprise}prestashop>pending-17_f96eee4e48ee90430f17fb3a8388507b'] = 'STAMPA';
