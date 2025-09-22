@@ -10,6 +10,9 @@
 * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
 *}
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
+
+{* Include SDK script with SRI support *}
+{include file="$hipay_enterprise_tpl_dir/front/partial/sdk-script.tpl"}
 <form id="tokenizerForm" action="{$HiPay_action}" enctype="application/x-www-form-urlencoded"
     class="form-horizontal hipay-form-17" method="post" name="tokenizerForm" autocomplete="off">
     <div id="error-js" style="display:none" class="alert alert-danger">

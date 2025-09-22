@@ -10,6 +10,9 @@
  * @license   https://github.com/hipay/hipay-enterprise-sdk-prestashop/blob/master/LICENSE.md
  *}
 
+{* Include SDK script with SRI support *}
+{$HiPay_sdk_script_tag nofilter}
+
 {include file="$hipay_enterprise_tpl_dir/front/partial/js.strings.tpl"}
 {capture name=path}{l s='Payment.' mod='hipay_enterprise'}{/capture}
 <h2>{l s='Order summary' mod='hipay_enterprise'}</h2>
