@@ -21,8 +21,7 @@
 {elseif $HiPay_localPaymentName eq "paypal" && (isset($HiPay_Hosted_PayPal_v2) && $HiPay_Hosted_PayPal_v2)}
     {include file="$hipay_enterprise_tpl_dir/front/formFieldTemplate/$psVersion/inputPaypal.tpl"}
 {elseif !$HiPay_forceHpayment}
-    <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
-
+        <div id="hipay-container-hosted-fields-{$HiPay_localPaymentName}"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var activatedLocalError = "{l s="This payment mean is unavailable or the order currency is not supported. Please choose an other payment method." mod="hipay_enterprise"}";
@@ -41,13 +40,11 @@
             var options = {
                 selector: container,
                 template: "auto",
+                request: { 
+                    amount: Number(amount)
+                },
                 isPaymentPageV2: true
             };
-
-            // Only add request property if container includes 'alma'
-            if (container.toLowerCase().includes('alma')) {
-                options.request = { amount: Number(amount) };
-            }
 
             var localHipay = new HiPay({
                 username: api_tokenjs_username,
@@ -55,7 +52,7 @@
                 environment: api_tokenjs_mode,
                 lang: "{$HiPay_languageIsoCode}"
             });
-
+            
             var localHF = localHipay.create("{$HiPay_localPaymentCode}", options);
             var extraFields = [];
 

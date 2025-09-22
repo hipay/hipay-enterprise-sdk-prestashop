@@ -206,7 +206,7 @@ class HipayMaintenanceBlock
                 }
 
                 $this->context->smarty->assign([
-                        'HiPay_showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()['use_prestashop_refund_form'],
+                        'HiPay_showRefund' => !$this->module->hipayConfigTool->getAccountGlobal()['use_prestashop_refund_form'] && !$this->context->cookie->__get('hipay_success_order_' . $this->order->id),
                         'HiPay_manualCapture' => $this->isManualCapture(),
                         'HiPay_stillToCapture' => $this->order->total_paid_tax_incl -
                             HipayHelper::getOrderPaymentAmount($this->order),
@@ -241,6 +241,8 @@ class HipayMaintenanceBlock
                         'HiPay_refundedAmount' => $refundedAmount,
                         'HiPay_totalPaidTaxIncl' => (float) $this->order->total_paid_tax_incl
                 ]);
+
+                $this->context->cookie->__unset('hipay_success_order_' . $this->order->id);
 
                 if ((bool) $this->order->gift && $this->order->total_wrapping > 0) {
                     $this->context->smarty->assign(
