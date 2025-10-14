@@ -2,6 +2,10 @@
 
 ## UNRELEASE
 
+## 2.27.1
+
+- **Fix** : Fixed the issue when adding many discounted products to the cart
+
 ## 2.27.0
 
 - **Add** : Added Oney widget checkout

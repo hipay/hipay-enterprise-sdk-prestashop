@@ -263,7 +263,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_426f0b5535ba6880b25398836b248157'
 $_MODULE['<{hipay_enterprise}prestashop>global_2b253c0ed846eef31453d86bbe37c214'] = 'Highlight color';
 $_MODULE['<{hipay_enterprise}prestashop>global_d0ef6f754455dcb305eb26b3decbc401'] = 'Send cart information on HiPay API calls.';
 $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'] = 'Customer\'s cart sending';
-$_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'If \'Round on the total\' is activated in the PrestaShop configuration, the cart will not be sent and the payment methods forcing cart sending will be disabled.';
+$_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'If \'Round on each item\' is activated in the PrestaShop configuration, the cart will not be sent and the payment methods forcing cart sending will be disabled.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Keep cart when payment fails';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Enable technical logs';
 $_MODULE['<{hipay_enterprise}prestashop>global_cd54b9688605622150a0ebeb82abfac4'] = 'Preserve GDPR data in logs';
@@ -482,7 +482,7 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_6ad3589c7c0207875a4193cc
 $_MODULE['<{hipay_enterprise}prestashop>alert_ef7bd68a02b6b5656554f7a27d1c7bdf'] = 'Error!';
 $_MODULE['<{hipay_enterprise}prestashop>alert_520f9b37af10a8807ddc4ccfa8a9ad23'] = 'Warning!';
 $_MODULE['<{hipay_enterprise}prestashop>alert_402e7a087747cb56c718bde84651f96a'] = 'Success!';
-$_MODULE['<{hipay_enterprise}prestashop>alert_cff8361ced3621b2a2193a458568828f'] = '\'Round on the total\' is activated in the PrestaShop configuration: the cart will not be sent and the payment methods forcing cart sending will be disabled.';
+$_MODULE['<{hipay_enterprise}prestashop>alert_cff8361ced3621b2a2193a458568828f'] = '\'Round on each item\' is activated in the PrestaShop configuration: the cart will not be sent and the payment methods forcing cart sending will be disabled.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_c4a571009fbdbae6c3266eb058fb331e'] = 'HiPay is a global online payment platform designed to handle all your payment needs.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_f1192832eadebee22a2a5da7d146e8d7'] = 'It offers you end-to-end customizable fraud protection, industry-leading data and analytics, seamless omnichannel support and automated financial reconciliation.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_b68f24b5388b6b89354a8cda41312fcb'] = 'Visit our website to';

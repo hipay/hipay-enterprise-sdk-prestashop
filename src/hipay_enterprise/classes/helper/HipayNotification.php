@@ -563,17 +563,22 @@ class HipayNotification
 
             $paymentProductName = $this->getPaymentProductName($transaction);
 
+            $rawAmount  = $transaction->getAuthorizedAmount();
+            $precision  = (int) Configuration::get('PS_PRICE_DISPLAY_PRECISION');
+            $roundMode  = (int) Configuration::get('PS_ROUND_MODE');
+            $amountPaid = Tools::ps_round((float)$rawAmount, $precision, $roundMode);
+
             try {
                 $this->log->logInfos('Prepare Validate order from registerOrder');
                 $this->module->validateOrder(
                     Context::getContext()->cart->id,
                     $state,
-                    (float) $transaction->getAuthorizedAmount(),
+                    $amountPaid,
                     $paymentProductName,
                     $message,
                     [],
                     Context::getContext()->cart->id_currency,
-                    false,
+                    true,
                     $customer->secure_key,
                     $shop
                 );

@@ -262,7 +262,7 @@ $_MODULE['<{hipay_enterprise}prestashop>global_426f0b5535ba6880b25398836b248157'
 $_MODULE['<{hipay_enterprise}prestashop>global_2b253c0ed846eef31453d86bbe37c214'] = 'Couleur de surbrillance';
 $_MODULE['<{hipay_enterprise}prestashop>global_d0ef6f754455dcb305eb26b3decbc401'] = 'Envoyer les données du panier lors des appels de l\'API HiPay.';
 $_MODULE['<{hipay_enterprise}prestashop>global_8ea1fc8e85c6a582c067ce86db40cf64'] = 'Envoi des données du panier du client';
-$_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi sur le total\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
+$_MODULE['<{hipay_enterprise}prestashop>global_2fa8518df2f792ed1492a7e2a04711d7'] = 'Si \"Arrondi pour chaque article\" est activé dans la configuration de PrestaShop, le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
 $_MODULE['<{hipay_enterprise}prestashop>global_eabfe85d6d80480e1fcd89e455e982ee'] = 'Conserver le panier en cas d’échec du paiement';
 $_MODULE['<{hipay_enterprise}prestashop>global_ad15f3ed99df01e7adeaf689a0014e33'] = 'Activer les logs techniques';
 $_MODULE['<{hipay_enterprise}prestashop>global_cd54b9688605622150a0ebeb82abfac4'] = 'Conserver les données RGPD dans les journaux';
@@ -480,7 +480,7 @@ $_MODULE['<{hipay_enterprise}prestashop>capture.partial_6ad3589c7c0207875a4193cc
 $_MODULE['<{hipay_enterprise}prestashop>alert_ef7bd68a02b6b5656554f7a27d1c7bdf'] = 'Erreur !';
 $_MODULE['<{hipay_enterprise}prestashop>alert_520f9b37af10a8807ddc4ccfa8a9ad23'] = 'Alerte !';
 $_MODULE['<{hipay_enterprise}prestashop>alert_402e7a087747cb56c718bde84651f96a'] = 'Succès !';
-$_MODULE['<{hipay_enterprise}prestashop>alert_cff8361ced3621b2a2193a458568828f'] = '\"Arrondi sur le total\" est activé dans la configuration de PrestaShop. Le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
+$_MODULE['<{hipay_enterprise}prestashop>alert_cff8361ced3621b2a2193a458568828f'] = '\"Arrondi pour chaque article\" est activé dans la configuration de PrestaShop. Le panier ne sera pas envoyé et les méthodes de paiement forçant son envoi seront désactivées.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_c4a571009fbdbae6c3266eb058fb331e'] = 'HiPay est une plateforme de paiement en ligne internationale conçue pour répondre à tous vos besoins.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_f1192832eadebee22a2a5da7d146e8d7'] = 'Outil complet et personnalisable de lutte contre la fraude, solution unique d’analyse des données, expérience omnicanale et processus de réconciliation financière automatisé.';
 $_MODULE['<{hipay_enterprise}prestashop>marketing_b68f24b5388b6b89354a8cda41312fcb'] = 'Visitez notre site pour';
