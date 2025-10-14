@@ -2,6 +2,10 @@
 
 ## UNRELEASE
 
+## 2.27.1
+
+- **Fix** : Fixed the issue when adding many discounted products to the cart
+
 ## 2.27.0
 
 - **Add** : Added Oney widget checkout
@@ -11,7 +15,6 @@
 
 - **Add** : Enhanced SDK JavaScript security by implementing Subresource Integrity (SRI) with automatic integrity hash fetching
 - **Fix** : Multibanco SIBS SPG integration -> Order API
-- **Fix** : fixed the issue when adding many discounted products to the cart
 
 ## 2.25.4
 
