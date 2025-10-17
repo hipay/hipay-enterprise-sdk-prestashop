@@ -2,6 +2,8 @@
 
 ## UNRELEASE
 
+- **Fix** : Fixed Apple Pay card brand detection using payment_product property
+
 ## 2.27.1
 
 - **Fix** : Fixed the issue when adding many discounted products to the cart
