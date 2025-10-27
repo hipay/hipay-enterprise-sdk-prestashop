@@ -1,11 +1,8 @@
 # Changelog
 
-## 2.27.2
-
-- **Fix** : Fixed missing refund button when language changes
-
 ## UNRELEASE
 
+- **Fix** : Fixed missing refund button when language changes
 - **Fix** : Fixed Apple Pay card brand detection using payment_product property
 
 ## 2.27.1
