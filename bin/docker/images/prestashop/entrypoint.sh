@@ -5,6 +5,8 @@ NC='\033[0m'
 ENV_DEVELOPMENT="development"
 ENV_STAGE="stage"
 ENV_PROD="production"
+WORKING_DIR="/var/www/html"
+MODULE_DIR="$WORKING_DIR/modules/hipay_enterprise"
 
 #===================================#
 #       CALL PARENT ENTRYPOINT
@@ -28,7 +30,7 @@ done
 printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 printf "\n${COLOR_SUCCESS}            INSTALLATION SDK PHP         ${NC}\n"
 printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-cd /var/www/html/modules/hipay_enterprise/
+cd $MODULE_DIR
 
 composer install --no-dev
 
@@ -38,18 +40,18 @@ printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 if [ -f ./sdk/hipay-fullservice-sdk-php/composer.json ]; then
     cd ./lib/vendor/hipay/
     rm -Rf hipay-fullservice-sdk-php
-    ln -sf /var/www/html/modules/hipay_enterprise/sdk/hipay-fullservice-sdk-php hipay-fullservice-sdk-php
+    ln -sf $MODULE_DIR/sdk/hipay-fullservice-sdk-php hipay-fullservice-sdk-php
     printf "${COLOR_SUCCESS} HiPay's SDK php is now linked ${NC}\n"
 fi
 
-cd /var/www/html
+cd $WORKING_DIR
 
 /tmp/docker_run.sh
 
 #===================================#
 #       CUSTOMS CONFIGURATIONS
 #===================================#
-if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" ]; then
+if [ ! -f $WORKING_DIR/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" ]; then
 
     if [ "$ENVIRONMENT" = "$ENV_DEVELOPMENT" ]; then
         # CONFIGURE XDEBUG
@@ -71,43 +73,43 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
         printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
         printf "\n${COLOR_SUCCESS}     INSTALLATION PRESTASHOP CONSOLE     ${NC}\n"
         printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-        cd /var/www/html/ &&
+        cd $WORKING_DIR &&
             wget https://github.com/nenes25/prestashop_console/raw/master/bin/prestashopConsole.phar &&
             chmod +x prestashopConsole.phar
     fi
 
-    # Installation  HiPay's module
+    #===================================#
+    #       LANGUAGE CONFIGURATIONS
+    #===================================#
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
-    printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
+    printf "\n${COLOR_SUCCESS}     LANGUAGE CONFIGURATIONS         ${NC}\n"
     printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
     if [[ "$PS_VERSION" == "1.6"* ]]; then
-        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
-        DELETE FROM ps_lang WHERE language_code IN ('en-GB', 'it-IT');
-        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
-        VALUES
-          (2, 'English', 1, 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
-          (3, 'Italiano', 1, 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
-
-        COMMIT;"
+        mysql --default-character-set=utf8mb4 -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+          DELETE FROM ps_lang WHERE language_code IN ('en-GB', 'it-IT');
+          INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, date_format_lite, date_format_full, is_rtl)
+          VALUES
+            (2, 'English', 1, 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
+            (3, 'Italiano', 1, 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
+        "
     else
-        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
-        DELETE FROM ps_currency_lang WHERE name = 'euro' and id_lang IN (2, 3);
-        DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
-        INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
-          VALUES
-            (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
-            (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
+        mysql --default-character-set=utf8mb4 -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+          DELETE FROM ps_currency_lang WHERE name = 'euro' and id_lang IN (2, 3);
+          DELETE FROM ps_lang WHERE locale IN ('en-GB', 'it-IT');
+          INSERT INTO ps_lang (id_lang, name, active, iso_code, language_code, locale, date_format_lite, date_format_full, is_rtl)
+            VALUES
+              (2, 'English', 1, 'en', 'en', 'en-GB', 'd/m/Y', 'd/m/Y H:i:s', 0),
+              (3, 'Italiano', 1, 'it', 'it', 'it-IT', 'd/m/Y', 'd/m/Y H:i:s', 0);
         
-        INSERT INTO ps_currency_lang (id_currency, id_lang, name, symbol, pattern)
-          VALUES
-          (1, 2, 'euro', '€', ''),
-          (1, 3, 'euro', '€', '');
-
-        COMMIT;"
+          INSERT INTO ps_currency_lang (id_currency, id_lang, name, symbol, pattern)
+            VALUES
+              (1, 2, 'euro', '€', ''),
+              (1, 3, 'euro', '€', '');
+        "
     fi
 
-    mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
+    mysql --default-character-set=utf8mb4 -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD -e "
       UPDATE ps_country SET active=1 WHERE iso_code IN ('PT', 'IT', 'NL', 'BE');
 
       DELETE FROM ps_module_country WHERE id_country IN (SELECT id_country FROM ps_country WHERE iso_code IN ('PT', 'IT', 'NL', 'BE'));
@@ -125,8 +127,20 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
       DELETE FROM ps_country_lang WHERE id_lang = 3;
       INSERT INTO ps_country_lang (id_country, id_lang, name)
         SELECT id_country, 3 AS id_lang, name FROM ps_country_lang WHERE id_lang = 1;
+    "
 
-      COMMIT;"
+    printf "\nLanguages configuration done. Clearing cache to reset languages cache...\n"
+
+    if [[ "$PS_VERSION" == "8"* ]]; then
+        bin/console cache:clear
+    else
+        ./prestashopConsole.phar c:flush
+    fi
+
+    # Installation  HiPay's module
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
+    printf "\n${COLOR_SUCCESS}     INSTALLATION HiPay's Module         ${NC}\n"
+    printf "\n${COLOR_SUCCESS} ======================================= ${NC}\n"
 
     if [[ "$PS_VERSION" == "1.6"* ]]; then
         ./prestashopConsole.phar module:install hipay_enterprise
@@ -184,9 +198,8 @@ if [ ! -f /var/www/html/prestashopConsole.phar ] || [ "$REINSTALL_CONFIG" = "1" 
     fi
 
     if [ "$ENVIRONMENT" = "$ENV_STAGE" ]; then
-        mysql -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+        mysql --default-character-set=utf8mb4 -h $MYSQL_HOST -D $DB_NAME -u root -p$MYSQL_ROOT_PASSWORD <<EOF
             UPDATE ps_module SET version='0.0.0' WHERE name='hipay_enterprise';
-            COMMIT;
 EOF
     fi
 
@@ -202,7 +215,7 @@ EOF
     if [[ $PS_DOMAIN != "localhost"* ]]; then
         crontab -l | {
             cat
-            echo "*/5 * * * * /usr/local/bin/php /var/www/html/modules/hipay_enterprise/cron/handle-hipay-notifs.php >> /var/log/cron.log 2>&1"
+            echo "*/5 * * * * /usr/local/bin/php $MODULE_DIR/cron/handle-hipay-notifs.php >> /var/log/cron.log 2>&1"
         } | crontab -
         service cron start
     fi
@@ -216,8 +229,8 @@ fi
 
 sleep 10
 
-chown -R www-data:www-data /var/www/html
-chmod -R $MOD_DROITS /var/www/html
+chown -R www-data:www-data $WORKING_DIR
+chmod -R $MOD_DROITS $WORKING_DIR
 
 #===================================#
 #       START WEBSERVER

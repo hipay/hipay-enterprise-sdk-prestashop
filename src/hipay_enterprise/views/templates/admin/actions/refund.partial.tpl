@@ -488,7 +488,7 @@
 
         $("#hipay_refund_form").submit(function(e) {
             if (checkRefundAmount()) {
-                msgConfirmation = '{l s='Are-you sure to refund for this order ?' mod='hipay_enterprise'}';
+                msgConfirmation = '{l s='Are-you sure to refund for this order ?' mod='hipay_enterprise' js=1}';
                 if (!confirm(msgConfirmation)) {
                     return false;
                 }
