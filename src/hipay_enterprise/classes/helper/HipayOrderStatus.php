@@ -31,7 +31,6 @@ class HiPayOrderStatus
     {
         $hipayStates = self::getOrderStatusList($module);
 
-        var_dump(Language::getLanguages(false));
         foreach ($hipayStates as $name => $state) {
             $waiting_state_config = $name;
             $waiting_state_color = $state["waiting_state_color"];
