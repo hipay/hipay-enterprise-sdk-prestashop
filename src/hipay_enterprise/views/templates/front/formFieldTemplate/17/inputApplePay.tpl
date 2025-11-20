@@ -281,7 +281,7 @@
    */
   function afterApplePayTokenization(hipayToken) {
     var token = hipayToken.token;
-    var brand = hipayToken.brand.toLowerCase().replace(/ /g, '-') || 'cb';
+    var brand = hipayToken.payment_product.toLowerCase().replace(/ /g, '-');
     var pan = hipayToken.pan;
     var card_expiry_month = hipayToken.card_expiry_month;
     var card_expiry_year = hipayToken.card_expiry_year;

@@ -15,6 +15,7 @@ data:
   PS_LANGUAGE: fr
   PS_COUNTRY: fr
   PS_INSTALL_AUTO: "1"
+  PS_INSTALL_MODULES: ""
   PS_DEV_MODE: "1"
   PS_FOLDER_ADMIN: admin-hipay
   PS_FOLDER_INSTALL: installOLD
