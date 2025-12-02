@@ -520,6 +520,7 @@ class Hipay_enterprise extends PaymentModule
                     'HiPay_method' => $transaction['payment_product'],
                     'HiPay_sdk_url' => $sdkData['sdk_url'],
                     'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                 ]
             );
 
