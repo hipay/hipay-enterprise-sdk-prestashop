@@ -1,6 +1,7 @@
 # Changelog
 
 ## UNRELEASE
+- **Fix** : Fixed error when opening order details
 
 ## 2.27.2
 - **Fix** : Fixed missing refund button when language changes
