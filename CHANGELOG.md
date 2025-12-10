@@ -2,6 +2,7 @@
 
 ## UNRELEASE
 - **Fix** : Fixed error when opening order details
+- **Fix** : Fixed capture operation displayed twice
 
 ## 2.27.2
 - **Fix** : Fixed missing refund button when language changes
