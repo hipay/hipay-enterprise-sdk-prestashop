@@ -215,12 +215,32 @@ class HipayDBUtils extends HipayDBQueryAbstract
             'SELECT * FROM `'._DB_PREFIX_.'order_payment` WHERE '.$where
         );
 
-        foreach ($originalData as $paymentRow) {
-            $order->total_paid_real -= $paymentRow['amount'];
-        }
-        $order->save();
+        if (!empty($originalData)) {
+            $totalToSubtract = 0;
+            foreach ($originalData as $paymentRow) {
+                $totalToSubtract += floatval($paymentRow['amount']);
+            }
 
-        Db::getInstance()->delete('order_payment', $where);
+            // Only update total_paid_real if it would remain non-negative (prevents validation errors when deleting duplicate payments)
+            $newTotalPaidReal = $order->total_paid_real - $totalToSubtract;
+
+            if ($newTotalPaidReal >= 0) {
+                $order->total_paid_real = $newTotalPaidReal;
+
+                try {
+                    if (!$order->save()) {
+                        $this->logs->logErrors(
+                            '# Could not update total_paid_real when deleting duplicate payments for order ' . $order->id
+                        );
+                    }
+                } catch (Exception $e) {
+                    $this->logs->logErrors(
+                        '# Exception updating total_paid_real for order ' . $order->id . ': ' . $e->getMessage()
+                    );
+                }
+            }
+            Db::getInstance()->delete('order_payment', $where);
+        }
     }
 
     /**

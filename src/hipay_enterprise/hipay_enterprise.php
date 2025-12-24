@@ -41,7 +41,7 @@ class Hipay_enterprise extends PaymentModule
     {
         $this->name = 'hipay_enterprise';
         $this->tab = 'payments_gateways';
-        $this->version = '2.27.2';
+        $this->version = '2.27.3';
         $this->module_key = 'c3c030302335d08603e8669a5210c744';
         $this->ps_versions_compliancy = ['min' => '1.7.6', 'max' => _PS_VERSION_];
         $this->currencies = true;
@@ -520,6 +520,7 @@ class Hipay_enterprise extends PaymentModule
                     'HiPay_method' => $transaction['payment_product'],
                     'HiPay_sdk_url' => $sdkData['sdk_url'],
                     'HiPay_sdk_script_tag' => $sdkData['sdk_script_tag'],
+                    'hipay_enterprise_tpl_dir' => _PS_MODULE_DIR_ . $this->name . '/views/templates',
                 ]
             );
 

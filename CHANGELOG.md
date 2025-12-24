@@ -2,6 +2,10 @@
 
 ## UNRELEASE
 
+## 2.27.3
+- **Fix** : Fixed error when opening order details
+- **Fix** : Fixed capture operation displayed twice
+
 ## 2.27.2
 - **Fix** : Fixed missing refund button when language changes
 - **Fix** : Fixed Apple Pay card brand detection using payment_product property
