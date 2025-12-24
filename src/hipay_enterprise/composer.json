@@ -14,8 +14,8 @@
     "name": "hipay/hipay-enterprise-sdk-prestashop",
     "require": {
         "giggsey/libphonenumber-for-php": "8.12.*",
-        "hipay/hipay-fullservice-sdk-php": "^2.20.0",
+        "hipay/hipay-fullservice-sdk-php": "^2.21.0",
         "symfony/polyfill-php80": "<=1.18.1"
     },
-    "version": "2.27.2"
+    "version": "2.27.3"
 }
