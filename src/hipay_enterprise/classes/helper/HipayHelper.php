@@ -1070,12 +1070,33 @@ class HipayHelper
                             $product['quantity'],
                             $product['id_product'],
                             $product['id_product_attribute'],
-                            isset($product['id_customization']) ? $product['id_customization'] : null,
+                            null,
                             'up',
                             0,
                             null,
                             false
                         );
+
+
+                        if (isset($product['id_customization']) && $product['id_customization']) {
+                            // Get customized data to duplicate
+                            $customizedData = Db::getInstance()->executeS(
+                                'SELECT * FROM ' . _DB_PREFIX_ . 'customized_data WHERE id_customization = ' . (int)$product['id_customization']
+                            );
+
+                            if ($customizedData) {
+                                // Create new customization with correct quantity
+                                $customization_id = self::duplicateCustomizationData($product['id_customization'], $newCart->id, $product['id_product'], $product['id_product_attribute'], $product['quantity']);
+
+                                if ($customization_id) {
+                                    Db::getInstance()->update(
+                                        'cart_product',
+                                        ['id_customization' => $customization_id],
+                                        'id_cart = ' . (int)$newCart->id . ' AND id_product = ' . (int)$product['id_product'] . ' AND id_product_attribute = ' . (int)$product['id_product_attribute']
+                                    );
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -1130,5 +1151,56 @@ class HipayHelper
         return array_map(function($card) use ($fieldsToKeep) {
             return array_intersect_key($card, array_flip($fieldsToKeep));
         }, $cards);
+    }
+
+
+    /**
+     * Duplicate customization data
+     *
+     * @param int $oldCustomizationId
+     * @param int $newCartId
+     * @param int $productId
+     * @param int $productAttributeId
+     * @param int $quantity
+     * @return int|null New customization ID or null if failed
+     */
+    public static function duplicateCustomizationData($oldCustomizationId, $newCartId, $productId, $productAttributeId, $quantity)
+    {
+        $oldCustomization = Db::getInstance()->getRow(
+            'SELECT * FROM ' . _DB_PREFIX_ . 'customization WHERE id_customization = ' . (int)$oldCustomizationId
+        );
+
+        if (!$oldCustomization) {
+            return null;
+        }
+
+        $newCustomization = new Customization();
+        $newCustomization->id_product = $productId;
+        $newCustomization->id_product_attribute = $productAttributeId;
+        $newCustomization->id_cart = $newCartId;
+        $newCustomization->id_address_delivery = $oldCustomization['id_address_delivery'];
+        $newCustomization->quantity = $quantity;
+        $newCustomization->quantity_refunded = 0;
+        $newCustomization->quantity_returned = 0;
+        $newCustomization->in_cart = 1;
+
+        if (!$newCustomization->save()) {
+            return null;
+        }
+
+        $customizedData = Db::getInstance()->executeS(
+            'SELECT * FROM ' . _DB_PREFIX_ . 'customized_data WHERE id_customization = ' . (int)$oldCustomizationId
+        );
+
+        foreach ($customizedData as $data) {
+            Db::getInstance()->insert('customized_data', [
+                'id_customization' => $newCustomization->id,
+                'type' => $data['type'],
+                'index' => $data['index'],
+                'value' => pSQL($data['value'])
+            ]);
+        }
+
+        return $newCustomization->id;
     }
 }
