@@ -20,6 +20,31 @@ function upgrade_module_2_27_4($module)
     $log->logInfos('Upgrade to 2.27.4');
 
     try {
+        // Update composer dependencies to get latest SDK
+        $log->logInfos('Updating composer dependencies...');
+        $moduleDir = dirname(__FILE__) . '/..';
+
+        // Set environment variables for composer
+        $composerHome = sys_get_temp_dir() . '/composer-hipay';
+        if (!is_dir($composerHome)) {
+            mkdir($composerHome, 0755, true);
+        }
+
+        $cmd = sprintf(
+            'cd %s && COMPOSER_HOME=%s HOME=%s composer update hipay/hipay-fullservice-sdk-php --no-interaction 2>&1',
+            escapeshellarg($moduleDir),
+            escapeshellarg($composerHome),
+            escapeshellarg($composerHome)
+        );
+
+        exec($cmd, $output, $returnCode);
+
+        if ($returnCode !== 0) {
+            $log->logInfos('Composer update failed: ' . implode("\n", $output));
+        } else {
+            $log->logInfos('Composer dependencies updated successfully');
+        }
+
         $keepParameters = [
             'visa' => [
                 'currencies' => '',
