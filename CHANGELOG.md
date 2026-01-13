@@ -1,6 +1,7 @@
 # Changelog
 
 ## UNRELEASE
+- **Fix** : add upgrade script
 
 ## 2.27.3
 - **Fix** : Fixed error when opening order details
