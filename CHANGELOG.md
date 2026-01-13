@@ -1,6 +1,8 @@
 # Changelog
 
 ## UNRELEASE
+
+## 2.27.4
 - **Fix** : add upgrade script
 
 ## 2.27.3
