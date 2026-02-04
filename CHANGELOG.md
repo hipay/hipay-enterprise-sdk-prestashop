@@ -1,6 +1,7 @@
 # Changelog
 
 ## UNRELEASE
+- **Fix** : fix customer mails not received
 
 ## 2.27.4
 - **Fix** : add upgrade script
