@@ -28,7 +28,9 @@ function upgrade_module_2_27_5($module)
         if (!columnExists($tableName, 'reference_to_pay')) {
             $log->logInfos("Adding missing column 'reference_to_pay' to $tableName");
             $sql = "ALTER TABLE `$tableName` ADD `reference_to_pay` TEXT";
-            Db::getInstance()->execute($sql);
+            if (!Db::getInstance()->execute($sql)) {
+                throw new Exception('Error during SQL request');
+            }
             $log->logInfos("Column 'reference_to_pay' added successfully");
         } else {
             $log->logInfos("Column 'reference_to_pay' already exists in $tableName");
