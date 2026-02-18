@@ -1,6 +1,8 @@
 # Changelog
 
 ## UNRELEASE
+
+## 2.27.5
 - **Fix** : add reference_to_pay column if missing
 
 ## 2.27.4
