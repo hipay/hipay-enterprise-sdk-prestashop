@@ -304,6 +304,11 @@ class HipayHelper
             }
         }
 
+        // Append customization ID to make reference unique
+        if (!empty($product['id_customization'])) {
+            $reference .= '-cust-' . $product['id_customization'];
+        }
+
         return $reference;
     }
 
@@ -1066,11 +1071,23 @@ class HipayHelper
 
                 if (is_array($oldProducts)) {
                     foreach ($oldProducts as $product) {
+                        $newCustomizationId = null;
+
+                        if (isset($product['id_customization']) && $product['id_customization']) {
+                            $newCustomizationId = self::duplicateCustomizationData(
+                                $product['id_customization'],
+                                $newCart->id,
+                                $product['id_product'],
+                                $product['id_product_attribute'],
+                                $product['quantity']
+                            );
+                        }
+
                         $newCart->updateQty(
                             $product['quantity'],
                             $product['id_product'],
                             $product['id_product_attribute'],
-                            isset($product['id_customization']) ? $product['id_customization'] : null,
+                            $newCustomizationId,
                             'up',
                             0,
                             null,
@@ -1130,5 +1147,93 @@ class HipayHelper
         return array_map(function($card) use ($fieldsToKeep) {
             return array_intersect_key($card, array_flip($fieldsToKeep));
         }, $cards);
+    }
+
+    /**
+     * Duplicate customization data for cart regeneration.
+     *
+     * @param int $oldCustomizationId
+     * @param int $newCartId
+     * @param int $productId
+     * @param int $productAttributeId
+     * @param int $quantity
+     * @return int|null New customization ID or null if failed
+     */
+    public static function duplicateCustomizationData(
+        $oldCustomizationId,
+        $newCartId,
+        $productId,
+        $productAttributeId,
+        $quantity
+    ) {
+        $db = Db::getInstance();
+
+        $oldCustomization = $db->getRow(
+            'SELECT * FROM ' . _DB_PREFIX_ . 'customization WHERE id_customization = ' . (int) $oldCustomizationId
+        );
+
+        if (!$oldCustomization) {
+            return null;
+        }
+
+        // Use transaction for data integrity
+        $db->execute('START TRANSACTION');
+
+        try {
+            $newCustomization = new Customization();
+            $newCustomization->id_product = (int) $productId;
+            $newCustomization->id_product_attribute = (int) $productAttributeId;
+            $newCustomization->id_cart = (int) $newCartId;
+            $newCustomization->id_address_delivery = (int) $oldCustomization['id_address_delivery'];
+            $newCustomization->quantity = (int) $quantity;
+            $newCustomization->quantity_refunded = 0;
+            $newCustomization->quantity_returned = 0;
+            $newCustomization->in_cart = 1;
+
+            if (!$newCustomization->save()) {
+                $db->execute('ROLLBACK');
+                return null;
+            }
+
+            $customizedData = $db->executeS(
+                'SELECT * FROM ' . _DB_PREFIX_ . 'customized_data WHERE id_customization = ' . (int) $oldCustomizationId
+            );
+
+            if ($customizedData) {
+                foreach ($customizedData as $data) {
+                    $insertResult = $db->insert('customized_data', [
+                        'id_customization' => (int) $newCustomization->id,
+                        'type' => (int) $data['type'],
+                        'index' => (int) $data['index'],
+                        'value' => pSQL($data['value']),
+                    ]);
+
+                    if (!$insertResult) {
+                        $db->execute('ROLLBACK');
+                        PrestaShopLogger::addLog(
+                            'HiPay customization data duplication failed for customization ID: ' . $oldCustomizationId,
+                            3,
+                            null,
+                            'Customization',
+                            (int) $oldCustomizationId
+                        );
+                        return null;
+                    }
+                }
+            }
+
+            $db->execute('COMMIT');
+            return (int) $newCustomization->id;
+        } catch (Exception $e) {
+            $db->execute('ROLLBACK');
+            PrestaShopLogger::addLog(
+                'HiPay customization duplication error: ' . $e->getMessage(),
+                3,
+                null,
+                'Customization',
+                (int) $oldCustomizationId
+            );
+            return null;
+        }
     }
 }
