@@ -103,49 +103,16 @@ class HipayOrderMessage
     /**
      * generic function to add prestashop order message
      * @param type $orderId
+     * @param type $customerId
      * @param type $data
      */
     private static function addMessage($orderId, $customerId, $data)
     {
-        if (_PS_VERSION_ < '1.7.1') {
-            $message = new Message();
-            $message->message = $data;
-            $message->id_order = (int)$orderId;
-            $message->private = 1;
+        $message = new Message();
+        $message->message = $data;
+        $message->id_order = (int)$orderId;
+        $message->private = 1;
 
-            $message->add();
-        } else {
-            $customer = new Customer($customerId);
-            $order = new Order($orderId);
-            $shop = new Shop($order->id_shop);
-            $context = Context::getContext();
-            Shop::setContext(Shop::CONTEXT_SHOP, $order->id_shop);
-            //Force context shop otherwise we get duplicate customer thread
-            $context->shop = $shop;
-            //check if a thread already exist
-            $id_customer_thread = CustomerThread::getIdCustomerThreadByEmailAndIdOrder($customer->email, $orderId);
-            if (!$id_customer_thread) {
-                $customer_thread = new CustomerThread();
-                $customer_thread->id_contact = 0;
-                $customer_thread->id_lang = 1;
-                $customer_thread->id_customer = (int)$customerId;
-                $customer_thread->id_order = (int)$orderId;
-                $customer_thread->status = 'open';
-                $customer_thread->token = Tools::passwdGen(12);
-                $customer_thread->id_shop = (int)$context->shop->id;
-                $customer_thread->id_lang = (int)$context->language->id;
-                $customer_thread->email = $customer->email;
-
-                $customer_thread->add();
-            } else {
-                $customer_thread = new CustomerThread((int)$id_customer_thread);
-            }
-
-            $customer_message = new CustomerMessage();
-            $customer_message->id_customer_thread = $customer_thread->id;
-            $customer_message->message = $data;
-            $customer_message->private = 1;
-            $customer_message->add();
-        }
+        $message->add();
     }
 }

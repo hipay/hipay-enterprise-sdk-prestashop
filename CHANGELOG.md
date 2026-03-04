@@ -1,6 +1,7 @@
 # Changelog
 
 ## UNRELEASE
+- **Fix** : fix customer mails not received
 - **Add** : Fixed product customization incrementation error
 
 ## 2.27.5
