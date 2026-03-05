@@ -875,7 +875,6 @@ class Hipay_enterprise extends PaymentModule
         $this->dbSchemaManager->deleteCCTokenTable();
         $this->dbSchemaManager->deleteHipayNotificationTable();
         $this->dbSchemaManager->deleteHipayProcessedOrderTable();
-        $this->dbSchemaManager->deleteHipayPaymentConfigTable();
 
         return true;
     }
