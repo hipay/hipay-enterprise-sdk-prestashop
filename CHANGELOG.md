@@ -2,17 +2,28 @@
 
 ## UNRELEASE
 
+## 2.27.6
+
+- **Fix** : fix customer mails not received
+- **Fix** : fix module error on uninstall
+- **Add** : Fixed product customization incrementation error
+
 ## 2.27.5
+
+- **Add** : Added new iDeal logo
 - **Fix** : add reference_to_pay column if missing
 
 ## 2.27.4
+
 - **Fix** : add upgrade script
 
 ## 2.27.3
+
 - **Fix** : Fixed error when opening order details
 - **Fix** : Fixed capture operation displayed twice
 
 ## 2.27.2
+
 - **Fix** : Fixed missing refund button when language changes
 - **Fix** : Fixed Apple Pay card brand detection using payment_product property
 
