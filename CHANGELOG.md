@@ -1,6 +1,9 @@
 # Changelog
 
 ## UNRELEASE
+
+## 2.27.6
+
 - **Fix** : fix customer mails not received
 - **Fix** : fix module error on uninstall
 - **Add** : Fixed product customization incrementation error
